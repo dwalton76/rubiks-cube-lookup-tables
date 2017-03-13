@@ -1,0 +1,56 @@
+
+Things that you've thought about and decided they won't work
+============================================================
+- any sort of edge pairing lookup table solution
+- solve UDLFRB in one shot which is 24!/(4!*4!*4!*4!*4!*4!) or 3,246,670,537,110,000
+    - prune tables
+        - solve UB would be 24!/(4!*4!*16!) or 51,482,970
+        - solve LR would be 24!/(4!*4!*16!) or 51,482,970
+        - solve FB would be 24!/(4!*4!*16!) or 51,482,970
+            - 51,482,970/3,246,670,537,110,000 is 0.0000000158571587 is small so this might work but would be really slow
+        - solve UBL would be 24!/(4!*4!*4!*12!) or 93,699,005,400
+            - 93,699,005,400/3,246,670,537,110,000 is 0.00002886002886
+            - 93 billion is too large for us to build
+
+  I tried this and it dropped the number of moves for solving the centers from 17 to 12 but
+  the IDA search took 3 hours and that was after building the 4x4x4-step30-ULFRBD-centers-solve-not-staged
+  out to 1.5 billion entries. So it was a neat experiment but not practical.
+
+robot@kids:~/rubiks-cube-NxNxN-solver$ ./usr/bin/rubiks-cube-solver.py
+         F U U L
+         U R F F
+         R L R B
+         D D D U
+
+U L U F  L B L B  L U D F  U F F R
+F R L R  D L U B  L F B B  U B F D
+D L D B  D B U L  F U U R  U D F R
+B R L R  D D R D  R R U B  L F R U
+
+         F L F B
+         B R D B
+         F D B L
+         R B L D
+
+
+2017-05-28 16:25:30,254 LookupTable.py     INFO: state RFLRRLLDLUBUFBUUBFDFRDDB vs state_target UUUULLLLFFFFRRRRBBBBDDDD
+2017-05-28 16:25:30,257 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 1, count 0
+2017-05-28 16:25:30,330 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 2, count 36
+2017-05-28 16:25:30,337 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 3, count 72
+2017-05-28 16:25:30,344 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 4, count 108
+2017-05-28 16:25:30,351 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 5, count 144
+2017-05-28 16:25:30,358 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 6, count 180
+2017-05-28 16:25:30,365 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 7, count 216
+2017-05-28 16:25:30,372 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 8, count 252
+2017-05-28 16:25:30,662 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 9, count 500
+2017-05-28 16:26:53,137 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 10, count 12627
+2017-05-28 17:21:15,580 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA threshold 11, count 427949
+2017-05-28 20:19:02,986 LookupTable.py     INFO: 4x4x4-step30-ULFRBD-centers-solve-not-staged: IDA found match(3), count 2697762
+2017-05-28 20:19:02,989 LookupTable.py     INFO: ULFRBD-centers-solve: state LLBULDDBFFLFURUUBDRBRRDF vs state_target UUUULLLLFFFFRRRRBBBBDDDD
+2017-05-28 20:19:02,993 LookupTable.py     INFO: ULFRBD-centers-solve: state LLBULDDBFFLFURUUBDRBDRFR vs state_target UUUULLLLFFFFRRRRBBBBDDDD
+2017-05-28 20:19:02,993 LookupTable.py     INFO: ULFRBD-centers-solve: state LLBULDDBFFLFURUUDBBRDRFR vs state_target UUUULLLLFFFFRRRRBBBBDDDD
+2017-05-28 20:19:02,993 LookupTable.py     INFO: ULFRBD-centers-solve: state LLBULDLFFFUUURBRDBDBRRDF vs state_target UUUULLLLFFFFRRRRBBBBDDDD
+2017-05-28 20:19:02,994 LookupTable.py     INFO: ULFRBD-centers-solve: state UBLLLDLFFFUUURBRDBDBRRDF vs state_target UUUULLLLFFFFRRRRBBBBDDDD
+2017-05-28 20:19:02,998 LookupTable.py     INFO: ULFRBD-centers-solve: state UBUBLLLLFUFURRRRDBDBDFDF vs state_target UUUULLLLFFFFRRRRBBBBDDDD
+2017-05-28 20:19:03,002 LookupTable.py     INFO: ULFRBD-centers-solve: state UUUULLLLFFFFRRRRBBBBDDDD vs state_target UUUULLLLFFFFRRRRBBBBDDDD
+
