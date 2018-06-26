@@ -104,6 +104,14 @@ elif args.type == '6x6x6-UD-oblique-edges-stage-right-only':
     from builder666 import Build666UDObliqueEdgesStageRightOnly
     builder = Build666UDObliqueEdgesStageRightOnly()
 
+elif args.type == '6x6x6-UD-centers-stage':
+    from builder666 import Build666UDCentersStage
+    builder = Build666UDCentersStage()
+
+elif args.type == '6x6x6-UD-oblique-edges-stage':
+    from builder666 import Build666UDObliqueEdgesStage
+    builder = Build666UDObliqueEdgesStage()
+
 elif args.type == '6x6x6-LR-centers-stage':
     from builder666 import Build666LRCentersStage
     builder = Build666LRCentersStage()
