@@ -148,6 +148,110 @@ class Build666UDObliqueEdgesStageRightOnly(BFS):
         )
 
 
+class Build666LRCentersStage(BFS):
+    """
+    (16!/(8!*8!))^3 or 2,131,746,903,000
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-LR-centers-stage',
+
+            # do not mess up staged inner-x-centers
+            ("3Uw", "3Uw'",
+             "3Dw", "3Dw'",
+             "3Fw", "3Fw'",
+             "3Bw", "3Bw'",
+             "3Lw", "3Lw'",
+             "3Rw", "3Rw'",
+
+             # do not mess up staged UD oblique pairs
+             "Rw", "Rw'", "Lw", "Lw'",
+             "Fw", "Fw'", "Bw", "Bw'",
+
+             # can skip these for 6x6x6 cubes
+             "3Lw2", "3Dw2", "3Bw2"),
+            '6x6x6',
+            'lookup-table-6x6x6-step20-LR-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . L L L L .  . x x x x .  . L L L L .  . x x x x .
+ . L . . L .  . x . . x .  . L . . L .  . x . . x .
+ . L . . L .  . x . . x .  . L . . L .  . x . . x .
+ . L L L L .  . x x x x .  . L L L L .  . x x x x .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . . """, 'ascii'),)
+        )
+
+
+class Build666LRObliqueEdgesStage(BFS):
+    """
+    (16!/(8!*8!))^2 or 165,636,900
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-LR-oblique-edges-stage',
+
+            # do not mess up staged inner-x-centers
+            ("3Uw", "3Uw'",
+             "3Dw", "3Dw'",
+             "3Fw", "3Fw'",
+             "3Bw", "3Bw'",
+             "3Lw", "3Lw'",
+             "3Rw", "3Rw'",
+
+             # do not mess up staged UD oblique pairs
+             "Rw", "Rw'", "Lw", "Lw'",
+             "Fw", "Fw'", "Bw", "Bw'",
+
+             # can skip these for 6x6x6 cubes
+             "3Lw2", "3Dw2", "3Bw2"),
+            '6x6x6',
+            'lookup-table-6x6x6-step21-LR-oblique-edges-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . L L . .  . . x x . .  . . L L . .  . . x x . .
+ . L . . L .  . x . . x .  . L . . L .  . x . . x .
+ . L . . L .  . x . . x .  . L . . L .  . x . . x .
+ . . L L . .  . . x x . .  . . L L . .  . . x x . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . . """, 'ascii'),)
+        )
+
+
 class StartingStates666Step60(BFS):
     """
     There should be 4900 of them

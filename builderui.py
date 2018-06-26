@@ -104,6 +104,14 @@ elif args.type == '6x6x6-UD-oblique-edges-stage-right-only':
     from builder666 import Build666UDObliqueEdgesStageRightOnly
     builder = Build666UDObliqueEdgesStageRightOnly()
 
+elif args.type == '6x6x6-LR-centers-stage':
+    from builder666 import Build666LRCentersStage
+    builder = Build666LRCentersStage()
+
+elif args.type == '6x6x6-LR-oblique-edges-stage':
+    from builder666 import Build666LRObliqueEdgesStage
+    builder = Build666LRObliqueEdgesStage()
+
 elif args.type == '6x6x6-LFRB-solve-inner-x-center-and-oblique-edges':
     from builder666 import Build666LFRBInnerXCenterAndObliqueEdges
     builder = Build666LFRBInnerXCenterAndObliqueEdges()
@@ -158,7 +166,7 @@ total_time = int((end_time - start_time).total_seconds())
 # Avoid divide by 0 if this ran in less than 1s
 if total_time == 0:
     total_time = 1
-    
+
 accounted_time =\
     builder.time_in_sort +\
     builder.time_in_building_workq +\
