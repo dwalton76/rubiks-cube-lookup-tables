@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 from buildercore import BFS
-from builder666ss import starting_states_step00, starting_states_step01, starting_states_step02
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444
 import logging
 import math
@@ -12,23 +11,25 @@ import sys
 log = logging.getLogger(__name__)
 
 
-class StartingStates666UDObliqueEdgesStage(BFS):
+class Build666UDObliqueEdgesStage(BFS):
     """
-    Should be 735,741 of them
+    (24!/(8!*16!))^2 or 540,917,591,841
     """
 
     def __init__(self):
         BFS.__init__(self,
             '6x6x6-UD-oblique-edges-stage',
-            ("3Uw", "3Uw'", "3Uw2",
-             "3Dw", "3Dw'", "3Dw2",
-             "3Fw", "3Fw'", "3Fw2",
-             "3Bw", "3Bw'", "3Bw2",
-             "3Lw", "3Lw'", "3Lw2",
-             "3Rw", "3Rw'", "3Rw2"),
+            ("3Uw", "3Uw'",
+             "3Dw", "3Dw'",
+             "3Fw", "3Fw'",
+             "3Bw", "3Bw'",
+             "3Lw", "3Lw'",
+             "3Rw", "3Rw'",
+             # can skip these for 6x6x6 cubes
+             "3Lw2", "3Dw2", "3Bw2"),
             '6x6x6',
-            'starting-states-lookup-table-6x6x6-step00-UD-oblique-edges-stage.txt',
-            False, # store_as_hex
+            'lookup-table-6x6x6-step10-UD-oblique-edges-stage.txt',
+            True, # store_as_hex
 
             # starting cubes
             (("""
@@ -55,72 +56,6 @@ class StartingStates666UDObliqueEdgesStage(BFS):
         )
 
 
-class Build666UDObliqueEdgesStage(BFS):
-    """
-    (24!/(8!*16!))^2 or 540,917,591,841
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '6x6x6-UD-oblique-edges-stage',
-            ("3Uw", "3Uw'",
-             "3Dw", "3Dw'",
-             "3Fw", "3Fw'",
-             "3Bw", "3Bw'",
-             "3Lw", "3Lw'",
-             "3Rw", "3Rw'"),
-            '6x6x6',
-            'lookup-table-6x6x6-step00-UD-oblique-edges-stage.txt',
-            True, # store_as_hex
-
-            # starting cubes
-            starting_states_step00,
-        )
-
-
-class StartingStates666UDObliqueEdgesStageLeftOnly(BFS):
-    """
-    24!/(8!*16!) or 735,741
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '6x6x6-UD-oblique-edges-stage-left-only',
-            ("3Uw", "3Uw'", "3Uw2",
-             "3Dw", "3Dw'", "3Dw2",
-             "3Fw", "3Fw'", "3Fw2",
-             "3Bw", "3Bw'", "3Bw2",
-             "3Lw", "3Lw'", "3Lw2",
-             "3Rw", "3Rw'", "3Rw2"),
-            '6x6x6',
-            'starting-states-lookup-table-6x6x6-step01-UD-oblique-edges-stage-left-only.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-              . . . . . .
-              . . U . . .
-              . . . . U .
-              . U . . . .
-              . . . U . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . x . . .  . . x . . .  . . x . . .  . . x . . .
- . . . . x .  . . . . x .  . . . . x .  . . . . x .
- . x . . . .  . x . . . .  . x . . . .  . x . . . .
- . . . x . .  . . . x . .  . . . x . .  . . . x . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . U . . .
-              . . . . U .
-              . U . . . .
-              . . . U . .
-              . . . . . . """, 'ascii'),),
-        )
-
-
 class Build666UDObliqueEdgesStageLeftOnly(BFS):
     """
     24!/(8!*16!) or 735,741
@@ -134,59 +69,37 @@ class Build666UDObliqueEdgesStageLeftOnly(BFS):
              "3Fw", "3Fw'",
              "3Bw", "3Bw'",
              "3Lw", "3Lw'",
-             "3Rw", "3Rw'"),
+             "3Rw", "3Rw'",
+             # can skip these for 6x6x6 cubes
+             "3Lw2", "3Dw2", "3Bw2"),
             '6x6x6',
-            'lookup-table-6x6x6-step01-UD-oblique-edges-stage-left-only.txt',
+            'lookup-table-6x6x6-step11-UD-oblique-edges-stage-left-only.txt',
             True, # store_as_hex
-
-            # starting cubes
-            starting_states_step01,
-            use_cost_only=True
-        )
-
-
-class StartingStates666UDObliqueEdgesStageRightOnly(BFS):
-    """
-    24!/(8!*16!) or 735,741
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '6x6x6-UD-oblique-edges-stage-right-only',
-            ("3Uw", "3Uw'", "3Uw2",
-             "3Dw", "3Dw'", "3Dw2",
-             "3Fw", "3Fw'", "3Fw2",
-             "3Bw", "3Bw'", "3Bw2",
-             "3Lw", "3Lw'", "3Lw2",
-             "3Rw", "3Rw'", "3Rw2"),
-            '6x6x6',
-            'starting-states-lookup-table-6x6x6-step02-UD-oblique-edges-stage-right-only.txt',
-            False, # store_as_hex
 
             # starting cubes
             (("""
               . . . . . .
-              . . . U . .
-              . U . . . .
-              . . . . U .
               . . U . . .
+              . . . . U .
+              . U . . . .
+              . . . U . .
               . . . . . .
 
  . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . x . .  . . . x . .  . . . x . .  . . . x . .
- . x . . . .  . x . . . .  . x . . . .  . x . . . .
- . . . . x .  . . . . x .  . . . . x .  . . . . x .
  . . x . . .  . . x . . .  . . x . . .  . . x . . .
+ . . . . x .  . . . . x .  . . . . x .  . . . . x .
+ . x . . . .  . x . . . .  . x . . . .  . x . . . .
+ . . . x . .  . . . x . .  . . . x . .  . . . x . .
  . . . . . .  . . . . . .  . . . . . .  . . . . . .
 
               . . . . . .
-              . . . U . .
-              . U . . . .
-              . . . . U .
               . . U . . .
+              . . . . U .
+              . U . . . .
+              . . . U . .
               . . . . . . """, 'ascii'),),
+            use_cost_only=True
         )
-
 
 
 class Build666UDObliqueEdgesStageRightOnly(BFS):
@@ -202,13 +115,35 @@ class Build666UDObliqueEdgesStageRightOnly(BFS):
              "3Fw", "3Fw'",
              "3Bw", "3Bw'",
              "3Lw", "3Lw'",
-             "3Rw", "3Rw'"),
+             "3Rw", "3Rw'",
+             # can skip these for 6x6x6 cubes
+             "3Lw2", "3Dw2", "3Bw2"),
             '6x6x6',
-            'lookup-table-6x6x6-step02-UD-oblique-edges-stage-right-only.txt',
+            'lookup-table-6x6x6-step12-UD-oblique-edges-stage-right-only.txt',
             True, # store_as_hex
 
             # starting cubes
-            starting_states_step02,
+            (("""
+              . . . . . .
+              . . . U . .
+              . U . . . .
+              . . . . U .
+              . . U . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . x . .  . . . x . .  . . . x . .  . . . x . .
+ . x . . . .  . x . . . .  . x . . . .  . x . . . .
+ . . . . x .  . . . . x .  . . . . x .  . . . . x .
+ . . x . . .  . . x . . .  . . x . . .  . . x . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . U . .
+              . U . . . .
+              . . . . U .
+              . . U . . .
+              . . . . . . """, 'ascii'),),
             use_cost_only=True
         )
 

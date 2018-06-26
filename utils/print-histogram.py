@@ -178,8 +178,8 @@ with open(filename, 'r') as fh:
 
         linecount += 1
 
-print('\n' + filename)
-print("=" * len(filename))
+print('\n    ' + filename)
+print("    " + "=" * len(filename))
 
 prev = None
 for key in sorted(stats.keys()):
@@ -189,7 +189,7 @@ for key in sorted(stats.keys()):
     else:
         delta = float(stats[key]/prev)
 
-    print("{} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(key, stats[key], int(float(stats[key]/linecount) * 100), delta))
+    print("    {} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(key, stats[key], int(float(stats[key]/linecount) * 100), delta))
     prev = stats[key]
 
 if do_edges:
@@ -202,7 +202,7 @@ if do_edges:
             len_steps_count = edge_stats2[key][len_steps]
             print("    %d steps has %d entries" % (len_steps, len_steps_count))
 
-print("\nTotal: {:,} entries".format(linecount))
+print("\n    Total: {:,} entries".format(linecount))
 
 if linecount:
-    print("Average: %.2f moves\n\n" % float(total_steps/linecount))
+    print("    Average: %.2f moves\n\n" % float(total_steps/linecount))

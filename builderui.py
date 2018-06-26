@@ -92,25 +92,13 @@ elif args.type == '4x4x4-tsai-phase4':
 # =====
 # 6x6x6
 # =====
-elif args.type == 'ss6x6x6-UD-oblique-edges-stage':
-    from builder666 import StartingStates666UDObliqueEdgesStage
-    builder = StartingStates666UDObliqueEdgesStage()
-
 elif args.type == '6x6x6-UD-oblique-edges-stage':
     from builder666 import Build666UDObliqueEdgesStage
     builder = Build666UDObliqueEdgesStage()
 
-elif args.type == 'ss6x6x6-UD-oblique-edges-stage-left-only':
-    from builder666 import StartingStates666UDObliqueEdgesStageLeftOnly
-    builder = StartingStates666UDObliqueEdgesStageLeftOnly()
-
 elif args.type == '6x6x6-UD-oblique-edges-stage-left-only':
     from builder666 import Build666UDObliqueEdgesStageLeftOnly
     builder = Build666UDObliqueEdgesStageLeftOnly()
-
-elif args.type == 'ss6x6x6-UD-oblique-edges-stage-right-only':
-    from builder666 import StartingStates666UDObliqueEdgesStageRightOnly
-    builder = StartingStates666UDObliqueEdgesStageRightOnly()
 
 elif args.type == '6x6x6-UD-oblique-edges-stage-right-only':
     from builder666 import Build666UDObliqueEdgesStageRightOnly
