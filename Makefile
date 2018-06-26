@@ -58,4 +58,4 @@
 	./builder.py --cores 4 --depth 20 --type 7x7x7-UD-oblique-edge-pairing-outside-only
 
 clean:
-	rm -rf backup* tmp/workq* tmp/* __pycache__  lookup-table.txt lookup-table.txt.diff lookup-table.txt.original *.pyc lookup-table.txt*.gz keepers.txt lookup-table.txt.tmp
+	rm -rf backup* tmp/.bsdsort* tmp/workq* tmp/* __pycache__  lookup-table.txt lookup-table.txt.diff lookup-table.txt.original *.pyc lookup-table.txt*.gz keepers.txt lookup-table.txt.tmp

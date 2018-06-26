@@ -1002,3 +1002,25 @@ class Build444TsaiPhase4SolveCorners64(BFS):
             ),
         )
 
+
+class Build444TsaiPhase4(BFS):
+
+    def __init__(self):
+        from builder444ss import starting_states_step400
+        BFS.__init__(self,
+            '4x4x4-tsai-phase4',
+            ("Fw", "Fw'",
+             "Uw", "Uw'",
+             "Rw", "Rw'",
+             "Lw", "Lw'", "Lw2",
+             "Bw", "Bw'", "Bw2",
+             "Dw", "Dw'", "Dw2",
+             "R", "R'",
+             "L", "L'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step400.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            starting_states_step400
+        )

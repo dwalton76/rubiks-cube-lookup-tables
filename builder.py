@@ -736,28 +736,6 @@ lookup_tables = {
         'keep'     : 'UFBD-centers'
     },
 
-    # I ran this one time to build edge_patterns_solveablve_via_half_turns
-    '4x4x4-edges-foo' : {
-        # half turns only
-        'illegal'  : ("Uw", "Uw'",
-                      "Lw", "Lw'",
-                      "Fw", "Fw'",
-                      "Rw", "Rw'",
-                      "Bw", "Bw'",
-                      "Dw", "Dw'",
-                      "U", "U'",
-                      "L", "L'",
-                      "F", "F'",
-                      "R", "R'",
-                      "B", "B'",
-                      "D", "D'"),
-        'size'     : '4x4x4',
-        'filename' : 'edges-foo.txt',
-        'allsteps' : True,
-        'hex'      : False,
-        'keep'     : 'edges-pattern'
-    },
-
     '4x4x4-tsai-phase5' : {
         # half turns only
         'illegal'  : ("Uw", "Uw'",
@@ -773,54 +751,11 @@ lookup_tables = {
                       "B", "B'",
                       "D", "D'"),
         'size'     : '4x4x4',
-        'filename' : 'lookup-table-4x4x4-step600-tsai-phase5.txt',
+        'filename' : 'lookup-table-4x4x4-step500-tsai-phase5.txt',
         'allsteps' : True,
         'hex'      : False,
-        'keep'     : 'centers-and-edges-pattern'
+        'keep'     : 'corners-centers-and-edges-pattern'
     },
-
-    '4x4x4-tsai-phase5-centers' : {
-        # half turns only
-        'illegal'  : ("Uw", "Uw'",
-                      "Lw", "Lw'",
-                      "Fw", "Fw'",
-                      "Rw", "Rw'",
-                      "Bw", "Bw'",
-                      "Dw", "Dw'",
-                      "U", "U'",
-                      "L", "L'",
-                      "F", "F'",
-                      "R", "R'",
-                      "B", "B'",
-                      "D", "D'"),
-        'size'     : '4x4x4',
-        'filename' : 'lookup-table-4x4x4-step601-tsai-phase5-centers.txt',
-        'allsteps' : True,
-        'hex'      : False,
-        'keep'     : 'centers'
-    },
-
-    '4x4x4-tsai-phase5-edges' : {
-        # half turns only
-        'illegal'  : ("Uw", "Uw'",
-                      "Lw", "Lw'",
-                      "Fw", "Fw'",
-                      "Rw", "Rw'",
-                      "Bw", "Bw'",
-                      "Dw", "Dw'",
-                      "U", "U'",
-                      "L", "L'",
-                      "F", "F'",
-                      "R", "R'",
-                      "B", "B'",
-                      "D", "D'"),
-        'size'     : '4x4x4',
-        'filename' : 'lookup-table-4x4x4-step602-tsai-phase5-edges.txt',
-        'allsteps' : True,
-        'hex'      : False,
-        'keep'     : 'edges-pattern'
-    },
-
 
     # ===================
     # 5x5x5 centers stage

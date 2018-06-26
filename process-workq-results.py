@@ -13,6 +13,16 @@ from builder import lookup_tables
 from pprint import pformat
 
 
+corners_444 = (
+    1, 4, 13, 16,
+    17, 20, 29, 32,
+    33, 36, 45, 48,
+    49, 52, 61, 64,
+    65, 68, 77, 80,
+    81, 84, 93, 96
+)
+
+
 def reverse_steps(steps):
     results = []
     for step in reversed(steps):
@@ -513,6 +523,40 @@ def centers_and_edges_pattern_444(state):
     ))
 
     return centers + edges
+
+
+def corners_centers_and_edges_pattern_444(state):
+    state = list('x' + state)
+    edges_recolor_444(state)
+    state = ''.join(state)
+
+    corners = ''.join([state[x] for x in corners_444])
+
+    centers = ''.join((
+        state[6:8],   state[10:12],
+        state[22:24], state[26:28],
+        state[38:40], state[42:44],
+        state[54:56], state[58:60],
+        state[70:72], state[74:76],
+        state[86:88], state[90:92]
+    ))
+
+    edges = ''.join((
+        state[2], state[3],
+        state[5], state[9],
+        state[8], state[12],
+        state[14], state[15],
+        state[21], state[25],
+        state[24], state[28],
+        state[53], state[57],
+        state[56], state[60],
+        state[82], state[83],
+        state[85], state[89],
+        state[88], state[92],
+        state[94], state[95]
+    ))
+
+    return corners + centers + edges
 
 
 def edges_pattern_444(state):
@@ -2726,6 +2770,7 @@ state_functions = {
     ('4x4x4', 'centers-and-edges')                           : centers_and_edges_444,
     ('4x4x4', 'centers-then-edges')                          : centers_then_edges_444,
     ('4x4x4', 'centers-and-edges-pattern')                   : centers_and_edges_pattern_444,
+    ('4x4x4', 'corners-centers-and-edges-pattern')           : corners_centers_and_edges_pattern_444,
     ('4x4x4', 'centers-and-last-four-edges-pattern')         : centers_and_last_four_edges_pattern_444,
     ('4x4x4', 'centers-and-edges-separate')                  : centers_and_edges_separate_444,
     ('4x4x4', 'centers-and-edge-parity')                     : centers_and_edge_parity_444,

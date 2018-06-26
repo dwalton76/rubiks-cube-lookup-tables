@@ -1,45 +1,5 @@
 #!/usr/bin/env python3
 
-from builder444 import (
-    StartingStates444UDCentersStage,
-    StartingStates444LRCentersStage,
-    StartingStates444FBCentersStage,
-    StartingStates444ULFRBDCentersStage,
-    Build444UDCentersStage,
-    Build444LRCentersStage,
-    Build444FBCentersStage,
-    Build444ULFRBDCentersStage,
-    Build444TsaiPhase1Centers,
-    Build444TsaiPhase2Centers,
-    Build444TsaiPhase2EdgesAndLRCenters,
-    StartingStates444TsaiPhase4SolveEdges64,
-    Build444TsaiPhase4SolveEdges64,
-    StartingStates444TsaiPhase4SolveCorners64,
-    Build444TsaiPhase4SolveCorners64,
-)
-from builder666 import (
-    StartingStates666UDObliqueEdgesStage,
-    Build666UDObliqueEdgesStage,
-
-    StartingStates666UDObliqueEdgesStageLeftOnly,
-    Build666UDObliqueEdgesStageLeftOnly,
-
-    StartingStates666UDObliqueEdgesStageRightOnly,
-    Build666UDObliqueEdgesStageRightOnly,
-
-    Build666LFRBInnerXCenterAndObliqueEdges,
-    Build666LRInnerXCenterAndObliqueEdges,
-    StartingStates666Step60,
-    StartingStates666Step61,
-)
-from builder777 import (
-    Build777StageLRObliqueEdges,
-    Build777StageLRObliqueEdges31,
-    Build777Step80,
-    Build777Step81,
-    Build777Step90,
-    Build777Step91,
-)
 import datetime as dt
 import argparse
 import logging
@@ -65,76 +25,103 @@ args = parser.parse_args()
 # 4x4x4
 # =====
 if args.type == 'ss4x4x4-UD-centers-stage':
+    from builder444 import StartingStates444UDCentersStage
     builder = StartingStates444UDCentersStage()
 
 elif args.type == '4x4x4-UD-centers-stage':
+    from builder444 import Build444UDCentersStage
     builder = Build444UDCentersStage()
 
 elif args.type == 'ss4x4x4-LR-centers-stage':
+    from builder444 import StartingStates444LRCentersStage
     builder = StartingStates444LRCentersStage()
 
 elif args.type == '4x4x4-LR-centers-stage':
+    from builder444 import Build444LRCentersStage
     builder = Build444LRCentersStage()
 
 elif args.type == 'ss4x4x4-FB-centers-stage':
+    from builder444 import StartingStates444FBCentersStage
     builder = StartingStates444FBCentersStage()
 
 elif args.type == '4x4x4-FB-centers-stage':
+    from builder444 import Build444FBCentersStage
     builder = Build444FBCentersStage()
 
 elif args.type == 'ss4x4x4-ULFRBD-centers-stage':
+    from builder444 import StartingStates444ULFRBDCentersStage
     builder = StartingStates444ULFRBDCentersStage()
 
 elif args.type == '4x4x4-ULFRBD-centers-stage':
+    from builder444 import Build444ULFRBDCentersStage
     builder = Build444ULFRBDCentersStage()
 
 elif args.type == '4x4x4-tsai-phase1-centers':
+    from builder444 import Build444TsaiPhase1Centers
     builder = Build444TsaiPhase1Centers()
 
 elif args.type == '4x4x4-tsai-phase2-centers':
+    from builder444 import Build444TsaiPhase2Centers
     builder = Build444TsaiPhase2Centers()
 
 elif args.type == '4x4x4-tsai-phase2-edges-and-LR-centers':
+    from builder444 import Build444TsaiPhase2EdgesAndLRCenters
     builder = Build444TsaiPhase2EdgesAndLRCenters()
 
 elif args.type == 'ss4x4x4-tsai-phase4-edges64':
+    from builder444 import StartingStates444TsaiPhase4SolveEdges64
     builder = StartingStates444TsaiPhase4SolveEdges64()
 
 elif args.type == '4x4x4-tsai-phase4-edges64':
+    from builder444 import Build444TsaiPhase4SolveEdges64
     builder = Build444TsaiPhase4SolveEdges64()
 
 elif args.type == 'ss4x4x4-tsai-phase4-corners64':
+    from builder444 import StartingStates444TsaiPhase4SolveCorners64
     builder = StartingStates444TsaiPhase4SolveCorners64()
 
 elif args.type == '4x4x4-tsai-phase4-corners64':
+    from builder444 import Build444TsaiPhase4SolveCorners64
     builder = Build444TsaiPhase4SolveCorners64()
+
+elif args.type == '4x4x4-tsai-phase4':
+    from builder444 import Build444TsaiPhase4
+    builder = Build444TsaiPhase4()
 
 
 # =====
 # 6x6x6
 # =====
 elif args.type == 'ss6x6x6-UD-oblique-edges-stage':
+    from builder666 import StartingStates666UDObliqueEdgesStage
     builder = StartingStates666UDObliqueEdgesStage()
 
 elif args.type == '6x6x6-UD-oblique-edges-stage':
+    from builder666 import Build666UDObliqueEdgesStage
     builder = Build666UDObliqueEdgesStage()
 
 elif args.type == 'ss6x6x6-UD-oblique-edges-stage-left-only':
+    from builder666 import StartingStates666UDObliqueEdgesStageLeftOnly
     builder = StartingStates666UDObliqueEdgesStageLeftOnly()
 
 elif args.type == '6x6x6-UD-oblique-edges-stage-left-only':
+    from builder666 import Build666UDObliqueEdgesStageLeftOnly
     builder = Build666UDObliqueEdgesStageLeftOnly()
 
 elif args.type == 'ss6x6x6-UD-oblique-edges-stage-right-only':
+    from builder666 import StartingStates666UDObliqueEdgesStageRightOnly
     builder = StartingStates666UDObliqueEdgesStageRightOnly()
 
 elif args.type == '6x6x6-UD-oblique-edges-stage-right-only':
+    from builder666 import Build666UDObliqueEdgesStageRightOnly
     builder = Build666UDObliqueEdgesStageRightOnly()
 
 elif args.type == '6x6x6-LFRB-solve-inner-x-center-and-oblique-edges':
+    from builder666 import Build666LFRBInnerXCenterAndObliqueEdges
     builder = Build666LFRBInnerXCenterAndObliqueEdges()
 
 elif args.type == '6x6x6-LR-solve-inner-x-center-and-oblique-edges':
+    from builder666 import Build666LRInnerXCenterAndObliqueEdges
     builder = Build666LRInnerXCenterAndObliqueEdges()
 
 
@@ -142,21 +129,27 @@ elif args.type == '6x6x6-LR-solve-inner-x-center-and-oblique-edges':
 # 7x7x7
 # =====
 elif args.type == '7x7x7-step30':
+    from builder777 import Build777StageLRObliqueEdges
     builder = Build777StageLRObliqueEdges()
 
 elif args.type == '7x7x7-step31':
+    from builder777 import Build777StageLRObliqueEdges31
     builder = Build777StageLRObliqueEdges31()
 
 elif args.type == '7x7x7-step80':
+    from builder777 import Build777Step80
     builder = Build777Step80()
 
 elif args.type == '7x7x7-step81':
+    from builder777 import Build777Step81
     builder = Build777Step81()
 
 elif args.type == '7x7x7-step90':
+    from builder777 import Build777Step90
     builder = Build777Step90()
 
 elif args.type == '7x7x7-step91':
+    from builder777 import Build777Step91
     builder = Build777Step91()
 
 else:

@@ -2429,7 +2429,7 @@ main (int argc, char *argv[])
         nuke_cube_centers_444(cube);
 
     } else if (type == TSAI_PHASE5_444) {
-        nuke_cube_corners_444(cube);
+        // nuke_cube_corners_444(cube);
 
     // 5x5x5
     } else if (type == UD_CENTERS_STAGE_555) {
