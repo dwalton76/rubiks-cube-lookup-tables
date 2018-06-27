@@ -398,7 +398,7 @@ class BFS(object):
                 self.starting_cubes.append(RubiksCube777(state, order))
 
         # Print all starting cubes
-        if len(self.starting_cubes) < 1000:
+        if len(self.starting_cubes) < 2000:
             for cube in self.starting_cubes:
                 cube.print_cube()
 

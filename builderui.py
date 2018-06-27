@@ -128,6 +128,22 @@ elif args.type == '6x6x6-LR-solve-inner-x-center-and-oblique-edges':
     from builder666 import Build666LRInnerXCenterAndObliqueEdges
     builder = Build666LRInnerXCenterAndObliqueEdges()
 
+elif args.type == '6x6x6-EO-inner-orbit':
+    from builder666 import Build666EdgeOrientInnerOrbit
+    builder = Build666EdgeOrientInnerOrbit()
+
+elif args.type == '6x6x6-EO-outer-orbit':
+    from builder666 import Build666EdgeOrientOuterOrbit
+    builder = Build666EdgeOrientOuterOrbit()
+
+elif args.type == 'ss6x6x6-LR-centers-edge-orient':
+    from builder666 import StartingStates666LRCenterEdgeOrient
+    builder = StartingStates666LRCenterEdgeOrient()
+
+elif args.type == '6x6x6-LR-centers-edge-orient':
+    from builder666 import Build666LRCenterEdgeOrient
+    builder = Build666LRCenterEdgeOrient()
+
 
 # =====
 # 7x7x7
