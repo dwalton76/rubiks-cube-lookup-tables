@@ -64,30 +64,39 @@ elif args.type == '4x4x4-tsai-phase2-centers':
     from builder444 import Build444TsaiPhase2Centers
     builder = Build444TsaiPhase2Centers()
 
+elif args.type == 'ss4x4x4-tsai-phase2-edges-and-LR-centers':
+    from builder444 import StartingStates444TsaiPhase2EdgesAndLRCenters
+    builder = StartingStates444TsaiPhase2EdgesAndLRCenters()
+
 elif args.type == '4x4x4-tsai-phase2-edges-and-LR-centers':
     from builder444 import Build444TsaiPhase2EdgesAndLRCenters
     builder = Build444TsaiPhase2EdgesAndLRCenters()
 
-elif args.type == 'ss4x4x4-tsai-phase4-edges64':
-    from builder444 import StartingStates444TsaiPhase4SolveEdges64
-    builder = StartingStates444TsaiPhase4SolveEdges64()
+# phase 3
+elif args.type == 'ss4x4x4-phase3-edges':
+    from builder444 import StartingStatesBuild444Phase3Edges
+    builder = StartingStatesBuild444Phase3Edges()
 
-elif args.type == '4x4x4-tsai-phase4-edges64':
-    from builder444 import Build444TsaiPhase4SolveEdges64
-    builder = Build444TsaiPhase4SolveEdges64()
+elif args.type == '4x4x4-phase3-edges':
+    from builder444 import Build444Phase3Edges
+    builder = Build444Phase3Edges()
 
-elif args.type == 'ss4x4x4-tsai-phase4-corners64':
-    from builder444 import StartingStates444TsaiPhase4SolveCorners64
-    builder = StartingStates444TsaiPhase4SolveCorners64()
+elif args.type == 'ss4x4x4-phase3-corners':
+    from builder444 import StartingStates444Phase3Corners 
+    builder = StartingStates444Phase3Corners()
 
-elif args.type == '4x4x4-tsai-phase4-corners64':
-    from builder444 import Build444TsaiPhase4SolveCorners64
-    builder = Build444TsaiPhase4SolveCorners64()
+elif args.type == '4x4x4-phase3-corners':
+    from builder444 import Build444Phase3Corners 
+    builder = Build444Phase3Corners()
 
-elif args.type == '4x4x4-tsai-phase4':
-    from builder444 import Build444TsaiPhase4
-    builder = Build444TsaiPhase4()
+# phase 4
+elif args.type == '4x4x4-phase4-edges':
+    from builder444 import Build444Phase4Edges
+    builder = Build444Phase4Edges()
 
+elif args.type == '4x4x4-phase4-centers':
+    from builder444 import Build444Phase4Centers
+    builder = Build444Phase4Centers()
 
 # =====
 # 6x6x6

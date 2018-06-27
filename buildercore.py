@@ -638,7 +638,8 @@ class BFS(object):
         self.workq_size = 0
 
         # Remove the workq file to save some disk space
-        os.remove(self.workq_filename)
+        if os.path.exists(self.workq_filename):
+            os.remove(self.workq_filename)
 
         start_time = dt.datetime.now()
         log.info("sort --merge all of the files created by builder-crunch-workq processes")
