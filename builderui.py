@@ -109,18 +109,6 @@ elif args.type == '6x6x6-UD-oblique-edges-stage':
     from builder666 import Build666UDObliqueEdgesStage
     builder = Build666UDObliqueEdgesStage()
 
-elif args.type == '6x6x6-UD-outer-x-centers-left-oblique-edge-stage':
-    from builder666 import Build666UDOuterXCentersLeftObliqueEdgeStage
-    builder = Build666UDOuterXCentersLeftObliqueEdgeStage()
-
-elif args.type == '6x6x6-LR-centers-stage':
-    from builder666 import Build666LRCentersStage
-    builder = Build666LRCentersStage()
-
-elif args.type == '6x6x6-LR-oblique-edges-stage':
-    from builder666 import Build666LRObliqueEdgesStage
-    builder = Build666LRObliqueEdgesStage()
-
 elif args.type == '6x6x6-LFRB-solve-inner-x-center-and-oblique-edges':
     from builder666 import Build666LFRBInnerXCenterAndObliqueEdges
     builder = Build666LFRBInnerXCenterAndObliqueEdges()
