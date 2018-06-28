@@ -101,18 +101,6 @@ elif args.type == '4x4x4-phase4-centers':
 # =====
 # 6x6x6
 # =====
-elif args.type == '6x6x6-UD-oblique-edges-stage':
-    from builder666 import Build666UDObliqueEdgesStage
-    builder = Build666UDObliqueEdgesStage()
-
-elif args.type == '6x6x6-UD-oblique-edges-stage-left-only':
-    from builder666 import Build666UDObliqueEdgesStageLeftOnly
-    builder = Build666UDObliqueEdgesStageLeftOnly()
-
-elif args.type == '6x6x6-UD-oblique-edges-stage-right-only':
-    from builder666 import Build666UDObliqueEdgesStageRightOnly
-    builder = Build666UDObliqueEdgesStageRightOnly()
-
 elif args.type == '6x6x6-UD-centers-stage':
     from builder666 import Build666UDCentersStage
     builder = Build666UDCentersStage()
@@ -120,6 +108,10 @@ elif args.type == '6x6x6-UD-centers-stage':
 elif args.type == '6x6x6-UD-oblique-edges-stage':
     from builder666 import Build666UDObliqueEdgesStage
     builder = Build666UDObliqueEdgesStage()
+
+elif args.type == '6x6x6-UD-outer-x-centers-left-oblique-edge-stage':
+    from builder666 import Build666UDOuterXCentersLeftObliqueEdgeStage
+    builder = Build666UDOuterXCentersLeftObliqueEdgeStage()
 
 elif args.type == '6x6x6-LR-centers-stage':
     from builder666 import Build666LRCentersStage
