@@ -137,6 +137,14 @@ elif args.type == '6x6x6-LR-centers-edge-orient':
 # =====
 # 7x7x7
 # =====
+elif args.type == '7x7x7-UD-centers-stage':
+    from builder777 import Build777UDCentersStage
+    builder = Build777UDCentersStage()
+
+elif args.type == '7x7x7-UD-oblique-edges-stage':
+    from builder777 import Build777UDObliqueEdgesStage
+    builder = Build777UDObliqueEdgesStage()
+
 elif args.type == '7x7x7-step30':
     from builder777 import Build777StageLRObliqueEdges
     builder = Build777StageLRObliqueEdges()

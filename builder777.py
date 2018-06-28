@@ -7,6 +7,116 @@ import sys
 log = logging.getLogger(__name__)
 
 
+class Build777UDCentersStage(BFS):
+    """
+    (16!/(8!*8!))^3 or 2,131,746,903,000
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '7x7x7-UD-centers-stage',
+            ("3Uw", "3Uw'",
+             "3Dw", "3Dw'",
+             "3Fw", "3Fw'",
+             "3Bw", "3Bw'",
+             "3Lw", "3Lw'",
+             "3Rw", "3Rw'",
+
+             # used for "fake" move to speed up IDA
+             "Fw", "Fw'", "Bw", "Bw'",
+             "3Uw", "3Uw'", "3Dw", "3Dw'", "Uw", "Uw'", "Dw", "Dw'",
+
+             # can skip these for 7x7x7 cubes
+             "3Lw2", "3Dw2", "3Bw2"),
+            '7x7x7',
+            'lookup-table-7x7x7-step10-UD-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+                . . . . . . .
+                . . U U U . .
+                . U . . . U .
+                . U . . . U .
+                . U . . . U .
+                . . U U U . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . U U U . .
+                . U . . . U .
+                . U . . . U .
+                . U . . . U .
+                . . U U U . .
+                . . . . . . .""", "ascii"),)
+        )
+
+
+class Build777UDObliqueEdgesStage(BFS):
+    """
+    (16!/(8!*8!))^2 or 165,636,900
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '7x7x7-UD-oblique-edges-stage',
+            ("3Uw", "3Uw'",
+             "3Dw", "3Dw'",
+             "3Fw", "3Fw'",
+             "3Bw", "3Bw'",
+             "3Lw", "3Lw'",
+             "3Rw", "3Rw'",
+
+             # used for "fake" move to speed up IDA
+             "Fw", "Fw'", "Bw", "Bw'",
+             "3Uw", "3Uw'", "3Dw", "3Dw'", "Uw", "Uw'", "Dw", "Dw'",
+
+             # can skip these for 7x7x7 cubes
+             "3Lw2", "3Dw2", "3Bw2"),
+            '7x7x7',
+            'lookup-table-7x7x7-step11-UD-oblique-edges-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+                . . . . . . .
+                . . U . U . .
+                . U . . . U .
+                . . . . . . .
+                . U . . . U .
+                . . U . U . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . U . U . .
+                . U . . . U .
+                . . . . . . .
+                . U . . . U .
+                . . U . U . .
+                . . . . . . .""", "ascii"),)
+        )
+
+
+
+
+
+
 class Build777StageLRObliqueEdges(BFS):
 
     def __init__(self):
