@@ -742,58 +742,13 @@ class Build444TsaiPhase2EdgesAndLRCenters(BFS):
             ))
 
 
-class StartingStatesBuild444Phase3Edges(BFS):
-    """
-    There should be 80,640 of them
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-phase3-edges',
-            ("Uw", "Uw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Rw", "Rw'",
-             "Bw", "Bw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'",
-             "F", "F'",
-             "B", "B'"),
-            '4x4x4',
-            'starting-states-lookup-table-4x4x4-step71-edges-split.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-          . U U .
-          U . . U
-          U . . U
-          . U U .
-
- . L L .  . F F .  . R R .  . B B .
- L . . L  F . . F  R . . R  B . . B
- L . . L  F . . F  R . . R  B . . B
- . L L .  . F F .  . R R .  . B B .
-
-          . D D .
-          D . . D
-          D . . D
-          . D D .""", 'ascii'),),
-            use_edges_pattern=True
-        )
-
-
 class Build444Phase3Edges(BFS):
     """
-    This is the TPR phase3 edges table. We will use this table to put the edges
-    into one of 80,640 states that can be solved when F, F', B, B' are restricted.
+    This is the TPR phase3 edges table.
     This table will have ~239 million entries.
     """
 
     def __init__(self):
-        from builder444ss import starting_states_phase3_step71_edges
-
         BFS.__init__(self,
             '4x4x4-phase3-edges',
             ("Uw", "Uw'",
@@ -809,86 +764,6 @@ class Build444Phase3Edges(BFS):
             False, # store_as_hex
 
             # starting cubes
-            starting_states_phase3_step71_edges,
-            use_edges_pattern=True
-        )
-
-
-class StartingStates444Phase3Corners(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-phase3-corners',
-            ("Uw", "Uw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Rw", "Rw'",
-             "Bw", "Bw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'",
-             "F", "F'",
-             "B", "B'"),
-            '4x4x4',
-            'starting-states-lookup-table-4x4x4-step72-corners.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            starting_states_phase4_step72_corners
-        )
-
-
-class Build444Phase3Corners(BFS):
-    """
-    """
-    # dwalton
-
-    def __init__(self):
-        from builder444ss import starting_states_phase3_step72_corners
-        BFS.__init__(self,
-            '4x4x4-phase3-corners',
-            ("Uw", "Uw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Rw", "Rw'",
-             "Bw", "Bw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'"),
-            '4x4x4',
-            'lookup-table-4x4x4-step72-corners.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            starting_states_phase3_step72_corners
-        )
-
-
-class Build444Phase4Edges(BFS):
-    """
-    """
-    # dwalton
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-phase4-edges',
-            ("Uw", "Uw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Rw", "Rw'",
-             "Bw", "Bw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'",
-             "F", "F'",
-             "B", "B'"),
-            '4x4x4',
-            'lookup-table-4x4x4-step81-edges.txt',
-            False, # store_as_hex
-
-            # starting cubes
             (("""
           . U U .
           U . . U
@@ -904,45 +779,6 @@ class Build444Phase4Edges(BFS):
           D . . D
           D . . D
           . D D .""", 'ascii'),),
+
             use_edges_pattern=True
-        )
-
-
-class Build444Phase4Centers(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-phase4-centers',
-            ("Uw", "Uw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Rw", "Rw'",
-             "Bw", "Bw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'",
-             "F", "F'",
-             "B", "B'"),
-            '4x4x4',
-            'lookup-table-4x4x4-step82-centers.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . F F .  . R R .  . B B .
- . L L .  . F F .  . R R .  . B B .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . D D .
-          . D D .
-          . . . .""", 'ascii'),),
         )
