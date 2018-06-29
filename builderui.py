@@ -117,21 +117,39 @@ elif args.type == '6x6x6-LR-centers-edge-orient':
 # =====
 # 7x7x7
 # =====
-elif args.type == '7x7x7-UD-centers-stage':
-    from builder777 import Build777UDCentersStage
-    builder = Build777UDCentersStage()
+elif args.type == 'ss7x7x7-UD-oblique-edges-stage':
+    from builder777 import StartingStates777UDObliqueEdgesStage
+    builder = StartingStates777UDObliqueEdgesStage()
 
 elif args.type == '7x7x7-UD-oblique-edges-stage':
     from builder777 import Build777UDObliqueEdgesStage
     builder = Build777UDObliqueEdgesStage()
 
-elif args.type == '7x7x7-step30':
-    from builder777 import Build777StageLRObliqueEdges
-    builder = Build777StageLRObliqueEdges()
+elif args.type == 'ss7x7x7-UD-outside-oblique-edges-stage':
+    from builder777 import StartingStates777UDOutsideObliqueEdgesStage
+    builder = StartingStates777UDOutsideObliqueEdgesStage()
 
-elif args.type == '7x7x7-step31':
-    from builder777 import Build777StageLRObliqueEdges31
-    builder = Build777StageLRObliqueEdges31()
+elif args.type == '7x7x7-UD-outside-oblique-edges-stage':
+    from builder777 import Build777UDOutsideObliqueEdgesStage
+    builder = Build777UDOutsideObliqueEdgesStage()
+
+
+elif args.type == 'ss7x7x7-LR-oblique-edges-stage':
+    from builder777 import StartingStates777LRObliqueEdgesStage
+    builder = StartingStates777LRObliqueEdgesStage()
+
+elif args.type == '7x7x7-LR-oblique-edges-stage':
+    from builder777 import Build777LRObliqueEdgesStage
+    builder = Build777LRObliqueEdgesStage()
+
+elif args.type == 'ss7x7x7-LR-outside-oblique-edges-stage':
+    from builder777 import StartingStates777LROutsideObliqueEdgesStage
+    builder = StartingStates777LROutsideObliqueEdgesStage()
+
+elif args.type == '7x7x7-LR-outside-oblique-edges-stage':
+    from builder777 import Build777LROutsideObliqueEdgesStage
+    builder = Build777LROutsideObliqueEdgesStage()
+
 
 elif args.type == '7x7x7-step80':
     from builder777 import Build777Step80
