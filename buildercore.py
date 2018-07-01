@@ -540,6 +540,9 @@ class BFS(object):
             if self.use_edges_pattern:
                 if self.size == '4x4x4':
                     pattern = '10425376a8b9ecfdhgkiljnm'
+                elif self.size == '5x5x5':
+                    # dwalton fill this in
+                    pattern = 'TBD'
                 else:
                     raise Exception("implement edges-pattern for %s" % self.size)
             else:

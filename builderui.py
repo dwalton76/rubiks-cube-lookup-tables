@@ -101,6 +101,23 @@ elif args.type == '5x5x5-edge-orient-LR-center-stage':
     from builder555 import Build555EdgeOrientOuterOrbitLRCenterStage
     builder = Build555EdgeOrientOuterOrbitLRCenterStage()
 
+elif args.type == 'ss5x5x5-FB-center-stage':
+    from builder555 import StartingStates555FBCenterStage
+    builder = StartingStates555FBCenterStage()
+
+elif args.type == '5x5x5-FB-center-stage':
+    from builder555 import Build555FBCenterStage
+    builder = Build555FBCenterStage()
+
+elif args.type == 'ss5x5x5-x-plane-edges-stage':
+    from builder555 import StartingStates555XPlaneEdgesStage
+    builder = StartingStates555XPlaneEdgesStage()
+
+elif args.type == '5x5x5-x-plane-edges-stage':
+    from builder555 import Build555XPlaneEdgesStage
+    builder = Build555XPlaneEdgesStage()
+
+
 # =====
 # 6x6x6
 # =====
