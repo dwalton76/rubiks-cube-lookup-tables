@@ -194,6 +194,10 @@ else:
     print("ERROR: %s is not a supported type" % args.type)
     sys.exit(1)
 
+
+log.info("\n\n\n************************************")
+log.info(args.type)
+log.info("************************************")
 builder.search(args.depth, args.cores)
 
 if args.type.startswith('ss'):
