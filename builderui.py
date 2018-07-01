@@ -56,9 +56,15 @@ elif args.type == '4x4x4-ULFRBD-centers-stage':
     from builder444 import Build444ULFRBDCentersStage
     builder = Build444ULFRBDCentersStage()
 
+# phase1
 elif args.type == '4x4x4-tsai-phase1-centers':
     from builder444 import Build444TsaiPhase1Centers
     builder = Build444TsaiPhase1Centers()
+
+# phase2
+elif args.type == 'ss4x4x4-tsai-phase2-centers':
+    from builder444 import StartingStates444TsaiPhase2Centers
+    builder = StartingStates444TsaiPhase2Centers()
 
 elif args.type == '4x4x4-tsai-phase2-centers':
     from builder444 import Build444TsaiPhase2Centers
@@ -71,6 +77,15 @@ elif args.type == 'ss4x4x4-tsai-phase2-edges-and-LR-centers':
 elif args.type == '4x4x4-tsai-phase2-edges-and-LR-centers':
     from builder444 import Build444TsaiPhase2EdgesAndLRCenters
     builder = Build444TsaiPhase2EdgesAndLRCenters()
+
+elif args.type == 'ss4x4x4-tsai-phase2':
+    from builder444 import StartingStates444TsaiPhase2
+    builder = StartingStates444TsaiPhase2()
+
+elif args.type == '4x4x4-tsai-phase2':
+    from builder444 import Build444TsaiPhase2
+    builder = Build444TsaiPhase2()
+
 
 # phase 3
 elif args.type == '4x4x4-phase3-edges':

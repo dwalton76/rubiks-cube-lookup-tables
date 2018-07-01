@@ -244,6 +244,41 @@ class Build444TsaiPhase1Centers(BFS):
             ))
 
 
+class StartingStates444TsaiPhase2Centers(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-tsai-phase2-centers',
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "L", "L'", "R", "R'",
+             "Lw", "Lw'", "Rw", "Rw'",
+             "Bw2", "Dw2", "Lw", "Lw'", "Lw2"), # TPR also restricts these
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step61-tsai-phase2-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+           (("""
+          . . . .
+          . U U .
+          . U U .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . F F .  . R R .  . F F .
+ . L L .  . F F .  . R R .  . F F .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . U U .
+          . U U .
+          . . . .""", 'ascii'),),
+
+        )
+
 class Build444TsaiPhase2Centers(BFS):
 
     def __init__(self):
@@ -259,217 +294,19 @@ class Build444TsaiPhase2Centers(BFS):
             False, # store_as_hex
 
             # starting cubes
-            (
-            # There are 12 goal states for LR centers
-            # goal 1 - LR centers solved
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . F F .  . R R .  . F F .
- . L L .  . F F .  . R R .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 2 - LR centers swapped
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . R R .  . F F .  . L L .  . F F .
- . R R .  . F F .  . L L .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 3 - horizontal bars 1
-            # https://alg.cubing.net/?puzzle=4x4x4&setup=R2_2F2_2U2_2F2_2U2_R2
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . R R .  . F F .  . L L .  . F F .
- . L L .  . F F .  . R R .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 4 - horizontal bars 2
-            # https://alg.cubing.net/?puzzle=4x4x4&setup=R2_2F2_2U2_2F2_2U2_R2
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . R R .  . F F .  . R R .  . F F .
- . L L .  . F F .  . L L .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 5 - horizontal bars 3
-            # https://alg.cubing.net/?puzzle=4x4x4&setup=R2_2F2_2D2_2F2_2D2_R2
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . F F .  . L L .  . F F .
- . R R .  . F F .  . R R .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 6 - horizontal bars 4
-            # https://alg.cubing.net/?puzzle=4x4x4&setup=2F2_2D2_2F2_2D2
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . F F .  . R R .  . F F .
- . R R .  . F F .  . L L .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-
-            # goal 7 - vertical bars 1
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . R L .  . F F .  . R L .  . F F .
- . R L .  . F F .  . R L .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 8 - vertical bars 2
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . R L .  . F F .  . L R .  . F F .
- . R L .  . F F .  . L R .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 9 - vertical bars 3
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L R .  . F F .  . R L .  . F F .
- . L R .  . F F .  . R L .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 10 - vertical bars 4
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L R .  . F F .  . L R .  . F F .
- . L R .  . F F .  . L R .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 11 - checkerboard 1
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . R L .  . F F .  . L R .  . F F .
- . L R .  . F F .  . R L .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-
-            # goal 12 - checkerboard 2
-             ("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L R .  . F F .  . R L .  . F F .
- . R L .  . F F .  . L R .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""", 'ascii'),
-            ))
+            (('.....UU..UU..........LL..LL..........FF..FF..........RR..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........LL..RR..........FF..FF..........LL..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........LL..RR..........FF..FF..........RR..LL..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........LR..LR..........FF..FF..........LR..LR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........LR..LR..........FF..FF..........RL..RL..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........LR..RL..........FF..FF..........RL..LR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........RL..LR..........FF..FF..........LR..RL..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........RL..RL..........FF..FF..........LR..LR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........RL..RL..........FF..FF..........RL..RL..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........RR..LL..........FF..FF..........LL..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........RR..LL..........FF..FF..........RR..LL..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........RR..RR..........FF..FF..........LL..LL..........FF..FF..........UU..UU.....', 'ULFRBD'))
+        )
 
 
 class StartingStates444TsaiPhase2EdgesAndLRCenters(BFS):
@@ -522,224 +359,85 @@ class Build444TsaiPhase2EdgesAndLRCenters(BFS):
             False, # store_as_hex
 
             # starting cubes
-            (
-            # There are 12 goal states for the center
-            # goal 1 - LR centers solved
-             ("""
+            (('.UD.D..UU..D.DU..DU.DLLUULLD.UD..DU.U..DD..U.UD..DU.DRRUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLRUURLD.UD..DU.U..DD..U.UD..DU.DRLUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRLUULRD.UD..DU.U..DD..U.UD..DU.DLRUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRRUURRD.UD..DU.U..DD..U.UD..DU.DLLUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'))
+        ) 
+
+
+class StartingStates444TsaiPhase2(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-tsai-phase2',
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "L", "L'", "R", "R'",
+             "Lw", "Lw'", "Rw", "Rw'",
+             "Bw2", "Dw2", "Lw", "Lw'", "Lw2"), # TPR also restricts these
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step60-tsai-phase2.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
           . U D .
-          D . . U
-          U . . D
+          D U U U
+          U U U D
           . D U .
 
  . D U .  . D U .  . D U .  . D U .
- D L L U  U . . D  D R R U  U . . D
- U L L D  D . . U  U R R D  D . . U
+ D L L U  U F F D  D R R U  U F F D
+ U L L D  D F F U  U R R D  D F F U
  . U D .  . U D .  . U D .  . U D .
 
           . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
+          D U U U
+          U U U D
+          . D U .""", 'ascii'),)
+        )
 
-            # goal 2 - LR centers swapped
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
 
- . D U .  . D U .  . D U .  . D U .
- D R R U  U . . D  D L L U  U . . D
- U R R D  D . . U  U L L D  D . . U
- . U D .  . U D .  . U D .  . U D .
+class Build444TsaiPhase2(BFS):
 
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-tsai-phase2',
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "Bw2", "Dw2", "Lw", "Lw'", "Lw2"), # TPR also restricts these
+            '4x4x4',
+            'lookup-table-4x4x4-step60-tsai-phase2.txt',
+            False, # store_as_hex
 
-            # goal 3 - horizontal bars 1
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
+            # starting cubes
+            (('.UD.DUUUUUUD.DU..DU.DLLUULLD.UD..DU.UFFDDFFU.UD..DU.DRRUURRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DLRUURLD.UD..DU.UFFDDFFU.UD..DU.DRLUULRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DRLUULRD.UD..DU.UFFDDFFU.UD..DU.DLRUURLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+             ('.UD.DUUUUUUD.DU..DU.DRRUURRD.UD..DU.UFFDDFFU.UD..DU.DLLUULLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'))
+        )
 
- . D U .  . D U .  . D U .  . D U .
- D R R U  U . . D  D L L U  U . . D
- U L L D  D . . U  U R R D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
-
-            # goal 4 - horizontal bars 2
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D R R U  U . . D  D R R U  U . . D
- U L L D  D . . U  U L L D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
-
-            # goal 5 - horizontal bars 3
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L L U  U . . D  D L L U  U . . D
- U R R D  D . . U  U R R D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
-
-            # goal 6 - horizontal bars 4
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L L U  U . . D  D R R U  U . . D
- U R R D  D . . U  U L L D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
-
-            # goal 7 - vertical bars 1
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D R L U  U . . D  D R L U  U . . D
- U R L D  D . . U  U R L D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
-
-            # goal 8 - vertical bars 2
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D R L U  U . . D  D L R U  U . . D
- U R L D  D . . U  U L R D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
-
-            # goal 9 - vertical bars 3
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L R U  U . . D  D R L U  U . . D
- U L R D  D . . U  U R L D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
-
-            # goal 10 - vertical bars 4
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L R U  U . . D  D L R U  U . . D
- U L R D  D . . U  U L R D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
-
-            # goal 11 - checkerboard 1
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D R L U  U . . D  D L R U  U . . D
- U L R D  D . . U  U R L D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii'),
-
-            # goal 12 - checkerboard 2
-             ("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L R U  U . . D  D R L U  U . . D
- U R L D  D . . U  U L R D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-              """, 'ascii')
-            ))
 
 
 class Build444Phase3Edges(BFS):
