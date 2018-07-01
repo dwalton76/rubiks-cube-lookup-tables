@@ -93,11 +93,11 @@ main (int argc, char *argv[])
 
         } else if (strmatch(argv[i], "--start")) {
             i++;
-            start_line = atoi(argv[i]);
+            start_line = atol(argv[i]);
 
         } else if (strmatch(argv[i], "--end")) {
             i++;
-            end_line = atoi(argv[i]);
+            end_line = atol(argv[i]);
 
         } else if (strmatch(argv[i], "--linewidth")) {
             i++;

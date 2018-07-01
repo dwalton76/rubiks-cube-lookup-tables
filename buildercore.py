@@ -612,10 +612,12 @@ class BFS(object):
         hit_error = False
         for thread in threads:
             thread.join()
-            log.info("depth %d %s: finished" % (self.depth, thread))
 
-            if not thread.ok:
+            if thread.ok:
+                log.info("depth %d %s: finished" % (self.depth, thread))
+            else:
                 hit_error = True
+                log.info("depth %d %s: finished but with an error" % (self.depth, thread))
 
         if hit_error:
             log.error("builder-crunch-workq hit an error")
