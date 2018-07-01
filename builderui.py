@@ -109,6 +109,7 @@ elif args.type == '5x5x5-FB-center-stage':
     from builder555 import Build555FBCenterStage
     builder = Build555FBCenterStage()
 
+# phase4
 elif args.type == 'ss5x5x5-x-plane-edges-stage':
     from builder555 import StartingStates555XPlaneEdgesStage
     builder = StartingStates555XPlaneEdgesStage()
@@ -117,6 +118,25 @@ elif args.type == '5x5x5-x-plane-edges-stage':
     from builder555 import Build555XPlaneEdgesStage
     builder = Build555XPlaneEdgesStage()
 
+    '''
+elif args.type == 'ss5x5x5-x-plane-outer-edges-stage':
+    from builder555 import StartingStates555XPlaneOuterEdgesStage
+    builder = StartingStates555XPlaneOuterEdgesStage()
+
+elif args.type == '5x5x5-x-plane-outer-edges-stage':
+    from builder555 import Build555XPlaneOuterEdgesStage
+    builder = Build555XPlaneOuterEdgesStage()
+
+elif args.type == 'ss5x5x5-x-plane-inner-edges-stage':
+    from builder555 import StartingStates555XPlaneInnerEdgesStage
+    builder = StartingStates555XPlaneInnerEdgesStage()
+    '''
+
+elif args.type == '5x5x5-x-plane-inner-edges-stage':
+    from builder555 import Build555XPlaneInnerEdgesStage
+    builder = Build555XPlaneInnerEdgesStage()
+
+# phase5
 elif args.type == 'ss5x5x5-phase5-LFRB-centers-stage':
     from builder555 import StartingStates555Phase5LFRBCenterStage
     builder = StartingStates555Phase5LFRBCenterStage()
@@ -219,7 +239,10 @@ else:
     sys.exit(1)
 
 
-log.info("\n\n\n************************************")
+log.info("")
+log.info("")
+log.info("")
+log.info("************************************")
 log.info(args.type)
 log.info("************************************")
 builder.search(args.depth, args.cores)
