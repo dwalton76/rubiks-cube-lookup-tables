@@ -125,15 +125,6 @@ elif args.type == '5x5x5-FB-center-stage':
     builder = Build555FBCenterStage()
 
 # phase4
-elif args.type == 'ss5x5x5-x-plane-edges-stage':
-    from builder555 import StartingStates555XPlaneEdgesStage
-    builder = StartingStates555XPlaneEdgesStage()
-
-elif args.type == '5x5x5-x-plane-edges-stage':
-    from builder555 import Build555XPlaneEdgesStage
-    builder = Build555XPlaneEdgesStage()
-
-    '''
 elif args.type == 'ss5x5x5-x-plane-outer-edges-stage':
     from builder555 import StartingStates555XPlaneOuterEdgesStage
     builder = StartingStates555XPlaneOuterEdgesStage()
@@ -141,11 +132,6 @@ elif args.type == 'ss5x5x5-x-plane-outer-edges-stage':
 elif args.type == '5x5x5-x-plane-outer-edges-stage':
     from builder555 import Build555XPlaneOuterEdgesStage
     builder = Build555XPlaneOuterEdgesStage()
-
-elif args.type == 'ss5x5x5-x-plane-inner-edges-stage':
-    from builder555 import StartingStates555XPlaneInnerEdgesStage
-    builder = StartingStates555XPlaneInnerEdgesStage()
-    '''
 
 elif args.type == '5x5x5-x-plane-inner-edges-stage':
     from builder555 import Build555XPlaneInnerEdgesStage

@@ -257,78 +257,6 @@ class Build555FBCenterStage(BFS):
         )
 
 
-class StartingStates555XPlaneEdgesStage(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-x-plane-edges-stage',
-
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "L", "L'",
-             "R", "R'",
-             "F", "F'",
-             "B", "B'"),
-
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step52-x-plane-edges-stage.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . x x x .
-            x . . . x
-            x . . . x
-            x . . . x
-            . x x x .
-
- . x x x .  . x x x .  . x x x .  . x x x .
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- . x x x .  . x x x .  . x x x .  . x x x .
-
-            . x x x .
-            x . . . x
-            x . . . x
-            x . . . x
-            . x x x .""", "ascii"),),
-            use_edges_pattern=True
-        )
-
-
-class Build555XPlaneEdgesStage(BFS):
-
-    def __init__(self):
-        from builder555ss import starting_states_step52
-        BFS.__init__(self,
-            '5x5x5-x-plane-edges-stage',
-
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "L", "L'",
-             "R", "R'"),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step52-x-plane-edges-stage.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            starting_states_step52,
-            use_edges_pattern=True
-        )
-
-'''
 class StartingStates555XPlaneOuterEdgesStage(BFS):
     """
     """
@@ -401,56 +329,9 @@ class Build555XPlaneOuterEdgesStage(BFS):
         )
 
 
-class StartingStates555XPlaneInnerEdgesStage(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-x-plane-inner-edges-stage',
-
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "L", "L'",
-             "R", "R'",
-             "F", "F'",
-             "B", "B'"),
-
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step53-x-plane-inner-edges-stage.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . x x x .
-            x . . . x
-            x . . . x
-            x . . . x
-            . x x x .
-
- . x x x .  . x x x .  . x x x .  . x x x .
- x . . . x  x . . . x  x . . . x  x . . . x
- L . . . L  F . . . F  R . . . R  B . . . B
- x . . . x  x . . . x  x . . . x  x . . . x
- . x x x .  . x x x .  . x x x .  . x x x .
-
-            . x x x .
-            x . . . x
-            x . . . x
-            x . . . x
-            . x x x .""", "ascii"),),
-            use_edges_pattern=True
-        )
-
-
 class Build555XPlaneInnerEdgesStage(BFS):
 
     def __init__(self):
-        from builder555ss import starting_states_step53
         BFS.__init__(self,
             '5x5x5-x-plane-inner-edges-stage',
 
@@ -468,10 +349,25 @@ class Build555XPlaneInnerEdgesStage(BFS):
             False, # store_as_hex
 
             # starting cubes
-            starting_states_step53,
-            use_edges_pattern=True
+            (("""
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .
+
+ . x x x .  . x x x .  . x x x .  . x x x .
+ L . . . L  L . . . L  L . . . L  L . . . L
+ L . . . L  L . . . L  L . . . L  L . . . L
+ L . . . L  L . . . L  L . . . L  L . . . L
+ . x x x .  . x x x .  . x x x .  . x x x .
+
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .""", "ascii"),),
         )
-'''
 
 
 # =======
