@@ -372,6 +372,75 @@ class Build555XPlaneInnerEdgesStage(BFS):
         )
 
 
+class StartingStates555Phase4(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase4',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'"),
+
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step50-phase4.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .
+
+ . x x x .  . x x x .  . x x x .  . x x x .
+ L . . . L  F F F F F  R . . . R  B B B B B
+ L . . . L  F F F F F  R . . . R  B B B B B
+ L . . . L  F F F F F  R . . . R  B B B B B
+ . x x x .  . x x x .  . x x x .  . x x x .
+
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .""", "ascii"),),
+            use_edges_pattern=True
+        )
+
+
+class Build555Phase4(BFS):
+
+    def __init__(self):
+        from builder555ss import starting_states_step50
+        BFS.__init__(self,
+            '5x5x5-phase4',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step50-phase4.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            starting_states_step50,
+            use_edges_pattern=True
+        )
+
 # =======
 # Phase 5
 # =======

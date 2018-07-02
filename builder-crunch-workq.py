@@ -13,6 +13,24 @@ import logging
 log = logging.getLogger(__name__)
 
 
+centers_444 = (
+    6, 7, 10, 11,
+    22, 23, 26, 27,
+    38, 39, 42, 43,
+    54, 55, 58, 59,
+    70, 71, 74, 75,
+    86, 87, 90, 91
+)
+
+centers_555 = (
+    7, 8, 9, 12, 13, 14, 17, 18, 19,
+    32, 33, 34, 37, 38, 39, 42, 43, 44,
+    57, 58, 59, 62, 63, 64, 67, 68, 69,
+    82, 83, 84, 87, 88, 89, 92, 93, 94,
+    107, 108, 109, 112, 113, 114, 117, 118, 119,
+    132, 133, 134, 137, 138, 139, 142, 143, 144
+)
+
 wings_444 = (
     ('0', 2, 67),  # upper
     ('1', 3, 66),
@@ -1388,6 +1406,8 @@ def edges_recolor_without_midges_555(state):
             else:
                 raise Exception("could not find tmp_index")
 
+    return ''.join(state)
+
 
 def edges_recolor_with_midges_555(state):
     midges_map = {
@@ -1545,19 +1565,26 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase):
 
         for linenumber in range(start, end+1):
             line = next(fh_input)
-            (_, cube_state, moves_to_scramble) = line.rstrip().split(':')
+            try:
+                (_, cube_state, moves_to_scramble) = line.rstrip().split(':')
+            except Exception:
+                log.warning("ERROR on %d: %s" % (linenumber, line))
+                raise
+
             moves_to_scramble = moves_to_scramble.split()
 
             cube_state_string = ''.join(rotate_xxx(list(cube_state), moves_to_scramble[-1]))
 
             if size == '4x4x4':
                 edges_pattern = edges_pattern_444(cube_state_string)
+                centers = ''.join([cube_state[x] for x in centers_444])
             elif size == '5x5x5':
                 edges_pattern = edges_pattern_555(cube_state_string)
+                centers = ''.join([cube_state[x] for x in centers_555])
             else:
                 raise Exception("Implement this")
     
-            to_write.append("%s:%s:%s" % (edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
+            to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
             to_write_count += 1
 
             if to_write_count >= WRITE_BATCH_SIZE or linenumber == end:

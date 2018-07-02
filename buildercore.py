@@ -445,6 +445,9 @@ class BFS(object):
         SEPERATORS = 1
         CHARS_PER_STEP = 5
         MAX_STEPS = 20
+
+        # dwalton
+        return 512
         return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
 
     def get_workq_filename_for_core(self, core):
@@ -741,15 +744,20 @@ class BFS(object):
                 break
 
     def save_starting_states(self):
+        patterns = []
         with open(self.filename, 'r') as fh_read, open("%s.starting-states" % self.filename, 'w') as fh_final:
             for line in fh_read:
 
                 if self.use_edges_pattern:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
+                    patterns.append(pattern)
                 else:
                     (cube_state_string, steps) = line.rstrip().split(':')
 
                 fh_final.write("             ('%s', 'ULFRBD'),\n" % cube_state_string[1:])
+
+        if self.use_edges_pattern:
+            print("state_target patterns:\n%s\n\n" % '\n'.join(patterns))
 
         shutil.move("%s.starting-states" % self.filename, self.filename)
 

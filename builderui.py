@@ -137,6 +137,14 @@ elif args.type == '5x5x5-x-plane-inner-edges-stage':
     from builder555 import Build555XPlaneInnerEdgesStage
     builder = Build555XPlaneInnerEdgesStage()
 
+elif args.type == 'ss5x5x5-phase4':
+    from builder555 import StartingStates555Phase4
+    builder = StartingStates555Phase4()
+
+elif args.type == '5x5x5-phase4':
+    from builder555 import Build555Phase4
+    builder = Build555Phase4()
+
 # phase5
 elif args.type == 'ss5x5x5-phase5-LFRB-centers-stage':
     from builder555 import StartingStates555Phase5LFRBCenterStage
