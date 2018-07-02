@@ -40,7 +40,8 @@ wings_444 = (
     ('k', 89, 30),
     ('l', 92, 63),
     ('m', 94, 79),
-    ('n', 95, 78))
+    ('n', 95, 78)
+)
 
 
 def edges_recolor_444(state):
@@ -1314,7 +1315,81 @@ midges_recolor_tuples_555 = (
 )
 
 
-def edges_recolor_555(state):
+wings_555= (
+    ('0', 2, 104),  # upper
+    ('1', 4, 102),
+    ('2', 6, 27),
+    ('3', 10, 79),
+    ('4', 16, 29),
+    ('5', 20, 77),
+    ('6', 22, 52),
+    ('7', 24, 54),
+
+    ('8', 31, 110), # left
+    ('9', 35, 56),
+    ('a', 41, 120),
+    ('b', 45, 66),
+
+    ('c', 81, 60), # right
+    ('d', 85, 106),
+    ('e', 91, 70),
+    ('f', 95, 116),
+
+    ('g', 127, 72), # down
+    ('h', 129, 74),
+    ('i', 131, 49),
+    ('j', 135, 97),
+    ('k', 141, 47),
+    ('l', 145, 99),
+    ('m', 147, 124),
+    ('n', 149, 122)
+)
+
+
+def edges_recolor_without_midges_555(state):
+    edge_map = {
+        'BD': [],
+        'BL': [],
+        'BR': [],
+        'BU': [],
+        'DF': [],
+        'DL': [],
+        'DR': [],
+        'FL': [],
+        'FR': [],
+        'FU': [],
+        'LU': [],
+        'RU': []
+    }
+
+    for (edge_index, square_index, partner_index) in wings_555:
+        square_value = state[square_index]
+        partner_value = state[partner_index]
+        wing_str = ''.join(sorted([square_value, partner_value]))
+
+        if 'x' not in wing_str:
+            edge_map[wing_str].append(edge_index)
+
+    # Where is the other wing_str like us?
+    for (edge_index, square_index, partner_index) in wings_555:
+        square_value = state[square_index]
+        partner_value = state[partner_index]
+        wing_str = ''.join(sorted([square_value, partner_value]))
+
+        if 'x' in wing_str:
+            state[square_index] = 'x'
+            state[partner_index] = 'x'
+        else:
+            for tmp_index in edge_map[wing_str]:
+                if tmp_index != edge_index:
+                    state[square_index] = tmp_index
+                    state[partner_index] = tmp_index
+                    break
+            else:
+                raise Exception("could not find tmp_index")
+
+
+def edges_recolor_with_midges_555(state):
     midges_map = {
         'BD': None,
         'BL': None,
@@ -1363,12 +1438,11 @@ def edges_recolor_555(state):
         elif partner_value == 'R':
             state[square_index] = edge_index
             state[partner_index] = edge_index
-
         elif square_value == 'x' or partner_value == 'x':
             state[square_index] = 'x'
             state[partner_index] = 'x'
         else:
-            raise Exception("We should not be here")
+            raise Exception("We should not be here, state[%d] %s, partner state [%d] %s" % (square_index, state[square_index], partner_index, state[partner_index]))
 
     # Where is the midge for each high/low wing?
     for (edge_index, square_index, partner_index) in edges_recolor_tuples_555:
@@ -1395,6 +1469,21 @@ def edges_recolor_555(state):
                 raise Exception("(%s, %s, %s, %) high_low is %s" % (square_index, partner_index, square_value, partner_value, high_low))
 
     return ''.join(state)
+
+
+def edges_recolor_555(state):
+    (edge_index, square_index, partner_index) = midges_recolor_tuples_555[0]
+    square_value = state[square_index]
+
+    # If the middle edges pieces are all "." then we ignore them and recolor the
+    # edges in terms of one edge piece as it relates to its partner piece.
+    if square_value == '.':
+        return edges_recolor_without_midges_555(state)
+
+    # If the middle edges are not "." though then we return recolor each edge
+    # as it relates to its midge.
+    else:
+        return edges_recolor_with_midges_555(state)
 
 
 def edges_pattern_555(state):

@@ -282,23 +282,23 @@ class StartingStates555XPlaneOuterEdgesStage(BFS):
 
             # starting cubes
             (("""
-            . x x x .
+            . x . x .
             x . . . x
+            . . . . .
             x . . . x
-            x . . . x
-            . x x x .
+            . x . x .
 
- . x x x .  . x x x .  . x x x .  . x x x .
+ . x . x .  . x . x .  . x . x .  . x . x .
  L . . . L  F . . . F  R . . . R  B . . . B
- x . . . x  x . . . x  x . . . x  x . . . x
+ . . . . .  . . . . .  . . . . .  . . . . .
  L . . . L  F . . . F  R . . . R  B . . . B
- . x x x .  . x x x .  . x x x .  . x x x .
+ . x . x .  . x . x .  . x . x .  . x . x .
 
-            . x x x .
+            . x . x .
             x . . . x
+            . . . . .
             x . . . x
-            x . . . x
-            . x x x .""", "ascii"),),
+            . x . x .""", "ascii"),),
             use_edges_pattern=True
         )
 
@@ -306,7 +306,6 @@ class StartingStates555XPlaneOuterEdgesStage(BFS):
 class Build555XPlaneOuterEdgesStage(BFS):
 
     def __init__(self):
-        from builder555ss import starting_states_step52
         BFS.__init__(self,
             '5x5x5-x-plane-outer-edges-stage',
 
@@ -324,7 +323,10 @@ class Build555XPlaneOuterEdgesStage(BFS):
             False, # store_as_hex
 
             # starting cubes
-            starting_states_step52,
+            (('.x.x.x...x.....x...x.x.x..x.x.L...L.....R...R.x.x..x.x.B...B.....F...F.x.x..x.x.R...R.....L...L.x.x..x.x.B...B.....F...F.x.x..x.x.x...x.....x...x.x.x.', 'ULFRBD'),
+             ('.x.x.x...x.....x...x.x.x..x.x.L...L.....L...L.x.x..x.x.B...F.....B...F.x.x..x.x.R...R.....R...R.x.x..x.x.B...F.....B...F.x.x..x.x.x...x.....x...x.x.x.', 'ULFRBD'),
+             ('.x.x.x...x.....x...x.x.x..x.x.L...L.....R...R.x.x..x.x.F...F.....B...B.x.x..x.x.L...L.....R...R.x.x..x.x.B...B.....F...F.x.x..x.x.x...x.....x...x.x.x.', 'ULFRBD'),
+             ('.x.x.x...x.....x...x.x.x..x.x.L...L.....R...R.x.x..x.x.F...F.....B...B.x.x..x.x.R...R.....L...L.x.x..x.x.B...B.....F...F.x.x..x.x.x...x.....x...x.x.x.', 'ULFRBD')),
             use_edges_pattern=True
         )
 
