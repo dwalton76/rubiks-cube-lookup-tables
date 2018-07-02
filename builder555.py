@@ -49,6 +49,52 @@ class Build555EdgeOrientOuterOrbit(BFS):
         )
 
 
+class Build555InsideOrbit(BFS):
+    """
+    We will only use this to tell if our phase3 solution has placed the inside
+    orbit in a reachable state for post-phase3. That is why this table restricts
+    L L' R R'.
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-inside-orbit-stage',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step43-inside-orbit-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . U . .
+            . . . . .
+            U . . . U
+            . . . . .
+            . . U . .
+
+ . . L . .  . . F . .  . . R . .  . . B . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ L . . . L  F . . . F  R . . . R  B . . . B
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . F . .  . . R . .  . . B . .
+
+            . . D . .
+            . . . . .
+            D . . . D
+            . . . . .
+            . . D . .""", "ascii"),)
+        )
+
+
 class StartingStates555LRCenterStage(BFS):
     """
     There should be 432 of them
@@ -331,7 +377,165 @@ class Build555XPlaneOuterEdgesStage(BFS):
         )
 
 
+class StartingStates555XPlaneHighMiddelEdgesStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-high-middle-edges-stage',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'"),
+
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step54-x-plane-high-middle-edges-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .
+
+ . x x x .  . x x x .  . x x x .  . x x x .
+ x . . . L  x . . . F  x . . . R  x . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . x  F . . . x  R . . . x  B . . . x
+ . x x x .  . x x x .  . x x x .  . x x x .
+
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .""", "ascii"),),
+            use_edges_pattern=True
+        )
+
+
+class Build555XPlaneHighMiddelEdgesStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-high-middle-edges-stage',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step54-x-plane-high-middle-edges-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.xxx.x...xx...xx...x.xxx..xxx.x...LL...LL...x.xxx..xxx.x...BF...BF...x.xxx..xxx.x...RR...RR...x.xxx..xxx.x...BF...BF...x.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.x...RL...RL...x.xxx..xxx.x...FF...FF...x.xxx..xxx.x...RL...RL...x.xxx..xxx.x...BB...BB...x.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.x...RL...LL...x.xxx..xxx.x...BF...FF...x.xxx..xxx.x...LR...RR...x.xxx..xxx.x...FB...BB...x.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.x...LL...LR...x.xxx..xxx.x...FF...FB...x.xxx..xxx.x...RR...RL...x.xxx..xxx.x...BB...BF...x.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.x...LR...LR...x.xxx..xxx.x...FF...FF...x.xxx..xxx.x...LR...LR...x.xxx..xxx.x...BB...BB...x.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.x...RL...LR...x.xxx..xxx.x...BF...FB...x.xxx..xxx.x...LR...RL...x.xxx..xxx.x...FB...BF...x.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD')),
+            use_edges_pattern=True
+        )
+
+
+class StartingStates555XPlaneLowMiddelEdgesStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-low-middle-edges-stage',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'"),
+
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step55-x-plane-low-middle-edges-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .
+
+ . x x x .  . x x x .  . x x x .  . x x x .
+ L . . . x  F . . . x  R . . . x  B . . . x
+ L . . . L  F . . . F  R . . . R  B . . . B
+ x . . . L  x . . . F  x . . . R  x . . . B
+ . x x x .  . x x x .  . x x x .  . x x x .
+
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .""", "ascii"),),
+            use_edges_pattern=True
+        )
+
+
+class Build555XPlaneLowMiddelEdgesStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-low-middle-edges-stage',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step55-x-plane-low-middle-edges-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.xxx.x...xx...xx...x.xxx..xxx.L...xL...Lx...L.xxx..xxx.B...xB...Fx...F.xxx..xxx.R...xR...Rx...R.xxx..xxx.B...xB...Fx...F.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.L...xL...Rx...R.xxx..xxx.F...xF...Fx...F.xxx..xxx.L...xL...Rx...R.xxx..xxx.B...xB...Bx...B.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.L...xL...Lx...R.xxx..xxx.F...xF...Fx...B.xxx..xxx.R...xR...Rx...L.xxx..xxx.B...xB...Bx...F.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.R...xL...Lx...L.xxx..xxx.B...xF...Fx...F.xxx..xxx.L...xR...Rx...R.xxx..xxx.F...xB...Bx...B.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.R...xR...Lx...L.xxx..xxx.F...xF...Fx...F.xxx..xxx.R...xR...Lx...L.xxx..xxx.B...xB...Bx...B.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.R...xL...Lx...R.xxx..xxx.B...xF...Fx...B.xxx..xxx.L...xR...Rx...L.xxx..xxx.F...xB...Bx...F.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD')),
+            use_edges_pattern=True
+        )
+
 class Build555XPlaneInnerEdgesStage(BFS):
+    """
+    Used to stage the 4 edges to the x-plane
+    """
 
     def __init__(self):
         BFS.__init__(self,

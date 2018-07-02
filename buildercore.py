@@ -447,7 +447,7 @@ class BFS(object):
         MAX_STEPS = 20
 
         # dwalton
-        return 512
+        #return 512
         return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
 
     def get_workq_filename_for_core(self, core):

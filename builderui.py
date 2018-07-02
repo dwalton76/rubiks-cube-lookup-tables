@@ -124,6 +124,11 @@ elif args.type == '5x5x5-FB-center-stage':
     from builder555 import Build555FBCenterStage
     builder = Build555FBCenterStage()
 
+elif args.type == '5x5x5-EO-inside-orbit':
+    from builder555 import Build555InsideOrbit
+    builder = Build555InsideOrbit()
+
+
 # phase4
 elif args.type == 'ss5x5x5-x-plane-outer-edges-stage':
     from builder555 import StartingStates555XPlaneOuterEdgesStage
@@ -132,6 +137,22 @@ elif args.type == 'ss5x5x5-x-plane-outer-edges-stage':
 elif args.type == '5x5x5-x-plane-outer-edges-stage':
     from builder555 import Build555XPlaneOuterEdgesStage
     builder = Build555XPlaneOuterEdgesStage()
+
+elif args.type == 'ss5x5x5-x-plane-high-middle-edges-stage':
+    from builder555 import StartingStates555XPlaneHighMiddelEdgesStage
+    builder = StartingStates555XPlaneHighMiddelEdgesStage()
+
+elif args.type == '5x5x5-x-plane-high-middle-edges-stage':
+    from builder555 import Build555XPlaneHighMiddelEdgesStage
+    builder = Build555XPlaneHighMiddelEdgesStage()
+
+elif args.type == 'ss5x5x5-x-plane-low-middle-edges-stage':
+    from builder555 import StartingStates555XPlaneLowMiddelEdgesStage
+    builder = StartingStates555XPlaneLowMiddelEdgesStage()
+
+elif args.type == '5x5x5-x-plane-low-middle-edges-stage':
+    from builder555 import Build555XPlaneLowMiddelEdgesStage
+    builder = Build555XPlaneLowMiddelEdgesStage()
 
 elif args.type == '5x5x5-x-plane-inner-edges-stage':
     from builder555 import Build555XPlaneInnerEdgesStage
