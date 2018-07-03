@@ -178,13 +178,48 @@ elif args.type == '5x5x5-phase5-LFRB-centers-stage':
 # =====
 # 6x6x6
 # =====
-elif args.type == '6x6x6-UD-centers-stage':
-    from builder666 import Build666UDCentersStage
-    builder = Build666UDCentersStage()
+elif args.type == 'ss6x6x6-UD-inner-x-centers-stage':
+    from builder666 import StartingStates666UDInnerXCentersStage
+    builder = StartingStates666UDInnerXCentersStage()
+
+elif args.type == '6x6x6-UD-inner-x-centers-stage':
+    from builder666 import Build666UDInnerXCentersStage
+    builder = Build666UDInnerXCentersStage()
+
+elif args.type == 'ss6x6x6-UD-oblique-edges-stage':
+    from builder666 import StartingStates666UDObliqueEdgesStage
+    builder = StartingStates666UDObliqueEdgesStage()
 
 elif args.type == '6x6x6-UD-oblique-edges-stage':
     from builder666 import Build666UDObliqueEdgesStage
     builder = Build666UDObliqueEdgesStage()
+
+elif args.type == '6x6x6-UD-oblique-edges-left-only-stage':
+    from builder666 import Build666UDObliqueEdgesLeftOnlyStage
+    builder = Build666UDObliqueEdgesLeftOnlyStage()
+
+elif args.type == '6x6x6-UD-oblique-edges-right-only-stage':
+    from builder666 import Build666UDObliqueEdgesRightOnlyStage
+    builder = Build666UDObliqueEdgesRightOnlyStage()
+
+elif args.type == 'ss6x6x6-LR-inner-x-centers-oblique-edges-stage':
+    from builder666 import StartingStates666LRInnerXCentersObliqueEdgesStage
+    builder = StartingStates666LRInnerXCentersObliqueEdgesStage()
+
+elif args.type == '6x6x6-LR-inner-x-centers-oblique-edges-stage':
+    from builder666 import Build666LRInnerXCentersObliqueEdgesStage
+    builder = Build666LRInnerXCentersObliqueEdgesStage()
+
+
+elif args.type == 'ss6x6x6-LR-oblique-edges-stage':
+    from builder666 import StartingStates666LRObliqueEdgesStage
+    builder = StartingStates666LRObliqueEdgesStage()
+
+elif args.type == '6x6x6-LR-oblique-edges-stage':
+    from builder666 import Build666LRObliqueEdgesStage
+    builder = Build666LRObliqueEdgesStage()
+
+# dwalton
 
 elif args.type == '6x6x6-LFRB-solve-inner-x-center-and-oblique-edges':
     from builder666 import Build666LFRBInnerXCenterAndObliqueEdges
