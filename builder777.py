@@ -319,6 +319,51 @@ class StartingStates777LROutsideObliqueEdgesStage(BFS):
         )
 
 
+class StartingStates777LRLeftMiddleObliqueEdgesStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '7x7x7-step32',
+
+            ("3Uw", "3Uw'", "3Dw", "3Dw'", # do not mess up staged inner-x-centers
+             "3Lw", "3Lw'", "3Rw", "3Rw'",
+             "3Fw", "3Fw'", "3Bw", "3Bw'",
+             "Rw", "Rw'", "Lw", "Lw'",     # do not mess up staged UD oblique pairs
+             "Fw", "Fw'", "Bw", "Bw'",
+
+             "3Uw2", "3Dw2", "3Fw2", "3Bw2", "3Rw2", "3Lw2"
+            ),
+            '7x7x7',
+            'starting-states-lookup-table-7x7x7-step32-stage-lr-left-middle-oblique-edges.txt',
+            True, # store_as_hex
+
+            (("""
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . L L . . .  . . x x . . .  . . L L . . .  . . x x . . .
+ . . . . . L .  . . . . . x .  . . . . . L .  . . . . . x .
+ . L . . . L .  . x . . . x .  . L . . . L .  . x . . . x .
+ . L . . . . .  . x . . . . .  . L . . . . .  . x . . . . .
+ . . . L L . .  . . . x x . .  . . . L L . .  . . . x x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . . """, "ascii"),)
+        )
+
+
 class Build777LRObliqueEdgesStage(BFS):
 
     def __init__(self):
@@ -361,6 +406,27 @@ class Build777LROutsideObliqueEdgesStage(BFS):
             starting_states_step31_777
         )
 
+
+class Build777LRLeftMiddleObliqueEdgesStage(BFS):
+
+    def __init__(self):
+        from builder777ss import starting_states_step32_777
+        BFS.__init__(self,
+            '7x7x7-step32',
+
+            ("3Uw", "3Uw'", "3Dw", "3Dw'", # do not mess up staged inner-x-centers
+             "3Lw", "3Lw'", "3Rw", "3Rw'",
+             "3Fw", "3Fw'", "3Bw", "3Bw'",
+             "Rw", "Rw'", "Lw", "Lw'",     # do not mess up staged UD oblique pairs
+             "Fw", "Fw'", "Bw", "Bw'"),
+
+            '7x7x7',
+            'lookup-table-7x7x7-step32-stage-lr-left-middle-oblique-edges.txt',
+            True, # store_as_hex
+
+            # starting states
+            starting_states_step32_777
+        )
 
 
 class Build777Step80(BFS):

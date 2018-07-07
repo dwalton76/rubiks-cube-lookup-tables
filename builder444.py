@@ -458,7 +458,7 @@ class Build444Phase3Edges(BFS):
              "L", "L'",
              "R", "R'"),
             '4x4x4',
-            'lookup-table-4x4x4-step71-edges.txt',
+            'lookup-table-4x4x4-step71-tsai-phase3-edges.txt',
             False, # store_as_hex
 
             # starting cubes
