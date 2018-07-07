@@ -344,6 +344,48 @@ class Build666LRObliqueEdgesStage(BFS):
         )
 
 
+class Build666LRInnerXCenterStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-LR-inner-x-center-stage',
+            ("3Fw", "3Fw'",
+             "3Bw", "3Bw'",
+             "3Lw", "3Lw'",
+             "3Rw", "3Rw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+            '6x6x6',
+            'lookup-table-6x6x6-step32-LR-inner-x-center-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . L L . .  . . x x . .  . . L L . .  . . x x . .
+ . . L L . .  . . x x . .  . . L L . .  . . x x . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . . """, 'ascii'),),
+        )
+
+
 
 class StartingStates666Step60(BFS):
     """

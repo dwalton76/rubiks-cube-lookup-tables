@@ -22,7 +22,7 @@ with open(filename_new, 'w') as fh_new:
             if line_number % 1000000 == 0:
                 print("WRITE: %d" % line_number)
 
-subprocess.check_output("LC_ALL=C nice sort --parallel=4 --temporary-directory=./tmp/ --output=%s %s" %
+subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output=%s %s" %
     (filename_new, filename_new), shell=True)
 
 subprocess.check_output("./utils/pad_lines.py %s" % filename_new, shell=True)

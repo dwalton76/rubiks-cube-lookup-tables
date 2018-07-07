@@ -96,6 +96,10 @@ elif args.type == '4x4x4-phase3-edges':
 # =====
 # 5x5x5
 # =====
+elif args.type == '5x5x5-LR-T-center-stage':
+    from builder555 import Build555LRTCenterStage
+    builder = Build555LRTCenterStage()
+
 elif args.type == '5x5x5-EO-outer-orbit':
     from builder555 import Build555EdgeOrientOuterOrbit
     builder = Build555EdgeOrientOuterOrbit()
@@ -218,6 +222,10 @@ elif args.type == 'ss6x6x6-LR-oblique-edges-stage':
 elif args.type == '6x6x6-LR-oblique-edges-stage':
     from builder666 import Build666LRObliqueEdgesStage
     builder = Build666LRObliqueEdgesStage()
+
+elif args.type == '6x6x6-LR-inner-x-centers-stage':
+    from builder666 import Build666LRInnerXCenterStage
+    builder = Build666LRInnerXCenterStage()
 
 # dwalton
 

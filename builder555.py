@@ -7,6 +7,46 @@ import sys
 log = logging.getLogger(__name__)
 
 
+class Build555LRTCenterStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-lr-t-center-stage',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step21-LR-t-centers-solve.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . x . .  . . L . .  . . x . .
+ . L . L .  . x . x .  . L . L .  . x . x .
+ . . L . .  . . x . .  . . L . .  . . x . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),)
+        )
+
+
+
 # =======
 # Phase 3
 # =======
