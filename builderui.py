@@ -198,14 +198,6 @@ elif args.type == '6x6x6-UD-oblique-edges-stage':
     from builder666 import Build666UDObliqueEdgesStage
     builder = Build666UDObliqueEdgesStage()
 
-elif args.type == '6x6x6-UD-oblique-edges-left-only-stage':
-    from builder666 import Build666UDObliqueEdgesLeftOnlyStage
-    builder = Build666UDObliqueEdgesLeftOnlyStage()
-
-elif args.type == '6x6x6-UD-oblique-edges-right-only-stage':
-    from builder666 import Build666UDObliqueEdgesRightOnlyStage
-    builder = Build666UDObliqueEdgesRightOnlyStage()
-
 elif args.type == 'ss6x6x6-LR-inner-x-centers-oblique-edges-stage':
     from builder666 import StartingStates666LRInnerXCentersObliqueEdgesStage
     builder = StartingStates666LRInnerXCentersObliqueEdgesStage()
@@ -226,8 +218,6 @@ elif args.type == '6x6x6-LR-oblique-edges-stage':
 elif args.type == '6x6x6-LR-inner-x-centers-stage':
     from builder666 import Build666LRInnerXCenterStage
     builder = Build666LRInnerXCenterStage()
-
-# dwalton
 
 elif args.type == '6x6x6-LFRB-solve-inner-x-center-and-oblique-edges':
     from builder666 import Build666LFRBInnerXCenterAndObliqueEdges
