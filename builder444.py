@@ -11,6 +11,73 @@ import sys
 log = logging.getLogger(__name__)
 
 
+# dwalton
+# Combine tsai phases 1 and 2?
+class StartingStates444TsaiPhase0LRCentersStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-LR-centers-stage',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "L", "L'", "Lw", "Lw'",
+             "R", "R'", "Rw", "Rw'"),
+            '4x4x4',
+            'starting-states-4x4x4-step02-LR-centers-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . x x .
+          . x x .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . x x .  . R R .  . x x .
+ . L L .  . x x .  . R R .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . x x .
+          . x x .
+          . . . .""", 'ascii'),),
+        )
+
+class Build444TsaiPhase0LRCentersStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-LR-centers-stage',
+            # TPR also restricts these
+            ("Lw", "Lw'", "Lw2",
+             "Bw", "Bw'", "Bw2",
+             "Dw", "Dw'", "Dw2"),
+            '4x4x4',
+            'lookup-table-4x4x4-step02-LR-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (('.....xx..xx..........LL..LL..........xx..xx..........RR..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........LL..RR..........xx..xx..........LL..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........LL..RR..........xx..xx..........RR..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........LR..LR..........xx..xx..........LR..LR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........LR..LR..........xx..xx..........RL..RL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........LR..RL..........xx..xx..........RL..LR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........RL..LR..........xx..xx..........LR..RL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........RL..RL..........xx..xx..........LR..LR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........RL..RL..........xx..xx..........RL..RL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........RR..LL..........xx..xx..........LL..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........RR..LL..........xx..xx..........RR..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........RR..RR..........xx..xx..........LL..LL..........xx..xx..........xx..xx.....', 'ULFRBD'))
+        )
+
+
+
+
+
 class StartingStates444UDCentersStage(BFS):
 
     def __init__(self):
