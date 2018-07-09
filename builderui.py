@@ -290,6 +290,14 @@ elif args.type == '7x7x7-LR-left-middle-oblique-edges-stage':
     from builder777 import Build777LRLeftMiddleObliqueEdgesStage
     builder = Build777LRLeftMiddleObliqueEdgesStage()
 
+elif args.type == 'ss7x7x7-LR-right-middle-oblique-edges-stage':
+    from builder777 import StartingStates777LRRightMiddleObliqueEdgesStage
+    builder = StartingStates777LRRightMiddleObliqueEdgesStage()
+
+elif args.type == '7x7x7-LR-right-middle-oblique-edges-stage':
+    from builder777 import Build777LRRightMiddleObliqueEdgesStage
+    builder = Build777LRRightMiddleObliqueEdgesStage()
+
 
 elif args.type == 'ss7x7x7-LR-outside-oblique-edges-stage':
     from builder777 import StartingStates777LROutsideObliqueEdgesStage
