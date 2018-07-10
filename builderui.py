@@ -79,27 +79,26 @@ elif args.type == '4x4x4-tsai-phase2-centers':
     from builder444 import Build444TsaiPhase2Centers
     builder = Build444TsaiPhase2Centers()
 
-elif args.type == 'ss4x4x4-tsai-phase2-edges-and-LR-centers':
-    from builder444 import StartingStates444TsaiPhase2EdgesAndLRCenters
-    builder = StartingStates444TsaiPhase2EdgesAndLRCenters()
-
-elif args.type == '4x4x4-tsai-phase2-edges-and-LR-centers':
-    from builder444 import Build444TsaiPhase2EdgesAndLRCenters
-    builder = Build444TsaiPhase2EdgesAndLRCenters()
-
-elif args.type == 'ss4x4x4-tsai-phase2':
-    from builder444 import StartingStates444TsaiPhase2
-    builder = StartingStates444TsaiPhase2()
-
-elif args.type == '4x4x4-tsai-phase2':
-    from builder444 import Build444TsaiPhase2
-    builder = Build444TsaiPhase2()
-
-
 # phase 3
 elif args.type == '4x4x4-phase3-edges':
     from builder444 import Build444Phase3Edges
     builder = Build444Phase3Edges()
+
+elif args.type == 'ss4x4x4-phase3-centers':
+    from builder444 import StartingStates444Phase3Centers
+    builder = StartingStates444Phase3Centers()
+
+elif args.type == '4x4x4-phase3-centers':
+    from builder444 import Build444Phase3Centers
+    builder = Build444Phase3Centers()
+
+elif args.type == 'ss4x4x4-phase3':
+    from builder444 import StartingStates444Phase3
+    builder = StartingStates444Phase3()
+
+elif args.type == '4x4x4-phase3':
+    from builder444 import Build444Phase3
+    builder = Build444Phase3()
 
 
 # =====
@@ -281,7 +280,6 @@ elif args.type == '7x7x7-LR-oblique-edges-stage':
     from builder777 import Build777LRObliqueEdgesStage
     builder = Build777LRObliqueEdgesStage()
 
-
 elif args.type == 'ss7x7x7-LR-left-middle-oblique-edges-stage':
     from builder777 import StartingStates777LRLeftMiddleObliqueEdgesStage
     builder = StartingStates777LRLeftMiddleObliqueEdgesStage()
@@ -297,7 +295,6 @@ elif args.type == 'ss7x7x7-LR-right-middle-oblique-edges-stage':
 elif args.type == '7x7x7-LR-right-middle-oblique-edges-stage':
     from builder777 import Build777LRRightMiddleObliqueEdgesStage
     builder = Build777LRRightMiddleObliqueEdgesStage()
-
 
 elif args.type == 'ss7x7x7-LR-outside-oblique-edges-stage':
     from builder777 import StartingStates777LROutsideObliqueEdgesStage

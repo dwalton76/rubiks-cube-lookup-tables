@@ -295,6 +295,22 @@ class Build444TsaiPhase1Centers(BFS):
             (
              ("""
           . . . .
+          . L L .
+          . L L .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . x x .  . x x .  . x x .  . x x .
+ . x x .  . x x .  . x x .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . L L .
+          . L L .
+          . . . .""", 'ascii'),
+
+             ("""
+          . . . .
           . x x .
           . x x .
           . . . .
@@ -302,6 +318,22 @@ class Build444TsaiPhase1Centers(BFS):
  . . . .  . . . .  . . . .  . . . .
  . L L .  . x x .  . L L .  . x x .
  . L L .  . x x .  . L L .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . x x .
+          . x x .
+          . . . .""", 'ascii'),
+
+             ("""
+          . . . .
+          . x x .
+          . x x .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . x x .  . L L .  . x x .  . L L .
+ . x x .  . L L .  . x x .  . L L .
  . . . .  . . . .  . . . .  . . . .
 
           . . . .
@@ -342,9 +374,58 @@ class StartingStates444TsaiPhase2Centers(BFS):
           . . . .
           . U U .
           . U U .
-          . . . .""", 'ascii'),),
+          . . . .""", 'ascii'),
 
+            ("""
+          . . . .
+          . U U .
+          . U U .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . R R .  . F F .  . L L .  . F F .
+ . R R .  . F F .  . L L .  . F F .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . U U .
+          . U U .
+          . . . .""", 'ascii'),
+
+
+            ("""
+          . . . .
+          . F F .
+          . F F .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . U U .  . R R .  . U U .
+ . L L .  . U U .  . R R .  . U U .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . F F .
+          . F F .
+          . . . .""", 'ascii'),
+
+            ("""
+          . . . .
+          . F F .
+          . F F .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . R R .  . U U .  . L L .  . U U .
+ . R R .  . U U .  . L L .  . U U .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . F F .
+          . F F .
+          . . . .""", 'ascii')),
         )
+
 
 class Build444TsaiPhase2Centers(BFS):
 
@@ -361,7 +442,19 @@ class Build444TsaiPhase2Centers(BFS):
             False, # store_as_hex
 
             # starting cubes
-            (('.....UU..UU..........LL..LL..........FF..FF..........RR..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+            (('.....FF..FF..........LL..LL..........UU..UU..........RR..RR..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........LL..RR..........UU..UU..........LL..RR..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........LL..RR..........UU..UU..........RR..LL..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........LR..LR..........UU..UU..........LR..LR..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........LR..LR..........UU..UU..........RL..RL..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........LR..RL..........UU..UU..........RL..LR..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........RL..LR..........UU..UU..........LR..RL..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........RL..RL..........UU..UU..........LR..LR..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........RL..RL..........UU..UU..........RL..RL..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........RR..LL..........UU..UU..........LL..RR..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........RR..LL..........UU..UU..........RR..LL..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....FF..FF..........RR..RR..........UU..UU..........LL..LL..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....UU..UU..........LL..LL..........FF..FF..........RR..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
              ('.....UU..UU..........LL..RR..........FF..FF..........LL..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
              ('.....UU..UU..........LL..RR..........FF..FF..........RR..LL..........FF..FF..........UU..UU.....', 'ULFRBD'),
              ('.....UU..UU..........LR..LR..........FF..FF..........LR..LR..........FF..FF..........UU..UU.....', 'ULFRBD'),
@@ -374,137 +467,6 @@ class Build444TsaiPhase2Centers(BFS):
              ('.....UU..UU..........RR..LL..........FF..FF..........RR..LL..........FF..FF..........UU..UU.....', 'ULFRBD'),
              ('.....UU..UU..........RR..RR..........FF..FF..........LL..LL..........FF..FF..........UU..UU.....', 'ULFRBD'))
         )
-
-
-class StartingStates444TsaiPhase2EdgesAndLRCenters(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-tsai-phase2-edges-and-LR-centers',
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-             "L", "L'", "R", "R'",
-             "Lw", "Lw'", "Rw", "Rw'",
-             "Bw2", "Dw2", "Lw", "Lw'", "Lw2"), # TPR also restricts these
-            '4x4x4',
-            'starting-states-lookup-table-4x4x4-step62-tsai-phase2-edges-and-LR-centers.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L L U  U . . D  D R R U  U . . D
- U L L D  D . . U  U R R D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .""", 'ascii'),)
-        )
-
-
-class Build444TsaiPhase2EdgesAndLRCenters(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-tsai-phase2-edges-and-LR-centers',
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-             "Bw2", "Dw2", "Lw", "Lw'", "Lw2"), # TPR also restricts these
-            '4x4x4',
-            'lookup-table-4x4x4-step62-tsai-phase2-edges-and-LR-centers.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('.UD.D..UU..D.DU..DU.DLLUULLD.UD..DU.U..DD..U.UD..DU.DRRUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLRUURLD.UD..DU.U..DD..U.UD..DU.DRLUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRLUULRD.UD..DU.U..DD..U.UD..DU.DLRUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRRUURRD.UD..DU.U..DD..U.UD..DU.DLLUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'))
-        ) 
-
-
-class StartingStates444TsaiPhase2(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-tsai-phase2',
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-             "L", "L'", "R", "R'",
-             "Lw", "Lw'", "Rw", "Rw'",
-             "Bw2", "Dw2", "Lw", "Lw'", "Lw2"), # TPR also restricts these
-            '4x4x4',
-            'starting-states-lookup-table-4x4x4-step60-tsai-phase2.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-          . U D .
-          D U U U
-          U U U D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L L U  U F F D  D R R U  U F F D
- U L L D  D F F U  U R R D  D F F U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D U U U
-          U U U D
-          . D U .""", 'ascii'),)
-        )
-
-
-class Build444TsaiPhase2(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-tsai-phase2',
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-             "Bw2", "Dw2", "Lw", "Lw'", "Lw2"), # TPR also restricts these
-            '4x4x4',
-            'lookup-table-4x4x4-step60-tsai-phase2.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('.UD.DUUUUUUD.DU..DU.DLLUULLD.UD..DU.UFFDDFFU.UD..DU.DRRUURRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLRUURLD.UD..DU.UFFDDFFU.UD..DU.DRLUULRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRLUULRD.UD..DU.UFFDDFFU.UD..DU.DLRUURLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRRUURRD.UD..DU.UFFDDFFU.UD..DU.DLLUULLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'))
-        )
-
 
 
 class Build444Phase3Edges(BFS):
@@ -545,5 +507,122 @@ class Build444Phase3Edges(BFS):
           D . . D
           . D D .""", 'ascii'),),
 
+            use_edges_pattern=True
+        )
+
+
+class StartingStates444Phase3Centers(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-tsai-phase3-centers',
+            moves_444,
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step72-tsai-phase3-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . U U .
+          . U U .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . F F .  . R R .  . B B .
+ . L L .  . F F .  . R R .  . B B .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . D D .
+          . D D .
+          . . . .""", 'ascii'),),
+            legal_moves=("x", "x'", "y", "y'", "z", "z'"),
+        )
+
+
+class Build444Phase3Centers(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-phase3-centers',
+            ("Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step72-tsai-phase3-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.....DD..DD..........LL..LL..........BB..BB..........RR..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....DD..DD..........RR..RR..........FF..FF..........LL..LL..........BB..BB..........UU..UU.....', 'ULFRBD'),
+             ('.....UU..UU..........LL..LL..........FF..FF..........RR..RR..........BB..BB..........DD..DD.....', 'ULFRBD'),
+             ('.....UU..UU..........RR..RR..........BB..BB..........LL..LL..........FF..FF..........DD..DD.....', 'ULFRBD'))
+        )
+
+
+
+class StartingStates444Phase3(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-tsai-phase3',
+            moves_444,
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step70-tsai-phase3.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . U U .
+          U U U U
+          U U U U
+          . U U .
+
+ . L L .  . F F .  . R R .  . B B .
+ L L L L  F F F F  R R R R  B B B B
+ L L L L  F F F F  R R R R  B B B B
+ . L L .  . F F .  . R R .  . B B .
+
+          . D D .
+          D D D D
+          D D D D
+          . D D .  """, 'ascii'),),
+            legal_moves=("x", "x'", "y", "y'", "z", "z'"),
+#            use_edges_pattern=True
+        )
+
+
+class Build444Phase3(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-phase3',
+            ("Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step70-tsai-phase3.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU.', 'ULFRBD'),
+             ('.DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU.', 'ULFRBD'),
+             ('.UU.UUUUUUUU.UU..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..DD.DDDDDDDD.DD.', 'ULFRBD'),
+             ('.UU.UUUUUUUU.UU..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..DD.DDDDDDDD.DD.', 'ULFRBD')),
             use_edges_pattern=True
         )
