@@ -325,6 +325,67 @@ elif args.type == 'Build777Step91':
     from builder777 import Build777Step91
     builder = Build777Step91()
 
+elif args.type == 'StartingStates777Step200':
+    from builder777 import StartingStates777Step200
+    builder = StartingStates777Step200()
+
+elif args.type == 'Build777Step200':
+    from builder777 import Build777Step200
+    builder = Build777Step200()
+
+elif args.type == 'StartingStates777Step201':
+    from builder777 import StartingStates777Step201
+    builder = StartingStates777Step201()
+
+elif args.type == 'Build777Step201':
+    from builder777 import Build777Step201
+    builder = Build777Step201()
+
+elif args.type == 'StartingStates777Step202':
+    from builder777 import StartingStates777Step202
+    builder = StartingStates777Step202()
+
+elif args.type == 'Build777Step202':
+    from builder777 import Build777Step202
+    builder = Build777Step202()
+
+elif args.type == 'StartingStates777Step210':
+    from builder777 import StartingStates777Step210
+    builder = StartingStates777Step210()
+
+elif args.type == 'Build777Step210':
+    from builder777 import Build777Step210
+    builder = Build777Step210()
+
+elif args.type == 'StartingStates777Step211':
+    from builder777 import StartingStates777Step211
+    builder = StartingStates777Step211()
+
+elif args.type == 'Build777Step211':
+    from builder777 import Build777Step211
+    builder = Build777Step211()
+
+elif args.type == 'StartingStates777Step212':
+    from builder777 import StartingStates777Step212
+    builder = StartingStates777Step212()
+
+elif args.type == 'Build777Step212':
+    from builder777 import Build777Step212
+    builder = Build777Step212()
+
+elif args.type == 'Build777Step220':
+    from builder777 import Build777Step220
+    builder = Build777Step220()
+
+elif args.type == 'Build777Step221':
+    from builder777 import Build777Step221
+    builder = Build777Step221()
+
+elif args.type == 'Build777Step222':
+    from builder777 import Build777Step222
+    builder = Build777Step222()
+
+
 else:
     print("ERROR: %s is not a supported type" % args.type)
     sys.exit(1)
@@ -338,7 +399,7 @@ log.info(args.type)
 log.info("************************************")
 builder.search(args.depth, args.cores)
 
-if args.type.startswith('ss'):
+if args.type.startswith('Starting'):
     builder.save_starting_states()
 else:
     builder.save()
