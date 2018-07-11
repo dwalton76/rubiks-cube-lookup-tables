@@ -24,83 +24,83 @@ args = parser.parse_args()
 # =====
 # 4x4x4
 # =====
-if args.type == 'ss4x4x4-UD-centers-stage':
+if args.type == 'StartingStates444UDCentersStage':
     from builder444 import StartingStates444UDCentersStage
     builder = StartingStates444UDCentersStage()
 
-elif args.type == '4x4x4-UD-centers-stage':
+elif args.type == 'Build444UDCentersStage':
     from builder444 import Build444UDCentersStage
     builder = Build444UDCentersStage()
 
-elif args.type == 'ss4x4x4-LR-centers-stage':
+elif args.type == 'StartingStates444LRCentersStage':
     from builder444 import StartingStates444LRCentersStage
     builder = StartingStates444LRCentersStage()
 
-elif args.type == '4x4x4-LR-centers-stage':
+elif args.type == 'Build444LRCentersStage':
     from builder444 import Build444LRCentersStage
     builder = Build444LRCentersStage()
 
-elif args.type == 'ss4x4x4-FB-centers-stage':
+elif args.type == 'StartingStates444FBCentersStage':
     from builder444 import StartingStates444FBCentersStage
     builder = StartingStates444FBCentersStage()
 
-elif args.type == '4x4x4-FB-centers-stage':
+elif args.type == 'Build444FBCentersStage':
     from builder444 import Build444FBCentersStage
     builder = Build444FBCentersStage()
 
-elif args.type == 'ss4x4x4-ULFRBD-centers-stage':
+elif args.type == 'StartingStates444ULFRBDCentersStage':
     from builder444 import StartingStates444ULFRBDCentersStage
     builder = StartingStates444ULFRBDCentersStage()
 
-elif args.type == '4x4x4-ULFRBD-centers-stage':
+elif args.type == 'Build444ULFRBDCentersStage':
     from builder444 import Build444ULFRBDCentersStage
     builder = Build444ULFRBDCentersStage()
 
 # phase0
-elif args.type == 'ss4x4x4-tsai-phase0-LR-centers':
+elif args.type == 'StartingStates444TsaiPhase0LRCentersStage':
     from builder444 import StartingStates444TsaiPhase0LRCentersStage
     builder = StartingStates444TsaiPhase0LRCentersStage()
 
-elif args.type == '4x4x4-tsai-phase0-LR-centers':
+elif args.type == 'Build444TsaiPhase0LRCentersStage':
     from builder444 import Build444TsaiPhase0LRCentersStage
     builder = Build444TsaiPhase0LRCentersStage()
 
 # phase1
-elif args.type == '4x4x4-tsai-phase1-centers':
+elif args.type == 'Build444TsaiPhase1Centers':
     from builder444 import Build444TsaiPhase1Centers
     builder = Build444TsaiPhase1Centers()
 
 # phase2
-elif args.type == 'ss4x4x4-tsai-phase2-centers':
+elif args.type == 'StartingStates444TsaiPhase2Centers':
     from builder444 import StartingStates444TsaiPhase2Centers
     builder = StartingStates444TsaiPhase2Centers()
 
-elif args.type == '4x4x4-tsai-phase2-centers':
+elif args.type == 'Build444TsaiPhase2Centers':
     from builder444 import Build444TsaiPhase2Centers
     builder = Build444TsaiPhase2Centers()
 
-elif args.type == '4x4x4-tsai-phase2-edges':
+elif args.type == 'Build444TsaiPhase2Edges':
     from builder444 import Build444TsaiPhase2Edges
     builder = Build444TsaiPhase2Edges()
 
 # phase 3
-elif args.type == '4x4x4-phase3-edges':
+elif args.type == 'Build444Phase3Edges':
     from builder444 import Build444Phase3Edges
     builder = Build444Phase3Edges()
 
-elif args.type == 'ss4x4x4-phase3-centers':
+elif args.type == 'StartingStates444Phase3Centers':
     from builder444 import StartingStates444Phase3Centers
     builder = StartingStates444Phase3Centers()
 
-elif args.type == '4x4x4-phase3-centers':
+elif args.type == 'Build444Phase3Centers':
     from builder444 import Build444Phase3Centers
     builder = Build444Phase3Centers()
 
-elif args.type == 'ss4x4x4-phase3':
+elif args.type == 'StartingStates444Phase3':
     from builder444 import StartingStates444Phase3
     builder = StartingStates444Phase3()
 
-elif args.type == '4x4x4-phase3':
+elif args.type == 'Build444Phase3':
     from builder444 import Build444Phase3
     builder = Build444Phase3()
 
@@ -108,150 +108,150 @@ elif args.type == '4x4x4-phase3':
 # =====
 # 5x5x5
 # =====
-elif args.type == '5x5x5-LR-T-center-stage':
+elif args.type == 'Build555LRTCenterStage':
     from builder555 import Build555LRTCenterStage
     builder = Build555LRTCenterStage()
 
-elif args.type == '5x5x5-EO-outer-orbit':
+elif args.type == 'Build555EdgeOrientOuterOrbit':
     from builder555 import Build555EdgeOrientOuterOrbit
     builder = Build555EdgeOrientOuterOrbit()
 
-elif args.type == 'ss5x5x5-LR-center-stage':
+elif args.type == 'StartingStates555LRCenterStage':
     from builder555 import StartingStates555LRCenterStage
     builder = StartingStates555LRCenterStage()
 
-elif args.type == '5x5x5-LR-center-stage':
+elif args.type == 'Build555LRCenterStage':
     from builder555 import Build555LRCenterStage
     builder = Build555LRCenterStage()
 
-elif args.type == 'ss5x5x5-edge-orient-LR-center-stage':
+elif args.type == 'StartingState555EdgeOrientOuterOrbitLRCenterStage':
     from builder555 import StartingState555EdgeOrientOuterOrbitLRCenterStage
     builder = StartingState555EdgeOrientOuterOrbitLRCenterStage()
 
-elif args.type == '5x5x5-edge-orient-LR-center-stage':
+elif args.type == 'Build555EdgeOrientOuterOrbitLRCenterStage':
     from builder555 import Build555EdgeOrientOuterOrbitLRCenterStage
     builder = Build555EdgeOrientOuterOrbitLRCenterStage()
 
-elif args.type == 'ss5x5x5-FB-center-stage':
+elif args.type == 'StartingStates555FBCenterStage':
     from builder555 import StartingStates555FBCenterStage
     builder = StartingStates555FBCenterStage()
 
-elif args.type == '5x5x5-FB-center-stage':
+elif args.type == 'Build555FBCenterStage':
     from builder555 import Build555FBCenterStage
     builder = Build555FBCenterStage()
 
-elif args.type == '5x5x5-EO-inside-orbit':
+elif args.type == 'Build555InsideOrbit':
     from builder555 import Build555InsideOrbit
     builder = Build555InsideOrbit()
 
 
 # phase4
-elif args.type == 'ss5x5x5-x-plane-outer-edges-stage':
+elif args.type == 'StartingStates555XPlaneOuterEdgesStage':
     from builder555 import StartingStates555XPlaneOuterEdgesStage
     builder = StartingStates555XPlaneOuterEdgesStage()
 
-elif args.type == '5x5x5-x-plane-outer-edges-stage':
+elif args.type == 'Build555XPlaneOuterEdgesStage()':
     from builder555 import Build555XPlaneOuterEdgesStage
     builder = Build555XPlaneOuterEdgesStage()
 
-elif args.type == 'ss5x5x5-x-plane-high-middle-edges-stage':
+elif args.type == 'StartingStates555XPlaneHighMiddelEdgesStage':
     from builder555 import StartingStates555XPlaneHighMiddelEdgesStage
     builder = StartingStates555XPlaneHighMiddelEdgesStage()
 
-elif args.type == '5x5x5-x-plane-high-middle-edges-stage':
+elif args.type == 'Build555XPlaneHighMiddelEdgesStage':
     from builder555 import Build555XPlaneHighMiddelEdgesStage
     builder = Build555XPlaneHighMiddelEdgesStage()
 
-elif args.type == 'ss5x5x5-x-plane-low-middle-edges-stage':
+elif args.type == 'StartingStates555XPlaneLowMiddelEdgesStage':
     from builder555 import StartingStates555XPlaneLowMiddelEdgesStage
     builder = StartingStates555XPlaneLowMiddelEdgesStage()
 
-elif args.type == '5x5x5-x-plane-low-middle-edges-stage':
+elif args.type == 'Build555XPlaneLowMiddelEdgesStage':
     from builder555 import Build555XPlaneLowMiddelEdgesStage
     builder = Build555XPlaneLowMiddelEdgesStage()
 
-elif args.type == '5x5x5-x-plane-inner-edges-stage':
+elif args.type == 'Build555XPlaneInnerEdgesStage':
     from builder555 import Build555XPlaneInnerEdgesStage
     builder = Build555XPlaneInnerEdgesStage()
 
-elif args.type == 'ss5x5x5-phase4':
+elif args.type == 'StartingStates555Phase4':
     from builder555 import StartingStates555Phase4
     builder = StartingStates555Phase4()
 
-elif args.type == '5x5x5-phase4':
+elif args.type == 'Build555Phase4':
     from builder555 import Build555Phase4
     builder = Build555Phase4()
 
 # phase5
-elif args.type == 'ss5x5x5-phase5-LFRB-centers-stage':
+elif args.type == 'StartingStates555Phase5LFRBCenterStage':
     from builder555 import StartingStates555Phase5LFRBCenterStage
     builder = StartingStates555Phase5LFRBCenterStage()
 
-elif args.type == '5x5x5-phase5-LFRB-centers-stage':
+elif args.type == 'Build555Phase5LFRBCenterStage':
     from builder555 import Build555Phase5LFRBCenterStage
     builder = Build555Phase5LFRBCenterStage()
 
 # =====
 # 6x6x6
 # =====
-elif args.type == 'ss6x6x6-UD-inner-x-centers-stage':
+elif args.type == 'StartingStates666UDInnerXCentersStage':
     from builder666 import StartingStates666UDInnerXCentersStage
     builder = StartingStates666UDInnerXCentersStage()
 
-elif args.type == '6x6x6-UD-inner-x-centers-stage':
+elif args.type == 'Build666UDInnerXCentersStage':
     from builder666 import Build666UDInnerXCentersStage
     builder = Build666UDInnerXCentersStage()
 
-elif args.type == 'ss6x6x6-UD-oblique-edges-stage':
+elif args.type == 'StartingStates666UDObliqueEdgesStage':
     from builder666 import StartingStates666UDObliqueEdgesStage
     builder = StartingStates666UDObliqueEdgesStage()
 
-elif args.type == '6x6x6-UD-oblique-edges-stage':
+elif args.type == 'Build666UDObliqueEdgesStage':
     from builder666 import Build666UDObliqueEdgesStage
     builder = Build666UDObliqueEdgesStage()
 
-elif args.type == 'ss6x6x6-LR-inner-x-centers-oblique-edges-stage':
+elif args.type == 'StartingStates666LRInnerXCentersObliqueEdgesStage':
     from builder666 import StartingStates666LRInnerXCentersObliqueEdgesStage
     builder = StartingStates666LRInnerXCentersObliqueEdgesStage()
 
-elif args.type == '6x6x6-LR-inner-x-centers-oblique-edges-stage':
+elif args.type == 'Build666LRInnerXCentersObliqueEdgesStage':
     from builder666 import Build666LRInnerXCentersObliqueEdgesStage
     builder = Build666LRInnerXCentersObliqueEdgesStage()
 
 
-elif args.type == 'ss6x6x6-LR-oblique-edges-stage':
+elif args.type == 'StartingStates666LRObliqueEdgesStage':
     from builder666 import StartingStates666LRObliqueEdgesStage
     builder = StartingStates666LRObliqueEdgesStage()
 
-elif args.type == '6x6x6-LR-oblique-edges-stage':
+elif args.type == 'Build666LRObliqueEdgesStage':
     from builder666 import Build666LRObliqueEdgesStage
     builder = Build666LRObliqueEdgesStage()
 
-elif args.type == '6x6x6-LR-inner-x-centers-stage':
+elif args.type == 'Build666LRInnerXCenterStage':
     from builder666 import Build666LRInnerXCenterStage
     builder = Build666LRInnerXCenterStage()
 
-elif args.type == '6x6x6-LFRB-solve-inner-x-center-and-oblique-edges':
+elif args.type == 'Build666LFRBInnerXCenterAndObliqueEdges':
     from builder666 import Build666LFRBInnerXCenterAndObliqueEdges
     builder = Build666LFRBInnerXCenterAndObliqueEdges()
 
-elif args.type == '6x6x6-LR-solve-inner-x-center-and-oblique-edges':
+elif args.type == 'Build666LRInnerXCenterAndObliqueEdges':
     from builder666 import Build666LRInnerXCenterAndObliqueEdges
     builder = Build666LRInnerXCenterAndObliqueEdges()
 
-elif args.type == '6x6x6-EO-inner-orbit':
+elif args.type == 'Build666EdgeOrientInnerOrbit':
     from builder666 import Build666EdgeOrientInnerOrbit
     builder = Build666EdgeOrientInnerOrbit()
 
-elif args.type == '6x6x6-EO-outer-orbit':
+elif args.type == 'Build666EdgeOrientOuterOrbit':
     from builder666 import Build666EdgeOrientOuterOrbit
     builder = Build666EdgeOrientOuterOrbit()
 
-elif args.type == 'ss6x6x6-LR-centers-edge-orient':
+elif args.type == 'StartingStates666LRCenterEdgeOrient':
     from builder666 import StartingStates666LRCenterEdgeOrient
     builder = StartingStates666LRCenterEdgeOrient()
 
-elif args.type == '6x6x6-LR-centers-edge-orient':
+elif args.type == 'Build666LRCenterEdgeOrient':
     from builder666 import Build666LRCenterEdgeOrient
     builder = Build666LRCenterEdgeOrient()
 
@@ -259,69 +259,69 @@ elif args.type == '6x6x6-LR-centers-edge-orient':
 # =====
 # 7x7x7
 # =====
-elif args.type == 'ss7x7x7-UD-oblique-edges-stage':
+elif args.type == 'StartingStates777UDObliqueEdgesStage':
     from builder777 import StartingStates777UDObliqueEdgesStage
     builder = StartingStates777UDObliqueEdgesStage()
 
-elif args.type == '7x7x7-UD-oblique-edges-stage':
+elif args.type == 'Build777UDObliqueEdgesStage':
     from builder777 import Build777UDObliqueEdgesStage
     builder = Build777UDObliqueEdgesStage()
 
-elif args.type == 'ss7x7x7-UD-outside-oblique-edges-stage':
+elif args.type == 'StartingStates777UDOutsideObliqueEdgesStage':
     from builder777 import StartingStates777UDOutsideObliqueEdgesStage
     builder = StartingStates777UDOutsideObliqueEdgesStage()
 
-elif args.type == '7x7x7-UD-outside-oblique-edges-stage':
+elif args.type == 'Build777UDOutsideObliqueEdgesStage':
     from builder777 import Build777UDOutsideObliqueEdgesStage
     builder = Build777UDOutsideObliqueEdgesStage()
 
 
-elif args.type == 'ss7x7x7-LR-oblique-edges-stage':
+elif args.type == 'StartingStates777LRObliqueEdgesStage':
     from builder777 import StartingStates777LRObliqueEdgesStage
     builder = StartingStates777LRObliqueEdgesStage()
 
-elif args.type == '7x7x7-LR-oblique-edges-stage':
+elif args.type == 'Build777LRObliqueEdgesStage':
     from builder777 import Build777LRObliqueEdgesStage
     builder = Build777LRObliqueEdgesStage()
 
-elif args.type == 'ss7x7x7-LR-left-middle-oblique-edges-stage':
+elif args.type == 'StartingStates777LRLeftMiddleObliqueEdgesStage':
     from builder777 import StartingStates777LRLeftMiddleObliqueEdgesStage
     builder = StartingStates777LRLeftMiddleObliqueEdgesStage()
 
-elif args.type == '7x7x7-LR-left-middle-oblique-edges-stage':
+elif args.type == 'Build777LRLeftMiddleObliqueEdgesStage':
     from builder777 import Build777LRLeftMiddleObliqueEdgesStage
     builder = Build777LRLeftMiddleObliqueEdgesStage()
 
-elif args.type == 'ss7x7x7-LR-right-middle-oblique-edges-stage':
+elif args.type == 'StartingStates777LRRightMiddleObliqueEdgesStage':
     from builder777 import StartingStates777LRRightMiddleObliqueEdgesStage
     builder = StartingStates777LRRightMiddleObliqueEdgesStage()
 
-elif args.type == '7x7x7-LR-right-middle-oblique-edges-stage':
+elif args.type == 'Build777LRRightMiddleObliqueEdgesStage':
     from builder777 import Build777LRRightMiddleObliqueEdgesStage
     builder = Build777LRRightMiddleObliqueEdgesStage()
 
-elif args.type == 'ss7x7x7-LR-outside-oblique-edges-stage':
+elif args.type == 'StartingStates777LROutsideObliqueEdgesStage':
     from builder777 import StartingStates777LROutsideObliqueEdgesStage
     builder = StartingStates777LROutsideObliqueEdgesStage()
 
-elif args.type == '7x7x7-LR-outside-oblique-edges-stage':
+elif args.type == 'Build777LROutsideObliqueEdgesStage':
     from builder777 import Build777LROutsideObliqueEdgesStage
     builder = Build777LROutsideObliqueEdgesStage()
 
 
-elif args.type == '7x7x7-step80':
+elif args.type == 'Build777Step80':
     from builder777 import Build777Step80
     builder = Build777Step80()
 
-elif args.type == '7x7x7-step81':
+elif args.type == 'Build777Step81':
     from builder777 import Build777Step81
     builder = Build777Step81()
 
-elif args.type == '7x7x7-step90':
+elif args.type == 'Build777Step90':
     from builder777 import Build777Step90
     builder = Build777Step90()
 
-elif args.type == '7x7x7-step91':
+elif args.type == 'Build777Step91':
     from builder777 import Build777Step91
     builder = Build777Step91()
 
