@@ -469,6 +469,39 @@ class Build444TsaiPhase2Centers(BFS):
         )
 
 
+class Build444TsaiPhase2Edges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-tsai-phase2-edges',
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "Bw2", "Dw2", "Lw", "Lw'", "Lw2"), # TPR also restricts these
+            '4x4x4',
+            'lookup-table-4x4x4-step62-tsai-phase2-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+             (("""
+          . U D .
+          D . . U
+          U . . D
+          . D U .
+
+ . D U .  . D U .  . D U .  . D U .
+ D . . U  U . . D  D . . U  U . . D
+ U . . D  D . . U  U . . D  D . . U
+ . U D .  . U D .  . U D .  . U D .
+
+          . U D .
+          D . . U
+          U . . D
+          . D U .""", 'ascii'),)
+        )
+
+
 class Build444Phase3Edges(BFS):
     """
     This is the TPR phase3 edges table.
@@ -561,12 +594,15 @@ class Build444Phase3Centers(BFS):
             False, # store_as_hex
 
             # starting cubes
-            (('.....DD..DD..........LL..LL..........BB..BB..........RR..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+            (('.....BB..BB..........LL..LL..........UU..UU..........RR..RR..........DD..DD..........FF..FF.....', 'ULFRBD'),
+             ('.....BB..BB..........RR..RR..........DD..DD..........LL..LL..........UU..UU..........FF..FF.....', 'ULFRBD'),
+             ('.....DD..DD..........LL..LL..........BB..BB..........RR..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
              ('.....DD..DD..........RR..RR..........FF..FF..........LL..LL..........BB..BB..........UU..UU.....', 'ULFRBD'),
+             ('.....FF..FF..........LL..LL..........DD..DD..........RR..RR..........UU..UU..........BB..BB.....', 'ULFRBD'),
+             ('.....FF..FF..........RR..RR..........UU..UU..........LL..LL..........DD..DD..........BB..BB.....', 'ULFRBD'),
              ('.....UU..UU..........LL..LL..........FF..FF..........RR..RR..........BB..BB..........DD..DD.....', 'ULFRBD'),
              ('.....UU..UU..........RR..RR..........BB..BB..........LL..LL..........FF..FF..........DD..DD.....', 'ULFRBD'))
         )
-
 
 
 class StartingStates444Phase3(BFS):
@@ -620,8 +656,12 @@ class Build444Phase3(BFS):
             False, # store_as_hex
 
             # starting cubes
-            (('.DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU.', 'ULFRBD'),
+            (('.BB.BBBBBBBB.BB..LL.LLLLLLLL.LL..UU.UUUUUUUU.UU..RR.RRRRRRRR.RR..DD.DDDDDDDD.DD..FF.FFFFFFFF.FF.', 'ULFRBD'),
+             ('.BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..UU.UUUUUUUU.UU..FF.FFFFFFFF.FF.', 'ULFRBD'),
+             ('.DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU.', 'ULFRBD'),
              ('.DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU.', 'ULFRBD'),
+             ('.FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..UU.UUUUUUUU.UU..BB.BBBBBBBB.BB.', 'ULFRBD'),
+             ('.FF.FFFFFFFF.FF..RR.RRRRRRRR.RR..UU.UUUUUUUU.UU..LL.LLLLLLLL.LL..DD.DDDDDDDD.DD..BB.BBBBBBBB.BB.', 'ULFRBD'),
              ('.UU.UUUUUUUU.UU..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..DD.DDDDDDDD.DD.', 'ULFRBD'),
              ('.UU.UUUUUUUU.UU..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..DD.DDDDDDDD.DD.', 'ULFRBD')),
             use_edges_pattern=True

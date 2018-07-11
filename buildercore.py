@@ -446,7 +446,6 @@ class BFS(object):
         CHARS_PER_STEP = 5
         MAX_STEPS = 20
 
-        # dwalton
         #return 512
         return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
 
@@ -544,7 +543,6 @@ class BFS(object):
                 if self.size == '4x4x4':
                     pattern = '10425376a8b9ecfdhgkiljnm'
                 elif self.size == '5x5x5':
-                    # dwalton fill this in
                     pattern = 'TBD'
                 else:
                     raise Exception("implement edges-pattern for %s" % self.size)
@@ -692,6 +690,7 @@ class BFS(object):
                             workq_line = "%s:%s:%s %s" % (pattern, state, steps_to_scramble, next_move)
                         else:
                             workq_line = "%s:%s %s" % (state, steps_to_scramble, next_move)
+
                         fh_workq_next.write(workq_line + " " * (workq_line_length - len(workq_line)) + "\n")
                         self.workq_size += 1
         else:

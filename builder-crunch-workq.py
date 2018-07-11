@@ -1572,8 +1572,8 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase):
                 raise
 
             moves_to_scramble = moves_to_scramble.split()
-
-            cube_state_string = ''.join(rotate_xxx(list(cube_state), moves_to_scramble[-1]))
+            cube_state = rotate_xxx(list(cube_state), moves_to_scramble[-1])
+            cube_state_string = ''.join(cube_state)
 
             if size == '4x4x4':
                 edges_pattern = edges_pattern_444(cube_state_string)
@@ -1583,7 +1583,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase):
                 centers = ''.join([cube_state[x] for x in centers_555])
             else:
                 raise Exception("Implement this")
-    
+
             to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
             to_write_count += 1
 

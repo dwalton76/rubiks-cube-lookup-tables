@@ -79,6 +79,10 @@ elif args.type == '4x4x4-tsai-phase2-centers':
     from builder444 import Build444TsaiPhase2Centers
     builder = Build444TsaiPhase2Centers()
 
+elif args.type == '4x4x4-tsai-phase2-edges':
+    from builder444 import Build444TsaiPhase2Edges
+    builder = Build444TsaiPhase2Edges()
+
 # phase 3
 elif args.type == '4x4x4-phase3-edges':
     from builder444 import Build444Phase3Edges
