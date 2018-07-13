@@ -1040,7 +1040,7 @@ class Build777Step210(BFS):
              "3Dw", "3Dw'", "Dw", "Dw'",
 
             # keep LR in vertical stripes
-            "L", "L'", "R", "R'"),
+            "L", "L'", "R", "R'", "3Uw2", "3Dw2", "Uw2", "Dw2"),
 
             '7x7x7',
             'lookup-table-7x7x7-step210.txt',
@@ -1144,7 +1144,7 @@ class Build777Step211(BFS):
              "3Dw", "3Dw'", "Dw", "Dw'",
 
             # keep LR in vertical stripes
-            "L", "L'", "R", "R'"),
+            "L", "L'", "R", "R'", "3Uw2", "3Dw2", "Uw2", "Dw2"),
 
             '7x7x7',
             'lookup-table-7x7x7-step211.txt',
@@ -1248,7 +1248,7 @@ class Build777Step212(BFS):
              "3Dw", "3Dw'", "Dw", "Dw'",
 
             # keep LR in vertical stripes
-            "L", "L'", "R", "R'"),
+            "L", "L'", "R", "R'", "3Uw2", "3Dw2", "Uw2", "Dw2"),
 
             '7x7x7',
             'lookup-table-7x7x7-step212.txt',
