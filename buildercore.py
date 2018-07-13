@@ -278,6 +278,82 @@ def convert_to_hash_cost_only(filename, bucketcount):
     log.info("end writing %s" % filename_new)
 
 
+def parse_histogram(filename):
+
+    if not os.path.exists('histogram.txt'):
+        print("\n\nERROR: histogram.txt does not exist")
+        sys.exit(1)
+
+    with open('histogram.txt', 'r') as fh:
+        found_filename = False
+        histogram = []
+        linecount = 0
+        max_depth = 0
+
+        for line in fh:
+            line = line.strip()
+
+            if not found_filename and line == filename:
+                found_filename = True
+                histogram.append('    ' + line)
+                log.info(line)
+
+            elif found_filename:
+                histogram.append('    ' + line)
+                log.info(line)
+
+                if 'steps has' in line:
+                    max_depth = int(line.split()[0])
+                elif line.startswith('Total:'):
+                    linecount = int(line.split()[1].replace(',', ''))
+                elif line.startswith('Average'):
+                    break
+
+    if not found_filename:
+        print("\n\nERROR: %s is not in histogram.txt" % filename)
+        sys.exit(0)
+
+    return ('\n'.join(histogram), linecount, max_depth)
+
+
+def get_starting_states(filename, class_name, hex_digits):
+    """
+    TODO hex_digits needs to be the number of hex characters in the state
+    """
+    ss_filename = 'starting-states-' + filename
+
+    if not os.path.exists(ss_filename):
+        print("\n\nERROR: %s does not exist. run:" % ss_filename)
+        print("\n./builderui.py %s\n" % class_name.replace('LookupTable', 'StartingStates'))
+        sys.exit(1)
+
+    with open(ss_filename, 'r') as fh:
+        result = []
+        for line in fh:
+            line = line.strip()
+            line = line.replace(" 'ULFRBD'),", "")
+            line = line.replace("(", "")
+            line = line.replace(".", "")
+            line = line.replace(",", "")
+
+            if hex_digits:
+                line = line.replace('x', '0').replace('U', '1').replace('L', '1').replace('F', '1').replace('R', '1').replace('B', '1').replace('D', '1')
+                line = line.replace("'", "")
+                line = line.replace(",", "")
+                #print("             %0dx," % hex(int(line, 2))[2:])
+                result.append("             '" + hex_format % int(line, 2) + "'")
+            else:
+                result.append("%s" % line)
+
+        result.sort()
+
+        if len(result) < 100:
+            result = '(' + ',\n             '.join(result) + ')'
+        else:
+            pass
+        return result
+
+
 
 class BackgroundProcess(Thread):
 
@@ -320,6 +396,8 @@ class BFS(object):
         self.use_cost_only = use_cost_only
         self.use_hash_cost_only = use_hash_cost_only
         self.use_edges_pattern = use_edges_pattern
+        self.size = size
+        self.starting_cube_states = starting_cube_states
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
@@ -804,6 +882,162 @@ class BFS(object):
             convert_to_hash_cost_only(self.filename, self.bucketcount)
 
         self.time_in_save = (dt.datetime.now() - start_time).total_seconds()
+
+    def get_starting_states(self):
+        if self.starting_cube_states:
+            foo = []
+            for (state, state_type) in self.starting_cube_states:
+                if state_type == 'ULFRBD':
+                    foo.append("        '" + ''.join(state.split()).strip().replace('.', '') + "'")
+                elif state_type == 'ascii':
+                    # do this later
+                    pass
+                else:
+                    raise Exception("%s is an invalid state_type" % state_type)
+
+            starting_states = ",\n".join(foo)
+        else:
+            starting_states = get_starting_states(self.filename, class_name, None)
+
+        return starting_states
+
+    def _code_gen_lookup_table(self):
+        class_name = type(self).__name__.replace('Build', 'LookupTable')
+
+        # I do 2x the key then take the next prime number
+        next_prime = {
+            24010000 : 48020003,
+            165636900 : 331273823,
+            239500800 : 479001629,
+        }
+
+        (histogram, linecount, max_depth) = parse_histogram(self.filename)
+        starting_states = self.get_starting_states()
+
+        print('''
+#class %s(LookupTableHashCostOnly):
+class %s(LookupTable):
+    """
+%s
+    """
+
+    state_targets = (
+%s
+    )
+
+    def __init__(self, parent):
+        LookupTable.__init__(
+            self,
+            parent,
+            '%s',
+            self.state_targets,
+            linecount=%d,
+            max_depth=%d,
+            filesize=TBD)
+        ''\'
+        LookupTableHashCostOnly.__init__(
+            self,
+            parent,
+            '%s',
+            self.state_targets,
+            linecount=%d,
+            max_depth=%d,
+            bucketcount=%d,
+            filesize=%d)
+        ''\'
+
+    def state(self):
+        parent_state = self.parent.state''' % (
+    class_name,
+    class_name,
+    histogram,
+    starting_states,
+    self.filename,
+    linecount,
+    max_depth,
+    self.filename.replace('.txt', '.hash-cost-only.txt'),
+    linecount,
+    max_depth,
+    next_prime[linecount],
+    next_prime[linecount]+1, # +1 for the newline
+    ))
+
+        if self.store_as_hex:
+            print("        result = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
+            print("        return self.hex_format % int(result, 2)\n\n")
+        else:
+            print("        result = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace('x', ''))
+            print("        return result\n\n")
+
+        #print("\n\n\n\n")
+        #print("        self.lt_foo = %s(self)" % class_name)
+        #print("\n\n\n\n")
+
+    def _code_gen_lookup_table_ida(self):
+        class_name = type(self).__name__.replace('Build', 'LookupTableIDA')
+        (histogram, linecount, max_depth) = parse_histogram(self.filename)
+        starting_states = self.get_starting_states()
+
+        print('''
+class %s(LookupTableIDA):
+    """
+%s
+    """
+
+    state_targets = (
+%s
+    )
+
+    def __init__(self, parent):
+        LookupTableIDA.__init__(
+            self,
+            parent,
+            '%s',
+            self.state_targets,
+            moves_%s,
+            # illegal moves
+            (TBD),
+
+            # prune tables
+            (parent.lt_foo,
+             parent.lt_bar),
+            linecount=%d,
+            max_depth=%d,
+            filesize=%d)
+
+    def state(self):
+        parent_state = self.parent.state''' % (
+    class_name,
+    histogram,
+    starting_states,
+    self.filename,
+    self.size.replace('x', ''),
+    linecount,
+    max_depth,
+    os.path.getsize(self.filename)
+    ))
+
+        if self.store_as_hex:
+            print("        result = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
+            print("        return self.hex_format % int(result, 2)\n\n")
+        else:
+            print("        result = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace('x', ''))
+            print("        return result\n\n")
+
+    def code_gen(self):
+        assert self.filename.startswith('lookup-table-'), "--code-gen only applies to BuildXYZ classes"
+
+        if '0.txt' in self.filename:
+            first_prune_table_filename = self.filename.replace('0.txt', '1.txt').replace('lookup-table', 'starting-states-lookup-table')
+
+            if os.path.exists(first_prune_table_filename):
+                log.info("prune table %s does exist" % first_prune_table_filename)
+                self._code_gen_lookup_table_ida()
+            else:
+                log.info("prune table %s does NOT exist" % first_prune_table_filename)
+                self._code_gen_lookup_table()
+        else:
+            self._code_gen_lookup_table()
 
 
 if __name__ == '__main__':
