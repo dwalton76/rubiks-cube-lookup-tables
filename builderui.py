@@ -42,10 +42,7 @@ parser.add_argument('--cores', type=int, default=4, help='The number of cores to
 parser.add_argument('--code-gen', default=False, action='store_true', help='The number of cores to use')
 args = parser.parse_args()
 
-
 builder = get_class(args.type)()
-
-
 
 log.info("")
 log.info("")

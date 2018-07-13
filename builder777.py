@@ -672,11 +672,11 @@ class Build777Step91(BFS):
         )
 
 
-class StartingStates777Step200(BFS):
+class StartingStates777Step40(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step200',
+            '7x7x7-step40',
 
             #("3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
             # "3Lw", "3Lw'", "3Lw2", "Lw", "Lw'", "Lw2",
@@ -694,7 +694,7 @@ class StartingStates777Step200(BFS):
              "L", "L'",
              "R", "R'"),
             '7x7x7',
-            'starting-states-lookup-table-7x7x7-step200.txt',
+            'starting-states-lookup-table-7x7x7-step40.txt',
             False, # store_as_hex
 
             (("""
@@ -723,11 +723,11 @@ class StartingStates777Step200(BFS):
                 . . . . . . . """, "ascii"),)
         )
 
-class Build777Step200(BFS):
+class Build777Step40(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step200',
+            '7x7x7-step40',
 
             # keep all centers staged
             ("3Uw", "3Uw'", "Uw", "Uw'",
@@ -738,7 +738,7 @@ class Build777Step200(BFS):
              "3Dw", "3Dw'", "Dw", "Dw'"),
 
             '7x7x7',
-            'lookup-table-7x7x7-step200.txt',
+            'lookup-table-7x7x7-step40.txt',
             False, # store_as_hex
             (             ('.........................................................LLLLL..LLLLL..LLLLL..LLLLL..LLLLL.................................................................RRRRR..RRRRR..RRRRR..RRRRR..RRRRR..........................................................................................................', 'ULFRBD'),
              ('.........................................................LLLLR..LLLLR..LLLLR..LLLLR..LLLLR.................................................................LRRRR..LRRRR..LRRRR..LRRRR..LRRRR..........................................................................................................', 'ULFRBD'),
@@ -779,11 +779,11 @@ class Build777Step200(BFS):
         )
 
 
-class StartingStates777Step201(BFS):
+class StartingStates777Step41(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step201',
+            '7x7x7-step41',
 
             ("3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
              "3Lw", "3Lw'", "3Lw2", "Lw", "Lw'", "Lw2",
@@ -794,7 +794,7 @@ class StartingStates777Step201(BFS):
              "L", "L'",
              "R", "R'"),
             '7x7x7',
-            'starting-states-lookup-table-7x7x7-step201.txt',
+            'starting-states-lookup-table-7x7x7-step41.txt',
             False, # store_as_hex
 
             (("""
@@ -824,11 +824,11 @@ class StartingStates777Step201(BFS):
         )
 
 
-class StartingStates777Step202(BFS):
+class StartingStates777Step42(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step202',
+            '7x7x7-step42',
 
             ("3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
              "3Lw", "3Lw'", "3Lw2", "Lw", "Lw'", "Lw2",
@@ -839,7 +839,7 @@ class StartingStates777Step202(BFS):
              "L", "L'",
              "R", "R'"),
             '7x7x7',
-            'starting-states-lookup-table-7x7x7-step202.txt',
+            'starting-states-lookup-table-7x7x7-step42.txt',
             False, # store_as_hex
 
             (("""
@@ -869,11 +869,11 @@ class StartingStates777Step202(BFS):
         )
 
 
-class Build777Step201(BFS):
+class Build777Step41(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step201',
+            '7x7x7-step41',
 
             # keep all centers staged
             ("3Uw", "3Uw'", "Uw", "Uw'",
@@ -884,7 +884,7 @@ class Build777Step201(BFS):
              "3Dw", "3Dw'", "Dw", "Dw'"),
 
             '7x7x7',
-            'lookup-table-7x7x7-step201.txt',
+            'lookup-table-7x7x7-step41.txt',
             False, # store_as_hex
             (('..........................................................L.L...LLLLL...LLL...LLLLL...L.L...................................................................R.R...RRRRR...RRR...RRRRR...R.R...........................................................................................................', 'ULFRBD'),
              ('..........................................................L.L...LLLLR...LLL...LLLLR...L.L...................................................................R.R...LRRRR...RRR...LRRRR...R.R...........................................................................................................', 'ULFRBD'),
@@ -924,11 +924,11 @@ class Build777Step201(BFS):
              ('..........................................................R.R...RRLRR...RLR...RRLRR...R.R...................................................................L.L...LLRLL...LRL...LLRLL...L.L...........................................................................................................', 'ULFRBD'))
         )
 
-class Build777Step202(BFS):
+class Build777Step42(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step202',
+            '7x7x7-step42',
 
             # keep all centers staged
             ("3Uw", "3Uw'", "Uw", "Uw'",
@@ -939,7 +939,7 @@ class Build777Step202(BFS):
              "3Dw", "3Dw'", "Dw", "Dw'"),
 
             '7x7x7',
-            'lookup-table-7x7x7-step202.txt',
+            'lookup-table-7x7x7-step42.txt',
             False, # store_as_hex
             (('.........................................................L.L.L...LLL...LLLLL...LLL...L.L.L.................................................................R.R.R...RRR...RRRRR...RRR...R.R.R..........................................................................................................', 'ULFRBD'),
              ('.........................................................L.L.L...LLR...LLLRL...LLR...L.L.L.................................................................R.R.R...LRR...RLRRR...LRR...R.R.R..........................................................................................................', 'ULFRBD'),
@@ -980,11 +980,11 @@ class Build777Step202(BFS):
         )
 
 
-class StartingStates777Step210(BFS):
+class StartingStates777Step50(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step210',
+            '7x7x7-step50',
 
             ("3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
              "3Lw", "3Lw'", "Lw", "Lw'",
@@ -995,7 +995,7 @@ class StartingStates777Step210(BFS):
              "U", "U'", "D", "D'"),
 
             '7x7x7',
-            'starting-states-lookup-table-7x7x7-step210.txt',
+            'starting-states-lookup-table-7x7x7-step50.txt',
             False, # store_as_hex
 
             (("""
@@ -1025,11 +1025,11 @@ class StartingStates777Step210(BFS):
         )
 
 
-class Build777Step210(BFS):
+class Build777Step50(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step210',
+            '7x7x7-step50',
 
             # keep all centers staged
             ("3Uw", "3Uw'", "Uw", "Uw'",
@@ -1043,7 +1043,7 @@ class Build777Step210(BFS):
             "L", "L'", "R", "R'", "3Uw2", "3Dw2", "Uw2", "Dw2"),
 
             '7x7x7',
-            'lookup-table-7x7x7-step210.txt',
+            'lookup-table-7x7x7-step50.txt',
             False, # store_as_hex
             (('........DDUDD..DDUDD..DDUDD..DDUDD..DDUDD....................................................................................................................................................................................................................UUDUU..UUDUU..UUDUU..UUDUU..UUDUU........', 'ULFRBD'),
              ('........DDUDU..DDUDU..DDUDU..DDUDU..DDUDU....................................................................................................................................................................................................................DUDUU..DUDUU..DUDUU..DUDUU..DUDUU........', 'ULFRBD'),
@@ -1084,11 +1084,11 @@ class Build777Step210(BFS):
         )
 
 
-class StartingStates777Step211(BFS):
+class StartingStates777Step51(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step211',
+            '7x7x7-step51',
 
             ("3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
              "3Lw", "3Lw'", "Lw", "Lw'",
@@ -1099,7 +1099,7 @@ class StartingStates777Step211(BFS):
              "U", "U'", "D", "D'"),
 
             '7x7x7',
-            'starting-states-lookup-table-7x7x7-step211.txt',
+            'starting-states-lookup-table-7x7x7-step51.txt',
             False, # store_as_hex
 
             (("""
@@ -1129,11 +1129,11 @@ class StartingStates777Step211(BFS):
         )
 
 
-class Build777Step211(BFS):
+class Build777Step51(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step211',
+            '7x7x7-step51',
 
             # keep all centers staged
             ("3Uw", "3Uw'", "Uw", "Uw'",
@@ -1147,7 +1147,7 @@ class Build777Step211(BFS):
             "L", "L'", "R", "R'", "3Uw2", "3Dw2", "Uw2", "Dw2"),
 
             '7x7x7',
-            'lookup-table-7x7x7-step211.txt',
+            'lookup-table-7x7x7-step51.txt',
             False, # store_as_hex
             (('.........D.D...DDUDD...DUD...DDUDD...D.D......................................................................................................................................................................................................................U.U...UUDUU...UDU...UUDUU...U.U.........', 'ULFRBD'),
              ('.........D.D...DDUDU...DUD...DDUDU...D.D......................................................................................................................................................................................................................U.U...DUDUU...UDU...DUDUU...U.U.........', 'ULFRBD'),
@@ -1188,11 +1188,11 @@ class Build777Step211(BFS):
         )
 
 
-class StartingStates777Step212(BFS):
+class StartingStates777Step52(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step212',
+            '7x7x7-step52',
 
             ("3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
              "3Lw", "3Lw'", "Lw", "Lw'",
@@ -1203,7 +1203,7 @@ class StartingStates777Step212(BFS):
              "U", "U'", "D", "D'"),
 
             '7x7x7',
-            'starting-states-lookup-table-7x7x7-step212.txt',
+            'starting-states-lookup-table-7x7x7-step52.txt',
             False, # store_as_hex
 
             (("""
@@ -1233,11 +1233,11 @@ class StartingStates777Step212(BFS):
         )
 
 
-class Build777Step212(BFS):
+class Build777Step52(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step212',
+            '7x7x7-step52',
 
             # keep all centers staged
             ("3Uw", "3Uw'", "Uw", "Uw'",
@@ -1251,7 +1251,7 @@ class Build777Step212(BFS):
             "L", "L'", "R", "R'", "3Uw2", "3Dw2", "Uw2", "Dw2"),
 
             '7x7x7',
-            'lookup-table-7x7x7-step212.txt',
+            'lookup-table-7x7x7-step52.txt',
             False, # store_as_hex
             (('........D.U.D...DUD...DDUDD...DUD...D.U.D....................................................................................................................................................................................................................U.D.U...UDU...UUDUU...UDU...U.D.U........', 'ULFRBD'),
              ('........D.U.D...DUU...DDUUD...DUU...D.U.D....................................................................................................................................................................................................................U.D.U...DDU...UDDUU...DDU...U.D.U........', 'ULFRBD'),
@@ -1291,11 +1291,11 @@ class Build777Step212(BFS):
              ('........U.U.U...UUU...UUUUU...UUU...U.U.U....................................................................................................................................................................................................................D.D.D...DDD...DDDDD...DDD...D.D.D........', 'ULFRBD'))
         )
 
-class Build777Step220(BFS):
+class Build777Step60(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step220',
+            '7x7x7-step60',
 
             # keep all centers staged
             ("3Uw", "3Uw'", "Uw", "Uw'",
@@ -1312,7 +1312,7 @@ class Build777Step220(BFS):
             "U", "U'", "D", "D'"),
 
             '7x7x7',
-            'lookup-table-7x7x7-step220.txt',
+            'lookup-table-7x7x7-step60.txt',
             False, # store_as_hex
             (("""
                 . . . . . . .
@@ -1341,11 +1341,11 @@ class Build777Step220(BFS):
         )
 
 
-class Build777Step221(BFS):
+class Build777Step61(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step221',
+            '7x7x7-step61',
 
             # keep all centers staged
             ("3Uw", "3Uw'", "Uw", "Uw'",
@@ -1362,7 +1362,7 @@ class Build777Step221(BFS):
             "U", "U'", "D", "D'"),
 
             '7x7x7',
-            'lookup-table-7x7x7-step221.txt',
+            'lookup-table-7x7x7-step61.txt',
             False, # store_as_hex
             (("""
                 . . . . . . .
@@ -1390,11 +1390,11 @@ class Build777Step221(BFS):
                 . . . . . . . """, "ascii"),)
         )
 
-class Build777Step222(BFS):
+class Build777Step62(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '7x7x7-step222',
+            '7x7x7-step62',
 
             # keep all centers staged
             ("3Uw", "3Uw'", "Uw", "Uw'",
@@ -1411,7 +1411,7 @@ class Build777Step222(BFS):
             "U", "U'", "D", "D'"),
 
             '7x7x7',
-            'lookup-table-7x7x7-step222.txt',
+            'lookup-table-7x7x7-step62.txt',
             False, # store_as_hex
             (("""
                 . . . . . . .
