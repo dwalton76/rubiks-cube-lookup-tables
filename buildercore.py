@@ -823,6 +823,7 @@ class BFS(object):
     def save_starting_states(self):
         patterns = []
         with open(self.filename, 'r') as fh_read, open("%s.starting-states" % self.filename, 'w') as fh_final:
+            to_write = []
             for line in fh_read:
 
                 if self.use_edges_pattern:
@@ -831,7 +832,10 @@ class BFS(object):
                 else:
                     (cube_state_string, steps) = line.rstrip().split(':')
 
-                fh_final.write("             ('%s', 'ULFRBD'),\n" % cube_state_string[1:])
+                to_write.append("             ('%s', 'ULFRBD')," % cube_state_string[1:])
+
+            to_write.sort()
+            fh_final.write("\n".join(to_write) + "\n")
 
         if self.use_edges_pattern:
             print("state_target patterns:\n%s\n\n" % '\n'.join(patterns))

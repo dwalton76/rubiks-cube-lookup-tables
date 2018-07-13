@@ -13,6 +13,10 @@ log = logging.getLogger(__name__)
 
 # dwalton
 # Combine tsai phases 1 and 2?
+# Need all 3 opposite side pairs to be elligible for 12 states
+# Need those to happen at any of 24 rotations
+# Need high/low edges in this too
+
 class StartingStates444TsaiPhase0LRCentersStage(BFS):
 
     def __init__(self):

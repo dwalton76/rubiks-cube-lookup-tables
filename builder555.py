@@ -46,6 +46,41 @@ class Build555LRTCenterStage(BFS):
         )
 
 
+class Build555UDCenterStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-center-stage',
+
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step10-UD-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .""", "ascii"),)
+        )
+
 
 # =======
 # Phase 3
