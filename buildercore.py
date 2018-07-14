@@ -836,14 +836,11 @@ class BFS(object):
                     self.cube.print_cube()
                 to_write.append("             ('%s', 'ULFRBD')," % cube_state_string[1:])
 
-                # dwalton
-                # workq_line = "%s:%s" % (''.join(cube.state), move)
                 for step in self.rotations:
                     self.cube.state = list(cube_state_string)
                     self.cube.rotate(step)
-                    #log.warning("FOO: %s" % step)
                     self.cube.print_cube()
-                    to_write.append("             ('%s', 'ULFRBD')," % ''.join(self.cube.state))
+                    to_write.append("             ('%s', 'ULFRBD')," % ''.join(self.cube.state[1:]))
 
         with open("%s.starting-states" % self.filename, 'w') as fh_final:
             to_write.sort()
