@@ -42,4 +42,4 @@ with open(filename, 'w') as fh:
         steps = data[state]
         fh.write("%s:%s\n" % (state, steps))
 
-check_output('./utils/pad_lines.py %s' % filename, shell=True)
+check_output('./utils/pad-lines.py %s' % filename, shell=True)

@@ -12,4 +12,4 @@ with open(filename_final, 'w') as fh_final:
             (state, steps) = line.rstrip().split(':')
             fh_final.write("%s:%d\n" % (state, len(steps.split())))
 
-subprocess.check_output("./utils/pad_lines.py %s" % filename_final, shell=True)
+subprocess.check_output("./utils/pad-lines.py %s" % filename_final, shell=True)

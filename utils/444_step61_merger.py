@@ -44,4 +44,4 @@ with open('lookup-table-4x4x4-step61-tsai-phase2-centers.txt', 'w') as fh:
         steps = data[state]
         fh.write("%s:%s\n" % (state, steps))
 
-check_output('./utils/pad_lines.py lookup-table-4x4x4-step61-tsai-phase2-centers.txt', shell=True)
+check_output('./utils/pad-lines.py lookup-table-4x4x4-step61-tsai-phase2-centers.txt', shell=True)

@@ -879,7 +879,7 @@ class BFS(object):
         shutil.move("%s.small" % self.filename, self.filename)
 
         log.info("%s: pad the file" % self)
-        subprocess.check_output("./utils/pad_lines.py %s" % self.filename, shell=True)
+        subprocess.check_output("./utils/pad-lines.py %s" % self.filename, shell=True)
 
         log.info("%s: sort the file" % self)
         subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output=%s %s" %

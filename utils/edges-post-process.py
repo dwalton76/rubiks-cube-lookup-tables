@@ -257,4 +257,4 @@ if __name__ == '__main__':
             fh.write("%s:%s\n" % (state, ' '.join(steps)))
     shutil.move('final.txt', args.filename)
 
-    check_output('./utils/pad_lines.py %s' % args.filename, shell=True)
+    check_output('./utils/pad-lines.py %s' % args.filename, shell=True)

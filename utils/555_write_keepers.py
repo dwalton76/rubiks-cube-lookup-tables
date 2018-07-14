@@ -66,4 +66,4 @@ if __name__ == '__main__':
 
     # Make all lines the same length by adding whitespaces to the end. This is needed
     # to simplify binary searching of the file.
-    subprocess.check_output(['nice', './utils/pad_lines.py', 'keepers.new'])
+    subprocess.check_output(['nice', './utils/pad-lines.py', 'keepers.new'])

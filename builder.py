@@ -2057,7 +2057,7 @@ if __name__ == '__main__':
 
     # Make all lines the same length by adding whitespaces to the end. This is needed
     # to simplify binary searching of the file.
-    subprocess.check_output(['nice', './utils/pad_lines.py', lookup_table_filename])
+    subprocess.check_output(['nice', './utils/pad-lines.py', lookup_table_filename])
 
     shutil.move(lookup_table_filename, dest_filename)
     log.info('Finished!!')

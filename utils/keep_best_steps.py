@@ -64,4 +64,4 @@ subprocess.check_output("LC_ALL=C nice sort --parallel=4 --temporary-directory=.
 
 # Make all lines the same length by adding whitespaces to the end. This is needed
 # to simplify binary searching of the file.
-subprocess.check_output(['nice', './utils/pad_lines.py', filename_best])
+subprocess.check_output(['nice', './utils/pad-lines.py', filename_best])
