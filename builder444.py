@@ -11,17 +11,17 @@ import sys
 log = logging.getLogger(__name__)
 
 
-# dwalton
-# Combine tsai phases 1 and 2?
-# Need all 3 opposite side pairs to be elligible for 12 states
-# Need those to happen at any of 24 rotations
-# Need high/low edges in this too
-
-class StartingStates444TsaiPhase0LRCentersStage(BFS):
+class StartingStates444TsaiPhase0(BFS):
+    """
+    Combine tsai phases 1 and 2
+    - Need all 3 opposite side pairs to be elligible for 12 states
+    - Need those to happen at any of 24 rotations
+    - Need high/low edges in this too
+    """
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-LR-centers-stage',
+            '4x4x4-tsai-phase0',
             ("Uw", "Uw'",
              "Dw", "Dw'",
              "Fw", "Fw'",
@@ -29,9 +29,63 @@ class StartingStates444TsaiPhase0LRCentersStage(BFS):
              "L", "L'", "Lw", "Lw'",
              "R", "R'", "Rw", "Rw'"),
             '4x4x4',
-            'starting-states-4x4x4-step02-LR-centers-stage.txt',
+            'starting-states-lookup-table-4x4x4-step01-tsai-phase0.txt',
             False, # store_as_hex
 
+             (
+              ("""
+          . U D .
+          D x x U
+          U x x D
+          . D U .
+
+ . D U .  . D U .  . D U .  . D U .
+ D U U U  U x x D  D D D U  U x x D
+ U U U D  D x x U  U D D D  D x x U
+ . U D .  . U D .  . U D .  . U D .
+
+          . U D .
+          D x x U
+          U x x D
+          . D U .""", 'ascii'),
+
+              ("""
+          . U D .
+          D x x U
+          U x x D
+          . D U .
+
+ . D U .  . D U .  . D U .  . D U .
+ D L L U  U x x D  D R R U  U x x D
+ U L L D  D x x U  U R R D  D x x U
+ . U D .  . U D .  . U D .  . U D .
+
+          . U D .
+          D x x U
+          U x x D
+          . D U .""", 'ascii'),
+
+              ("""
+          . U D .
+          D x x U
+          U x x D
+          . D U .
+
+ . D U .  . D U .  . D U .  . D U .
+ D F F U  U x x D  D B B U  U x x D
+ U F F D  D x x U  U B B D  D x x U
+ . U D .  . U D .  . U D .  . U D .
+
+          . U D .
+          D x x U
+          U x x D
+          . D U .""", 'ascii'),
+
+            ),
+            rotations=["y", "z"]
+        )
+
+'''
             # starting cubes
             (("""
           . . . .
@@ -40,6 +94,22 @@ class StartingStates444TsaiPhase0LRCentersStage(BFS):
           . . . .
 
  . . . .  . . . .  . . . .  . . . .
+ . U U .  . x x .  . D D .  . x x .
+ . U U .  . x x .  . D D .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . x x .
+          . x x .
+          . . . .""", 'ascii'),
+
+             ("""
+          . . . .
+          . x x .
+          . x x .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
  . L L .  . x x .  . R R .  . x x .
  . L L .  . x x .  . R R .  . x x .
  . . . .  . . . .  . . . .  . . . .
@@ -47,35 +117,161 @@ class StartingStates444TsaiPhase0LRCentersStage(BFS):
           . . . .
           . x x .
           . x x .
-          . . . .""", 'ascii'),),
-        )
+          . . . .""", 'ascii'),
 
-class Build444TsaiPhase0LRCentersStage(BFS):
+             ("""
+          . . . .
+          . x x .
+          . x x .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . F F .  . x x .  . B B .  . x x .
+ . F F .  . x x .  . B B .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . x x .
+          . x x .
+          . . . .""", 'ascii'),),
+'''
+
+
+class Build444TsaiPhase0(BFS):
+    """
+    This is a main lookup table.  It will use the UD, LR and FB centers staging prune tables.
+    We could make UD, LR and FB prune tables that are solving (not staging) for the 12 possible
+    centers patterns for each.  These would have 54 million entries so use hash-cost-only. I'm
+    not sure how much this would save us, there are only 70 patterns anwyay so there is a 12/70
+    chance we would be driving towards the goal state we want.  Anyway, wait to see how the search
+    goes without these 54million entry tables and go from there.
+
+    Once this finishes write a util to traverse the file and re-write the state in centers_edges format
+    We need this so when we are doing IDA we can evaluate all of the entries where our centers state
+    is a match.  We'll run the steps and look to see if the edgees have been split into high/low groups.
+    This is the fastest way I can think of to do this without looping over all 2048 edge orientations.
+    """
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-LR-centers-stage',
+            '4x4x4-tsai-phase0',
             # TPR also restricts these
             ("Lw", "Lw'", "Lw2",
              "Bw", "Bw'", "Bw2",
              "Dw", "Dw'", "Dw2"),
             '4x4x4',
-            'lookup-table-4x4x4-step02-LR-centers-stage.txt',
-            True, # store_as_hex
+            'lookup-table-4x4x4-step01-tsai-phase0.txt',
+            False, # store_as_hex
 
             # starting cubes
-            (('.....xx..xx..........LL..LL..........xx..xx..........RR..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LL..RR..........xx..xx..........LL..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LL..RR..........xx..xx..........RR..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LR..LR..........xx..xx..........LR..LR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LR..LR..........xx..xx..........RL..RL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LR..RL..........xx..xx..........RL..LR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RL..LR..........xx..xx..........LR..RL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RL..RL..........xx..xx..........LR..LR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RL..RL..........xx..xx..........RL..RL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RR..LL..........xx..xx..........LL..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RR..LL..........xx..xx..........RR..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RR..RR..........xx..xx..........LL..LL..........xx..xx..........xx..xx.....', 'ULFRBD'))
+            (('.UD.DxxUUxxD.DU..DU.DBBUUBBD.UD..DU.UxxDDxxU.UD..DU.DFFUUFFD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DBBUUFFD.UD..DU.UxxDDxxU.UD..DU.DBBUUFFD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DBBUUFFD.UD..DU.UxxDDxxU.UD..DU.DFFUUBBD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DBFUUBFD.UD..DU.UxxDDxxU.UD..DU.DBFUUBFD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DBFUUBFD.UD..DU.UxxDDxxU.UD..DU.DFBUUFBD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DBFUUFBD.UD..DU.UxxDDxxU.UD..DU.DFBUUBFD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DDDUUDDD.UD..DU.UxxDDxxU.UD..DU.DUUUUUUD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DDDUUUUD.UD..DU.UxxDDxxU.UD..DU.DDDUUUUD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DDDUUUUD.UD..DU.UxxDDxxU.UD..DU.DUUUUDDD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DDUUUDUD.UD..DU.UxxDDxxU.UD..DU.DDUUUDUD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DDUUUDUD.UD..DU.UxxDDxxU.UD..DU.DUDUUUDD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DDUUUUDD.UD..DU.UxxDDxxU.UD..DU.DUDUUDUD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DFBUUBFD.UD..DU.UxxDDxxU.UD..DU.DBFUUFBD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DFBUUFBD.UD..DU.UxxDDxxU.UD..DU.DBFUUBFD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DFBUUFBD.UD..DU.UxxDDxxU.UD..DU.DFBUUFBD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DFFUUBBD.UD..DU.UxxDDxxU.UD..DU.DBBUUFFD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DFFUUBBD.UD..DU.UxxDDxxU.UD..DU.DFFUUBBD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DFFUUFFD.UD..DU.UxxDDxxU.UD..DU.DBBUUBBD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DLLUULLD.UD..DU.UxxDDxxU.UD..DU.DRRUURRD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DLRUURLD.UD..DU.UxxDDxxU.UD..DU.DRLUULRD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DRLUULRD.UD..DU.UxxDDxxU.UD..DU.DLRUURLD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DRRUURRD.UD..DU.UxxDDxxU.UD..DU.DLLUULLD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DUDUUDUD.UD..DU.UxxDDxxU.UD..DU.DDUUUUDD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DUDUUUDD.UD..DU.UxxDDxxU.UD..DU.DDUUUDUD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DUDUUUDD.UD..DU.UxxDDxxU.UD..DU.DUDUUUDD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DUUUUDDD.UD..DU.UxxDDxxU.UD..DU.DDDUUUUD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DUUUUDDD.UD..DU.UxxDDxxU.UD..DU.DUUUUDDD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.DUUUUUUD.UD..DU.UxxDDxxU.UD..DU.DDDUUDDD.UD..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DBBUUBBD.UD..DU.UxxDDxxU.UD..DU.DFFUUFFD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DBBUUFFD.UD..DU.UxxDDxxU.UD..DU.DBBUUFFD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DBBUUFFD.UD..DU.UxxDDxxU.UD..DU.DFFUUBBD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DBFUUBFD.UD..DU.UxxDDxxU.UD..DU.DBFUUBFD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DBFUUBFD.UD..DU.UxxDDxxU.UD..DU.DFBUUFBD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DBFUUFBD.UD..DU.UxxDDxxU.UD..DU.DFBUUBFD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DDDUUDDD.UD..DU.UxxDDxxU.UD..DU.DUUUUUUD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DDDUUUUD.UD..DU.UxxDDxxU.UD..DU.DDDUUUUD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DDDUUUUD.UD..DU.UxxDDxxU.UD..DU.DUUUUDDD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DDUUUDUD.UD..DU.UxxDDxxU.UD..DU.DDUUUDUD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DDUUUDUD.UD..DU.UxxDDxxU.UD..DU.DUDUUUDD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DDUUUUDD.UD..DU.UxxDDxxU.UD..DU.DUDUUDUD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DFBUUBFD.UD..DU.UxxDDxxU.UD..DU.DBFUUFBD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DFBUUFBD.UD..DU.UxxDDxxU.UD..DU.DBFUUBFD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DFBUUFBD.UD..DU.UxxDDxxU.UD..DU.DFBUUFBD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DFFUUBBD.UD..DU.UxxDDxxU.UD..DU.DBBUUFFD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DFFUUBBD.UD..DU.UxxDDxxU.UD..DU.DFFUUBBD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DFFUUFFD.UD..DU.UxxDDxxU.UD..DU.DBBUUBBD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DLLUULLD.UD..DU.UxxDDxxU.UD..DU.DRRUURRD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DLRUURLD.UD..DU.UxxDDxxU.UD..DU.DRLUULRD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DRLUULRD.UD..DU.UxxDDxxU.UD..DU.DLRUURLD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DRRUURRD.UD..DU.UxxDDxxU.UD..DU.DLLUULLD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DUDUUDUD.UD..DU.UxxDDxxU.UD..DU.DDUUUUDD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DUDUUUDD.UD..DU.UxxDDxxU.UD..DU.DDUUUDUD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DUDUUUDD.UD..DU.UxxDDxxU.UD..DU.DUDUUUDD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DUUUUDDD.UD..DU.UxxDDxxU.UD..DU.DDDUUUUD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DUUUUDDD.UD..DU.UxxDDxxU.UD..DU.DUUUUDDD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..DU.DUUUUUUD.UD..DU.UxxDDxxU.UD..DU.DDDUUDDD.UD..UD.DxxUUxxD.DU.', 'ULFRBD'),
+             ('.UD.UBBDDBBU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UFFDDFFU.DU.', 'ULFRBD'),
+             ('.UD.UBBDDFFU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UBBDDFFU.DU.', 'ULFRBD'),
+             ('.UD.UBBDDFFU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UFFDDBBU.DU.', 'ULFRBD'),
+             ('.UD.UBFDDBFU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UBFDDBFU.DU.', 'ULFRBD'),
+             ('.UD.UBFDDBFU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UFBDDFBU.DU.', 'ULFRBD'),
+             ('.UD.UBFDDFBU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UFBDDBFU.DU.', 'ULFRBD'),
+             ('.UD.UDDDDDDU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UUUDDUUU.DU.', 'ULFRBD'),
+             ('.UD.UDDDDUUU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UDDDDUUU.DU.', 'ULFRBD'),
+             ('.UD.UDDDDUUU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UUUDDDDU.DU.', 'ULFRBD'),
+             ('.UD.UDUDDDUU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UDUDDDUU.DU.', 'ULFRBD'),
+             ('.UD.UDUDDDUU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UUDDDUDU.DU.', 'ULFRBD'),
+             ('.UD.UDUDDUDU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UUDDDDUU.DU.', 'ULFRBD'),
+             ('.UD.UFBDDBFU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UBFDDFBU.DU.', 'ULFRBD'),
+             ('.UD.UFBDDFBU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UBFDDBFU.DU.', 'ULFRBD'),
+             ('.UD.UFBDDFBU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UFBDDFBU.DU.', 'ULFRBD'),
+             ('.UD.UFFDDBBU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UBBDDFFU.DU.', 'ULFRBD'),
+             ('.UD.UFFDDBBU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UFFDDBBU.DU.', 'ULFRBD'),
+             ('.UD.UFFDDFFU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UBBDDBBU.DU.', 'ULFRBD'),
+             ('.UD.ULLDDLLU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.URRDDRRU.DU.', 'ULFRBD'),
+             ('.UD.ULLDDRRU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.ULLDDRRU.DU.', 'ULFRBD'),
+             ('.UD.ULLDDRRU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.URRDDLLU.DU.', 'ULFRBD'),
+             ('.UD.ULRDDLRU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.ULRDDLRU.DU.', 'ULFRBD'),
+             ('.UD.ULRDDLRU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.URLDDRLU.DU.', 'ULFRBD'),
+             ('.UD.ULRDDRLU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.URLDDLRU.DU.', 'ULFRBD'),
+             ('.UD.URLDDLRU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.ULRDDRLU.DU.', 'ULFRBD'),
+             ('.UD.URLDDRLU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.ULRDDLRU.DU.', 'ULFRBD'),
+             ('.UD.URLDDRLU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.URLDDRLU.DU.', 'ULFRBD'),
+             ('.UD.URRDDLLU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.ULLDDRRU.DU.', 'ULFRBD'),
+             ('.UD.URRDDLLU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.URRDDLLU.DU.', 'ULFRBD'),
+             ('.UD.URRDDRRU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.ULLDDLLU.DU.', 'ULFRBD'),
+             ('.UD.UUDDDDUU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UDUDDUDU.DU.', 'ULFRBD'),
+             ('.UD.UUDDDUDU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UDUDDDUU.DU.', 'ULFRBD'),
+             ('.UD.UUDDDUDU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UUDDDUDU.DU.', 'ULFRBD'),
+             ('.UD.UUUDDDDU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UDDDDUUU.DU.', 'ULFRBD'),
+             ('.UD.UUUDDDDU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UUUDDDDU.DU.', 'ULFRBD'),
+             ('.UD.UUUDDUUU.DU..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.DxxUUxxD.DU..DU.UxxDDxxU.UD..UD.UDDDDDDU.DU.', 'ULFRBD'))
         )
 
 

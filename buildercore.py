@@ -386,7 +386,8 @@ class BFS(object):
     """
 
     def __init__(self, name, illegal_moves, size, filename, store_as_hex, starting_cube_states,
-                 use_cost_only=False, use_hash_cost_only=False, use_edges_pattern=False, legal_moves=None):
+                 use_cost_only=False, use_hash_cost_only=False, use_edges_pattern=False, legal_moves=None,
+                 rotations=[]):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
@@ -398,6 +399,7 @@ class BFS(object):
         self.use_edges_pattern = use_edges_pattern
         self.size = size
         self.starting_cube_states = starting_cube_states
+        self.rotations = rotations
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
@@ -822,20 +824,32 @@ class BFS(object):
 
     def save_starting_states(self):
         patterns = []
-        with open(self.filename, 'r') as fh_read, open("%s.starting-states" % self.filename, 'w') as fh_final:
-            to_write = []
+        to_write = []
+        with open(self.filename, 'r') as fh_read:
             for line in fh_read:
-
                 if self.use_edges_pattern:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
                     patterns.append(pattern)
                 else:
                     (cube_state_string, steps) = line.rstrip().split(':')
-
+                    self.cube.state = list(cube_state_string)
+                    self.cube.print_cube()
                 to_write.append("             ('%s', 'ULFRBD')," % cube_state_string[1:])
 
+                # dwalton
+                # workq_line = "%s:%s" % (''.join(cube.state), move)
+                for step in self.rotations:
+                    self.cube.state = list(cube_state_string)
+                    self.cube.rotate(step)
+                    #log.warning("FOO: %s" % step)
+                    self.cube.print_cube()
+                    to_write.append("             ('%s', 'ULFRBD')," % ''.join(self.cube.state))
+
+        with open("%s.starting-states" % self.filename, 'w') as fh_final:
             to_write.sort()
             fh_final.write("\n".join(to_write) + "\n")
+
+        log.info("wrote %d starting states" % len(to_write))
 
         if self.use_edges_pattern:
             print("state_target patterns:\n%s\n\n" % '\n'.join(patterns))
