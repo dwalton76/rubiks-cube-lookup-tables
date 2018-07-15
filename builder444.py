@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/e nv python3
 
 from buildercore import BFS
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444
@@ -11,7 +11,7 @@ import sys
 log = logging.getLogger(__name__)
 
 
-class StartingStates444TsaiPhase0(BFS):
+class StartingStates444TsaiPhase1(BFS):
     """
     Combine tsai phases 1 and 2
     - Need all 3 opposite side pairs to be elligible for 12 states
@@ -21,7 +21,7 @@ class StartingStates444TsaiPhase0(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-tsai-phase0',
+            '4x4x4-tsai-phase1',
             ("Uw", "Uw'",
              "Dw", "Dw'",
              "Fw", "Fw'",
@@ -29,7 +29,7 @@ class StartingStates444TsaiPhase0(BFS):
              "L", "L'", "Lw", "Lw'",
              "R", "R'", "Rw", "Rw'"),
             '4x4x4',
-            'starting-states-lookup-table-4x4x4-step01-tsai-phase0.txt',
+            'starting-states-lookup-table-4x4x4-step60-tsai-phase1.txt',
             False, # store_as_hex
 
              (
@@ -134,13 +134,13 @@ class StartingStates444TsaiPhase0(BFS):
         )
 
 
-class StartingStates444TsaiPhase0Centers(BFS):
+class StartingStates444TsaiPhase1Centers(BFS):
     """
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-tsai-phase0-centers',
+            '4x4x4-tsai-phase1-centers',
             ("Uw", "Uw'",
              "Dw", "Dw'",
              "Fw", "Fw'",
@@ -148,7 +148,7 @@ class StartingStates444TsaiPhase0Centers(BFS):
              "L", "L'", "Lw", "Lw'",
              "R", "R'", "Rw", "Rw'"),
             '4x4x4',
-            'starting-states-lookup-table-4x4x4-step02-tsai-phase0-centers.txt',
+            'lookup-table-4x4x4-step61-tsai-phase1-centers.txt',
             False, # store_as_hex
             # starting cubes
             (("""
@@ -170,7 +170,7 @@ class StartingStates444TsaiPhase0Centers(BFS):
 
 
 
-class Build444TsaiPhase0(BFS):
+class Build444TsaiPhase1(BFS):
     """
     This is a main lookup table.  It will use the UD, LR and FB centers staging prune tables.
     We could make UD, LR and FB prune tables that are solving (not staging) for the 12 possible
@@ -187,13 +187,13 @@ class Build444TsaiPhase0(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-tsai-phase0',
+            '4x4x4-tsai-phase1',
             # TPR also restricts these
             ("Lw", "Lw'", "Lw2",
              "Bw", "Bw'", "Bw2",
              "Dw", "Dw'", "Dw2"),
             '4x4x4',
-            'lookup-table-4x4x4-step01-tsai-phase0.txt',
+            'lookup-table-4x4x4-step60-tsai-phase1.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -273,17 +273,17 @@ class Build444TsaiPhase0(BFS):
         )
 
 
-class Build444TsaiPhase0Centers(BFS):
+class Build444TsaiPhase1Centers(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-tsai-phase0-centers',
+            '4x4x4-tsai-phase1-centers',
             # TPR also restricts these
             ("Lw", "Lw'", "Lw2",
              "Bw", "Bw'", "Bw2",
              "Dw", "Dw'", "Dw2"),
             '4x4x4',
-            'lookup-table-4x4x4-step02-tsai-phase0-centers.txt',
+            'lookup-table-4x4x4-step02-tsai-phase1-centers.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -504,15 +504,15 @@ class Build444ULFRBDCentersStage(BFS):
         )
 
 
-class Build444Phase3Edges(BFS):
+class Build444Phase2Edges(BFS):
     """
-    This is the TPR phase3 edges table.
+    This is the TPR phase2 edges table.
     This table will have ~239 million entries.
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-phase3-edges',
+            '4x4x4-phase2-edges',
             ("Uw", "Uw'",
              "Lw", "Lw'",
              "Fw", "Fw'",
@@ -522,7 +522,7 @@ class Build444Phase3Edges(BFS):
              "L", "L'",
              "R", "R'"),
             '4x4x4',
-            'lookup-table-4x4x4-step71-tsai-phase3-edges.txt',
+            'lookup-table-4x4x4-step71-tsai-phase2-edges.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -546,14 +546,14 @@ class Build444Phase3Edges(BFS):
         )
 
 
-class StartingStates444Phase3Centers(BFS):
+class StartingStates444Phase2Centers(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-tsai-phase3-centers',
+            '4x4x4-tsai-phase2-centers',
             moves_444,
             '4x4x4',
-            'starting-states-lookup-table-4x4x4-step72-tsai-phase3-centers.txt',
+            'starting-states-lookup-table-4x4x4-step72-tsai-phase2-centers.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -576,13 +576,13 @@ class StartingStates444Phase3Centers(BFS):
         )
 
 
-class Build444Phase3Centers(BFS):
+class Build444Phase2Centers(BFS):
     """
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-phase3-centers',
+            '4x4x4-phase2-centers',
             ("Uw", "Uw'",
              "Lw", "Lw'",
              "Fw", "Fw'",
@@ -592,7 +592,7 @@ class Build444Phase3Centers(BFS):
              "L", "L'",
              "R", "R'"),
             '4x4x4',
-            'lookup-table-4x4x4-step72-tsai-phase3-centers.txt',
+            'lookup-table-4x4x4-step72-tsai-phase2-centers.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -623,14 +623,14 @@ class Build444Phase3Centers(BFS):
         )
 
 
-class StartingStates444Phase3(BFS):
+class StartingStates444Phase2(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-tsai-phase3',
+            '4x4x4-tsai-phase2',
             moves_444,
             '4x4x4',
-            'starting-states-lookup-table-4x4x4-step70-tsai-phase3.txt',
+            'starting-states-lookup-table-4x4x4-step70-tsai-phase2.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -653,13 +653,13 @@ class StartingStates444Phase3(BFS):
         )
 
 
-class Build444Phase3(BFS):
+class Build444Phase2(BFS):
     """
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-phase3',
+            '4x4x4-phase2',
             ("Uw", "Uw'",
              "Lw", "Lw'",
              "Fw", "Fw'",
@@ -669,7 +669,7 @@ class Build444Phase3(BFS):
              "L", "L'",
              "R", "R'"),
             '4x4x4',
-            'lookup-table-4x4x4-step70-tsai-phase3.txt',
+            'lookup-table-4x4x4-step70-tsai-phase2.txt',
             False, # store_as_hex
 
             # starting cubes
