@@ -3,7 +3,7 @@
 from collections import Counter
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
-from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444
+from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444
 from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
@@ -387,7 +387,7 @@ class BFS(object):
 
     def __init__(self, name, illegal_moves, size, filename, store_as_hex, starting_cube_states,
                  use_cost_only=False, use_hash_cost_only=False, use_edges_pattern=False, legal_moves=None,
-                 rotations=[]):
+                 rotations=[], use_centers_then_edges=False):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
@@ -400,6 +400,7 @@ class BFS(object):
         self.size = size
         self.starting_cube_states = starting_cube_states
         self.rotations = rotations
+        self.use_centers_then_edges = use_centers_then_edges
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
@@ -865,6 +866,23 @@ class BFS(object):
                 for line in fh_read:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
                     fh_final.write("%s:%s\n" % (pattern, steps))
+
+            elif self.use_centers_then_edges:
+                for line in fh_read:
+                    (cube_state_string, steps) = line.rstrip().split(':')
+                    self.cube.state = list(cube_state_string)
+
+                    if self.size == '4x4x4':
+                        centers = ''.join(self.cube.state[x] for x in centers_444)
+                        edges = ''.join(self.cube.state[x] for x in edges_444)
+
+                        centers = centers.replace('.', '')
+                        edges = edges.replace('.', '')
+                    else:
+                        raise Exception("Add support for %s" % self.size)
+
+                    fh_final.write("%s%s:%s\n" % (centers, edges, steps))
+
             else:
                 for line in fh_read:
                     (cube_state_string, steps) = line.rstrip().split(':')
