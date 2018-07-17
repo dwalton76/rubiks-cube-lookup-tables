@@ -11,297 +11,6 @@ import sys
 log = logging.getLogger(__name__)
 
 
-class StartingStates444TsaiPhase1(BFS):
-    """
-    Combine tsai phases 1 and 2
-    - Need all 3 opposite side pairs to be elligible for 12 states
-    - Need those to happen at any of 24 rotations
-    - Need high/low edges in this too
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-tsai-phase1',
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "L", "L'", "Lw", "Lw'",
-             "R", "R'", "Rw", "Rw'"),
-            '4x4x4',
-            'starting-states-lookup-table-4x4x4-step60-tsai-phase1.txt',
-            False, # store_as_hex
-
-             (
-              ("""
-          . U D .
-          D L L U
-          U L L D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D U U U  U F F D  D D D U  U F F D
- U U U D  D F F U  U D D D  D F F U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D L L U
-          U L L D
-          . D U .""", 'ascii'),
-
-              ("""
-          . U D .
-          D F F U
-          U F F D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D U U U  U L L D  D D D U  U L L D
- U U U D  D L L U  U D D D  D L L U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D F F U
-          U F F D
-          . D U .""", 'ascii'),
-
-              ("""
-          . U D .
-          D U U U
-          U U U D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L L U  U F F D  D R R U  U F F D
- U L L D  D F F U  U R R D  D F F U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D U U U
-          U U U D
-          . D U .""", 'ascii'),
-
-              ("""
-          . U D .
-          D F F U
-          U F F D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L L U  U U U D  D R R U  U U U D
- U L L D  D U U U  U R R D  D U U U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D F F U
-          U F F D
-          . D U .""", 'ascii'),
-
-              ("""
-          . U D .
-          D U U U
-          U U U D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D F F U  U L L D  D B B U  U L L D
- U F F D  D L L U  U B B D  D L L U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D U U U
-          U U U D
-          . D U .""", 'ascii'),
-
-              ("""
-          . U D .
-          D L L U
-          U L L D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D F F U  U U U D  D B B U  U U U D
- U F F D  D U U U  U B B D  D U U U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D L L U
-          U L L D
-          . D U .""", 'ascii'),
-
-
-            ),
-        )
-
-
-class StartingStates444TsaiPhase1Centers(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-tsai-phase1-centers',
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "L", "L'", "Lw", "Lw'",
-             "R", "R'", "Rw", "Rw'"),
-            '4x4x4',
-            'lookup-table-4x4x4-step61-tsai-phase1-centers.txt',
-            False, # store_as_hex
-            # starting cubes
-            (("""
-          . . . .
-          . x x .
-          . x x .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . x x .  . R R .  . x x .
- . L L .  . x x .  . R R .  . x x .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . x x .
-          . x x .
-          . . . .""", 'ascii'),)
-        )
-
-
-
-class Build444TsaiPhase1(BFS):
-    """
-    This is a main lookup table.  It will use the UD, LR and FB centers staging prune tables.
-    We could make UD, LR and FB prune tables that are solving (not staging) for the 12 possible
-    centers patterns for each.  These would have 54 million entries so use hash-cost-only. I'm
-    not sure how much this would save us, there are only 70 patterns anwyay so there is a 12/70
-    chance we would be driving towards the goal state we want.  Anyway, wait to see how the search
-    goes without these 54million entry tables and go from there.
-
-    Once this finishes write a util to traverse the file and re-write the state in centers_edges format
-    We need this so when we are doing IDA we can evaluate all of the entries where our centers state
-    is a match.  We'll run the steps and look to see if the edgees have been split into high/low groups.
-    This is the fastest way I can think of to do this without looping over all 2048 edge orientations.
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-tsai-phase1',
-            # TPR also restricts these
-            ("Lw", "Lw'", "Lw2",
-             "Bw", "Bw'", "Bw2",
-             "Dw", "Dw'", "Dw2"),
-            '4x4x4',
-            'lookup-table-4x4x4-step60-tsai-phase1.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('.UD.DFFUUFFD.DU..DU.DDDUUDDD.UD..DU.ULLDDLLU.UD..DU.DUUUUUUD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DDDUUUUD.UD..DU.ULLDDLLU.UD..DU.DDDUUUUD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DDDUUUUD.UD..DU.ULLDDLLU.UD..DU.DUUUUDDD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DDUUUDUD.UD..DU.ULLDDLLU.UD..DU.DDUUUDUD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DDUUUDUD.UD..DU.ULLDDLLU.UD..DU.DUDUUUDD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DDUUUUDD.UD..DU.ULLDDLLU.UD..DU.DUDUUDUD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DLLUULLD.UD..DU.UUUDDUUU.UD..DU.DRRUURRD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DLLUURRD.UD..DU.UUUDDUUU.UD..DU.DLLUURRD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DLLUURRD.UD..DU.UUUDDUUU.UD..DU.DRRUULLD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DLRUULRD.UD..DU.UUUDDUUU.UD..DU.DLRUULRD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DLRUULRD.UD..DU.UUUDDUUU.UD..DU.DRLUURLD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DLRUURLD.UD..DU.UUUDDUUU.UD..DU.DRLUULRD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DRLUULRD.UD..DU.UUUDDUUU.UD..DU.DLRUURLD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DRLUURLD.UD..DU.UUUDDUUU.UD..DU.DLRUULRD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DRLUURLD.UD..DU.UUUDDUUU.UD..DU.DRLUURLD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DRRUULLD.UD..DU.UUUDDUUU.UD..DU.DLLUURRD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DRRUULLD.UD..DU.UUUDDUUU.UD..DU.DRRUULLD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DRRUURRD.UD..DU.UUUDDUUU.UD..DU.DLLUULLD.UD..DU.UUUDDUUU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DUDUUDUD.UD..DU.ULLDDLLU.UD..DU.DDUUUUDD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DUDUUUDD.UD..DU.ULLDDLLU.UD..DU.DDUUUDUD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DUDUUUDD.UD..DU.ULLDDLLU.UD..DU.DUDUUUDD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DUUUUDDD.UD..DU.ULLDDLLU.UD..DU.DDDUUUUD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DUUUUDDD.UD..DU.ULLDDLLU.UD..DU.DUUUUDDD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DFFUUFFD.DU..DU.DUUUUUUD.UD..DU.ULLDDLLU.UD..DU.DDDUUDDD.UD..DU.ULLDDLLU.UD..UD.DFFUUFFD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DBBUUBBD.UD..DU.UUUDDUUU.UD..DU.DFFUUFFD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DBBUUFFD.UD..DU.UUUDDUUU.UD..DU.DBBUUFFD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DBBUUFFD.UD..DU.UUUDDUUU.UD..DU.DFFUUBBD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DBFUUBFD.UD..DU.UUUDDUUU.UD..DU.DBFUUBFD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DBFUUBFD.UD..DU.UUUDDUUU.UD..DU.DFBUUFBD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DBFUUFBD.UD..DU.UUUDDUUU.UD..DU.DFBUUBFD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DDDUUDDD.UD..DU.UFFDDFFU.UD..DU.DUUUUUUD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DDDUUUUD.UD..DU.UFFDDFFU.UD..DU.DDDUUUUD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DDDUUUUD.UD..DU.UFFDDFFU.UD..DU.DUUUUDDD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DDUUUDUD.UD..DU.UFFDDFFU.UD..DU.DDUUUDUD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DDUUUDUD.UD..DU.UFFDDFFU.UD..DU.DUDUUUDD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DDUUUUDD.UD..DU.UFFDDFFU.UD..DU.DUDUUDUD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DFBUUBFD.UD..DU.UUUDDUUU.UD..DU.DBFUUFBD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DFBUUFBD.UD..DU.UUUDDUUU.UD..DU.DBFUUBFD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DFBUUFBD.UD..DU.UUUDDUUU.UD..DU.DFBUUFBD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DFFUUBBD.UD..DU.UUUDDUUU.UD..DU.DBBUUFFD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DFFUUBBD.UD..DU.UUUDDUUU.UD..DU.DFFUUBBD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DFFUUFFD.UD..DU.UUUDDUUU.UD..DU.DBBUUBBD.UD..DU.UUUDDUUU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DUDUUDUD.UD..DU.UFFDDFFU.UD..DU.DDUUUUDD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DUDUUUDD.UD..DU.UFFDDFFU.UD..DU.DDUUUDUD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DUDUUUDD.UD..DU.UFFDDFFU.UD..DU.DUDUUUDD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DUUUUDDD.UD..DU.UFFDDFFU.UD..DU.DDDUUUUD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DUUUUDDD.UD..DU.UFFDDFFU.UD..DU.DUUUUDDD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DLLUULLD.DU..DU.DUUUUUUD.UD..DU.UFFDDFFU.UD..DU.DDDUUDDD.UD..DU.UFFDDFFU.UD..UD.DLLUULLD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DBBUUBBD.UD..DU.ULLDDLLU.UD..DU.DFFUUFFD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DBBUUFFD.UD..DU.ULLDDLLU.UD..DU.DBBUUFFD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DBBUUFFD.UD..DU.ULLDDLLU.UD..DU.DFFUUBBD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DBFUUBFD.UD..DU.ULLDDLLU.UD..DU.DBFUUBFD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DBFUUBFD.UD..DU.ULLDDLLU.UD..DU.DFBUUFBD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DBFUUFBD.UD..DU.ULLDDLLU.UD..DU.DFBUUBFD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DFBUUBFD.UD..DU.ULLDDLLU.UD..DU.DBFUUFBD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DFBUUFBD.UD..DU.ULLDDLLU.UD..DU.DBFUUBFD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DFBUUFBD.UD..DU.ULLDDLLU.UD..DU.DFBUUFBD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DFFUUBBD.UD..DU.ULLDDLLU.UD..DU.DBBUUFFD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DFFUUBBD.UD..DU.ULLDDLLU.UD..DU.DFFUUBBD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DFFUUFFD.UD..DU.ULLDDLLU.UD..DU.DBBUUBBD.UD..DU.ULLDDLLU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLLUULLD.UD..DU.UFFDDFFU.UD..DU.DRRUURRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DLRUURLD.UD..DU.UFFDDFFU.UD..DU.DRLUULRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRLUULRD.UD..DU.UFFDDFFU.UD..DU.DLRUURLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..DU.DLRUULRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..DU.DRLUURLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..DU.DLLUURRD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..DU.DRRUULLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-             ('.UD.DUUUUUUD.DU..DU.DRRUURRD.UD..DU.UFFDDFFU.UD..DU.DLLUULLD.UD..DU.UFFDDFFU.UD..UD.DUUUUUUD.DU.', 'ULFRBD')),
-            use_centers_then_edges=True
-        )
-
-
-class Build444TsaiPhase1Centers(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-tsai-phase1-centers',
-            # TPR also restricts these
-            ("Lw", "Lw'", "Lw2",
-             "Bw", "Bw'", "Bw2",
-             "Dw", "Dw'", "Dw2"),
-            '4x4x4',
-            'lookup-table-4x4x4-step02-tsai-phase1-centers.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('.....xx..xx..........LL..LL..........xx..xx..........RR..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LL..RR..........xx..xx..........LL..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LL..RR..........xx..xx..........RR..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LR..LR..........xx..xx..........LR..LR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LR..LR..........xx..xx..........RL..RL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........LR..RL..........xx..xx..........RL..LR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RL..LR..........xx..xx..........LR..RL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RL..RL..........xx..xx..........LR..LR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RL..RL..........xx..xx..........RL..RL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RR..LL..........xx..xx..........LL..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RR..LL..........xx..xx..........RR..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........RR..RR..........xx..xx..........LL..LL..........xx..xx..........xx..xx.....', 'ULFRBD'))
-        )
-
-
 class StartingStates444UDCentersStage(BFS):
 
     def __init__(self):
@@ -504,15 +213,196 @@ class Build444ULFRBDCentersStage(BFS):
         )
 
 
-class Build444Phase2Edges(BFS):
+class StartingStates444HighLowEdges(BFS):
     """
-    This is the TPR phase2 edges table.
-    This table will have ~239 million entries.
+    Combine tsai phases 1 and 2
+    - Need all 3 opposite side pairs to be elligible for 12 states
+    - Need those to happen at any of 24 rotations
+    - Need high/low edges in this too
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-phase2-edges',
+            '444-highlow-edges',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'"),
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step20-highlow-edges.txt',
+            False, # store_as_hex
+
+            (("""
+          . U D .
+          D . . U
+          U . . D
+          . D U .
+
+ . D U .  . D U .  . D U .  . D U .
+ D L L U  U . . D  D R R U  U . . D
+ U L L D  D . . U  U R R D  D . . U
+ . U D .  . U D .  . U D .  . U D .
+
+          . U D .
+          D . . U
+          U . . D
+          . D U .""", 'ascii'),)
+        )
+
+
+class StartingStates444HighLowEdgesCenters(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-highlow-edges-centers',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+            "L", "L'",
+            "R", "R'"),
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step21-highlow-edges-centers.txt',
+            False, # store_as_hex
+            # starting cubes
+            (("""
+          . . . .
+          . . . .
+          . . . .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . . . .  . R R .  . . . .
+ . L L .  . . . .  . R R .  . . . .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . . . .
+          . . . .
+          . . . .""", 'ascii'),)
+        )
+
+
+class Build444HighLowEdgesEdges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-highlow-edges-edges',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+            # TPR also restricts these
+            # "Lw", "Lw'", "Lw2",
+            # "Bw", "Bw'", "Bw2",
+            # "Dw", "Dw'", "Dw2"),
+
+            '4x4x4',
+            'lookup-table-4x4x4-step22-highlow-edges-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . U D .
+          D . . U
+          U . . D
+          . D U .
+
+ . D U .  . D U .  . D U .  . D U .
+ D . . U  U . . D  D . . U  U . . D
+ U . . D  D . . U  U . . D  D . . U
+ . U D .  . U D .  . U D .  . U D .
+
+          . U D .
+          D . . U
+          U . . D
+          . D U .""", 'ascii'),)
+        )
+
+
+class Build444HighLowEdgesCenters(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-highlow-edges-centers',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step21-highlow-edges-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.....................LL..LL..........................RR..RR.....................................', 'ULFRBD'),
+             ('.....................LL..RR..........................LL..RR.....................................', 'ULFRBD'),
+             ('.....................LL..RR..........................RR..LL.....................................', 'ULFRBD'),
+             ('.....................LR..LR..........................LR..LR.....................................', 'ULFRBD'),
+             ('.....................LR..LR..........................RL..RL.....................................', 'ULFRBD'),
+             ('.....................LR..RL..........................RL..LR.....................................', 'ULFRBD'),
+             ('.....................RL..LR..........................LR..RL.....................................', 'ULFRBD'),
+             ('.....................RL..RL..........................LR..LR.....................................', 'ULFRBD'),
+             ('.....................RL..RL..........................RL..RL.....................................', 'ULFRBD'),
+             ('.....................RR..LL..........................LL..RR.....................................', 'ULFRBD'),
+             ('.....................RR..LL..........................RR..LL.....................................', 'ULFRBD'),
+             ('.....................RR..RR..........................LL..LL.....................................', 'ULFRBD'))
+        )
+
+
+class Build444HighLowEdges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-highlow-edges',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step20-highlow-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.UD.D..UU..D.DU..DU.DLLUULLD.UD..DU.U..DD..U.UD..DU.DRRUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLRUURLD.UD..DU.U..DD..U.UD..DU.DRLUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRLUULRD.UD..DU.U..DD..U.UD..DU.DLRUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRRUURRD.UD..DU.U..DD..U.UD..DU.DLLUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD')),
+            use_centers_then_edges=True
+        )
+
+
+class Build444Reduce333Edges(BFS):
+    """
+    This is the TPR edges table.
+    This table will have ~239 million entries.
+    """
+
+    # dwalton
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333-edges',
             ("Uw", "Uw'",
              "Lw", "Lw'",
              "Fw", "Fw'",
@@ -522,7 +412,7 @@ class Build444Phase2Edges(BFS):
              "L", "L'",
              "R", "R'"),
             '4x4x4',
-            'lookup-table-4x4x4-step71-tsai-phase2-edges.txt',
+            'lookup-table-4x4x4-step31-reduce333-edges.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -542,18 +432,45 @@ class Build444Phase2Edges(BFS):
           D . . D
           . D D .""", 'ascii'),),
 
-            use_edges_pattern=True
+            use_edges_pattern=True,
+            symmetries=(
+                "",
+                "y y",
+                "x",
+                "x y y",
+                "x'",
+                "x' y y",
+                "x x",
+                "x x y y",
+                "reflect-x",
+                "reflect-x y y",
+                "reflect-x x",
+                "reflect-x x y y",
+                "reflect-x x'",
+                "reflect-x x' y y",
+                "reflect-x x x",
+                "reflect-x x x y y",
+            )
         )
 
 
-class StartingStates444Phase2Centers(BFS):
+class Build444Reduce333Centers(BFS):
+    """
+    """
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-tsai-phase2-centers',
-            moves_444,
+            '444-reduce333-centers',
+            ("Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'"),
             '4x4x4',
-            'starting-states-lookup-table-4x4x4-step72-tsai-phase2-centers.txt',
+            'lookup-table-4x4x4-step32-reduce333-centers.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -572,17 +489,16 @@ class StartingStates444Phase2Centers(BFS):
           . D D .
           . D D .
           . . . .""", 'ascii'),),
-            legal_moves=("x", "x'", "y", "y'", "z", "z'"),
         )
 
 
-class Build444Phase2Centers(BFS):
+class Build444Reduce333(BFS):
     """
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '4x4x4-phase2-centers',
+            '444-reduce333',
             ("Uw", "Uw'",
              "Lw", "Lw'",
              "Fw", "Fw'",
@@ -592,45 +508,7 @@ class Build444Phase2Centers(BFS):
              "L", "L'",
              "R", "R'"),
             '4x4x4',
-            'lookup-table-4x4x4-step72-tsai-phase2-centers.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('.....BB..BB..........DD..DD..........LL..LL..........UU..UU..........RR..RR..........FF..FF.....', 'ULFRBD'),
-             ('.....BB..BB..........LL..LL..........UU..UU..........RR..RR..........DD..DD..........FF..FF.....', 'ULFRBD'),
-             ('.....BB..BB..........RR..RR..........DD..DD..........LL..LL..........UU..UU..........FF..FF.....', 'ULFRBD'),
-             ('.....BB..BB..........UU..UU..........RR..RR..........DD..DD..........LL..LL..........FF..FF.....', 'ULFRBD'),
-             ('.....DD..DD..........BB..BB..........RR..RR..........FF..FF..........LL..LL..........UU..UU.....', 'ULFRBD'),
-             ('.....DD..DD..........FF..FF..........LL..LL..........BB..BB..........RR..RR..........UU..UU.....', 'ULFRBD'),
-             ('.....DD..DD..........LL..LL..........BB..BB..........RR..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
-             ('.....DD..DD..........RR..RR..........FF..FF..........LL..LL..........BB..BB..........UU..UU.....', 'ULFRBD'),
-             ('.....FF..FF..........DD..DD..........RR..RR..........UU..UU..........LL..LL..........BB..BB.....', 'ULFRBD'),
-             ('.....FF..FF..........LL..LL..........DD..DD..........RR..RR..........UU..UU..........BB..BB.....', 'ULFRBD'),
-             ('.....FF..FF..........RR..RR..........UU..UU..........LL..LL..........DD..DD..........BB..BB.....', 'ULFRBD'),
-             ('.....FF..FF..........UU..UU..........LL..LL..........DD..DD..........RR..RR..........BB..BB.....', 'ULFRBD'),
-             ('.....LL..LL..........BB..BB..........DD..DD..........FF..FF..........UU..UU..........RR..RR.....', 'ULFRBD'),
-             ('.....LL..LL..........DD..DD..........FF..FF..........UU..UU..........BB..BB..........RR..RR.....', 'ULFRBD'),
-             ('.....LL..LL..........FF..FF..........UU..UU..........BB..BB..........DD..DD..........RR..RR.....', 'ULFRBD'),
-             ('.....LL..LL..........UU..UU..........BB..BB..........DD..DD..........FF..FF..........RR..RR.....', 'ULFRBD'),
-             ('.....RR..RR..........BB..BB..........UU..UU..........FF..FF..........DD..DD..........LL..LL.....', 'ULFRBD'),
-             ('.....RR..RR..........DD..DD..........BB..BB..........UU..UU..........FF..FF..........LL..LL.....', 'ULFRBD'),
-             ('.....RR..RR..........FF..FF..........DD..DD..........BB..BB..........UU..UU..........LL..LL.....', 'ULFRBD'),
-             ('.....RR..RR..........UU..UU..........FF..FF..........DD..DD..........BB..BB..........LL..LL.....', 'ULFRBD'),
-             ('.....UU..UU..........BB..BB..........LL..LL..........FF..FF..........RR..RR..........DD..DD.....', 'ULFRBD'),
-             ('.....UU..UU..........FF..FF..........RR..RR..........BB..BB..........LL..LL..........DD..DD.....', 'ULFRBD'),
-             ('.....UU..UU..........LL..LL..........FF..FF..........RR..RR..........BB..BB..........DD..DD.....', 'ULFRBD'),
-             ('.....UU..UU..........RR..RR..........BB..BB..........LL..LL..........FF..FF..........DD..DD.....', 'ULFRBD'))
-        )
-
-
-class StartingStates444Phase2(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-tsai-phase2',
-            moves_444,
-            '4x4x4',
-            'starting-states-lookup-table-4x4x4-step70-tsai-phase2.txt',
+            'lookup-table-4x4x4-step30-reduce333.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -649,53 +527,5 @@ class StartingStates444Phase2(BFS):
           D D D D
           D D D D
           . D D .  """, 'ascii'),),
-            legal_moves=("x", "x'", "y", "y'", "z", "z'"),
-        )
-
-
-class Build444Phase2(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-phase2',
-            ("Uw", "Uw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Rw", "Rw'",
-             "Bw", "Bw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'"),
-            '4x4x4',
-            'lookup-table-4x4x4-step70-tsai-phase2.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('.BB.BBBBBBBB.BB..DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..UU.UUUUUUUU.UU..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF.', 'ULFRBD'),
-             ('.BB.BBBBBBBB.BB..LL.LLLLLLLL.LL..UU.UUUUUUUU.UU..RR.RRRRRRRR.RR..DD.DDDDDDDD.DD..FF.FFFFFFFF.FF.', 'ULFRBD'),
-             ('.BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..UU.UUUUUUUU.UU..FF.FFFFFFFF.FF.', 'ULFRBD'),
-             ('.BB.BBBBBBBB.BB..UU.UUUUUUUU.UU..RR.RRRRRRRR.RR..DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF.', 'ULFRBD'),
-             ('.DD.DDDDDDDD.DD..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..UU.UUUUUUUU.UU.', 'ULFRBD'),
-             ('.DD.DDDDDDDD.DD..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..UU.UUUUUUUU.UU.', 'ULFRBD'),
-             ('.DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU.', 'ULFRBD'),
-             ('.DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU.', 'ULFRBD'),
-             ('.FF.FFFFFFFF.FF..DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..UU.UUUUUUUU.UU..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB.', 'ULFRBD'),
-             ('.FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..UU.UUUUUUUU.UU..BB.BBBBBBBB.BB.', 'ULFRBD'),
-             ('.FF.FFFFFFFF.FF..RR.RRRRRRRR.RR..UU.UUUUUUUU.UU..LL.LLLLLLLL.LL..DD.DDDDDDDD.DD..BB.BBBBBBBB.BB.', 'ULFRBD'),
-             ('.FF.FFFFFFFF.FF..UU.UUUUUUUU.UU..LL.LLLLLLLL.LL..DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB.', 'ULFRBD'),
-             ('.LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..DD.DDDDDDDD.DD..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU..RR.RRRRRRRR.RR.', 'ULFRBD'),
-             ('.LL.LLLLLLLL.LL..DD.DDDDDDDD.DD..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR.', 'ULFRBD'),
-             ('.LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU..BB.BBBBBBBB.BB..DD.DDDDDDDD.DD..RR.RRRRRRRR.RR.', 'ULFRBD'),
-             ('.LL.LLLLLLLL.LL..UU.UUUUUUUU.UU..BB.BBBBBBBB.BB..DD.DDDDDDDD.DD..FF.FFFFFFFF.FF..RR.RRRRRRRR.RR.', 'ULFRBD'),
-             ('.RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU..FF.FFFFFFFF.FF..DD.DDDDDDDD.DD..LL.LLLLLLLL.LL.', 'ULFRBD'),
-             ('.RR.RRRRRRRR.RR..DD.DDDDDDDD.DD..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL.', 'ULFRBD'),
-             ('.RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..DD.DDDDDDDD.DD..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU..LL.LLLLLLLL.LL.', 'ULFRBD'),
-             ('.RR.RRRRRRRR.RR..UU.UUUUUUUU.UU..FF.FFFFFFFF.FF..DD.DDDDDDDD.DD..BB.BBBBBBBB.BB..LL.LLLLLLLL.LL.', 'ULFRBD'),
-             ('.UU.UUUUUUUU.UU..BB.BBBBBBBB.BB..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..RR.RRRRRRRR.RR..DD.DDDDDDDD.DD.', 'ULFRBD'),
-             ('.UU.UUUUUUUU.UU..FF.FFFFFFFF.FF..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..LL.LLLLLLLL.LL..DD.DDDDDDDD.DD.', 'ULFRBD'),
-             ('.UU.UUUUUUUU.UU..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..DD.DDDDDDDD.DD.', 'ULFRBD'),
-             ('.UU.UUUUUUUU.UU..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..DD.DDDDDDDD.DD.', 'ULFRBD')),
             use_edges_pattern=True
         )

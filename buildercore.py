@@ -387,7 +387,7 @@ class BFS(object):
 
     def __init__(self, name, illegal_moves, size, filename, store_as_hex, starting_cube_states,
                  use_cost_only=False, use_hash_cost_only=False, use_edges_pattern=False, legal_moves=None,
-                 rotations=[], use_centers_then_edges=False):
+                 rotations=[], use_centers_then_edges=False, symmetries=[]):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
@@ -401,6 +401,7 @@ class BFS(object):
         self.starting_cube_states = starting_cube_states
         self.rotations = rotations
         self.use_centers_then_edges = use_centers_then_edges
+        self.symmetries = symmetries
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
@@ -493,6 +494,7 @@ class BFS(object):
                 if move not in self.illegal_moves:
                     self.legal_moves.append(move)
 
+        #self.legal_moves = sorted(self.legal_moves)
         log.info("all moves     : %s" % ' '.join(self.all_moves))
         log.info("illegal moves : %s" % ' '.join(self.illegal_moves))
         log.info("legal moves   : %s" % ' '.join(self.legal_moves))
@@ -666,6 +668,26 @@ class BFS(object):
             # If we are out of memory and swapping this will fail due to "OSError: Cannot allocate memory"
             (start, end) = line_numbers_for_cores[core]
 
+            cmd = [
+                'nice',
+                './builder-crunch-workq.py',
+                self.size,
+                self.workq_filename,
+                str(self.workq_line_length),
+                str(start),
+                str(end),
+                self.get_workq_filename_for_core(core)
+            ]
+
+            if self.use_edges_pattern:
+                cmd.append('--use-edges-pattern')
+
+            if self.symmetries:
+                cmd.append('--symmetries')
+                cmd.append(','.join(self.symmetries))
+            
+
+            '''
             if self.use_edges_pattern:
                 cmd = [
                     'nice',
@@ -677,6 +699,9 @@ class BFS(object):
                     str(end),
                     self.get_workq_filename_for_core(core)
                 ]
+
+                # dwalton
+                assert not self.symmetries, "Add symmetry support to builder-crunch-workq.py"
             else:
                 cmd = [
                     'nice',
@@ -688,6 +713,8 @@ class BFS(object):
                     '--input', self.workq_filename,
                     '--output', self.get_workq_filename_for_core(core)
                 ]
+            '''
+
             log.info(' '.join(cmd))
 
             thread = BackgroundProcess(cmd, 'builder-crunch-workq core %d' % core)
@@ -817,6 +844,9 @@ class BFS(object):
 
             self.depth += 1
             self.log_table_stats()
+
+            #log.info("PAUSED")
+            #input("PAUSED")
 
             # If the workq file is empty our search is complete
             if not os.path.getsize(self.workq_filename):
