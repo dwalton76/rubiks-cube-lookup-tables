@@ -7,9 +7,44 @@ import sys
 log = logging.getLogger(__name__)
 
 
+class Build555LRCenterStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-lr-center-stage',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step20-LR-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),)
+        )
+
+
 class Build555LRTCenterStage(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -21,7 +56,7 @@ class Build555LRTCenterStage(BFS):
              "Rw", "Rw'"),
 
             '5x5x5',
-            'lookup-table-5x5x5-step21-LR-t-centers-solve.txt',
+            'lookup-table-5x5x5-step21-LR-t-centers-stage.txt',
             True, # store_as_hex
 
             # starting cubes
@@ -36,6 +71,45 @@ class Build555LRTCenterStage(BFS):
  . . L . .  . . x . .  . . L . .  . . x . .
  . L . L .  . x . x .  . L . L .  . x . x .
  . . L . .  . . x . .  . . L . .  . . x . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),)
+        )
+
+
+class Build555LRXCenterStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-lr-x-center-stage',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step22-LR-x-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . x . x .  . L . L .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . x . x .  . L . L .  . x . x .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
@@ -264,7 +338,7 @@ class StartingStates555LRCenterStage(BFS):
         )
 
 
-class Build555LRCenterStage(BFS):
+class Build555LRCenterStageNew(BFS):
 
     def __init__(self):
         from builder555ss import starting_states_step41

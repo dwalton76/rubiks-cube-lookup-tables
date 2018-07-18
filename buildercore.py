@@ -920,6 +920,7 @@ class BFS(object):
 
         # I do 2x the key then take the next prime number
         next_prime = {
+            12870 : 25741,
             24010000 : 48020003,
             165636900 : 331273823,
             239500800 : 479001629,
@@ -972,8 +973,8 @@ class %s(LookupTable):
     self.filename.replace('.txt', '.hash-cost-only.txt'),
     linecount,
     max_depth,
-    next_prime[linecount],
-    next_prime[linecount]+1, # +1 for the newline
+    next_prime.get(linecount, 0),
+    next_prime.get(linecount, 0)+1, # +1 for the newline
     ))
 
         if self.store_as_hex:
@@ -1041,10 +1042,10 @@ class %s(LookupTableIDA):
     def code_gen(self):
         assert self.filename.startswith('lookup-table-'), "--code-gen only applies to BuildXYZ classes"
 
-        if '0.txt' in self.filename:
+        if True or '0.txt' in self.filename:
             first_prune_table_filename = self.filename.replace('0.txt', '1.txt').replace('lookup-table', 'starting-states-lookup-table')
 
-            if os.path.exists(first_prune_table_filename):
+            if True or os.path.exists(first_prune_table_filename):
                 log.info("prune table %s does exist" % first_prune_table_filename)
                 self._code_gen_lookup_table_ida()
             else:
