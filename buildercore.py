@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from collections import Counter
+from rubikscubennnsolver.misc import parse_ascii_222, parse_ascii_333, parse_ascii_444, parse_ascii_555, parse_ascii_666, parse_ascii_777
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444
@@ -125,56 +126,6 @@ def convert_state_to_hex(state):
         hex_state = hex_state[:-1]
 
     return hex_state.zfill(hex_width)
-
-
-def parse_ascii(state, size):
-    U = []
-    L = []
-    F = []
-    R = []
-    B = []
-    D = []
-
-    lines = []
-    for line in state.splitlines():
-        line = line.strip().replace(' ', '')
-
-        if line:
-            lines.append(line)
-
-    U = ''.join(lines[0:size])
-
-    for line in lines[size:size*2]:
-        L.append(line[0:size])
-        F.append(line[size:size*2])
-        R.append(line[size*2:size*3])
-        B.append(line[size*3:size*4])
-
-    L = ''.join(L)
-    F = ''.join(F)
-    R = ''.join(R)
-    B = ''.join(B)
-    D = ''.join(lines[size*2:size*4])
-
-    return ''.join([U, L, F, R, B, D])
-
-def parse_ascii_222(state):
-    return parse_ascii(state, 2)
-
-def parse_ascii_333(state):
-    return parse_ascii(state, 3)
-
-def parse_ascii_444(state):
-    return parse_ascii(state, 4)
-
-def parse_ascii_555(state):
-    return parse_ascii(state, 5)
-
-def parse_ascii_666(state):
-    return parse_ascii(state, 6)
-
-def parse_ascii_777(state):
-    return parse_ascii(state, 7)
 
 
 def convert_to_cost_only(filename):

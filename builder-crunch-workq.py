@@ -420,7 +420,7 @@ if __name__ == '__main__':
     parser.add_argument('end', type=int, help='The final linenumber to crunch in inputfile')
     parser.add_argument('outputfile', type=str, help='The file to write results')
     parser.add_argument('--use-edges-pattern', default=False, action='store_true', help='use edges patterns')
-    parser.add_argument('--symmetries', type=str, help='cube symmetries to apply')
+    parser.add_argument('--symmetries', default='', type=str, help='cube symmetries to apply')
     args = parser.parse_args()
 
     crunch_workq(args.size, args.inputfile, args.linewidth, args.start, args.end, args.outputfile, args.use_edges_pattern, args.symmetries)
