@@ -355,6 +355,18 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     to_write_count += 1
                 else:
                     cube_state_string = ''.join(cube_state)
+
+                    if size == '4x4x4':
+                        state_for_edges = edges_recolor_pattern_444(cube_state[:])
+                        edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
+                        centers = ''.join([cube_state[x] for x in centers_444])
+                    elif size == '5x5x5':
+                        state_for_edges = edges_recolor_555(cube_state[:])
+                        edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
+                        centers = ''.join([cube_state[x] for x in centers_555])
+                    else:
+                        raise Exception("Implement this")
+
                     to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
                     to_write_count += 1
 

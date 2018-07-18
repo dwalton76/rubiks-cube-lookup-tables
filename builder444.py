@@ -433,24 +433,6 @@ class Build444Reduce333Edges(BFS):
           . D D .""", 'ascii'),),
 
             use_edges_pattern=True,
-            symmetries=(
-                "",
-                "y y",
-                "x",
-                "x y y",
-                "x'",
-                "x' y y",
-                "x x",
-                "x x y y",
-                "reflect-x",
-                "reflect-x y y",
-                "reflect-x x",
-                "reflect-x x y y",
-                "reflect-x x'",
-                "reflect-x x' y y",
-                "reflect-x x x",
-                "reflect-x x x y y",
-            )
         )
 
 
