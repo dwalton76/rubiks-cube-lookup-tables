@@ -815,20 +815,40 @@ class BFS(object):
                 else:
                     (cube_state_string, steps) = line.rstrip().split(':')
                     self.cube.state = list(cube_state_string)
-                    self.cube.print_cube()
+                    #self.cube.print_cube()
                 to_write.append("             ('%s', 'ULFRBD')," % cube_state_string[1:])
 
                 for step in self.rotations:
                     self.cube.state = list(cube_state_string)
                     self.cube.rotate(step)
-                    self.cube.print_cube()
+                    #self.cube.print_cube()
                     to_write.append("             ('%s', 'ULFRBD')," % ''.join(self.cube.state[1:]))
 
         with open("%s.starting-states" % self.filename, 'w') as fh_final:
             to_write.sort()
             fh_final.write("\n".join(to_write) + "\n")
-
         log.info("wrote %d starting states" % len(to_write))
+
+
+        to_write = []
+        with open("%s.starting-states" % self.filename, 'r') as fh_read:
+          for line in fh_read:
+              (state, order) = line.strip().split("', '")
+
+              # remove the leading ('
+              state = state[2:]
+              state = state.replace('.', '')
+
+              if self.store_as_hex:
+                  state = convert_state_to_hex(state)
+
+              to_write.append("'%s'," % state)
+
+        with open("%s.starting-states.compact" % self.filename, 'w') as fh:
+            to_write.sort()
+            fh.write("\n".join(to_write) + "\n")
+        # dwalton
+
 
         if self.use_edges_pattern:
             print("state_target patterns:\n%s\n\n" % '\n'.join(patterns))

@@ -71,16 +71,25 @@ class StartingStates666UDObliqueEdgesStage(BFS):
             '6x6x6-UD-oblique-edges-stage',
 
             # illegal_moves
-            ("3Fw", "3Fw'",
-             "3Bw", "3Bw'",
-             "3Lw", "3Lw'",
-             "3Rw", "3Rw'",
+            ("3Fw", "3Fw'", "3Fw2",
+             "3Bw", "3Bw'", "3Bw2",
+             "3Lw", "3Lw'", "3Lw2",
+             "3Rw", "3Rw'", "3Rw2",
              "3Uw", "3Uw'", "3Uw2",
              "3Dw", "3Dw'", "3Dw2",
-             "3Lw2", "3Rw2", "3Bw2", "3Fw2"),
+
+             # keep them off of L and R, we do this to bring the number of
+             # starting states from 735741 down to 12870.  With 12870 we can
+             # build the step20 table out at least a few moves which helps
+             # speed up the IDA.
+             #"Fw", "Fw'",
+             #"Bw", "Bw'",
+             #"Uw", "Uw'",
+             #"Dw", "Dw'",
+            ),
             '6x6x6',
             'starting-states-6x6x6-step20-UD-oblique-edges-stage.txt',
-            False, # store_as_hex
+            True, # store_as_hex
 
             # starting cubes
             (("""
@@ -124,7 +133,7 @@ class Build666UDObliqueEdgesStage(BFS):
             True, # store_as_hex
 
             # starting cubes
-            starting_states_step20
+            starting_states_step20,
         )
 
 
