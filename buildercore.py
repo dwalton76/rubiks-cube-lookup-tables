@@ -925,12 +925,11 @@ class BFS(object):
     def _code_gen_lookup_table(self):
         class_name = type(self).__name__.replace('Build', 'LookupTable')
 
-        # I do 2x the key then take the next prime number
         next_prime = {
-            12870 : 25741,
-            24010000 : 48020003,
-            165636900 : 331273823,
-            239500800 : 479001629,
+            12870 : 12889,
+            24010000 : 24010031,
+            165636900 : 165636907,
+            239500800 : 239500847,
         }
 
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
