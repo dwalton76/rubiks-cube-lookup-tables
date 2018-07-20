@@ -12,6 +12,7 @@ from threading import Thread, Event
 import argparse
 import datetime as dt
 import gc
+import json
 import logging
 import math
 import os
@@ -338,7 +339,7 @@ class BFS(object):
 
     def __init__(self, name, illegal_moves, size, filename, store_as_hex, starting_cube_states,
                  use_cost_only=False, use_hash_cost_only=False, use_edges_pattern=False, legal_moves=None,
-                 rotations=[], use_centers_then_edges=False, symmetries=[]):
+                 rotations=[], use_centers_then_edges=False, symmetries=[], color_symmetries=[]):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
@@ -353,6 +354,7 @@ class BFS(object):
         self.rotations = rotations
         self.use_centers_then_edges = use_centers_then_edges
         self.symmetries = symmetries
+        self.color_symmetries = color_symmetries
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
@@ -619,27 +621,7 @@ class BFS(object):
             # If we are out of memory and swapping this will fail due to "OSError: Cannot allocate memory"
             (start, end) = line_numbers_for_cores[core]
 
-            cmd = [
-                'nice',
-                './builder-crunch-workq.py',
-                self.size,
-                self.workq_filename,
-                str(self.workq_line_length),
-                str(start),
-                str(end),
-                self.get_workq_filename_for_core(core)
-            ]
-
-            if self.use_edges_pattern:
-                cmd.append('--use-edges-pattern')
-
-            if self.symmetries:
-                cmd.append('--symmetries')
-                cmd.append(','.join(self.symmetries))
-            
-
-            '''
-            if self.use_edges_pattern:
+            if self.use_edges_pattern or self.symmetries or self.color_symmetries:
                 cmd = [
                     'nice',
                     './builder-crunch-workq.py',
@@ -651,8 +633,16 @@ class BFS(object):
                     self.get_workq_filename_for_core(core)
                 ]
 
-                # dwalton
-                assert not self.symmetries, "Add symmetry support to builder-crunch-workq.py"
+                if self.use_edges_pattern:
+                    cmd.append('--use-edges-pattern')
+
+                if self.symmetries:
+                    cmd.append('--symmetries')
+                    cmd.append(','.join(self.symmetries))
+
+                if self.color_symmetries:
+                    cmd.append('--color-symmetries')
+                    cmd.append(json.dumps(self.color_symmetries))
             else:
                 cmd = [
                     'nice',
@@ -664,7 +654,6 @@ class BFS(object):
                     '--input', self.workq_filename,
                     '--output', self.get_workq_filename_for_core(core)
                 ]
-            '''
 
             log.info(' '.join(cmd))
 
@@ -847,8 +836,6 @@ class BFS(object):
         with open("%s.starting-states.compact" % self.filename, 'w') as fh:
             to_write.sort()
             fh.write("\n".join(to_write) + "\n")
-        # dwalton
-
 
         if self.use_edges_pattern:
             print("state_target patterns:\n%s\n\n" % '\n'.join(patterns))

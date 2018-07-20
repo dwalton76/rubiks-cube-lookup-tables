@@ -9,7 +9,9 @@ from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_6
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
 from pprint import pformat
 import argparse
+import json
 import logging
+import sys
 
 log = logging.getLogger(__name__)
 
@@ -259,7 +261,7 @@ def edges_pattern_555(state):
     return edges
 
 
-def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern, symmetries):
+def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern, symmetries, color_symmetries):
     assert isinstance(size, str)
     assert size in supported_sizes
     assert isinstance(inputfile, str)
@@ -285,6 +287,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     else:
         raise Exception("we should not be here")
 
+    # Convert the sequences from strings to lists
     if symmetries:
         symmetries_final = []
         for seq in symmetries.strip().split(','):
@@ -324,7 +327,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
             if use_edges_pattern:
 
-                if symmetries:
+                if symmetries or color_symmetries:
                     results = []
                     cube_state_original = cube_state[:]
 
@@ -349,6 +352,9 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                         centers = centers.replace('.', '')
                         results.append((centers, edges_pattern, ''.join(state)))
 
+                    if color_symmetries:
+                        assert False, "Add support for --color-symmetries here"
+
                     results = sorted(results)[0]
                     (centers, edges_pattern, cube_state_string) = results
                     to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
@@ -371,9 +377,12 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     to_write_count += 1
 
             else:
-                if symmetries:
+                if symmetries or color_symmetries:
                     results = []
                     cube_state_original = cube_state[:]
+
+                    if not symmetries:
+                        symmetries = [[]]
 
                     for seq in symmetries:
                         cube_state = cube_state_original[:]
@@ -381,7 +390,21 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                         for step in seq:
                             cube_state = rotate_xxx(cube_state[:], step)
 
-                        results.append(cube_state)
+                        if color_symmetries:
+                            base_color_cube_state = cube_state[:]
+
+                            # dwalton
+                            for (colorA, colorB) in color_symmetries:
+                                cube_state = base_color_cube_state[:]
+                                cube_state = ''.join(cube_state[1:])
+                                cube_state = cube_state.replace(colorA, 'Z')
+                                cube_state = cube_state.replace(colorB, colorA)
+                                cube_state = cube_state.replace('Z', colorB)
+                                cube_state = ['x'] + list(cube_state)
+                                #log.info("converted\n%s\nto\n%s\n\n" % (cube_state_original, tmp))
+                                results.append(cube_state)
+                        else:
+                            results.append(cube_state)
 
                     results = sorted(results)
                     cube_state_string = ''.join(results[0])
@@ -433,6 +456,17 @@ if __name__ == '__main__':
     parser.add_argument('outputfile', type=str, help='The file to write results')
     parser.add_argument('--use-edges-pattern', default=False, action='store_true', help='use edges patterns')
     parser.add_argument('--symmetries', default='', type=str, help='cube symmetries to apply')
+    parser.add_argument('--color-symmetries', default='', type=str, help='cube symmetries to apply')
     args = parser.parse_args()
 
-    crunch_workq(args.size, args.inputfile, args.linewidth, args.start, args.end, args.outputfile, args.use_edges_pattern, args.symmetries)
+    if args.color_symmetries:
+        args.color_symmetries = json.loads(args.color_symmetries)
+        #log.info(args.color_symmetries)
+
+    crunch_workq(args.size, args.inputfile, args.linewidth,
+        args.start, args.end,
+        args.outputfile,
+        args.use_edges_pattern,
+        args.symmetries,
+        args.color_symmetries,
+    )

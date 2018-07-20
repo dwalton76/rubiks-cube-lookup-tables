@@ -155,7 +155,7 @@ class StartingStates666LRInnerXCentersObliqueEdgesStage(BFS):
              "3Lw2", "3Rw2", "3Bw2", "3Fw2"),
             '6x6x6',
             'starting-states-6x6x6-step30-LR-inner-x-centers-oblique-edges-stage.txt',
-            False, # store_as_hex
+            True, # store_as_hex
 
             # starting cubes
             (("""
@@ -178,7 +178,29 @@ class StartingStates666LRInnerXCentersObliqueEdgesStage(BFS):
               . . . . . .
               . . . . . .
               . . . . . .
-              . . . . . . """, 'ascii'),),
+              . . . . . . """, 'ascii'),
+
+             ("""
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . x x . .  . . L L . .  . . x x . .  . . L L . .
+ . x x x x .  . L L L L .  . x x x x .  . L L L L .
+ . x x x x .  . L L L L .  . x x x x .  . L L L L .
+ . . x x . .  . . L L . .  . . x x . .  . . L L . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . . """, 'ascii')),
         )
 
 
@@ -201,10 +223,10 @@ class Build666LRInnerXCentersObliqueEdgesStage(BFS):
             True, # store_as_hex
 
             # starting cubes
-            starting_states_step30
+            starting_states_step30,
         )
 
-# dwalton
+
 class StartingStates666LRObliqueEdgesStage(BFS):
 
     def __init__(self):
@@ -291,7 +313,8 @@ class Build666LRInnerXCenterStage(BFS):
             True, # store_as_hex
 
             # starting cubes
-            (("""
+            (
+             ("""
               . . . . . .
               . . . . . .
               . . . . . .
@@ -311,7 +334,30 @@ class Build666LRInnerXCenterStage(BFS):
               . . . . . .
               . . . . . .
               . . . . . .
-              . . . . . . """, 'ascii'),),
+              . . . . . . """, 'ascii'),
+
+             ("""
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . x x . .  . . L L . .  . . x x . .  . . L L . .
+ . . x x . .  . . L L . .  . . x x . .  . . L L . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . . """, 'ascii')
+            ),
         )
 
 
