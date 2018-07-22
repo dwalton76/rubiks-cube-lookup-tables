@@ -719,8 +719,12 @@ class BFS(object):
         log.info("begin building next workq file")
         start_time = dt.datetime.now()
         new_states_count = int(subprocess.check_output("wc -l %s.20-new-states" % self.workq_filename, shell=True).strip().split()[0])
+        log.info("there are %d new states" % new_states_count)
 
+        # This needs to batch its write() calls
         if max_depth is None or self.depth < max_depth:
+            to_write = []
+            to_write_count = 0
             with open(self.workq_filename + '.20-new-states', 'r') as fh_new_states,\
                 open(self.workq_filename_next, 'w') as fh_workq_next:
 
@@ -739,8 +743,21 @@ class BFS(object):
                         else:
                             workq_line = "%s:%s %s" % (state, steps_to_scramble, next_move)
 
-                        fh_workq_next.write(workq_line + " " * (workq_line_length - len(workq_line)) + "\n")
+                        to_write.append(workq_line + " " * (workq_line_length - len(workq_line)) + "\n")
+
+                        to_write_count += 1
                         self.workq_size += 1
+
+                    if to_write_count >= 10000:
+                        fh_workq_next.write(''.join(to_write))
+                        to_write = []
+                        to_write_count = 0
+
+                if to_write_count:
+                    fh_workq_next.write(''.join(to_write))
+                    to_write = []
+                    to_write_count = 0
+
         else:
             with open(self.workq_filename_next, 'w') as fh_workq_next:
                 pass

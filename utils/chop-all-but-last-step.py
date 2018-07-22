@@ -22,7 +22,7 @@ with open(filename, 'r') as fh_read:
 
             count += 1
 
-            if count % 10000000 == 0:
+            if count % 1000000 == 0:
                 print(count)
 
 shutil.move(filename_small, filename)
