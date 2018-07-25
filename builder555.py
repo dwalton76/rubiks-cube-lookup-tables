@@ -151,6 +151,8 @@ class Build555UDCenterStage(BFS):
             . U U U .
             . U U U .
             . . . . .""", "ascii"),),
+        )
+'''
             symmetries=(
                 "",
                 "y",
@@ -169,6 +171,46 @@ class Build555UDCenterStage(BFS):
                 "reflect-x y x x",
                 "reflect-x y z z"
             )
+        )
+'''
+
+
+class Build555ULFRBDCenterSolve(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-centers-solve',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . x x x .  . x x x .
+ . L L L .  . F F F .  . x x x .  . x x x .
+ . L L L .  . F F F .  . x x x .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
+            . . . . .""", "ascii"),)
         )
 
 
