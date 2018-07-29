@@ -355,6 +355,7 @@ class BFS(object):
         self.use_centers_then_edges = use_centers_then_edges
         self.symmetries = symmetries
         self.color_symmetries = color_symmetries
+        self.lt_centers = {}
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
@@ -720,6 +721,20 @@ class BFS(object):
         start_time = dt.datetime.now()
         new_states_count = int(subprocess.check_output("wc -l %s.20-new-states" % self.workq_filename, shell=True).strip().split()[0])
         log.info("there are %d new states" % new_states_count)
+        pruned = 0
+        kept = 0
+
+        # dwalton
+        if self.name == "5x5x5-edges-solve-first-four":
+            if not self.lt_centers:
+                log.info("begin loading lt_centers")
+                self.lt_centers = {}
+                self.lt_centers_max_depth = 5
+                with open("lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt", "r") as fh:
+                    for line in fh:
+                        (state, steps) = line.strip().split(':')
+                        self.lt_centers[state] = len(steps.split())
+                log.info("end loading lt_centers")
 
         # This needs to batch its write() calls
         if max_depth is None or self.depth < max_depth:
@@ -731,6 +746,18 @@ class BFS(object):
                 for line in fh_new_states:
                     if self.use_edges_pattern:
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
+
+                        # dwalton
+                        if self.name == "5x5x5-edges-solve-first-four":
+                            centers = pattern[0:54]
+                            centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth+1)
+
+                            if (self.depth + centers_cost) > max_depth:
+                                #log.info("%s has cost %d, depth %d, max_depth %d" % (centers, centers_cost, self.depth, max_depth))
+                                pruned += 1
+                                continue
+                            else:
+                                kept += 1
                     else:
                         (state, steps_to_solve) = line.rstrip().split(':')
 
@@ -762,6 +789,10 @@ class BFS(object):
             with open(self.workq_filename_next, 'w') as fh_workq_next:
                 pass
         self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
+
+        if self.name == "5x5x5-edges-solve-first-four":
+            log.info("kept %d, pruned %d" % (kept, pruned))
+
         log.info("end building next workq file")
 
         log.info("sort --merge our current lookup-table.txt file with the .20-new-states file")
@@ -870,7 +901,14 @@ class BFS(object):
             if self.use_edges_pattern:
                 for line in fh_read:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
-                    fh_final.write("%s:%s\n" % (pattern, steps))
+
+                    if self.name == "5x5x5-edges-solve-first-four":
+                        centers = pattern[0:54]
+                        edges = pattern[54:]
+                        if centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
+                            fh_final.write("%s:%s\n" % (edges, steps))
+                    else:
+                        fh_final.write("%s:%s\n" % (pattern, steps))
 
             elif self.use_centers_then_edges:
                 for line in fh_read:

@@ -9,7 +9,7 @@ from rubikscubennnsolver.RubiksCube555 import (
     solved_555,
     moves_555,
     rotate_555,
-    tsai_phase3_orient_edges_555,
+    #tsai_phase3_orient_edges_555,
     centers_555,
     edges_recolor_without_midges_555,
     edges_recolor_with_midges_555,
@@ -46,6 +46,25 @@ midges_recolor_tuples_555 = (
 
 
 wings_555= (
+    2, 3, 4, # Upper
+    6, 11, 16,
+    10, 15, 20,
+    22, 23, 24,
+
+    31, 36, 41, # Left
+    35, 40, 45,
+
+    81, 86, 91, # Right
+    85, 90, 95,
+
+    127, 128, 129, # Down
+    131, 136, 141,
+    135, 140, 145,
+    147, 148, 149
+)
+
+'''
+wings_555= (
     ('0', 2, 104),  # upper
     ('1', 4, 102),
     ('2', 6, 27),
@@ -74,8 +93,9 @@ wings_555= (
     ('m', 147, 124),
     ('n', 149, 122)
 )
+'''
 
-def edges_recolor_555(state):
+def edges_recolor_pattern_555(state):
     (edge_index, square_index, partner_index) = midges_recolor_tuples_555[0]
     square_value = state[square_index]
 
@@ -133,8 +153,6 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
         # We add 1 here to account for the newline character
         fh_input.seek(start * (linewidth+1))
 
-        cube_444 = RubiksCube444(solved_444, 'URFDLB')
-
         for linenumber in range(start, end+1):
             line = next(fh_input)
 
@@ -171,7 +189,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                             edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
                             centers = ''.join([state[x] for x in centers_444])
                         elif size == '5x5x5':
-                            state_for_edges = edges_recolor_555(state[:])
+                            state_for_edges = edges_recolor_pattern_555(state[:])
                             edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
                             centers = ''.join([state[x] for x in centers_555])
                         else:
@@ -196,7 +214,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                         edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
                         centers = ''.join([cube_state[x] for x in centers_444])
                     elif size == '5x5x5':
-                        state_for_edges = edges_recolor_555(cube_state[:])
+                        state_for_edges = edges_recolor_pattern_555(cube_state[:])
                         edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
                         centers = ''.join([cube_state[x] for x in centers_555])
                     else:

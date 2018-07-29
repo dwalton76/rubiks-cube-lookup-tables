@@ -246,6 +246,15 @@ class Build555LRXCenterStage(BFS):
 
 # This is used to build the 5x5x5-pair-last-four-edges table
 class Build555ULFRBDCenterSolveUnstaged(BFS):
+    """
+    Should be:
+
+    1 steps has 19 entries (0 percent, 0.00x previous step)
+    2 steps has 459 entries (0 percent, 24.16x previous step)
+    3 steps has 10,818 entries (0 percent, 23.57x previous step)
+    4 steps has 255,957 entries (4 percent, 23.66x previous step)
+    5 steps has 6,089,454 entries (95 percent, 23.79x previous step)
+    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -1139,4 +1148,109 @@ class Build555Phase5LFRBCenterStage(BFS):
              ('...............................RLR..RLR..RLR............FFB..FFB..FFB............LRL..LRL..LRL............BBF..BBF..BBF...............................', 'ULFRBD'),
              ('...............................RLR..RLR..RLR............FFB..FFB..FFB............LRL..LRL..LRL............FBB..FBB..FBB...............................', 'ULFRBD'),
              ('...............................RLR..RLR..RLR............FFF..FFF..FFF............LRL..LRL..LRL............BBB..BBB..BBB...............................', 'ULFRBD'))
+        )
+
+
+'''
+class Build555EdgesSolve(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-solve',
+
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step300-edges-solve.txt',
+            False, # store_as_hex
+            (("""
+            . U U U .
+            U U U U U
+            U U U U U
+            U U U U U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D D D D D
+            D D D D D
+            D D D D D
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+'''
+
+
+# dwalton - start with only pairing the first four
+class Build555EdgesSolveFirstFour(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-solve-first-four',
+
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step300-edges-solve-first-four.txt',
+            False, # store_as_hex
+            (("""
+            . x x x .
+            x U U U x
+            x U U U x
+            x U U U x
+            . x x x .
+
+ . x x x .  . x x x .  . x x x .  . x x x .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . x x x .  . x x x .  . x x x .  . x x x .
+
+            . x x x .
+            D D D D D
+            D D D D D
+            D D D D D
+            . x x x .""", "ascii"),
+
+            ("""
+            . U U U .
+            x U U U x
+            x U U U x
+            x U U U x
+            . U U U .
+
+ . x x x .  . F F F .  . x x x .  . B B B .
+ x L L L x  x F F F x  x R R R x  x B B B x
+ x L L L x  x F F F x  x R R R x  x B B B x
+ x L L L x  x F F F x  x R R R x  x B B B x
+ . x x x .  . F F F .  . x x x .  . B B B .
+
+            . D D D .
+            x D D D x
+            x D D D x
+            x D D D x
+            . D D D .""", "ascii"),
+
+            ("""
+            . x x x .
+            U U U U U
+            U U U U U
+            U U U U U
+            . x x x .
+
+ . L L L .  . x x x .  . R R R .  . x x x .
+ x L L L x  x F F F x  x R R R x  x B B B x
+ x L L L x  x F F F x  x R R R x  x B B B x
+ x L L L x  x F F F x  x R R R x  x B B B x
+ . L L L .  . x x x .  . R R R .  . x x x .
+
+            . x x x .
+            D D D D D
+            D D D D D
+            D D D D D
+            . x x x .""", "ascii")),
+            use_edges_pattern=True,
         )
