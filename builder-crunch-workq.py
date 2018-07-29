@@ -4,7 +4,17 @@ from buildercore import supported_sizes, WRITE_BATCH_SIZE, reverse_steps
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, edges_recolor_pattern_444, wings_444, centers_444
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, tsai_phase2_orient_edges_555, centers_555
+from rubikscubennnsolver.RubiksCube555 import (
+    RubiksCube555,
+    solved_555,
+    moves_555,
+    rotate_555,
+    tsai_phase3_orient_edges_555,
+    centers_555,
+    edges_recolor_without_midges_555,
+    edges_recolor_with_midges_555,
+)
+
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
 from pprint import pformat
@@ -15,36 +25,6 @@ import sys
 
 log = logging.getLogger(__name__)
 
-
-edges_recolor_tuples_555 = (
-    ('0', 2, 104), # upper
-    ('1', 4, 102),
-    ('2', 6, 27),
-    ('3', 10, 79),
-    ('4', 16, 29),
-    ('5', 20, 77),
-    ('6', 22, 52),
-    ('7', 24, 54),
-
-    ('8', 31, 110), # left
-    ('9', 35, 56),
-    ('a', 41, 120),
-    ('b', 45, 66),
-
-    ('c', 81, 60), # right
-    ('d', 85, 106),
-    ('e', 91, 70),
-    ('f', 95, 116),
-
-    ('g', 127, 72), # down
-    ('h', 129, 74),
-    ('i', 131, 49),
-    ('j', 135, 97),
-    ('k', 141, 47),
-    ('l', 145, 99),
-    ('m', 147, 124),
-    ('n', 149, 122)
-)
 
 midges_recolor_tuples_555 = (
     ('o', 3, 103), # upper
@@ -95,134 +75,6 @@ wings_555= (
     ('n', 149, 122)
 )
 
-
-def edges_recolor_without_midges_555(state):
-    edge_map = {
-        'BD': [],
-        'BL': [],
-        'BR': [],
-        'BU': [],
-        'DF': [],
-        'DL': [],
-        'DR': [],
-        'FL': [],
-        'FR': [],
-        'FU': [],
-        'LU': [],
-        'RU': []
-    }
-
-    for (edge_index, square_index, partner_index) in wings_555:
-        square_value = state[square_index]
-        partner_value = state[partner_index]
-        wing_str = ''.join(sorted([square_value, partner_value]))
-
-        if 'x' not in wing_str:
-            edge_map[wing_str].append(edge_index)
-
-    # Where is the other wing_str like us?
-    for (edge_index, square_index, partner_index) in wings_555:
-        square_value = state[square_index]
-        partner_value = state[partner_index]
-        wing_str = ''.join(sorted([square_value, partner_value]))
-
-        if 'x' in wing_str:
-            state[square_index] = 'x'
-            state[partner_index] = 'x'
-        else:
-            for tmp_index in edge_map[wing_str]:
-                if tmp_index != edge_index:
-                    state[square_index] = tmp_index
-                    state[partner_index] = tmp_index
-                    break
-            else:
-                raise Exception("could not find tmp_index")
-
-    return ''.join(state)
-
-
-def edges_recolor_with_midges_555(state):
-    midges_map = {
-        'BD': None,
-        'BL': None,
-        'BR': None,
-        'BU': None,
-        'DF': None,
-        'DL': None,
-        'DR': None,
-        'FL': None,
-        'FR': None,
-        'FU': None,
-        'LU': None,
-        'RU': None
-    }
-
-    for (edge_index, square_index, partner_index) in midges_recolor_tuples_555:
-        square_value = state[square_index]
-        partner_value = state[partner_index]
-        wing_str = ''.join(sorted([square_value, partner_value]))
-        midges_map[wing_str] = edge_index
-
-        # We need to indicate which way the midge is rotated.  If the square_index contains
-        # U, D, L, or R use the uppercase of the edge_index, if not use the lowercase of the
-        # edge_index.
-        if square_value == 'U':
-            state[square_index] = edge_index.upper()
-            state[partner_index] = edge_index.upper()
-        elif partner_value == 'U':
-            state[square_index] = edge_index
-            state[partner_index] = edge_index
-        elif square_value == 'D':
-            state[square_index] = edge_index.upper()
-            state[partner_index] = edge_index.upper()
-        elif partner_value == 'D':
-            state[square_index] = edge_index
-            state[partner_index] = edge_index
-        elif square_value == 'L':
-            state[square_index] = edge_index.upper()
-            state[partner_index] = edge_index.upper()
-        elif partner_value == 'L':
-            state[square_index] = edge_index
-            state[partner_index] = edge_index
-        elif square_value == 'R':
-            state[square_index] = edge_index.upper()
-            state[partner_index] = edge_index.upper()
-        elif partner_value == 'R':
-            state[square_index] = edge_index
-            state[partner_index] = edge_index
-        elif square_value == 'x' or partner_value == 'x':
-            state[square_index] = 'x'
-            state[partner_index] = 'x'
-        else:
-            raise Exception("We should not be here, state[%d] %s, partner state [%d] %s" % (square_index, state[square_index], partner_index, state[partner_index]))
-
-    # Where is the midge for each high/low wing?
-    for (edge_index, square_index, partner_index) in edges_recolor_tuples_555:
-        square_value = state[square_index]
-        partner_value = state[partner_index]
-
-        if square_value == 'x' or partner_value == 'x':
-            pass
-        else:
-            high_low = tsai_phase2_orient_edges_555[(square_index, partner_index, square_value, partner_value)]
-            wing_str = ''.join(sorted([square_value, partner_value]))
-
-            # If this is a high wing use the uppercase of the midge edge_index
-            if high_low == 'U':
-                state[square_index] = midges_map[wing_str].upper()
-                state[partner_index] = midges_map[wing_str].upper()
-
-            # If this is a low wing use the lowercase of the midge edge_index
-            elif high_low == 'D':
-                state[square_index] = midges_map[wing_str]
-                state[partner_index] = midges_map[wing_str]
-
-            else:
-                raise Exception("(%s, %s, %s, %) high_low is %s" % (square_index, partner_index, square_value, partner_value, high_low))
-
-    return ''.join(state)
-
-
 def edges_recolor_555(state):
     (edge_index, square_index, partner_index) = midges_recolor_tuples_555[0]
     square_value = state[square_index]
@@ -236,29 +88,6 @@ def edges_recolor_555(state):
     # as it relates to its midge.
     else:
         return edges_recolor_with_midges_555(state)
-
-
-def edges_pattern_555(state):
-    state = list(state)
-    edges_recolor_555(state)
-    state = ''.join(state)
-
-    edges = ''.join((
-        state[2], state[3], state[4],
-        state[6], state[11], state[16],
-        state[10], state[15], state[20],
-        state[22], state[23], state[24],
-        state[31], state[36], state[41],
-        state[35], state[40], state[45],
-        state[81], state[86], state[91],
-        state[85], state[90], state[95],
-        state[127], state[128], state[129],
-        state[131], state[136], state[141],
-        state[135], state[140], state[145],
-        state[147], state[148], state[149]
-    ))
-
-    return edges
 
 
 def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern, symmetries, color_symmetries):
