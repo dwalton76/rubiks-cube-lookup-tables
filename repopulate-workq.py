@@ -15,9 +15,6 @@ from builder import (
     moves_5x5x5,
     moves_6x6x6,
     moves_7x7x7,
-    moves_8x8x8,
-    moves_9x9x9,
-    moves_10x10x10,
 )
 
 
@@ -209,15 +206,6 @@ if __name__ == '__main__':
 
     elif lt['size'] == '7x7x7':
         moves = [x for x in moves_7x7x7 if x not in lt['illegal']]
-
-    elif lt['size'] == '8x8x8':
-        moves = [x for x in moves_8x8x8 if x not in lt['illegal']]
-
-    elif lt['size'] == '9x9x9':
-        moves = [x for x in moves_9x9x9 if x not in lt['illegal']]
-
-    elif lt['size'] == '10x10x10':
-        moves = [x for x in moves_10x10x10 if x not in lt['illegal']]
 
     else:
         raise Exception("Add support for size %s" % lt['size'])
