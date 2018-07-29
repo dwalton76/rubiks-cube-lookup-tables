@@ -109,3 +109,4 @@ builder-next-workq
 builder666ss.py
 builder777ss.py
 *~
+*.compact
