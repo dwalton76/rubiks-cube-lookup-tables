@@ -6,69 +6,18 @@ import sys
 
 log = logging.getLogger(__name__)
 
-'''
-class StartingStates777UDObliqueEdgesStage(BFS):
+class Build777UDObliqueEdgesStage(BFS):
 
     def __init__(self):
         BFS.__init__(self,
             '7x7x7-UD-oblique-edges-stage',
-            ("3Uw", "3Uw'", "3Uw2",
-             "3Lw", "3Lw'", "3Lw2",
-             "3Fw", "3Fw'", "3Fw2",
-             "3Rw", "3Rw'", "3Rw2",
-             "3Bw", "3Bw'", "3Bw2",
-             "3Dw", "3Dw'", "3Dw2",
-            ),
-            '7x7x7',
-            'starting-states-lookup-table-7x7x7-step00-UD-oblique-edges-stage.txt',
-            True, # store_as_hex
-
-            # starting cubes
-            (("""
-                . . . . . . .
-                . . U U U . .
-                . U . . . U .
-                . U . . . U .
-                . U . . . U .
-                . . U U U . .
-                . . . . . . .
-
- . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
- . . x x x . .  . . x x x . .  . . x x x . .  . . x x x . .
- . x . . . x .  . x . . . x .  . x . . . x .  . x . . . x .
- . x . . . x .  . x . . . x .  . x . . . x .  . x . . . x .
- . x . . . x .  . x . . . x .  . x . . . x .  . x . . . x .
- . . x x x . .  . . x x x . .  . . x x x . .  . . x x x . .
- . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
-
-                . . . . . . .
-                . . U U U . .
-                . U . . . U .
-                . U . . . U .
-                . U . . . U .
-                . . U U U . .
-                . . . . . . .""", "ascii"),)
-        )
-
-class StartingStates777UDOutsideObliqueEdgesStage(BFS):
-    """
-    (16!/(8!*8!))^2 or 165,636,900
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '7x7x7-UD-outside-oblique-edges-stage',
             ("3Fw", "3Fw'",
              "3Bw", "3Bw'",
              "3Lw", "3Lw'",
              "3Rw", "3Rw'",
-
-             "3Uw", "3Uw'", "3Uw2",
-             "3Dw", "3Dw'", "3Dw2",
-             "3Fw2", "3Bw2", "3Rw2", "3Lw2"
             ),
             '7x7x7',
-            'starting-states-lookup-table-7x7x7-step11-UD-outside-oblique-edges-stage.txt',
+            'lookup-table-7x7x7-step00-UD-oblique-edges-stage.txt',
             True, # store_as_hex
 
             # starting cubes
@@ -95,12 +44,95 @@ class StartingStates777UDOutsideObliqueEdgesStage(BFS):
                 . . . . . . .
                 . U . . . U .
                 . . U . U . .
+                . . . . . . .""", "ascii"),),
+        )
+
+
+class Build777UDObliqueEdgesStageLeft(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '7x7x7-UD-oblique-edges-stage-left',
+            ("3Fw", "3Fw'",
+             "3Bw", "3Bw'",
+             "3Lw", "3Lw'",
+             "3Rw", "3Rw'",
+            ),
+            '7x7x7',
+            'lookup-table-7x7x7-step01-UD-oblique-edges-stage-left.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+                . . . . . . .
+                . . U . . . .
+                . . . . . U .
+                . . . . . . .
+                . U . . . . .
+                . . . . U . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . x . . . .  . . x . . . .  . . x . . . .  . . x . . . .
+ . . . . . x .  . . . . . x .  . . . . . x .  . . . . . x .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . x . . . . .  . x . . . . .  . x . . . . .  . x . . . . .
+ . . . . x . .  . . . . x . .  . . . . x . .  . . . . x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . U . . . .
+                . . . . . U .
+                . . . . . . .
+                . U . . . . .
+                . . . . U . .
+                . . . . . . .""", "ascii"),)
+        )
+
+
+class Build777UDObliqueEdgesStageRight(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '7x7x7-UD-oblique-edges-stage-right',
+            ("3Fw", "3Fw'",
+             "3Bw", "3Bw'",
+             "3Lw", "3Lw'",
+             "3Rw", "3Rw'",
+            ),
+            '7x7x7',
+            'lookup-table-7x7x7-step02-UD-oblique-edges-stage-right.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+                . . . . . . .
+                . . . . U . .
+                . U . . . . .
+                . . . . . . .
+                . . . . . U .
+                . . U . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . x . .  . . . . x . .  . . . . x . .  . . . . x . .
+ . x . . . . .  . x . . . . .  . x . . . . .  . x . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . x .  . . . . . x .  . . . . . x .  . . . . . x .
+ . . x . . . .  . . x . . . .  . . x . . . .  . . x . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . U . .
+                . U . . . . .
+                . . . . . . .
+                . . . . . U .
+                . . U . . . .
                 . . . . . . .""", "ascii"),)
         )
 
 
 '''
-
 class Build777UDObliqueEdgesStage(BFS):
 
     def __init__(self):
@@ -411,7 +443,7 @@ class Build777UDObliqueEdgesStageRightMiddle(BFS):
                 . . U U . . .
                 . . . . . . .""", "ascii"),)
         )
-
+'''
 
 
 class StartingStates777LRObliqueEdgesStage(BFS):
