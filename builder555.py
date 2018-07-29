@@ -7,6 +7,129 @@ import sys
 log = logging.getLogger(__name__)
 
 
+class Build555UDCenterStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-center-stage',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step10-UD-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .""", "ascii"),),
+        )
+'''
+            symmetries=(
+                "",
+                "y",
+                "y'",
+                "x x",
+                "y y",
+                "z z",
+                "y x x",
+                "y z z",
+                "reflect-x",
+                "reflect-x y",
+                "reflect-x y'",
+                "reflect-x x x",
+                "reflect-x y y",
+                "reflect-x z z",
+                "reflect-x y x x",
+                "reflect-x y z z"
+            )
+        )
+'''
+
+class Build555UDCenterStageTCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-t-center-stage',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step11-UD-centers-stage-t-center-only.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . x . .  . . x . .  . . x . .  . . x . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . x . .  . . x . .  . . x . .  . . x . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555UDCenterStageXCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-x-center-stage',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step12-UD-centers-stage-x-center-only.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .""", "ascii"),),
+        )
+
+
+
 class Build555LRCenterStage(BFS):
 
     def __init__(self):
@@ -120,61 +243,6 @@ class Build555LRXCenterStage(BFS):
         )
 
 
-class Build555UDCenterStage(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-UD-center-stage',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step10-UD-centers-stage.txt',
-            True, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . x x x .  . x x x .  . x x x .  . x x x .
- . x x x .  . x x x .  . x x x .  . x x x .
- . x x x .  . x x x .  . x x x .  . x x x .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .""", "ascii"),),
-        )
-'''
-            symmetries=(
-                "",
-                "y",
-                "y'",
-                "x x",
-                "y y",
-                "z z",
-                "y x x",
-                "y z z",
-                "reflect-x",
-                "reflect-x y",
-                "reflect-x y'",
-                "reflect-x x x",
-                "reflect-x y y",
-                "reflect-x z z",
-                "reflect-x y x x",
-                "reflect-x y z z"
-            )
-        )
-'''
-
-
 class Build555ULFRBDCenterSolve(BFS):
 
     def __init__(self):
@@ -217,55 +285,14 @@ class Build555ULFRBDCenterSolve(BFS):
 # =======
 # Phase 3
 # =======
-class Build555EdgeOrientOuterOrbit(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-EO-outer-orbit',
-
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'"),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step42-edge-orient.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . U . D .
-            D . . . U
-            . . . . .
-            U . . . D
-            . D . U .
-
- . D . U .  . D . U .  . D . U .  . D . U .
- D . . . U  U . . . D  D . . . U  U . . . D
- . . . . .  . . . . .  . . . . .  . . . . .
- U . . . D  D . . . U  U . . . D  D . . . U
- . U . D .  . U . D .  . U . D .  . U . D .
-
-            . U . D .
-            D . . . U
-            . . . . .
-            U . . . D
-            . D . U .""", "ascii"),)
-        )
-
-
-class Build555InsideOrbit(BFS):
+class StartingState555EdgeOrientOuterOrbitLRCenterStage(BFS):
     """
-    We will only use this to tell if our phase3 solution has placed the inside
-    orbit in a reachable state for post-phase3. That is why this table restricts
-    L L' R R'.
+    There should be 432 of them
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-inside-orbit-stage',
+            '5x5x5-edge-orient-LR-center-stage',
 
             ("Uw", "Uw'",
              "Dw", "Dw'",
@@ -277,28 +304,51 @@ class Build555InsideOrbit(BFS):
              "R", "R'"),
 
             '5x5x5',
-            'lookup-table-5x5x5-step43-inside-orbit-stage.txt',
+            'starting-states-lookup-table-5x5x5-step40-edge-orient-LR-center-stage.txt',
             False, # store_as_hex
 
             # starting cubes
             (("""
-            . . U . .
+            . U . D .
+            D . . . U
             . . . . .
-            U . . . U
-            . . . . .
-            . . U . .
+            U . . . D
+            . D . U .
 
- . . L . .  . . F . .  . . R . .  . . B . .
- . . . . .  . . . . .  . . . . .  . . . . .
- L . . . L  F . . . F  R . . . R  B . . . B
- . . . . .  . . . . .  . . . . .  . . . . .
- . . L . .  . . F . .  . . R . .  . . B . .
+ . D . U .  . D . U .  . D . U .  . D . U .
+ D L L L U  U . . . D  D R R R U  U . . . D
+ . L L L .  . . . . .  . R R R .  . . . . .
+ U L L L D  D . . . U  U R R R D  D . . . U
+ . U . D .  . U . D .  . U . D .  . U . D .
 
-            . . D . .
+            . U . D .
+            D . . . U
             . . . . .
-            D . . . D
-            . . . . .
-            . . D . .""", "ascii"),)
+            U . . . D
+            . D . U .""", "ascii"),)
+        )
+
+
+class Build555EdgeOrientOuterOrbitLRCenterStage(BFS):
+
+    def __init__(self):
+        from builder555ss import starting_states_step40
+        BFS.__init__(self,
+            '5x5x5-edge-orient-outer-orbit-LR-center-stage',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step40-edge-orient-LR-center-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            starting_states_step40
         )
 
 
@@ -368,27 +418,21 @@ class Build555LRCenterStageNew(BFS):
             starting_states_step41
         )
 
-
-class StartingState555EdgeOrientOuterOrbitLRCenterStage(BFS):
-    """
-    There should be 432 of them
-    """
+class Build555EdgeOrientOuterOrbit(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edge-orient-LR-center-stage',
+            '5x5x5-EO-outer-orbit',
 
             ("Uw", "Uw'",
              "Dw", "Dw'",
              "Fw", "Fw'",
              "Bw", "Bw'",
              "Lw", "Lw'",
-             "Rw", "Rw'",
-             "L", "L'",
-             "R", "R'"),
+             "Rw", "Rw'"),
 
             '5x5x5',
-            'starting-states-lookup-table-5x5x5-step40-edge-orient-LR-center-stage.txt',
+            'lookup-table-5x5x5-step42-edge-orient.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -400,9 +444,9 @@ class StartingState555EdgeOrientOuterOrbitLRCenterStage(BFS):
             . D . U .
 
  . D . U .  . D . U .  . D . U .  . D . U .
- D L L L U  U . . . D  D R R R U  U . . . D
- . L L L .  . . . . .  . R R R .  . . . . .
- U L L L D  D . . . U  U R R R D  D . . . U
+ D . . . U  U . . . D  D . . . U  U . . . D
+ . . . . .  . . . . .  . . . . .  . . . . .
+ U . . . D  D . . . U  U . . . D  D . . . U
  . U . D .  . U . D .  . U . D .  . U . D .
 
             . U . D .
@@ -413,27 +457,48 @@ class StartingState555EdgeOrientOuterOrbitLRCenterStage(BFS):
         )
 
 
-class Build555EdgeOrientOuterOrbitLRCenterStage(BFS):
+class Build555InsideOrbit(BFS):
+    """
+    """
 
     def __init__(self):
-        from builder555ss import starting_states_step40
         BFS.__init__(self,
-            '5x5x5-edge-orient-outer-orbit-LR-center-stage',
+            '5x5x5-inside-orbit-stage',
 
             ("Uw", "Uw'",
              "Dw", "Dw'",
              "Fw", "Fw'",
              "Bw", "Bw'",
              "Lw", "Lw'",
-             "Rw", "Rw'"),
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'"),
 
             '5x5x5',
-            'lookup-table-5x5x5-step40-edge-orient-LR-center-stage.txt',
+            'lookup-table-5x5x5-step43-inside-orbit-stage.txt',
             False, # store_as_hex
 
             # starting cubes
-            starting_states_step40
+            (("""
+            . . U . .
+            . . . . .
+            U . . . U
+            . . . . .
+            . . U . .
+
+ . . L . .  . . F . .  . . R . .  . . B . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ L . . . L  F . . . F  R . . . R  B . . . B
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . F . .  . . R . .  . . B . .
+
+            . . D . .
+            . . . . .
+            D . . . D
+            . . . . .
+            . . D . .""", "ascii"),)
         )
+
 
 
 # =======

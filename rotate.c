@@ -30,25 +30,17 @@ typedef enum {
     EDGES_444,
 
     // 5x5x5
-    UD_CENTERS_STAGE_555,
-    UD_CENTERS_STAGE_X_CENTERS_555,
-    UD_CENTERS_STAGE_T_CENTERS_555,
-    LR_CENTERS_STAGE_555,
     EDGES_STAGE_FIRST_FOUR_555,
     EDGES_STAGE_SECOND_FOUR_555,
     EDGES_PAIR_LAST_FOUR_555,
 
     // 5x5x5 solve centers
-    ULFRBD_CENTERS_SOLVE_555,
     UL_CENTERS_SOLVE_555,
     UF_CENTERS_SOLVE_555,
     ULFRBD_T_CENTERS_SOLVE_555,
     LR_T_CENTERS_SOLVE_555,
     ULFRBD_CENTERS_SOLVE_UNSTAGED_555,
     ULFRBD_CENTERS_SOLVE_STAGE_FIRST_FOUR_EDGES_555,
-
-    // 6x6x6
-    UD_INNER_X_CENTERS_OBLIQUE_EDGE_SOLVE_666,
 
     // 7x7x7
     UD_OBLIQUE_EDGE_PAIRING_777,
@@ -1082,28 +1074,7 @@ main (int argc, char *argv[])
                 type = EDGES_444;
                 cube_size = 4;
 
-            // 5x5x5 center staging
-            } else if (strmatch(argv[i], "5x5x5-UD-centers-stage")) {
-                type = UD_CENTERS_STAGE_555;
-                cube_size = 5;
-
-            } else if (strmatch(argv[i], "5x5x5-UD-centers-stage-X-centers")) {
-                type = UD_CENTERS_STAGE_X_CENTERS_555;
-                cube_size = 5;
-
-            } else if (strmatch(argv[i], "5x5x5-UD-centers-stage-T-centers")) {
-                type = UD_CENTERS_STAGE_T_CENTERS_555;
-                cube_size = 5;
-
-            } else if (strmatch(argv[i], "5x5x5-LR-centers-stage")) {
-                type = LR_CENTERS_STAGE_555;
-                cube_size = 5;
-
             // 5x5x5 solve centers
-            } else if (strmatch(argv[i], "5x5x5-ULFRBD-centers-solve")) {
-                type = ULFRBD_CENTERS_SOLVE_555;
-                cube_size = 5;
-
             } else if (strmatch(argv[i], "5x5x5-ULFRBD-t-centers-solve")) {
                 type = ULFRBD_T_CENTERS_SOLVE_555;
                 cube_size = 5;
@@ -1135,11 +1106,6 @@ main (int argc, char *argv[])
             } else if (strmatch(argv[i], "5x5x5-pair-last-four-edges")) {
                 type = EDGES_PAIR_LAST_FOUR_555;
                 cube_size = 5;
-
-            // 6x6x6 LR centers stage
-            } else if (strmatch(argv[i], "6x6x6-UD-solve-inner-x-center-and-oblique-edges")) {
-                type = UD_INNER_X_CENTERS_OBLIQUE_EDGE_SOLVE_666;
-                cube_size = 6;
 
             // 7x7x7 centers
             } else if (strmatch(argv[i], "7x7x7-UD-oblique-edge-pairing")) {
@@ -1265,91 +1231,6 @@ main (int argc, char *argv[])
         nuke_cube_corners_444(cube);
 
     // 5x5x5
-    } else if (type == UD_CENTERS_STAGE_555) {
-        nuke_cube_corners_555(cube);
-        nuke_cube_edges_555(cube);
-
-        // Left, Front, Right, Back
-        for (int i = 26; i <= 125; i++)
-            cube[i] = 7;
-
-        // Down...make the centers U
-        cube[132] = 1;
-        cube[133] = 1;
-        cube[134] = 1;
-        cube[137] = 1;
-        cube[138] = 1;
-        cube[139] = 1;
-        cube[142] = 1;
-        cube[143] = 1;
-        cube[144] = 1;
-
-    } else if (type == UD_CENTERS_STAGE_X_CENTERS_555) {
-
-        // Nuke everything and repopulate the squares we care about
-        for (int i = 1; i <= 150; i++)
-            cube[i] = 7;
-
-        cube[7] = 1;
-        cube[9] = 1;
-        cube[13] = 1;
-        cube[17] = 1;
-        cube[19] = 1;
-
-        cube[132] = 1;
-        cube[134] = 1;
-        cube[138] = 1;
-        cube[142] = 1;
-        cube[144] = 1;
-
-    } else if (type == UD_CENTERS_STAGE_T_CENTERS_555) {
-
-        // Nuke everything and repopulate the squares we care about
-        for (int i = 1; i <= 150; i++)
-            cube[i] = 7;
-
-        cube[8] = 1;
-        cube[12] = 1;
-        cube[13] = 1;
-        cube[14] = 1;
-        cube[18] = 1;
-
-        cube[133] = 1;
-        cube[137] = 1;
-        cube[138] = 1;
-        cube[139] = 1;
-        cube[143] = 1;
-
-    } else if (type == LR_CENTERS_STAGE_555) {
-        nuke_cube_corners_555(cube);
-        nuke_cube_edges_555(cube);
-
-        // Nuke centers for UFBD
-        for (int i = 7; i <= 19; i++)
-            cube[i] = 7;
-        for (int i = 57; i <= 69; i++)
-            cube[i] = 7;
-        for (int i = 107; i <= 119; i++)
-            cube[i] = 7;
-        for (int i = 132; i <= 144; i++)
-            cube[i] = 7;
-
-        // make the R centers L
-        cube[82] = 2;
-        cube[83] = 2;
-        cube[84] = 2;
-        cube[87] = 2;
-        cube[88] = 2;
-        cube[89] = 2;
-        cube[92] = 2;
-        cube[93] = 2;
-        cube[94] = 2;
-
-    } else if (type == ULFRBD_CENTERS_SOLVE_555 ||
-               type == ULFRBD_CENTERS_SOLVE_UNSTAGED_555) {
-        nuke_cube_corners_555(cube);
-        nuke_cube_edges_555(cube);
-
     } else if (type == ULFRBD_T_CENTERS_SOLVE_555) {
         nuke_cube_corners_555(cube);
         nuke_cube_edges_555(cube);
@@ -1530,125 +1411,6 @@ main (int argc, char *argv[])
 
     } else if (type == EDGES_PAIR_LAST_FOUR_555) {
         nuke_cube_corners_555(cube);
-
-    } else if (type == UD_INNER_X_CENTERS_OBLIQUE_EDGE_SOLVE_666) {
-        nuke_cube_corners_666(cube);
-        nuke_cube_edges_666(cube);
-
-        // Left, Front, Right, Back
-        for (int i = 37; i <= 180; i++)
-            cube[i] = 7;
-
-        // Upper outside x-centers
-        cube[8] = 7;
-        cube[11] = 7;
-        cube[26] = 7;
-        cube[29] = 7;
-
-        // Down outside x-centers
-        cube[188] = 7;
-        cube[191] = 7;
-        cube[206] = 7;
-        cube[209] = 7;
-
-        // U is 1
-        // D is 6
-
-        // Upper - top
-        if (option[0] == 'U') {
-            cube[9] = 1;
-            cube[10] = 1;
-        } else if (option[0] == 'D') {
-            cube[9] = 6;
-            cube[10] = 6;
-        } else {
-            printf("ERROR: UD unknown option[0]\n");
-            exit(1);
-        }
-
-        // Upper - left
-        if (option[1] == 'U') {
-            cube[14] = 1;
-            cube[20] = 1;
-        } else if (option[1] == 'D') {
-            cube[14] = 6;
-            cube[20] = 6;
-        } else {
-            printf("ERROR: UD unknown option[1]\n");
-            exit(1);
-        }
-
-        // Upper - right
-        if (option[2] == 'U') {
-            cube[17] = 1;
-            cube[23] = 1;
-        } else if (option[2] == 'D') {
-            cube[17] = 6;
-            cube[23] = 6;
-        } else {
-            printf("ERROR: UD unknown option[2]\n");
-            exit(1);
-        }
-
-        // Upper - down
-        if (option[3] == 'U') {
-            cube[27] = 1;
-            cube[28] = 1;
-        } else if (option[3] == 'D') {
-            cube[27] = 6;
-            cube[28] = 6;
-        } else {
-            printf("ERROR: UD unknown option[3]\n");
-            exit(1);
-        }
-
-        // Down - top
-        if (option[4] == 'U') {
-            cube[189] = 1;
-            cube[190] = 1;
-        } else if (option[4] == 'D') {
-            cube[189] = 6;
-            cube[190] = 6;
-        } else {
-            printf("ERROR: UD unknown option[4]\n");
-            exit(1);
-        }
-
-        // Down - left
-        if (option[5] == 'U') {
-            cube[194] = 1;
-            cube[200] = 1;
-        } else if (option[5] == 'D') {
-            cube[194] = 6;
-            cube[200] = 6;
-        } else {
-            printf("ERROR: UD unknown option[5]\n");
-            exit(1);
-        }
-
-        // Down - right
-        if (option[6] == 'U') {
-            cube[197] = 1;
-            cube[203] = 1;
-        } else if (option[6] == 'D') {
-            cube[197] = 6;
-            cube[203] = 6;
-        } else {
-            printf("ERROR: UD unknown option[6]\n");
-            exit(1);
-        }
-
-        // Down - down
-        if (option[7] == 'U') {
-            cube[207] = 1;
-            cube[208] = 1;
-        } else if (option[7] == 'D') {
-            cube[207] = 6;
-            cube[208] = 6;
-        } else {
-            printf("ERROR: UD unknown option[7]\n");
-            exit(1);
-        }
 
     } else if (type == UD_OBLIQUE_EDGE_PAIRING_777) {
 

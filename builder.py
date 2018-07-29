@@ -122,7 +122,6 @@ lookup_tables = {
     # ===========================
     # 4x4x4 centers
     # ===========================
-
     # Centers are staged, now solve them
     '4x4x4-ULFRBD-centers-solve' : {
         'illegal'  : ("Rw", "Rw'",
@@ -172,48 +171,6 @@ lookup_tables = {
         'allsteps' : True,
         'hex'      : False,
         'keep'     : 'centers-and-edges-pattern'
-    },
-
-    # ===================
-    # 5x5x5 centers stage
-    # ===================
-    '5x5x5-UD-centers-stage' : {
-        'illegal'  : (),
-        'size'     : '5x5x5',
-        'filename' : 'lookup-table-5x5x5-step10-UD-centers-stage.txt',
-        'allsteps' : True,
-        'hex'      : True,
-        'keep'     : 'centers'
-    },
-
-    '5x5x5-UD-centers-stage-T-centers' : {
-        'illegal'  : (),
-        'size'     : '5x5x5',
-        'filename' : 'lookup-table-5x5x5-step11-UD-centers-stage-t-center-only.txt',
-        'allsteps' : True,
-        'hex'      : True,
-        'keep'     : 't-centers'
-    },
-
-    '5x5x5-UD-centers-stage-X-centers' : {
-        'illegal'  : (),
-        'size'     : '5x5x5',
-        'filename' : 'lookup-table-5x5x5-step12-UD-centers-stage-x-center-only.txt',
-        'allsteps' : True,
-        'hex'      : True,
-        'keep'     : 'x-centers'
-    },
-
-    '5x5x5-LR-centers-stage' : {
-        'illegal'  : ("Rw", "Rw'",
-                      "Lw", "Lw'",
-                      "Fw", "Fw'",
-                      "Bw", "Bw'"),
-        'size'     : '5x5x5',
-        'filename' : 'lookup-table-5x5x5-step20-LR-centers-stage.txt',
-        'allsteps' : True,
-        'hex'      : True,
-        'keep'     : 'LFRB-centers'
     },
 
     # ===================
@@ -339,20 +296,6 @@ lookup_tables = {
         'allsteps' : True,
         'hex'      : False,
         'keep'     : 'centers-and-last-four-edges-pattern'
-    },
-
-    # ======================
-    # 6x6x6 LR oblique edges
-    # ======================
-    # There is no IDA for this one so we can keep 3Lw, 3Lw', 3Lw2, 3Dw, 3Dw', 3Dw2, 3Bw, 3Bw', 3Bw2
-    '6x6x6-UD-solve-inner-x-center-and-oblique-edges' : {
-        'illegal'  : ("3Rw", "3Rw'", "3Lw", "3Lw'", "3Fw", "3Fw'", "3Bw", "3Bw'", "3Uw", "3Uw'", "3Dw", "3Dw'", # do not mess up staged centers
-                      "Rw", "Rw'", "Lw", "Lw'", "Fw", "Fw'", "Bw", "Bw'", "Uw", "Uw'", "Dw", "Dw'"),            # do not mess up staged centers
-        'size'     : '6x6x6',
-        'filename' : 'lookup-table-6x6x6-step50-UD-solve-inner-x-center-and-oblique-edges.txt',
-        'allsteps' : True,
-        'hex'      : False,
-        'keep'     : 'UD-centers'
     },
 
     # =====
