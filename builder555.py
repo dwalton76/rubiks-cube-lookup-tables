@@ -1151,106 +1151,86 @@ class Build555Phase5LFRBCenterStage(BFS):
         )
 
 
-'''
-class Build555EdgesSolve(BFS):
+#class Build555EdgesSolve(BFS):
+#
+#    def __init__(self):
+#        BFS.__init__(self,
+#            '5x5x5-edges-solve',
+#
+#            (),
+#            '5x5x5',
+#            'lookup-table-5x5x5-step301-edges-solve.txt',
+#            False, # store_as_hex
+#            (("""
+#            . U U U .
+#            U U U U U
+#            U U U U U
+#            U U U U U
+#            . U U U .
+#
+# . L L L .  . F F F .  . R R R .  . B B B .
+# L L L L L  F F F F F  R R R R R  B B B B B
+# L L L L L  F F F F F  R R R R R  B B B B B
+# L L L L L  F F F F F  R R R R R  B B B B B
+# . L L L .  . F F F .  . R R R .  . B B B .
+#
+#            . D D D .
+#            D D D D D
+#            D D D D D
+#            D D D D D
+#            . D D D .""", "ascii"),),
+#            use_edges_pattern=True,
+#        )
+
+class StartingStates555EdgesSolveFirstFour(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-solve',
+            'starting-states-5x5x5-edges-solve-first-four',
 
-            (),
+            ("Uw", "Uw'", "Uw2",
+             "Lw", "Lw'", "Lw2",
+             "Fw", "Fw'", "Fw2",
+             "Rw", "Rw'", "Rw2",
+             "Bw", "Bw'", "Bw2",
+             "Dw", "Dw'", "Dw2"),
             '5x5x5',
-            'lookup-table-5x5x5-step300-edges-solve.txt',
+            'starting-states-5x5x5-step301-edges-solve-first-four.txt',
             False, # store_as_hex
             (("""
-            . U U U .
-            U U U U U
-            U U U U U
-            U U U U U
-            . U U U .
+            . - - - .
+            - U U U -
+            - U U U -
+            - U U U -
+            . - - - .
 
- . L L L .  . F F F .  . R R R .  . B B B .
+ . - - - .  . - - - .  . - - - .  . - - - .
  L L L L L  F F F F F  R R R R R  B B B B B
  L L L L L  F F F F F  R R R R R  B B B B B
  L L L L L  F F F F F  R R R R R  B B B B B
- . L L L .  . F F F .  . R R R .  . B B B .
+ . - - - .  . - - - .  . - - - .  . - - - .
 
-            . D D D .
-            D D D D D
-            D D D D D
-            D D D D D
-            . D D D .""", "ascii"),),
+            . - - - .
+            - D D D -
+            - D D D -
+            - D D D -
+            . - - - .""", "ascii"),),
             use_edges_pattern=True,
         )
-'''
 
 
-# dwalton - start with only pairing the first four
 class Build555EdgesSolveFirstFour(BFS):
 
     def __init__(self):
+        from builder555ss import starting_states_step301
+
         BFS.__init__(self,
             '5x5x5-edges-solve-first-four',
 
             (),
             '5x5x5',
-            'lookup-table-5x5x5-step300-edges-solve-first-four.txt',
+            'lookup-table-5x5x5-step301-edges-solve-first-four.txt',
             False, # store_as_hex
-            (("""
-            . x x x .
-            x U U U x
-            x U U U x
-            x U U U x
-            . x x x .
-
- . x x x .  . x x x .  . x x x .  . x x x .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . x x x .  . x x x .  . x x x .  . x x x .
-
-            . x x x .
-            D D D D D
-            D D D D D
-            D D D D D
-            . x x x .""", "ascii"),
-
-            ("""
-            . U U U .
-            x U U U x
-            x U U U x
-            x U U U x
-            . U U U .
-
- . x x x .  . F F F .  . x x x .  . B B B .
- x L L L x  x F F F x  x R R R x  x B B B x
- x L L L x  x F F F x  x R R R x  x B B B x
- x L L L x  x F F F x  x R R R x  x B B B x
- . x x x .  . F F F .  . x x x .  . B B B .
-
-            . D D D .
-            x D D D x
-            x D D D x
-            x D D D x
-            . D D D .""", "ascii"),
-
-            ("""
-            . x x x .
-            U U U U U
-            U U U U U
-            U U U U U
-            . x x x .
-
- . L L L .  . x x x .  . R R R .  . x x x .
- x L L L x  x F F F x  x R R R x  x B B B x
- x L L L x  x F F F x  x R R R x  x B B B x
- x L L L x  x F F F x  x R R R x  x B B B x
- . L L L .  . x x x .  . R R R .  . x x x .
-
-            . x x x .
-            D D D D D
-            D D D D D
-            D D D D D
-            . x x x .""", "ascii")),
+            starting_states_step301,
             use_edges_pattern=True,
         )
