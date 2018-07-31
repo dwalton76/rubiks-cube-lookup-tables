@@ -1349,6 +1349,7 @@ class Build555EdgesLastTwelve(BFS):
         BFS.__init__(self,
             '5x5x5-edges-last-twelve',
 
+
             ("U", "U'",
              "L", "L'",
              "F", "F'",

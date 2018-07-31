@@ -775,6 +775,19 @@ class BFS(object):
                     else:
                         (state, steps_to_solve) = line.rstrip().split(':')
 
+                        if self.name.startswith("5x5x5-edges"):
+                            self.cube.state = list(state)
+
+                            centers = ''.join(self.cube.state[x] for x in centers_555)
+                            centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth+1)
+
+                            if (self.depth + centers_cost) > max_depth:
+                                #log.info("%s has cost %d, depth %d, max_depth %d" % (centers, centers_cost, self.depth, max_depth))
+                                pruned += 1
+                                continue
+                            else:
+                                kept += 1
+
                     # Add entries to the next workq file
                     steps_to_scramble = ' '.join(reverse_steps(steps_to_solve.split()))
 
@@ -826,7 +839,7 @@ class BFS(object):
         self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
 
         if pruned:
-            log.info("kept %d, pruned %d" % (kept, pruned))
+            log.warning("kept %d, pruned %d" % (kept, pruned))
 
         log.info("end building next workq file")
 
