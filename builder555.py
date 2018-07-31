@@ -1182,20 +1182,102 @@ class Build555Phase5LFRBCenterStage(BFS):
 #            use_edges_pattern=True,
 #        )
 
-class StartingStates555EdgesSolveFirstFour(BFS):
+class Build555EdgesStage(BFS):
+    """
+    Stage the edges into three L4E planes
+    """
 
     def __init__(self):
         BFS.__init__(self,
-            'starting-states-5x5x5-edges-solve-first-four',
+            '5x5x5-edges-stage',
 
-            ("Uw", "Uw'", "Uw2",
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step401-edges-stage.txt',
+            False, # store_as_hex
+            (("""
+            . F F F .
+            U U U U U
+            U U U U U
+            U U U U U
+            . F F F .
+
+ . U U U .  . F F F .  . U U U .  . F F F .
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ . U U U .  . F F F .  . U U U .  . F F F .
+
+            . F F F .
+            U D D D U
+            U D D D U
+            U D D D U
+            . F F F .""", "ascii"),),
+            #use_edges_pattern=True,
+        )
+
+
+# This is used to build Build555EdgesLastFour
+class Build555ULFRBDCenterSolveUnstagedEdgesLastFour(BFS):
+    """
+    Solve the L4E edges in the x-plane
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-centers-solve-unstaged',
+
+            ("Rw", "Rw'", "Rw2",
              "Lw", "Lw'", "Lw2",
              "Fw", "Fw'", "Fw2",
-             "Rw", "Rw'", "Rw2",
              "Bw", "Bw'", "Bw2",
-             "Dw", "Dw'", "Dw2"),
+             "L", "L'",
+             "F", "F'",
+             "R", "R'",
+             "B", "B'"),
+
             '5x5x5',
-            'starting-states-5x5x5-step301-edges-solve-first-four.txt',
+            'lookup-table-5x5x5-step500-ULFRBD-centers-solve-unstaged.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),)
+        )
+
+
+class Build555EdgesLastFour(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-last-four',
+
+            ("Rw", "Rw'", "Rw2",
+             "Lw", "Lw'", "Lw2",
+             "Fw", "Fw'", "Fw2",
+             "Bw", "Bw'", "Bw2",
+             "L", "L'",
+             "F", "F'",
+             "R", "R'",
+             "B", "B'"),
+            '5x5x5',
+            'lookup-table-5x5x5-step500-edges-last-four.txt',
             False, # store_as_hex
             (("""
             . - - - .
@@ -1219,18 +1301,80 @@ class StartingStates555EdgesSolveFirstFour(BFS):
         )
 
 
-class Build555EdgesSolveFirstFour(BFS):
+
+# This is used to build Build555EdgesLastTwelve
+class Build555ULFRBDCenterSolveUnstagedEdgesLastTwelve(BFS):
+    """
+    """
 
     def __init__(self):
-        from builder555ss import starting_states_step301
-
         BFS.__init__(self,
-            '5x5x5-edges-solve-first-four',
+            '5x5x5-centers-solve-unstaged',
 
-            (),
+            ("U", "U'",
+             "L", "L'",
+             "F", "F'",
+             "R", "R'",
+             "B", "B'",
+             "D", "D'"),
+
             '5x5x5',
-            'lookup-table-5x5x5-step301-edges-solve-first-four.txt',
+            'lookup-table-5x5x5-step600-ULFRBD-centers-solve-unstaged.txt',
             False, # store_as_hex
-            starting_states_step301,
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),)
+        )
+
+class Build555EdgesLastTwelve(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-last-twelve',
+
+            ("U", "U'",
+             "L", "L'",
+             "F", "F'",
+             "R", "R'",
+             "B", "B'",
+             "D", "D'"),
+            '5x5x5',
+            'lookup-table-5x5x5-step600-edges-last-twelve.txt',
+            False, # store_as_hex
+            (("""
+            . U U U .
+            U U U U U
+            U U U U U
+            U U U U U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D D D D D
+            D D D D D
+            D D D D D
+            . D D D .""", "ascii"),),
             use_edges_pattern=True,
         )

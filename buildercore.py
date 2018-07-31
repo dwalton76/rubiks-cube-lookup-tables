@@ -5,7 +5,7 @@ from rubikscubennnsolver.misc import parse_ascii_222, parse_ascii_333, parse_asc
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555
+from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555, edges_555
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
 from threading import Thread, Event
@@ -483,8 +483,10 @@ class BFS(object):
         CHARS_PER_STEP = 5
         MAX_STEPS = 20
 
-        #return 512
-        return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
+        if self.name.startswith("5x5x5-edges"):
+            return 512
+        else:
+            return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
 
     def get_workq_filename_for_core(self, core):
         return "%s.core-%d" % (self.workq_filename, core)
@@ -622,7 +624,7 @@ class BFS(object):
             # If we are out of memory and swapping this will fail due to "OSError: Cannot allocate memory"
             (start, end) = line_numbers_for_cores[core]
 
-            if self.use_edges_pattern or self.symmetries or self.color_symmetries:
+            if True or self.use_edges_pattern or self.symmetries or self.color_symmetries:
                 cmd = [
                     'nice',
                     './builder-crunch-workq.py',
@@ -724,17 +726,30 @@ class BFS(object):
         pruned = 0
         kept = 0
 
-        # dwalton
-        if self.name == "5x5x5-edges-solve-first-four":
-            if not self.lt_centers:
-                log.info("begin loading lt_centers")
-                self.lt_centers = {}
+        if self.name in ("5x5x5-edges-stage", "5x5x5-edges-last-four"):
+            self.lt_centers = {}
+
+            if self.name == "5x5x5-edges-stage":
+                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt"
                 self.lt_centers_max_depth = 5
-                with open("lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt", "r") as fh:
-                    for line in fh:
-                        (state, steps) = line.strip().split(':')
-                        self.lt_centers[state] = len(steps.split())
-                log.info("end loading lt_centers")
+
+            elif self.name == "5x5x5-edges-last-four":
+                lt_centers_filename = "lookup-table-5x5x5-step500-ULFRBD-centers-solve-unstaged.txt"
+                self.lt_centers_max_depth = 6
+
+            #elif self.name == "5x5x5-edges-last-twelve":
+            #    lt_centers_filename = "lookup-table-5x5x5-step600-ULFRBD-centers-solve-unstaged.txt"
+            #    self.lt_centers_max_depth = 6
+
+            else:
+                raise Exception("Implement this %s" % self.name)
+
+            log.info("begin loading %s" % lt_centers_filename)
+            with open(lt_centers_filename, "r") as fh:
+                for line in fh:
+                    (state, steps) = line.strip().split(':')
+                    self.lt_centers[state] = len(steps.split())
+            log.info("end loading %s" % lt_centers_filename)
 
         # This needs to batch its write() calls
         if max_depth is None or self.depth < max_depth:
@@ -747,12 +762,11 @@ class BFS(object):
                     if self.use_edges_pattern:
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
 
-                        # dwalton
-                        if self.name == "5x5x5-edges-solve-first-four":
+                        if self.name in ("5x5x5-edges-stage", "5x5x5-edges-last-four"):
                             centers = pattern[0:54]
                             centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth+1)
 
-                            if (self.depth + centers_cost) > max_depth:
+                            if max_depth is not None and (self.depth + centers_cost) > max_depth:
                                 #log.info("%s has cost %d, depth %d, max_depth %d" % (centers, centers_cost, self.depth, max_depth))
                                 pruned += 1
                                 continue
@@ -764,7 +778,25 @@ class BFS(object):
                     # Add entries to the next workq file
                     steps_to_scramble = ' '.join(reverse_steps(steps_to_solve.split()))
 
+                    if self.name == "5x5x5-edges-last-twelve":
+                        self.cube.state = list(state)
+
                     for next_move in self.legal_moves:
+
+                        # dwalton
+                        if self.name == "5x5x5-edges-last-twelve":
+                            if next_move in ("Uw", "Uw'", "Uw2", "Dw", "Dw'", "Dw2"):
+                                if not self.cube.l4e_in_x_plane() or not self.cube.LFRB_centers_horizontal_bars():
+                                    continue
+
+                            elif next_move in ("Lw", "Lw'", "Lw2", "Rw", "Rw'", "Rw2"):
+                                if not self.cube.l4e_in_y_plane() or not self.cube.UFDB_centers_vertical_bars():
+                                    continue
+
+                            elif next_move in ("Fw", "Fw'", "Fw2", "Bw", "Bw'", "Bw2"):
+                                if not self.cube.l4e_in_z_plane() or not self.cube.LR_centers_vertical_bars() or not self.cube.UD_centers_horizontal_bars():
+                                    continue
+
                         if self.use_edges_pattern:
                             workq_line = "%s:%s:%s %s" % (pattern, state, steps_to_scramble, next_move)
                         else:
@@ -790,7 +822,7 @@ class BFS(object):
                 pass
         self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
 
-        if self.name == "5x5x5-edges-solve-first-four":
+        if pruned:
             log.info("kept %d, pruned %d" % (kept, pruned))
 
         log.info("end building next workq file")
@@ -830,11 +862,11 @@ class BFS(object):
             self._search_launch_builder_crunch_workq_per_core()
             self._search_process_builder_crunch_workq_results(max_depth)
 
+            #log.info("end of %d: PAUSED" % self.depth)
+            #input("end of %d: PAUSED" % self.depth)
+
             self.depth += 1
             self.log_table_stats()
-
-            #log.info("PAUSED")
-            #input("PAUSED")
 
             # If the workq file is empty our search is complete
             if not os.path.getsize(self.workq_filename):
@@ -902,13 +934,25 @@ class BFS(object):
                 for line in fh_read:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
 
-                    if self.name == "5x5x5-edges-solve-first-four":
+                    if self.name in ("5x5x5-edges-stage", "5x5x5-edges-last-four"):
                         centers = pattern[0:54]
                         edges = pattern[54:]
                         if centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
                             fh_final.write("%s:%s\n" % (edges, steps))
                     else:
                         fh_final.write("%s:%s\n" % (pattern, steps))
+
+                '''
+            # dwalton
+            elif self.name == "5x5x5-edges-last-twelve":
+                for line in fh_read:
+                    (pattern, cube_state_string, steps) = line.rstrip().split(':')
+                    centers = ''.join(self.cube.state[x] for x in centers_555)
+                    edges = ''.join(self.cube.state[x] for x in edges_555)
+                    centers = centers.replace('.', '')
+                    edges = edges.replace('.', '')
+                    fh_final.write("%s%s:%s\n" % (centers, edges, steps))
+                '''
 
             elif self.use_centers_then_edges:
                 for line in fh_read:
@@ -918,13 +962,31 @@ class BFS(object):
                     if self.size == '4x4x4':
                         centers = ''.join(self.cube.state[x] for x in centers_444)
                         edges = ''.join(self.cube.state[x] for x in edges_444)
-
                         centers = centers.replace('.', '')
                         edges = edges.replace('.', '')
+
+                    elif self.size == '5x5x5':
+                        centers = ''.join(self.cube.state[x] for x in centers_555)
+                        edges = ''.join(self.cube.state[x] for x in edges_555)
+                        centers = centers.replace('.', '')
+                        edges = edges.replace('.', '')
+
                     else:
                         raise Exception("Add support for %s" % self.size)
 
                     fh_final.write("%s%s:%s\n" % (centers, edges, steps))
+
+            elif self.name == "5x5x5-edges-stage":
+                for line in fh_read:
+                    (cube_state_string, steps) = line.rstrip().split(':')
+                    self.cube.state = list(cube_state_string)
+                    centers = ''.join(self.cube.state[x] for x in centers_555)
+                    edges = ''.join(self.cube.state[x] for x in edges_555)
+                    centers = centers.replace('.', '')
+                    edges = edges.replace('.', '')
+
+                    if centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
+                        fh_final.write("%s:%s\n" % (edges, steps))
 
             else:
                 for line in fh_read:
