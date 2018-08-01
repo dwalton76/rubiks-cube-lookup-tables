@@ -140,12 +140,22 @@ do_edges = False
 
 with open(filename, 'r') as fh:
     for line in fh:
-        (state, steps) = line.strip().split(':')
+        line = line.strip()
+
+        if ":" in line:
+            (state, steps) = line.split(':')
+        else:
+            state = None
+            steps = line
 
         if ',' in steps:
             steps = steps.split(',')[0]
         steps = steps.split()
         len_steps = len(steps)
+
+        if not len_steps:
+            print("ERROR: %s" % line)
+            sys.exit(0)
 
         if len_steps == 1 and steps[0] == 'Na':
             len_steps = 0

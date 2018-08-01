@@ -1378,3 +1378,39 @@ class Build555EdgesLastTwelve(BFS):
             . D D D .""", "ascii"),),
             use_edges_pattern=True,
         )
+
+
+
+class Build555ULFRBDCenterSolveUnstagedUltimate(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-centers-solve-unstaged-ultimate',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step700-ULFRBD-centers-solve-unstaged.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),)
+        )
+
