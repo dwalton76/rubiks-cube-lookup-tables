@@ -8,6 +8,8 @@ import logging
 import os
 import shutil
 import subprocess
+import sys
+
 
 def chop_trailing_outer_layer_steps(steps):
     last_w_index = 0
@@ -30,6 +32,25 @@ def file_line_count(filename):
         return 0
 
 
+def step_sequence_is_interesting(steps):
+    """
+    Saving "Uw2 U' Uw2" isn't all that interesting.
+
+    Neither is "Uw D' U2 Uw'" so change D->U, etc when calculating
+    the number of layers involved.
+    """
+    result = set()
+
+    for step in steps:
+        step = step.replace("w", "").replace("'", "").replace("2", "")
+        step = step.replace("D", "U").replace("R", "L").replace("B", "F")
+        result.update(step)
+
+    #if len(steps) >= 4:
+    #    log.info("steps %s, result %s" % (pformat(steps), pformat(result)))
+    return len(result) > 1
+
+
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s %(filename)24s %(levelname)8s: %(message)s')
@@ -39,6 +60,10 @@ if __name__ == '__main__':
     logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
     logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
 
+
+    if len(sys.argv) != 2:
+        print("syntax is \n\n    bfs_555.py MAX_DEPTH\n\n")
+        sys.exit(1)
 
 
     # Load the lt_centers dictionary
@@ -58,7 +83,8 @@ if __name__ == '__main__':
     # Init the workq
     workq = deque()
     for step in moves_555:
-        workq.append(step)
+        if "w" in step:
+            workq.append(step)
 
 
     # Init misc variables
@@ -67,7 +93,7 @@ if __name__ == '__main__':
     kept = 0
     processed = 0
     pruned = 0
-    max_depth = 7
+    max_depth = int(sys.argv[1])
     keepers = []
     keepers_count = 0
     keepers_filename = "keepers_555.txt"
@@ -120,33 +146,12 @@ if __name__ == '__main__':
 
         centers = ''.join([cube.state[x] for x in centers_555])
 
+        # If the centers are solved, save this sequence
         if centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-            if "w" in step_sequence_str:
-                '''
-                5-deep using chop_trailing_outer_layer_steps
+            steps_to_write = chop_trailing_outer_layer_steps(step_sequence)
 
-                keepers_555.txt.uniq
-                ====================
-                3 steps has 108 entries (0 percent, 0.00x previous step)
-                4 steps has 2,322 entries (5 percent, 21.50x previous step)
-                5 steps has 41,076 entries (94 percent, 17.69x previous step)
-
-                Total: 43,506 entries
-                Average: 4.94 moves
-
-
-                5-deep without chop_trailing_outer_layer_steps
-
-                keepers_555.txt
-                ===============
-                3 steps has 108 entries (0 percent, 0.00x previous step)
-                4 steps has 4,266 entries (3 percent, 39.50x previous step)
-                5 steps has 112,032 entries (96 percent, 26.26x previous step)
-
-                Total: 116,406 entries
-                Average: 4.96 moves
-                '''
-                steps_to_write = chop_trailing_outer_layer_steps(step_sequence)
+            # Only save the ones where more than one face was involved.
+            if step_sequence_is_interesting(steps_to_write):
                 keepers.append(" ".join(steps_to_write))
                 keepers_count += 1
 
@@ -185,10 +190,22 @@ if __name__ == '__main__':
             # Do not add a step if it is on the same face/layer as the last step in step_sequence
             prev_step = step_sequence[-1]
 
-            for step in moves_555:
-                if not steps_on_same_face_and_layer(prev_step, step):
-                    next_workq.append(" ".join(step_sequence + [step,]))
-                    next_workq_count += 1
+            # If we are building the workq for the last step, only add "w" moves. We will chop
+            # all of the trailing outer later moves so there is no need to do them.
+            if len_step_sequence == max_depth - 1:
+                for step in moves_555:
+
+                    if "w" not in step:
+                        continue
+
+                    if not steps_on_same_face_and_layer(prev_step, step):
+                        next_workq.append(" ".join(step_sequence + [step,]))
+                        next_workq_count += 1
+            else:
+                for step in moves_555:
+                    if not steps_on_same_face_and_layer(prev_step, step):
+                        next_workq.append(" ".join(step_sequence + [step,]))
+                        next_workq_count += 1
 
             # write our next_workq entries to disk so we don't run out of memory
             if next_workq_count >= NEXT_WORKQ_BATCH_SIZE:
@@ -203,8 +220,11 @@ if __name__ == '__main__':
         with open(keepers_filename, "a") as fh:
             fh.write("\n".join(keepers) + "\n")
 
-    log.info("sort %s" % keepers_filename)
-    subprocess.check_output("LC_ALL=C sort --temporary-directory=./tmp/ --output %s %s" % (keepers_filename, keepers_filename), shell=True)
+    if os.path.exists(keepers_filename):
+        log.info("sort %s" % keepers_filename)
+        subprocess.check_output("LC_ALL=C sort --temporary-directory=./tmp/ --output %s %s" % (keepers_filename, keepers_filename), shell=True)
 
-    subprocess.check_output("uniq %s %s.uniq" % (keepers_filename, keepers_filename), shell=True)
-    shutil.move("%s.uniq" % keepers_filename, keepers_filename,)
+        subprocess.check_output("uniq %s %s.uniq" % (keepers_filename, keepers_filename), shell=True)
+        shutil.move("%s.uniq" % keepers_filename, keepers_filename,)
+    else:
+        log.info("did not find any keepers")
