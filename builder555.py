@@ -384,75 +384,155 @@ class Build555ULFRBDCenterSolveTCentersOnly(BFS):
         )
 
 
-
-#class Build555EdgesSolve(BFS):
+# =====
+# Edges
+# =====
+#class Build555EdgesLastFourStage(BFS):
 #
 #    def __init__(self):
 #        BFS.__init__(self,
-#            '5x5x5-edges-solve',
+#            '5x5x5-edges-last-four-stage',
 #
-#            (),
+#            ("Uw", "Uw'", "Uw2",
+#             "Lw", "Lw'", "Lw2",
+#             "Fw", "Fw'", "Fw2",
+#             "Rw", "Rw'", "Rw2",
+#             "Bw", "Bw'", "Bw2",
+#             "Dw", "Dw'", "Dw2",
+#            ),
 #            '5x5x5',
-#            'lookup-table-5x5x5-step301-edges-solve.txt',
+#            'lookup-table-5x5x5-step400-edges-last-four-stage.txt',
 #            False, # store_as_hex
 #            (("""
-#            . U U U .
-#            U U U U U
-#            U U U U U
-#            U U U U U
-#            . U U U .
+#            . - - - .
+#            - . . . -
+#            - . . . -
+#            - . . . -
+#            . - - - .
 #
-# . L L L .  . F F F .  . R R R .  . B B B .
-# L L L L L  F F F F F  R R R R R  B B B B B
-# L L L L L  F F F F F  R R R R R  B B B B B
-# L L L L L  F F F F F  R R R R R  B B B B B
-# . L L L .  . F F F .  . R R R .  . B B B .
+# . - - - .  . - - - .  . - - - .  . - - - .
+# L . . . L  L . . . L  L . . . L  L . . . L
+# L . . . L  L . . . L  L . . . L  L . . . L
+# L . . . L  L . . . L  L . . . L  L . . . L
+# . - - - .  . - - - .  . - - - .  . - - - .
 #
-#            . D D D .
-#            D D D D D
-#            D D D D D
-#            D D D D D
-#            . D D D .""", "ascii"),),
-#            use_edges_pattern=True,
+#            . - - - .
+#            - . . . -
+#            - . . . -
+#            - . . . -
+#            . - - - .""", "ascii"),
+#
+#            ("""
+#            . L L L .
+#            - . . . -
+#            - . . . -
+#            - . . . -
+#            . L L L .
+#
+# . - - - .  . L L L .  . - - - .  . L L L .
+# - . . . -  - . . . -  - . . . -  - . . . -
+# - . . . -  - . . . -  - . . . -  - . . . -
+# - . . . -  - . . . -  - . . . -  - . . . -
+# . - - - .  . L L L .  . - - - .  . L L L .
+#
+#            . L L L .
+#            - . . . -
+#            - . . . -
+#            - . . . -
+#            . L L L .""", "ascii"),
+#
+#            ("""
+#            . - - - .
+#            L . . . L
+#            L . . . L
+#            L . . . L
+#            . - - - .
+#
+# . L L L .  . - - - .  . L L L .  . - - - .
+# - . . . -  - . . . -  - . . . -  - . . . -
+# - . . . -  - . . . -  - . . . -  - . . . -
+# - . . . -  - . . . -  - . . . -  - . . . -
+# . L L L .  . - - - .  . L L L .  . - - - .
+#
+#            . - - - .
+#            L . . . L
+#            L . . . L
+#            L . . . L
+#            . - - - .""", "ascii")
+#            ),
 #        )
 
-class Build555EdgesStage(BFS):
-    """
-    Stage the edges into three L4E planes
-    """
+
+
+class Build555EdgesStageFirstFour(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-stage',
-
+            '5x5x5-edges-stage-first-four',
             (),
             '5x5x5',
-            'lookup-table-5x5x5-step401-edges-stage.txt',
+            'lookup-table-5x5x5-step100-stage-first-four-edges.txt',
             False, # store_as_hex
             (("""
-            . F F F .
-            U U U U U
-            U U U U U
-            U U U U U
-            . F F F .
+            . - - - .
+            - U U U -
+            - U U U -
+            - U U U -
+            . - - - .
 
- . U U U .  . F F F .  . U U U .  . F F F .
+ . - - - .  . - - - .  . - - - .  . - - - .
  L L L L L  L F F F L  L R R R L  L B B B L
  L L L L L  L F F F L  L R R R L  L B B B L
  L L L L L  L F F F L  L R R R L  L B B B L
- . U U U .  . F F F .  . U U U .  . F F F .
+ . - - - .  . - - - .  . - - - .  . - - - .
 
-            . F F F .
-            U D D D U
-            U D D D U
-            U D D D U
-            . F F F .""", "ascii"),),
-            #use_edges_pattern=True,
+            . - - - .
+            - D D D -
+            - D D D -
+            - D D D -
+            . - - - .""", "ascii"),
+
+            ("""
+            . L L L .
+            - U U U -
+            - U U U -
+            - U U U -
+            . L L L .
+
+ . - - - .  . L L L .  . - - - .  . L L L .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . - - - .  . L L L .  . - - - .  . L L L .
+
+            . L L L .
+            - D D D -
+            - D D D -
+            - D D D -
+            . L L L .""", "ascii"),
+
+            ("""
+            . - - - .
+            L U U U L
+            L U U U L
+            L U U U L
+            . - - - .
+
+ . L L L .  . - - - .  . L L L .  . - - - .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . L L L .  . - - - .  . L L L .  . - - - .
+
+            . - - - .
+            L D D D L
+            L D D D L
+            L D D D L
+            . - - - .""", "ascii"))
         )
+        
 
-
-# This is used to build Build555EdgesLastFour
-class Build555ULFRBDCenterSolveUnstagedEdgesLastFour(BFS):
+class Build555ULFRBDCenterSolveUnstagedEdgesLastFourXPlane(BFS):
     """
     Solve the L4E edges in the x-plane
     """
@@ -496,11 +576,11 @@ class Build555ULFRBDCenterSolveUnstagedEdgesLastFour(BFS):
         )
 
 
-class Build555EdgesLastFour(BFS):
+class Build555EdgesLastFourXPlane(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-last-four',
+            '5x5x5-edges-last-four-x-plane',
 
             ("Rw", "Rw'", "Rw2",
              "Lw", "Lw'", "Lw2",
@@ -511,7 +591,7 @@ class Build555EdgesLastFour(BFS):
              "R", "R'",
              "B", "B'"),
             '5x5x5',
-            'lookup-table-5x5x5-step500-edges-last-four.txt',
+            'lookup-table-5x5x5-step500-edges-last-four-x-plane.txt',
             False, # store_as_hex
             (("""
             . - - - .
@@ -536,24 +616,26 @@ class Build555EdgesLastFour(BFS):
 
 
 
-# This is used to build Build555EdgesLastTwelve
-class Build555ULFRBDCenterSolveUnstagedEdgesLastTwelve(BFS):
+class Build555ULFRBDCenterSolveUnstagedEdgesLastFourYPlane(BFS):
     """
+    Solve the L4E edges in the y-plane
     """
 
     def __init__(self):
         BFS.__init__(self,
             '5x5x5-centers-solve-unstaged',
 
-            ("U", "U'",
-             "L", "L'",
+            ("Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "Fw", "Fw'", "Fw2",
+             "Bw", "Bw'", "Bw2",
+             "U", "U'",
              "F", "F'",
-             "R", "R'",
-             "B", "B'",
-             "D", "D'"),
+             "D", "D'",
+             "B", "B'"),
 
             '5x5x5',
-            'lookup-table-5x5x5-step600-ULFRBD-centers-solve-unstaged.txt',
+            'lookup-table-5x5x5-step501-ULFRBD-centers-solve-unstaged.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -577,54 +659,66 @@ class Build555ULFRBDCenterSolveUnstagedEdgesLastTwelve(BFS):
             . . . . .""", "ascii"),)
         )
 
-class Build555EdgesLastTwelve(BFS):
+
+class Build555EdgesLastFourYPlane(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-last-twelve',
+            '5x5x5-edges-last-four-y-plane',
 
-            ("U", "U'",
-             "L", "L'",
+            ("Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "Fw", "Fw'", "Fw2",
+             "Bw", "Bw'", "Bw2",
+             "U", "U'",
              "F", "F'",
-             "R", "R'",
-             "B", "B'",
-             "D", "D'"),
+             "D", "D'",
+             "B", "B'"),
             '5x5x5',
-            'lookup-table-5x5x5-step600-edges-last-twelve.txt',
+            'lookup-table-5x5x5-step501-edges-last-four-y-plane.txt',
             False, # store_as_hex
             (("""
             . U U U .
-            U U U U U
-            U U U U U
-            U U U U U
+            - U U U -
+            - U U U -
+            - U U U -
             . U U U .
 
- . L L L .  . F F F .  . R R R .  . B B B .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . L L L .  . F F F .  . R R R .  . B B B .
+ . - - - .  . F F F .  . - - - .  . B B B .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . - - - .  . F F F .  . - - - .  . B B B .
 
             . D D D .
-            D D D D D
-            D D D D D
-            D D D D D
+            - D D D -
+            - D D D -
+            - D D D -
             . D D D .""", "ascii"),),
             use_edges_pattern=True,
         )
 
 
-
-class Build555ULFRBDCenterSolveUnstagedUltimate(BFS):
+class Build555ULFRBDCenterSolveUnstagedEdgesLastFourZPlane(BFS):
     """
+    Solve the L4E edges in the z-plane
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-centers-solve-unstaged-ultimate',
-            (),
+            '5x5x5-centers-solve-unstaged',
+
+            ("Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "Lw", "Lw'", "Lw2",
+             "Rw", "Rw'", "Rw2",
+             "U", "U'",
+             "L", "L'",
+             "D", "D'",
+             "R", "R'"),
+
             '5x5x5',
-            'lookup-table-5x5x5-step700-ULFRBD-centers-solve-unstaged.txt',
+            'lookup-table-5x5x5-step502-ULFRBD-centers-solve-unstaged.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -646,5 +740,45 @@ class Build555ULFRBDCenterSolveUnstagedUltimate(BFS):
             . D D D .
             . D D D .
             . . . . .""", "ascii"),)
+        )
+
+
+class Build555EdgesLastFourZPlane(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-last-four-z-plane',
+
+            ("Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "Lw", "Lw'", "Lw2",
+             "Rw", "Rw'", "Rw2",
+             "U", "U'",
+             "L", "L'",
+             "D", "D'",
+             "R", "R'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step502-edges-last-four-z-plane.txt',
+            False, # store_as_hex
+            (("""
+            . - - - .
+            U U U U U
+            U U U U U
+            U U U U U
+            . - - - .
+
+ . L L L .  . - - - .  . R R R .  . - - - .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . L L L .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            D D D D D
+            D D D D D
+            D D D D D
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
         )
 

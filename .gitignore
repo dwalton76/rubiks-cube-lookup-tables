@@ -90,7 +90,7 @@ ENV/
 
 *.swp
 backup-*
-lookup-table*
+lookup-table*.txt
 rotate
 tmp/sort*
 tmp/workq*
