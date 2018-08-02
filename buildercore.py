@@ -339,7 +339,7 @@ class BFS(object):
 
     def __init__(self, name, illegal_moves, size, filename, store_as_hex, starting_cube_states,
                  use_cost_only=False, use_hash_cost_only=False, use_edges_pattern=False, legal_moves=None,
-                 rotations=[], use_centers_then_edges=False, symmetries=[]):
+                 rotations=[], use_centers_then_edges=False):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
@@ -353,7 +353,6 @@ class BFS(object):
         self.starting_cube_states = starting_cube_states
         self.rotations = rotations
         self.use_centers_then_edges = use_centers_then_edges
-        self.symmetries = symmetries
         self.lt_centers = {}
 
         assert isinstance(self.name, str)
@@ -636,7 +635,7 @@ class BFS(object):
             # If we are out of memory and swapping this will fail due to "OSError: Cannot allocate memory"
             (start, end) = line_numbers_for_cores[core]
 
-            if True or self.use_edges_pattern or self.symmetries:
+            if True or self.use_edges_pattern:
                 cmd = [
                     'nice',
                     './builder-crunch-workq.py',
@@ -650,10 +649,6 @@ class BFS(object):
 
                 if self.use_edges_pattern:
                     cmd.append('--use-edges-pattern')
-
-                if self.symmetries:
-                    cmd.append('--symmetries')
-                    cmd.append(','.join(self.symmetries))
 
             else:
                 cmd = [

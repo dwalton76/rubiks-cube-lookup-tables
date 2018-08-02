@@ -110,7 +110,7 @@ def edges_recolor_pattern_555(state):
         return edges_recolor_with_midges_555(state)
 
 
-def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern, symmetries):
+def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern):
     assert isinstance(size, str)
     assert size in supported_sizes
     assert isinstance(inputfile, str)
@@ -119,7 +119,6 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     assert isinstance(end, int)
     assert start >= 0
     assert end > start
-    assert isinstance(symmetries, str)
 
     if size == '2x2x2':
         rotate_xxx = rotate_222
@@ -135,14 +134,6 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
         rotate_xxx = rotate_777
     else:
         raise Exception("we should not be here")
-
-    # Convert the sequences from strings to lists
-    if symmetries:
-        symmetries_final = []
-        for seq in symmetries.strip().split(','):
-            symmetries_final.append(seq.split())
-        symmetries = symmetries_final
-        #log.warning("symmetries: %s" % pformat(symmetries))
 
     to_write = []
     to_write_count = 0
@@ -187,73 +178,24 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
             if use_edges_pattern:
 
-                if symmetries:
-                    results = []
-                    cube_state_original = cube_state[:]
+                cube_state_string = ''.join(cube_state)
 
-                    for seq in symmetries:
-                        state = cube_state_original[:]
-
-                        for step in seq:
-                            state = rotate_xxx(state[:], step)
-
-                        if size == '4x4x4':
-                            state_for_edges = edges_recolor_pattern_444(state[:])
-                            edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
-                            centers = ''.join([state[x] for x in centers_444])
-                        elif size == '5x5x5':
-                            state_for_edges = edges_recolor_pattern_555(state[:])
-                            edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
-                            centers = ''.join([state[x] for x in centers_555])
-                        else:
-                            raise Exception("Implement this")
-
-                        #log.info("move %s, symmetry %s, edges_pattern %s\n\n\n\n" % (moves_to_scramble[-1], ' '.join(seq), edges_pattern))
-                        centers = centers.replace('.', '')
-                        results.append((centers, edges_pattern, ''.join(state)))
-
-                    results = sorted(results)[0]
-                    (centers, edges_pattern, cube_state_string) = results
-                    to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
-                    to_write_count += 1
+                if size == '4x4x4':
+                    state_for_edges = edges_recolor_pattern_444(cube_state[:])
+                    edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
+                    centers = ''.join([cube_state[x] for x in centers_444])
+                elif size == '5x5x5':
+                    state_for_edges = edges_recolor_pattern_555(cube_state[:])
+                    edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
+                    centers = ''.join([cube_state[x] for x in centers_555])
                 else:
-                    cube_state_string = ''.join(cube_state)
+                    raise Exception("Implement this")
 
-                    if size == '4x4x4':
-                        state_for_edges = edges_recolor_pattern_444(cube_state[:])
-                        edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
-                        centers = ''.join([cube_state[x] for x in centers_444])
-                    elif size == '5x5x5':
-                        state_for_edges = edges_recolor_pattern_555(cube_state[:])
-                        edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
-                        centers = ''.join([cube_state[x] for x in centers_555])
-                    else:
-                        raise Exception("Implement this")
-
-                    to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
-                    to_write_count += 1
+                to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
+                to_write_count += 1
 
             else:
-                if symmetries:
-                    results = []
-                    cube_state_original = cube_state[:]
-
-                    if not symmetries:
-                        symmetries = [[]]
-
-                    for seq in symmetries:
-                        cube_state = cube_state_original[:]
-
-                        for step in seq:
-                            cube_state = rotate_xxx(cube_state[:], step)
-
-                        results.append(cube_state)
-
-                    results = sorted(results)
-                    cube_state_string = ''.join(results[0])
-                else:
-                    cube_state_string = ''.join(cube_state)
-
+                cube_state_string = ''.join(cube_state)
                 to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
                 to_write_count += 1
 
@@ -298,12 +240,10 @@ if __name__ == '__main__':
     parser.add_argument('end', type=int, help='The final linenumber to crunch in inputfile')
     parser.add_argument('outputfile', type=str, help='The file to write results')
     parser.add_argument('--use-edges-pattern', default=False, action='store_true', help='use edges patterns')
-    parser.add_argument('--symmetries', default='', type=str, help='cube symmetries to apply')
     args = parser.parse_args()
 
     crunch_workq(args.size, args.inputfile, args.linewidth,
         args.start, args.end,
         args.outputfile,
         args.use_edges_pattern,
-        args.symmetries,
     )

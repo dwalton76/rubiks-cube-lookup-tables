@@ -172,24 +172,6 @@ class Build777UDObliqueEdgesStage(BFS):
                 . U . . . U .
                 . . U U U . .
                 . . . . . . .""", "ascii"),),
-            symmetries=(
-                "",
-                "y",
-                "y'",
-                "x x",
-                "y y",
-                "z z",
-                "y x x",
-                "y z z",
-                "reflect-x",
-                "reflect-x y",
-                "reflect-x y'",
-                "reflect-x x x",
-                "reflect-x y y",
-                "reflect-x z z",
-                "reflect-x y x x",
-                "reflect-x y z z"
-            )
         )
 
 
@@ -647,22 +629,6 @@ class Build777LRObliqueEdgesStage(BFS):
             # starting states
             starting_states_step30_777,
         )
-
-            # I have tried symmetry here and while it does reduce the size of the tables it
-            # isn't enough of a perf improvement to be worth the CPU overhead of calculating
-            # the symetric state in the solver (during IDA).
-'''
-            symmetries=(
-                "",
-                "x x",
-                "y y",
-                "z z",
-                "reflect-x",
-                "reflect-x x x",
-                "reflect-x y y",
-                "reflect-x z z"
-            )
-'''
 
 
 class Build777LROutsideObliqueEdgesStage(BFS):
