@@ -39,27 +39,7 @@ class Build555UDCenterStage(BFS):
             . U U U .
             . . . . .""", "ascii"),),
         )
-'''
-            symmetries=(
-                "",
-                "y",
-                "y'",
-                "x x",
-                "y y",
-                "z z",
-                "y x x",
-                "y z z",
-                "reflect-x",
-                "reflect-x y",
-                "reflect-x y'",
-                "reflect-x x x",
-                "reflect-x y y",
-                "reflect-x z z",
-                "reflect-x y x x",
-                "reflect-x y z z"
-            )
-        )
-'''
+
 
 class Build555UDCenterStageTCenterOnly(BFS):
     """
