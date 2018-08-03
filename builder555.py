@@ -472,7 +472,7 @@ class Build555EdgesStageFirstFour(BFS):
             (),
             '5x5x5',
             'lookup-table-5x5x5-step100-stage-first-four-edges.txt',
-            False, # store_as_hex
+            True, # store_as_hex
             (("""
             . - - - .
             - U U U -
@@ -530,7 +530,112 @@ class Build555EdgesStageFirstFour(BFS):
             L D D D L
             . - - - .""", "ascii"))
         )
-        
+
+
+class Build555ULFRBDCenterSolveUnstagedEdgesStageSecondFour(BFS):
+    """
+    Solve the L4E edges in the x-plane
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-centers-solve-unstaged',
+
+            ("Rw", "Rw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "L", "L'",
+             "F", "F'",
+             "R", "R'",
+             "B", "B'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step101-ULFRBD-centers-solve-unstaged.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),)
+        )
+
+
+class Build555EdgesStageSecondFour(BFS):
+    """
+    The first L4E group will be in the x-plane, they can move around
+    just do not un-L4E them.
+    """
+
+    # dwalton
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-stage-second-four',
+            ("Rw", "Rw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "L", "L'",
+             "F", "F'",
+             "R", "R'",
+             "B", "B'"),
+            '5x5x5',
+            'lookup-table-5x5x5-step101-stage-second-four-edges.txt',
+            True, # store_as_hex
+            (("""
+            . L L L .
+            - U U U -
+            - U U U -
+            - U U U -
+            . L L L .
+
+ . - - - .  . L L L .  . - - - .  . L L L .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . - - - .  . L L L .  . - - - .  . L L L .
+
+            . L L L .
+            - D D D -
+            - D D D -
+            - D D D -
+            . L L L .""", "ascii"),
+
+            ("""
+            . - - - .
+            L U U U L
+            L U U U L
+            L U U U L
+            . - - - .
+
+ . L L L .  . - - - .  . L L L .  . - - - .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . L L L .  . - - - .  . L L L .  . - - - .
+
+            . - - - .
+            L D D D L
+            L D D D L
+            L D D D L
+            . - - - .""", "ascii"))
+        )
+
 
 class Build555ULFRBDCenterSolveUnstagedEdgesLastFourXPlane(BFS):
     """

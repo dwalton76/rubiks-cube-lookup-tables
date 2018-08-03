@@ -719,6 +719,7 @@ class BFS(object):
 
         if self.name in (
                 "5x5x5-edges-stage-first-four",
+                "5x5x5-edges-stage-second-four",
                 "5x5x5-edges-last-four-x-plane",
                 "5x5x5-edges-last-four-y-plane",
                 "5x5x5-edges-last-four-z-plane",
@@ -728,6 +729,10 @@ class BFS(object):
             if self.name == "5x5x5-edges-stage-first-four":
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt"
                 self.lt_centers_max_depth = 5
+
+            elif self.name == "5x5x5-edges-stage-second-four":
+                lt_centers_filename = "lookup-table-5x5x5-step101-ULFRBD-centers-solve-unstaged.txt"
+                self.lt_centers_max_depth = 7
 
             elif self.name == "5x5x5-edges-last-four-x-plane":
                 lt_centers_filename = "lookup-table-5x5x5-step500-ULFRBD-centers-solve-unstaged.txt"
@@ -784,7 +789,10 @@ class BFS(object):
                     else:
                         (state, steps_to_solve) = line.rstrip().split(':')
 
-                        if self.name == "5x5x5-edges-stage-first-four":
+                        if self.name in (
+                                "5x5x5-edges-stage-first-four",
+                                "5x5x5-edges-stage-second-four",
+                            ):
                             self.cube.state = list(state)
                             centers = ''.join([self.cube.state[x] for x in centers_555])
 
@@ -977,13 +985,22 @@ class BFS(object):
                 for line in fh_read:
                     (cube_state_string, steps) = line.rstrip().split(':')
 
-                    if self.name == "5x5x5-edges-stage-first-four":
+                    if self.name in (
+                        "5x5x5-edges-stage-first-four",
+                        "5x5x5-edges-stage-second-four",
+                        ):
+
                         self.cube.state = list(cube_state_string)
                         centers = ''.join([self.cube.state[x] for x in centers_555])
+                        edges = ''.join([self.cube.state[x] for x in edges_555])
+                        edges = edges.replace('-', 'x')
+
                         if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
                             continue
 
-                    cube_state_string_small = cube_state_string[1:].replace('.', '')
+                        cube_state_string_small = edges
+                    else:
+                        cube_state_string_small = cube_state_string[1:].replace('.', '')
 
                     if self.store_as_hex:
                         cube_state_string_small = convert_state_to_hex(cube_state_string_small)
