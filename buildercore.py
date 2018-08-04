@@ -586,15 +586,26 @@ class BFS(object):
             else:
                 pattern = ''
 
-            with open(self.workq_filename, 'w') as fh:
-                for cube in self.starting_cubes:
-                    for move in self.legal_moves:
-                        if self.use_edges_pattern:
-                            workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), move)
-                        else:
-                            workq_line = "%s:%s" % (''.join(cube.state), move)
-                        fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
-                        self.workq_size += 1
+            # dwalton
+            if self.name == "5x5x5-edges-last-twelve":
+                with open(self.workq_filename, 'w') as fh_write:
+                    for cube in self.starting_cubes:
+                        with open('555-centers-kept-solved.txt.9-deep', 'r') as fh_read:
+                            for line in fh_read:
+                                line = line.strip()
+                                workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), line)
+                                fh_write.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
+                                self.workq_size += 1
+            else:
+                with open(self.workq_filename, 'w') as fh:
+                    for cube in self.starting_cubes:
+                        for move in self.legal_moves:
+                            if self.use_edges_pattern:
+                                workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), move)
+                            else:
+                                workq_line = "%s:%s" % (''.join(cube.state), move)
+                            fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
+                            self.workq_size += 1
 
         self.starting_cubes = []
         gc.collect()
@@ -756,9 +767,15 @@ class BFS(object):
                     self.lt_centers[state] = len(steps.split())
             log.info("end loading %s" % lt_centers_filename)
 
-        if max_depth is None or self.depth < max_depth:
+        if self.name == "5x5x5-edges-last-twelve":
+
+            with open(self.workq_filename_next, 'w') as fh_workq_next:
+                pass
+
+        elif max_depth is None or self.depth < max_depth:
             to_write = []
             to_write_count = 0
+
             with open(self.workq_filename + '.20-new-states', 'r') as fh_new_states,\
                 open(self.workq_filename_next, 'w') as fh_workq_next:
 
@@ -831,8 +848,10 @@ class BFS(object):
                     to_write_count = 0
 
         else:
+
             with open(self.workq_filename_next, 'w') as fh_workq_next:
                 pass
+
         self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
 
         if pruned:
@@ -948,6 +967,7 @@ class BFS(object):
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
 
                     if self.name in (
+                            "5x5x5-edges-last-twelve",
                             "5x5x5-edges-last-four-x-plane",
                             "5x5x5-edges-last-four-y-plane",
                             "5x5x5-edges-last-four-z-plane",
