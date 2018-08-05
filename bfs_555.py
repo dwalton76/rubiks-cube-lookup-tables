@@ -63,8 +63,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('depth', type=int, default=None, help='The number of moves deep to explore')
+    parser.add_argument('--min-wide-turns', type=int, default=0, help='Min number of wide turns to make')
     args = parser.parse_args()
-
 
     # Load the lt_centers dictionary
     lt_centers = {}
@@ -99,6 +99,7 @@ if __name__ == '__main__':
     processed = 0
     pruned = 0
     max_depth = args.depth
+    min_wide_turns = args.min_wide_turns
     keepers = []
     keepers_count = 0
     keepers_filename = "keepers_555.txt"
@@ -226,6 +227,18 @@ if __name__ == '__main__':
             else:
                 wide_count_even = False
                 wide_count_odd = True
+
+            # dwalton
+            if min_wide_turns:
+                wide_turns_needed = min_wide_turns - wide_count
+
+                if wide_turns_needed < 0:
+                    wide_turns_needed = 0
+
+                steps_remaining = max_depth - len_step_sequence
+
+                if wide_turns_needed > steps_remaining:
+                    continue
 
             # If we are building the workq for the last step, only add "w" moves. We will chop
             # all of the trailing outer later moves anyway so there is no need to do them.
