@@ -582,7 +582,6 @@ class Build555EdgesStageSecondFour(BFS):
     just do not un-L4E them.
     """
 
-    # dwalton
     def __init__(self):
         BFS.__init__(self,
             '5x5x5-edges-stage-second-four',
@@ -915,5 +914,59 @@ class Build555EdgesLastTwelve(BFS):
             D D D D D
             D D D D D
             . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+
+class StartingStates555EdgesSolveFirstFour(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-first-four',
+            ("Uw", "Uw'", "Uw2",
+             "Lw", "Lw'", "Lw2",
+             "Fw", "Fw'", "Fw2",
+             "Rw", "Rw'", "Rw2",
+             "Bw", "Bw'", "Bw2",
+             "Dw", "Dw'", "Dw2"),
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step700-edges-first-four.txt',
+            False, # store_as_hex
+            (("""
+            . - - - .
+            - U U U -
+            - U U U -
+            - U U U -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - D D D -
+            - D D D -
+            - D D D -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555EdgesSolveFirstFour(BFS):
+
+    # dwalton
+    def __init__(self):
+        from builder555ss import starting_states_step700
+
+        BFS.__init__(self,
+            '5x5x5-edges-first-four',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step700-edges-first-four.txt',
+            False, # store_as_hex
+            starting_states_step700, # There are 190,080 of them
             use_edges_pattern=True,
         )

@@ -730,14 +730,16 @@ class BFS(object):
 
         # Use "builder-find-new-states.py" to find the entries in the .results file that are not
         # in our current lookup-table.txt file. Save these in a .new_states file.
-        log.info("builder-find-new-states.py begin")
         start_time = dt.datetime.now()
         if self.use_edges_pattern:
+            log.info("builder-find-new-edges-pattern-states.py begin")
             subprocess.check_output("./builder-find-new-edges-pattern-states.py %s %s.10-results %s.20-new-states" % (self.filename, self.workq_filename, self.workq_filename) , shell=True)
+            log.info("builder-find-new-edges-pattern-states.py end")
         else:
+            log.info("builder-find-new-states.py begin")
             subprocess.check_output("./builder-find-new-states.py %s %s.10-results %s.20-new-states" % (self.filename, self.workq_filename, self.workq_filename) , shell=True)
+            log.info("builder-find-new-states.py end")
         self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
-        log.info("builder-find-new-states.py end")
 
         log.info("begin building next workq file")
         start_time = dt.datetime.now()
@@ -748,6 +750,7 @@ class BFS(object):
 
         if self.name in (
                 "5x5x5-edges-stage-first-four",
+                "5x5x5-edges-first-four",
                 "5x5x5-edges-last-twelve",
                 "5x5x5-edges-stage-second-four",
                 "5x5x5-edges-last-four-x-plane",
@@ -756,7 +759,7 @@ class BFS(object):
             ) and not self.lt_centers:
             self.lt_centers = {}
 
-            if self.name == "5x5x5-edges-stage-first-four" or self.name == "5x5x5-edges-last-twelve":
+            if self.name in ("5x5x5-edges-stage-first-four", "5x5x5-edges-last-twelve", "5x5x5-edges-first-four"):
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt"
                 self.lt_centers_max_depth = 5
 
@@ -808,6 +811,7 @@ class BFS(object):
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
 
                         if self.name in (
+                                "5x5x5-edges-first-four",
                                 "5x5x5-edges-last-twelve",
                                 "5x5x5-edges-last-four-x-plane",
                                 "5x5x5-edges-last-four-y-plane",
@@ -845,11 +849,6 @@ class BFS(object):
                             continue
                         else:
                             kept += 1
-
-                    # dwalton
-                    #if self.name == "5x5x5-edges-last-twelve":
-                    #    wide_count = steps_to_solve.count("w")
-                    #    len_steps_to_solve = len(steps_to_solve.split())
 
                     # Add entries to the next workq file
                     steps_to_scramble = ' '.join(reverse_steps(steps_to_solve.split()))
@@ -1000,6 +999,7 @@ class BFS(object):
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
 
                     if self.name in (
+                            "5x5x5-edges-first-four",
                             "5x5x5-edges-last-twelve",
                             "5x5x5-edges-last-four-x-plane",
                             "5x5x5-edges-last-four-y-plane",
