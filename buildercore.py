@@ -742,7 +742,7 @@ class BFS(object):
         log.info("begin building next workq file")
         start_time = dt.datetime.now()
         new_states_count = int(subprocess.check_output("wc -l %s.20-new-states" % self.workq_filename, shell=True).strip().split()[0])
-        log.info("there are %d new states" % new_states_count)
+        log.info("there are {:,} new states".format(new_states_count))
         pruned = 0
         kept = 0
 
@@ -888,7 +888,7 @@ class BFS(object):
         self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
 
         if pruned:
-            log.warning("kept %d, pruned %d" % (kept, pruned))
+            log.warning("kept {:,}, pruned {:,}".format(kept, pruned))
 
         log.info("end building next workq file")
 
