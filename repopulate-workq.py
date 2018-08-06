@@ -103,11 +103,7 @@ if __name__ == '__main__':
     if args_type in ('7x7x7-UD-oblique-edge-pairing',
                      '7x7x7-UD-oblique-edge-pairing-middle-only',
                      '7x7x7-UD-oblique-edge-pairing-left-only',
-                     '7x7x7-UD-oblique-edge-pairing-right-only',
-                     '7x7x7-LR-oblique-edge-pairing',
-                     '7x7x7-LR-oblique-edge-pairing-middle-only',
-                     '7x7x7-LR-oblique-edge-pairing-left-only',
-                     '7x7x7-LR-oblique-edge-pairing-right-only'):
+                     '7x7x7-UD-oblique-edge-pairing-right-only'):
         special_case_777 = True
 
     centers_lookup_table = None
