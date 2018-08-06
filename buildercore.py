@@ -2,6 +2,7 @@
 
 from collections import Counter
 from rubikscubennnsolver.misc import parse_ascii_222, parse_ascii_333, parse_ascii_444, parse_ascii_555, parse_ascii_666, parse_ascii_777
+from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444
@@ -852,8 +853,13 @@ class BFS(object):
 
                     # Add entries to the next workq file
                     steps_to_scramble = ' '.join(reverse_steps(steps_to_solve.split()))
+                    prev_step = steps_to_scramble.split()[-1]
 
                     for next_move in self.legal_moves:
+
+                        if steps_on_same_face_and_layer(prev_step, next_move):
+                            continue
+
                         if self.use_edges_pattern:
                             workq_line = "%s:%s:%s %s" % (pattern, state, steps_to_scramble, next_move)
                         else:
@@ -987,7 +993,7 @@ class BFS(object):
 
         # Convert the states in our lookup-table to their smaller format...basically
         # remove all of the '.'s and if convert to hex (if requested).
-        log.info("%s: convert state to smaller format" % self)
+        log.info("%s: convert state to smaller format, file %s" % (self, self.filename))
         with open(self.filename, 'r') as fh_read, open("%s.small" % self.filename, 'w') as fh_final:
             if self.use_edges_pattern:
                 for line in fh_read:
@@ -1002,6 +1008,8 @@ class BFS(object):
                         centers = pattern[0:54]
                         edges = pattern[54:]
                         if centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
+                            #log.warning("LINE: %s" % line.strip())
+                            log.warning("pattern %s, cube_state_string %s, steps %s" % (pattern, cube_state_string, steps))
                             fh_final.write("%s:%s\n" % (edges, steps))
                     else:
                         fh_final.write("%s:%s\n" % (pattern, steps))

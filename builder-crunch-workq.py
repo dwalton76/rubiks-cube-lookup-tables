@@ -139,10 +139,11 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     to_write_count = 0
     outputfile_index = 0
 
-    if "5x5x5-edges-last-twelve" in inputfile:
-        exec_all_steps = True
-    else:
-        exec_all_steps = False
+    #if "5x5x5-edges-last-twelve" in inputfile:
+    #    exec_all_steps = True
+    #else:
+    #    exec_all_steps = False
+    exec_all_steps = False
 
     with open(inputfile, 'r') as fh_input:
 
