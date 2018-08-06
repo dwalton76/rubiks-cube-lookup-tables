@@ -22,11 +22,6 @@
 typedef enum {
     NONE,
 
-    // 5x5x5
-    EDGES_STAGE_FIRST_FOUR_555,
-    EDGES_STAGE_SECOND_FOUR_555,
-    EDGES_PAIR_LAST_FOUR_555,
-
     // 7x7x7
     UD_OBLIQUE_EDGE_PAIRING_777,
     UD_OBLIQUE_EDGE_PAIRING_MIDDLE_ONLY_777,
@@ -134,174 +129,6 @@ print_cube(int *cube, int size)
 }
 
 
-void
-nuke_cube_corners_555(int *cube)
-{
-    // Upper corners
-    cube[1] = 7;
-    cube[5] = 7;
-    cube[21] = 7;
-    cube[25] = 7;
-
-    // Left corners
-    cube[26] = 7;
-    cube[30] = 7;
-    cube[46] = 7;
-    cube[50] = 7;
-
-    // Front corners
-    cube[51] = 7;
-    cube[55] = 7;
-    cube[71] = 7;
-    cube[75] = 7;
-
-    // Right corners
-    cube[76] = 7;
-    cube[80] = 7;
-    cube[96] = 7;
-    cube[100] = 7;
-
-    // Back corners
-    cube[101] = 7;
-    cube[105] = 7;
-    cube[121] = 7;
-    cube[125] = 7;
-
-    // Down corners
-    cube[126] = 7;
-    cube[130] = 7;
-    cube[146] = 7;
-    cube[150] = 7;
-}
-
-void
-nuke_cube_edges_555(int *cube)
-{
-    // Upper
-    for (int i = 2; i <= 4; i++)
-        cube[i] = 7;
-    cube[6] = 7;
-    cube[10] = 7;
-    cube[11] = 7;
-    cube[15] = 7;
-    cube[16] = 7;
-    cube[20] = 7;
-    for (int i = 22; i <= 24; i++)
-        cube[i] = 7;
-
-    // Left
-    for (int i = 27; i <= 29; i++)
-        cube[i] = 7;
-    cube[31] = 7;
-    cube[35] = 7;
-    cube[36] = 7;
-    cube[40] = 7;
-    cube[41] = 7;
-    cube[45] = 7;
-    for (int i = 47; i <= 49; i++)
-        cube[i] = 7;
-
-    // Front
-    for (int i = 52; i <= 54; i++)
-        cube[i] = 7;
-    cube[56] = 7;
-    cube[60] = 7;
-    cube[61] = 7;
-    cube[65] = 7;
-    cube[66] = 7;
-    cube[70] = 7;
-    for (int i = 72; i <= 74; i++)
-        cube[i] = 7;
-
-    // Right
-    for (int i = 77; i <= 79; i++)
-        cube[i] = 7;
-    cube[81] = 7;
-    cube[85] = 7;
-    cube[86] = 7;
-    cube[90] = 7;
-    cube[91] = 7;
-    cube[95] = 7;
-    for (int i = 97; i <= 99; i++)
-        cube[i] = 7;
-
-    // Back
-    for (int i = 102; i <= 104; i++)
-        cube[i] = 7;
-    cube[106] = 7;
-    cube[110] = 7;
-    cube[111] = 7;
-    cube[115] = 7;
-    cube[116] = 7;
-    cube[120] = 7;
-    for (int i = 122; i <= 124; i++)
-        cube[i] = 7;
-
-    // Down
-    for (int i = 127; i <= 129; i++)
-        cube[i] = 7;
-    cube[131] = 7;
-    cube[135] = 7;
-    cube[136] = 7;
-    cube[140] = 7;
-    cube[141] = 7;
-    cube[145] = 7;
-    for (int i = 147; i <= 149; i++)
-        cube[i] = 7;
-}
-
-void
-nuke_cube_centers_555(int *cube)
-{
-    // Upper
-    for (int i = 7; i <= 9; i++)
-        cube[i] = 7;
-    for (int i = 12; i <= 14; i++)
-        cube[i] = 7;
-    for (int i = 17; i <= 19; i++)
-        cube[i] = 7;
-
-    // Left
-    for (int i = 32; i <= 34; i++)
-        cube[i] = 7;
-    for (int i = 37; i <= 39; i++)
-        cube[i] = 7;
-    for (int i = 42; i <= 44; i++)
-        cube[i] = 7;
-
-    // Front
-    for (int i = 57; i <= 59; i++)
-        cube[i] = 7;
-    for (int i = 62; i <= 64; i++)
-        cube[i] = 7;
-    for (int i = 67; i <= 69; i++)
-        cube[i] = 7;
-
-    // Right
-    for (int i = 82; i <= 84; i++)
-        cube[i] = 7;
-    for (int i = 87; i <= 89; i++)
-        cube[i] = 7;
-    for (int i = 92; i <= 94; i++)
-        cube[i] = 7;
-
-    // Back
-    for (int i = 107; i <= 109; i++)
-        cube[i] = 7;
-    for (int i = 112; i <= 114; i++)
-        cube[i] = 7;
-    for (int i = 117; i <= 119; i++)
-        cube[i] = 7;
-
-    // Down
-    for (int i = 132; i <= 134; i++)
-        cube[i] = 7;
-    for (int i = 137; i <= 139; i++)
-        cube[i] = 7;
-    for (int i = 142; i <= 144; i++)
-        cube[i] = 7;
-}
-
 int
 get_token_count(char *str)
 {
@@ -396,21 +223,8 @@ main (int argc, char *argv[])
         } else if (strmatch(argv[i], "--type")) {
             i++;
 
-            // 4x4x4 centers
-            if (strmatch(argv[i], "5x5x5-stage-first-four-edges")) {
-                type = EDGES_STAGE_FIRST_FOUR_555;
-                cube_size = 5;
-
-            } else if (strmatch(argv[i], "5x5x5-stage-second-four-edges")) {
-                type = EDGES_STAGE_SECOND_FOUR_555;
-                cube_size = 5;
-
-            } else if (strmatch(argv[i], "5x5x5-pair-last-four-edges")) {
-                type = EDGES_PAIR_LAST_FOUR_555;
-                cube_size = 5;
-
             // 7x7x7 centers
-            } else if (strmatch(argv[i], "7x7x7-UD-oblique-edge-pairing")) {
+            if (strmatch(argv[i], "7x7x7-UD-oblique-edge-pairing")) {
                 type = UD_OBLIQUE_EDGE_PAIRING_777;
                 cube_size = 7;
 
@@ -488,84 +302,7 @@ main (int argc, char *argv[])
      */
 
     // 5x5x5
-    if (type == EDGES_STAGE_FIRST_FOUR_555) {
-
-        nuke_cube_corners_555(cube);
-        nuke_cube_edges_555(cube);
-
-        // Left
-        cube[31] = 2;
-        cube[36] = 2;
-        cube[41] = 2;
-        cube[35] = 2;
-        cube[40] = 2;
-        cube[45] = 2;
-
-        // Front
-        cube[56] = 2;
-        cube[61] = 2;
-        cube[66] = 2;
-        cube[60] = 2;
-        cube[65] = 2;
-        cube[70] = 2;
-
-        // Right
-        cube[81] = 2;
-        cube[86] = 2;
-        cube[91] = 2;
-        cube[85] = 2;
-        cube[90] = 2;
-        cube[95] = 2;
-
-        // Back
-        cube[106] = 2;
-        cube[111] = 2;
-        cube[116] = 2;
-        cube[110] = 2;
-        cube[115] = 2;
-        cube[120] = 2;
-
-    } else if (type == EDGES_STAGE_SECOND_FOUR_555) {
-
-        nuke_cube_corners_555(cube);
-        nuke_cube_edges_555(cube);
-
-        // Upper/Back
-        cube[2] = 1;
-        cube[3] = 1;
-        cube[4] = 1;
-        cube[102] = 1;
-        cube[103] = 1;
-        cube[104] = 1;
-
-        // Upper/Front
-        cube[22] = 1;
-        cube[23] = 1;
-        cube[24] = 1;
-        cube[52] = 1;
-        cube[53] = 1;
-        cube[54] = 1;
-
-        // Down/Front
-        cube[72] = 1;
-        cube[73] = 1;
-        cube[74] = 1;
-        cube[127] = 1;
-        cube[128] = 1;
-        cube[129] = 1;
-
-        // Down/Back
-        cube[147] = 1;
-        cube[148] = 1;
-        cube[149] = 1;
-        cube[122] = 1;
-        cube[123] = 1;
-        cube[124] = 1;
-
-    } else if (type == EDGES_PAIR_LAST_FOUR_555) {
-        nuke_cube_corners_555(cube);
-
-    } else if (type == UD_OBLIQUE_EDGE_PAIRING_777) {
+    if (type == UD_OBLIQUE_EDGE_PAIRING_777) {
 
         // Nuke everything and repopulate the squares we care about
         for (int i = 1; i <= 294; i++)
@@ -700,10 +437,7 @@ main (int argc, char *argv[])
             while (token_ptr != NULL) {
                 // printf ("%s\n", token_ptr);
 
-                if (cube_size == 5) {
-                    rotate_555(cube, cube_tmp, array_size, token_ptr);
-
-                } else if (cube_size == 7) {
+                if (cube_size == 7) {
                     rotate_777(cube, cube_tmp, array_size, token_ptr);
 
                 } else {
@@ -727,10 +461,7 @@ main (int argc, char *argv[])
             while (token_ptr != NULL) {
 
                 if (token_index == token_count) {
-                    if (cube_size == 5) {
-                        rotate_555(cube, cube_tmp, array_size, token_ptr);
-
-                    } else if (cube_size == 7) {
+                    if (cube_size == 7) {
                         rotate_777(cube, cube_tmp, array_size, token_ptr);
 
                     } else {
@@ -746,48 +477,7 @@ main (int argc, char *argv[])
 
         // keep it simple, print the entire cube and let process-workq-results.py
         // extract the parts that it cares about
-        if (cube_size == 5) {
-            sprintf(cube_state_str,
-                "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
-                side_name(cube[1]), side_name(cube[2]), side_name(cube[3]), side_name(cube[4]), side_name(cube[5]),
-                side_name(cube[6]), side_name(cube[7]), side_name(cube[8]), side_name(cube[9]), side_name(cube[10]),
-                side_name(cube[11]), side_name(cube[12]), side_name(cube[13]), side_name(cube[14]), side_name(cube[15]),
-                side_name(cube[16]), side_name(cube[17]), side_name(cube[18]), side_name(cube[19]), side_name(cube[20]),
-                side_name(cube[21]), side_name(cube[22]), side_name(cube[23]), side_name(cube[24]), side_name(cube[25]),
-
-                side_name(cube[26]), side_name(cube[27]), side_name(cube[28]), side_name(cube[29]), side_name(cube[30]),
-                side_name(cube[31]), side_name(cube[32]), side_name(cube[33]), side_name(cube[34]), side_name(cube[35]),
-                side_name(cube[36]), side_name(cube[37]), side_name(cube[38]), side_name(cube[39]), side_name(cube[40]),
-                side_name(cube[41]), side_name(cube[42]), side_name(cube[43]), side_name(cube[44]), side_name(cube[45]),
-                side_name(cube[46]), side_name(cube[47]), side_name(cube[48]), side_name(cube[49]), side_name(cube[50]),
-
-                side_name(cube[51]), side_name(cube[52]), side_name(cube[53]), side_name(cube[54]), side_name(cube[55]),
-                side_name(cube[56]), side_name(cube[57]), side_name(cube[58]), side_name(cube[59]), side_name(cube[60]),
-                side_name(cube[61]), side_name(cube[62]), side_name(cube[63]), side_name(cube[64]), side_name(cube[65]),
-                side_name(cube[66]), side_name(cube[67]), side_name(cube[68]), side_name(cube[69]), side_name(cube[70]),
-                side_name(cube[71]), side_name(cube[72]), side_name(cube[73]), side_name(cube[74]), side_name(cube[75]),
-
-                side_name(cube[76]), side_name(cube[77]), side_name(cube[78]), side_name(cube[79]), side_name(cube[80]),
-                side_name(cube[81]), side_name(cube[82]), side_name(cube[83]), side_name(cube[84]), side_name(cube[85]),
-                side_name(cube[86]), side_name(cube[87]), side_name(cube[88]), side_name(cube[89]), side_name(cube[90]),
-                side_name(cube[91]), side_name(cube[92]), side_name(cube[93]), side_name(cube[94]), side_name(cube[95]),
-                side_name(cube[96]), side_name(cube[97]), side_name(cube[98]), side_name(cube[99]), side_name(cube[100]),
-
-                side_name(cube[101]), side_name(cube[102]), side_name(cube[103]), side_name(cube[104]), side_name(cube[105]),
-                side_name(cube[106]), side_name(cube[107]), side_name(cube[108]), side_name(cube[109]), side_name(cube[110]),
-                side_name(cube[111]), side_name(cube[112]), side_name(cube[113]), side_name(cube[114]), side_name(cube[115]),
-                side_name(cube[116]), side_name(cube[117]), side_name(cube[118]), side_name(cube[119]), side_name(cube[120]),
-                side_name(cube[121]), side_name(cube[122]), side_name(cube[123]), side_name(cube[124]), side_name(cube[125]),
-
-                side_name(cube[126]), side_name(cube[127]), side_name(cube[128]), side_name(cube[129]), side_name(cube[130]),
-                side_name(cube[131]), side_name(cube[132]), side_name(cube[133]), side_name(cube[134]), side_name(cube[135]),
-                side_name(cube[136]), side_name(cube[137]), side_name(cube[138]), side_name(cube[139]), side_name(cube[140]),
-                side_name(cube[141]), side_name(cube[142]), side_name(cube[143]), side_name(cube[144]), side_name(cube[145]),
-                side_name(cube[146]), side_name(cube[147]), side_name(cube[148]), side_name(cube[149]), side_name(cube[150]));
-
-            fprintf(fh_write, "%s:%s\n", cube_state_str, steps_buffer);
-
-        } else if (cube_size == 7) {
+        if (cube_size == 7) {
             sprintf(cube_state_str,
                     "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
                     side_name(cube[1]), side_name(cube[2]), side_name(cube[3]), side_name(cube[4]), side_name(cube[5]), side_name(cube[6]), side_name(cube[7]),

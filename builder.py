@@ -119,51 +119,6 @@ def get_start_end_lines(CORES, core, file_linecount):
 
 lookup_tables = {
 
-    # ===========
-    # 5x5x5 edges
-    # ===========
-    '5x5x5-stage-first-four-edges' : {
-        'illegal'  : (),
-        'size'     : '5x5x5',
-        'filename' : 'lookup-table-5x5x5-step100-stage-first-four-edges.txt',
-        'allsteps' : True,
-        'hex'      : False,
-        'keep'     : 'centers-and-edges-separate'
-    },
-
-    '5x5x5-stage-second-four-edges' : {
-        'illegal'  : ("Lw", "Lw'", "Rw", "Rw'",
-                      "Fw", "Fw'", "Bw", "Bw'",
-                      "Uw", "Uw'", "Dw", "Dw'",
-                      "Uw2", "Dw2",
-                      "L", "L'",
-                      "R", "R'",
-                      "F", "F'",
-                      "B", "B'"),
-        'size'     : '5x5x5',
-        'filename' : 'lookup-table-5x5x5-step101-stage-second-four-edges.txt',
-        'allsteps' : True,
-        'hex'      : False,
-        'keep'     : 'centers-and-edges-separate'
-    },
-
-    # Assumes the first 8 edges are paired and on sides U and D
-    '5x5x5-pair-last-four-edges' : {
-        'illegal'  : ("Rw", "Rw'", "Rw2",
-                      "Lw", "Lw'", "Lw2",
-                      "Fw", "Fw'", "Fw2",
-                      "Bw", "Bw'", "Bw2",
-                      "L", "L'",
-                      "F", "F'",
-                      "R", "R'",
-                      "B", "B'"),
-        'size'     : '5x5x5',
-        'filename' : 'lookup-table-5x5x5-step102-pair-last-four-edges.txt',
-        'allsteps' : True,
-        'hex'      : False,
-        'keep'     : 'centers-and-last-four-edges-pattern'
-    },
-
     # =====
     # 7x7x7
     # =====
