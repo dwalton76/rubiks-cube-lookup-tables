@@ -1008,8 +1008,6 @@ class BFS(object):
                         centers = pattern[0:54]
                         edges = pattern[54:]
                         if centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-                            #log.warning("LINE: %s" % line.strip())
-                            log.warning("pattern %s, cube_state_string %s, steps %s" % (pattern, cube_state_string, steps))
                             fh_final.write("%s:%s\n" % (edges, steps))
                     else:
                         fh_final.write("%s:%s\n" % (pattern, steps))
