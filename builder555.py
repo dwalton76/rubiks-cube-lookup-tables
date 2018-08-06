@@ -893,13 +893,7 @@ class Build555EdgesLastTwelve(BFS):
     def __init__(self):
         BFS.__init__(self,
             '5x5x5-edges-last-twelve',
-
-            ("U", "U'",
-             "L", "L'",
-             "F", "F'",
-             "R", "R'",
-             "B", "B'",
-             "D", "D'"),
+            (),
             '5x5x5',
             'lookup-table-5x5x5-step600-edges.txt',
             False, # store_as_hex

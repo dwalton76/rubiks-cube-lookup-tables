@@ -228,7 +228,6 @@ if __name__ == '__main__':
                 wide_count_even = False
                 wide_count_odd = True
 
-            # dwalton
             if min_wide_turns:
                 wide_turns_needed = min_wide_turns - wide_count
 

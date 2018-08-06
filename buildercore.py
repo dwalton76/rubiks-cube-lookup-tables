@@ -586,8 +586,8 @@ class BFS(object):
             else:
                 pattern = ''
 
-            # dwalton
             if self.name == "5x5x5-edges-last-twelve":
+                '''
                 with open(self.workq_filename, 'w') as fh_write:
                     for cube in self.starting_cubes:
                         with open('555-centers-kept-solved.txt.9-deep', 'r') as fh_read:
@@ -596,14 +596,31 @@ class BFS(object):
                                 workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), line)
                                 fh_write.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
                                 self.workq_size += 1
-            else:
+                '''
                 with open(self.workq_filename, 'w') as fh:
                     for cube in self.starting_cubes:
                         for move in self.legal_moves:
+                            if "w" not in move:
+                                continue
+
                             if self.use_edges_pattern:
                                 workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), move)
                             else:
                                 workq_line = "%s:%s" % (''.join(cube.state), move)
+
+                            fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
+                            self.workq_size += 1
+
+            else:
+                with open(self.workq_filename, 'w') as fh:
+                    for cube in self.starting_cubes:
+                        for move in self.legal_moves:
+
+                            if self.use_edges_pattern:
+                                workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), move)
+                            else:
+                                workq_line = "%s:%s" % (''.join(cube.state), move)
+
                             fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
                             self.workq_size += 1
 
@@ -730,6 +747,7 @@ class BFS(object):
 
         if self.name in (
                 "5x5x5-edges-stage-first-four",
+                "5x5x5-edges-last-twelve",
                 "5x5x5-edges-stage-second-four",
                 "5x5x5-edges-last-four-x-plane",
                 "5x5x5-edges-last-four-y-plane",
@@ -737,7 +755,7 @@ class BFS(object):
             ) and not self.lt_centers:
             self.lt_centers = {}
 
-            if self.name == "5x5x5-edges-stage-first-four":
+            if self.name == "5x5x5-edges-stage-first-four" or self.name == "5x5x5-edges-last-twelve":
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt"
                 self.lt_centers_max_depth = 5
 
@@ -767,12 +785,15 @@ class BFS(object):
                     self.lt_centers[state] = len(steps.split())
             log.info("end loading %s" % lt_centers_filename)
 
+        '''
         if self.name == "5x5x5-edges-last-twelve":
 
             with open(self.workq_filename_next, 'w') as fh_workq_next:
                 pass
 
         elif max_depth is None or self.depth < max_depth:
+        '''
+        if max_depth is None or self.depth < max_depth:
             to_write = []
             to_write_count = 0
 
@@ -786,6 +807,7 @@ class BFS(object):
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
 
                         if self.name in (
+                                "5x5x5-edges-last-twelve",
                                 "5x5x5-edges-last-four-x-plane",
                                 "5x5x5-edges-last-four-y-plane",
                                 "5x5x5-edges-last-four-z-plane",
@@ -822,6 +844,11 @@ class BFS(object):
                             continue
                         else:
                             kept += 1
+
+                    # dwalton
+                    #if self.name == "5x5x5-edges-last-twelve":
+                    #    wide_count = steps_to_solve.count("w")
+                    #    len_steps_to_solve = len(steps_to_solve.split())
 
                     # Add entries to the next workq file
                     steps_to_scramble = ' '.join(reverse_steps(steps_to_solve.split()))
