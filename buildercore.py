@@ -751,6 +751,7 @@ class BFS(object):
         if self.name in (
                 "5x5x5-edges-stage-first-four",
                 "5x5x5-edges-first-four",
+                "5x5x5-edges-second-four",
                 "5x5x5-edges-last-twelve",
                 "5x5x5-edges-stage-second-four",
                 "5x5x5-edges-last-four-x-plane",
@@ -759,7 +760,12 @@ class BFS(object):
             ) and not self.lt_centers:
             self.lt_centers = {}
 
-            if self.name in ("5x5x5-edges-stage-first-four", "5x5x5-edges-last-twelve", "5x5x5-edges-first-four"):
+            if self.name in (
+                    "5x5x5-edges-stage-first-four",
+                    "5x5x5-edges-last-twelve",
+                    "5x5x5-edges-first-four",
+                    "5x5x5-edges-second-four",
+                ):
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt"
                 self.lt_centers_max_depth = 5
 
@@ -812,6 +818,7 @@ class BFS(object):
 
                         if self.name in (
                                 "5x5x5-edges-first-four",
+                                "5x5x5-edges-second-four",
                                 "5x5x5-edges-last-twelve",
                                 "5x5x5-edges-last-four-x-plane",
                                 "5x5x5-edges-last-four-y-plane",
@@ -1000,6 +1007,7 @@ class BFS(object):
 
                     if self.name in (
                             "5x5x5-edges-first-four",
+                            "5x5x5-edges-second-four",
                             "5x5x5-edges-last-twelve",
                             "5x5x5-edges-last-four-x-plane",
                             "5x5x5-edges-last-four-y-plane",
