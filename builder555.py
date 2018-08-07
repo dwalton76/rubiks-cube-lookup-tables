@@ -966,9 +966,9 @@ class Build555EdgesSolveFirstFour(BFS):
             '5x5x5',
             'lookup-table-5x5x5-step700-edges-first-four.txt',
             False, # store_as_hex
-            #starting_states_step700, # There are 495 of them
-            (
-            ("""
+            starting_states_step700, # There are 495 of them
+            '''
+            (("""
             . - - - .
             - U U U -
             - U U U -
@@ -1023,9 +1023,8 @@ class Build555EdgesSolveFirstFour(BFS):
             D D D D D
             D D D D D
             D D D D D
-            . - - - .""", "ascii"),
-
-),
+            . - - - .""", "ascii")),
+            '''
             use_edges_pattern=True,
         )
 
