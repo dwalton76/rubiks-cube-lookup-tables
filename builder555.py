@@ -958,7 +958,7 @@ class StartingStates555EdgesSolveFirstFour(BFS):
 class Build555EdgesSolveFirstFour(BFS):
 
     def __init__(self):
-        #from builder555ss import starting_states_step700
+        from builder555ss import starting_states_step700
 
         BFS.__init__(self,
             '5x5x5-edges-first-four',
@@ -967,66 +967,64 @@ class Build555EdgesSolveFirstFour(BFS):
             'lookup-table-5x5x5-step700-edges-first-four.txt',
             False, # store_as_hex
             starting_states_step700, # There are 495 of them
-            '''
-            (("""
-            . - - - .
-            - U U U -
-            - U U U -
-            - U U U -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - D D D -
-            - D D D -
-            - D D D -
-            . - - - .""", "ascii"),
-
-            ("""
-            . U U U .
-            - U U U -
-            - U U U -
-            - U U U -
-            . U U U .
-
- . - - - .  . F F F .  . - - - .  . B B B .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- . - - - .  . F F F .  . - - - .  . B B B .
-
-            . D D D .
-            - D D D -
-            - D D D -
-            - D D D -
-            . D D D .""", "ascii"),
-
-            ("""
-            . - - - .
-            U U U U U
-            U U U U U
-            U U U U U
-            . - - - .
-
- . L L L .  . - - - .  . R R R .  . - - - .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- . L L L .  . - - - .  . R R R .  . - - - .
-
-            . - - - .
-            D D D D D
-            D D D D D
-            D D D D D
-            . - - - .""", "ascii")),
-            '''
             use_edges_pattern=True,
         )
+#            (("""
+#            . - - - .
+#            - U U U -
+#            - U U U -
+#            - U U U -
+#            . - - - .
+#
+# . - - - .  . - - - .  . - - - .  . - - - .
+# L L L L L  F F F F F  R R R R R  B B B B B
+# L L L L L  F F F F F  R R R R R  B B B B B
+# L L L L L  F F F F F  R R R R R  B B B B B
+# . - - - .  . - - - .  . - - - .  . - - - .
+#
+#            . - - - .
+#            - D D D -
+#            - D D D -
+#            - D D D -
+#            . - - - .""", "ascii"),
+#
+#            ("""
+#            . U U U .
+#            - U U U -
+#            - U U U -
+#            - U U U -
+#            . U U U .
+#
+# . - - - .  . F F F .  . - - - .  . B B B .
+# - L L L -  - F F F -  - R R R -  - B B B -
+# - L L L -  - F F F -  - R R R -  - B B B -
+# - L L L -  - F F F -  - R R R -  - B B B -
+# . - - - .  . F F F .  . - - - .  . B B B .
+#
+#            . D D D .
+#            - D D D -
+#            - D D D -
+#            - D D D -
+#            . D D D .""", "ascii"),
+#
+#            ("""
+#            . - - - .
+#            U U U U U
+#            U U U U U
+#            U U U U U
+#            . - - - .
+#
+# . L L L .  . - - - .  . R R R .  . - - - .
+# - L L L -  - F F F -  - R R R -  - B B B -
+# - L L L -  - F F F -  - R R R -  - B B B -
+# - L L L -  - F F F -  - R R R -  - B B B -
+# . L L L .  . - - - .  . R R R .  . - - - .
+#
+#            . - - - .
+#            D D D D D
+#            D D D D D
+#            D D D D D
+#            . - - - .""", "ascii")),
 
 
 class Build555EdgesSolveSecondFour(BFS):
