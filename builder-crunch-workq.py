@@ -118,7 +118,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     assert isinstance(start, int)
     assert isinstance(end, int)
     assert start >= 0
-    assert end > start
+    assert end >= start
 
     if size == '2x2x2':
         rotate_xxx = rotate_222

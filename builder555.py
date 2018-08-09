@@ -918,6 +918,42 @@ class Build555EdgesLastTwelve(BFS):
         )
 
 
+class Build555EdgesLastTwelveCentersStaged(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-last-twelve-centers-staged',
+            ("Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'"),
+            '5x5x5',
+            'lookup-table-5x5x5-step600-edges-centers-staged.txt',
+            False, # store_as_hex
+            (("""
+            . U U U .
+            U U U U U
+            U U U U U
+            U U U U U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D D D D D
+            D D D D D
+            D D D D D
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
 
 class StartingStates555EdgesSolveFirstFour(BFS):
 

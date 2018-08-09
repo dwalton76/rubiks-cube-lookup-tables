@@ -587,7 +587,11 @@ class BFS(object):
             else:
                 pattern = ''
 
-            if self.name == "5x5x5-edges-last-twelve":
+            if self.name in (
+                    "5x5x5-edges-last-twelve",
+                    "5x5x5-edges-last-twelve-centers-staged",
+                ):
+
                 '''
                 with open(self.workq_filename, 'w') as fh_write:
                     for cube in self.starting_cubes:
@@ -753,6 +757,7 @@ class BFS(object):
                 "5x5x5-edges-first-four",
                 "5x5x5-edges-second-four",
                 "5x5x5-edges-last-twelve",
+                "5x5x5-edges-last-twelve-centers-staged",
                 "5x5x5-edges-stage-second-four",
                 "5x5x5-edges-last-four-x-plane",
                 "5x5x5-edges-last-four-y-plane",
@@ -768,6 +773,10 @@ class BFS(object):
                 ):
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt"
                 self.lt_centers_max_depth = 5
+
+            elif self.name == "5x5x5-edges-last-twelve-centers-staged":
+                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt"
+                self.lt_centers_max_depth = 6
 
             elif self.name == "5x5x5-edges-stage-second-four":
                 lt_centers_filename = "lookup-table-5x5x5-step101-ULFRBD-centers-solve-unstaged.txt"
@@ -820,6 +829,7 @@ class BFS(object):
                                 "5x5x5-edges-first-four",
                                 "5x5x5-edges-second-four",
                                 "5x5x5-edges-last-twelve",
+                                "5x5x5-edges-last-twelve-centers-staged",
                                 "5x5x5-edges-last-four-x-plane",
                                 "5x5x5-edges-last-four-y-plane",
                                 "5x5x5-edges-last-four-z-plane",
@@ -1009,6 +1019,7 @@ class BFS(object):
                             "5x5x5-edges-first-four",
                             "5x5x5-edges-second-four",
                             "5x5x5-edges-last-twelve",
+                            "5x5x5-edges-last-twelve-centers-staged",
                             "5x5x5-edges-last-four-x-plane",
                             "5x5x5-edges-last-four-y-plane",
                             "5x5x5-edges-last-four-z-plane",
