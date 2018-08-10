@@ -752,13 +752,6 @@ class StartingStates777Step40(BFS):
         BFS.__init__(self,
             '7x7x7-step40',
 
-            #("3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
-            # "3Lw", "3Lw'", "3Lw2", "Lw", "Lw'", "Lw2",
-            # "3Fw", "3Fw'", "3Fw2", "Fw", "Fw'", "Fw2",
-            # "3Rw", "3Rw'", "3Rw2", "Rw", "Rw'", "Rw2",
-            # "3Bw", "3Bw'", "3Bw2", "Bw", "Bw'", "Bw2",
-            # "3Dw", "3Dw'", "3Dw2", "Dw", "Dw'", "Dw2"),
-
             ("3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
              "3Lw", "3Lw'", "3Lw2", "Lw", "Lw'", "Lw2",
              "3Fw", "3Fw'", "Fw", "Fw'",
