@@ -175,7 +175,20 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     cube_state = rotate_xxx(cube_state[:], step)
 
             else:
-                cube_state = rotate_xxx(list(cube_state), moves_to_scramble[-1])
+                if moves_to_scramble:
+                    if moves_to_scramble[-1] == "x2":
+                        cube_state = rotate_xxx(list(cube_state), "x")
+                        cube_state = rotate_xxx(list(cube_state), "x")
+                    elif moves_to_scramble[-1] == "y2":
+                        cube_state = rotate_xxx(list(cube_state), "y")
+                        cube_state = rotate_xxx(list(cube_state), "y")
+                    elif moves_to_scramble[-1] == "z2":
+                        cube_state = rotate_xxx(list(cube_state), "z")
+                        cube_state = rotate_xxx(list(cube_state), "z")
+                    else:
+                        cube_state = rotate_xxx(list(cube_state), moves_to_scramble[-1])
+                else:
+                    cube_state = list(cube_state)
 
             if use_edges_pattern:
 

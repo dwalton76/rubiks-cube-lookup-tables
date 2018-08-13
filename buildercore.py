@@ -869,11 +869,15 @@ class BFS(object):
 
                     # Add entries to the next workq file
                     steps_to_scramble = ' '.join(reverse_steps(steps_to_solve.split()))
-                    prev_step = steps_to_scramble.split()[-1]
+
+                    if steps_to_scramble:
+                        prev_step = steps_to_scramble.split()[-1]
+                    else:
+                        prev_step = None
 
                     for next_move in self.legal_moves:
 
-                        if steps_on_same_face_and_layer(prev_step, next_move):
+                        if prev_step and next_move and steps_on_same_face_and_layer(prev_step, next_move):
                             continue
 
                         if self.use_edges_pattern:

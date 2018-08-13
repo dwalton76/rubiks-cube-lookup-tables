@@ -399,7 +399,6 @@ class Build444Reduce333Edges(BFS):
     This table will have ~239 million entries.
     """
 
-    # dwalton
     def __init__(self):
         BFS.__init__(self,
             '444-reduce333-edges',
@@ -436,21 +435,12 @@ class Build444Reduce333Edges(BFS):
         )
 
 
-class Build444Reduce333Centers(BFS):
-    """
-    """
+class StartingStates444Reduce333Centers(BFS):
 
     def __init__(self):
         BFS.__init__(self,
             '444-reduce333-centers',
-            ("Uw", "Uw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Rw", "Rw'",
-             "Bw", "Bw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'"),
+            moves_444,
             '4x4x4',
             'lookup-table-4x4x4-step32-reduce333-centers.txt',
             False, # store_as_hex
@@ -471,6 +461,65 @@ class Build444Reduce333Centers(BFS):
           . D D .
           . D D .
           . . . .""", 'ascii'),),
+            legal_moves=("", "x2", "y2", "z2"),
+        )
+
+
+class Build444Reduce333Centers(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333-centers',
+            ("Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step32-reduce333-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.....UU..UU..........LL..LL..........FF..FF..........RR..RR..........BB..BB..........DD..DD.....', 'ULFRBD'),
+             ('.....UU..UU..........RR..RR..........BB..BB..........LL..LL..........FF..FF..........DD..DD.....', 'ULFRBD'),
+             ('.....DD..DD..........LL..LL..........BB..BB..........RR..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....DD..DD..........RR..RR..........FF..FF..........LL..LL..........BB..BB..........UU..UU.....', 'ULFRBD'))
+        )
+
+
+class StartingStates444Reduce333(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333',
+            moves_444,
+            '4x4x4',
+            'lookup-table-4x4x4-step30-reduce333.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . U U .
+          U U U U
+          U U U U
+          . U U .
+
+ . L L .  . F F .  . R R .  . B B .
+ L L L L  F F F F  R R R R  B B B B
+ L L L L  F F F F  R R R R  B B B B
+ . L L .  . F F .  . R R .  . B B .
+
+          . D D .
+          D D D D
+          D D D D
+          . D D .  """, 'ascii'),),
+            use_edges_pattern=True,
+            legal_moves=("", "x2", "y2", "z2"),
         )
 
 
@@ -494,20 +543,9 @@ class Build444Reduce333(BFS):
             False, # store_as_hex
 
             # starting cubes
-            (("""
-          . U U .
-          U U U U
-          U U U U
-          . U U .
-
- . L L .  . F F .  . R R .  . B B .
- L L L L  F F F F  R R R R  B B B B
- L L L L  F F F F  R R R R  B B B B
- . L L .  . F F .  . R R .  . B B .
-
-          . D D .
-          D D D D
-          D D D D
-          . D D .  """, 'ascii'),),
+            (('.UU.UUUUUUUU.UU..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..DD.DDDDDDDD.DD.', 'ULFRBD'),
+             ('.UU.UUUUUUUU.UU..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..DD.DDDDDDDD.DD.', 'ULFRBD'),
+             ('.DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU.', 'ULFRBD'),
+             ('.DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU.', 'ULFRBD')),
             use_edges_pattern=True
         )
