@@ -1101,18 +1101,27 @@ class BFS(object):
 
         self.time_in_save = (dt.datetime.now() - start_time).total_seconds()
 
-    def get_starting_states(self):
+    def get_starting_states(self, use_hex):
         if self.starting_cube_states:
             foo = []
+
             for (state, state_type) in self.starting_cube_states:
                 if state_type == 'ULFRBD':
-                    foo.append("        '" + ''.join(state.split()).strip().replace('.', '') + "'")
+                    state = ''.join(state.split()).strip().replace('.', '')
+
+                    # dwalton implement use_hex
+                    if use_hex:
+                        state = convert_state_to_hex(state)
+
+                    foo.append("        '" + state + "'")
+
                 elif state_type == 'ascii':
                     # do this later
                     pass
                 else:
                     raise Exception("%s is an invalid state_type" % state_type)
 
+            foo.sort()
             starting_states = ",\n".join(foo)
         else:
             starting_states = get_starting_states(self.filename, class_name, None)
@@ -1130,7 +1139,7 @@ class BFS(object):
         }
 
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
-        starting_states = self.get_starting_states()
+        starting_states = self.get_starting_states(self.store_as_hex)
 
         print('''
 #class %s(LookupTableHashCostOnly):
@@ -1194,7 +1203,7 @@ class %s(LookupTable):
     def _code_gen_lookup_table_ida(self):
         class_name = type(self).__name__.replace('Build', 'LookupTableIDA')
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
-        starting_states = self.get_starting_states()
+        starting_states = self.get_starting_states(self.store_as_hex)
 
         print('''
 class %s(LookupTableIDA):
