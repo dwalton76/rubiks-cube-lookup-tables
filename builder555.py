@@ -282,7 +282,7 @@ class Build555ULFRBDCenterSolve(BFS):
 
             '5x5x5',
             'lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt',
-            False, # store_as_hex
+            True, # store_as_hex
 
             # starting cubes
             (("""
@@ -306,11 +306,11 @@ class Build555ULFRBDCenterSolve(BFS):
         )
 
 
-class Build555ULCenterSolve(BFS):
+class Build555ULFRBDTCenterSolve(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-UL-centers-solve',
+            '5x5x5-t-centers-solve',
 
             ("Fw", "Fw'",
              "Bw", "Bw'",
@@ -320,27 +320,66 @@ class Build555ULCenterSolve(BFS):
              "Dw", "Dw'"),
 
             '5x5x5',
-            'lookup-table-5x5x5-step31-UL-centers-solve.txt',
+            'lookup-table-5x5x5-step33-ULFRBD-t-centers-solve.txt',
             True, # store_as_hex
 
             # starting cubes
             (("""
             . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
+            . . U . .
+            . U . U .
+            . . U . .
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . . . . .  . x x x .  . . . . .
- . L L L .  . . . . .  . x x x .  . . . . .
- . L L L .  . . . . .  . x x x .  . . . . .
+ . . L . .  . . F . .  . . x . .  . . x . .
+ . L . L .  . F . F .  . x . x .  . x . x .
+ . . L . .  . . F . .  . . x . .  . . x . .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
-            . x x x .
-            . x x x .
-            . x x x .
+            . . x . .
+            . x . x .
+            . . x . .
+            . . . . .""", "ascii"),)
+        )
+
+
+class Build555ULFRBDXCenterSolve(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-centers-solve',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step34-ULFRBD-x-centers-solve.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . F . F .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . F . F .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x . x .
+            . . . . .
+            . x . x .
             . . . . .""", "ascii"),)
         )
 
