@@ -655,32 +655,19 @@ class BFS(object):
             # If we are out of memory and swapping this will fail due to "OSError: Cannot allocate memory"
             (start, end) = line_numbers_for_cores[core]
 
-            if True or self.use_edges_pattern:
-                cmd = [
-                    'nice',
-                    './builder-crunch-workq.py',
-                    self.size,
-                    self.workq_filename,
-                    str(self.workq_line_length),
-                    str(start),
-                    str(end),
-                    self.get_workq_filename_for_core(core)
-                ]
+            cmd = [
+                'nice',
+                './builder-crunch-workq.py',
+                self.size,
+                self.workq_filename,
+                str(self.workq_line_length),
+                str(start),
+                str(end),
+                self.get_workq_filename_for_core(core)
+            ]
 
-                if self.use_edges_pattern:
-                    cmd.append('--use-edges-pattern')
-
-            else:
-                cmd = [
-                    'nice',
-                    './builder-crunch-workq',
-                    '--size', str(self.size_number),
-                    '--start', str(start),
-                    '--end', str(end),
-                    '--linewidth', str(self.workq_line_length),
-                    '--input', self.workq_filename,
-                    '--output', self.get_workq_filename_for_core(core)
-                ]
+            if self.use_edges_pattern:
+                cmd.append('--use-edges-pattern')
 
             log.info(' '.join(cmd))
 
