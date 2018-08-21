@@ -236,7 +236,7 @@ class StartingStates666LRObliqueEdgesStage(BFS):
              "3Lw2", "3Rw2", "3Bw2", "3Fw2"),
             '6x6x6',
             'starting-states-6x6x6-step31-LR-oblique-edges-stage.txt',
-            False, # store_as_hex
+            True, # store_as_hex
 
             # starting cubes
             (("""
