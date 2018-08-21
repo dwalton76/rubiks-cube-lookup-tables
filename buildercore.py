@@ -1065,30 +1065,62 @@ class BFS(object):
                     else:
                         cube_state_string_small = cube_state_string[1:].replace('.', '')
 
+                    if "_odd" in cube_state_string_small:
+                        odd_even = "_odd"
+                        cube_state_string_small = cube_state_string_small.replace("_odd", "")
+                    elif "_even" in cube_state_string_small:
+                        odd_even = "_even"
+                        cube_state_string_small = cube_state_string_small.replace("_even", "")
+                    else:
+                        odd_even = ""
+
                     if self.store_as_hex:
                         cube_state_string_small = convert_state_to_hex(cube_state_string_small)
 
-                    fh_final.write("%s:%s\n" % (cube_state_string_small, steps))
+                    fh_final.write("%s%s:%s\n" % (cube_state_string_small, odd_even, steps))
 
         shutil.move("%s.small" % self.filename, self.filename)
 
-        log.info("%s: pad the file" % self)
-        subprocess.check_output("./utils/pad-lines.py %s" % self.filename, shell=True)
+        if odd_even:
+            odd_filename = self.filename.replace(".txt", "-odd.txt")
+            even_filename = self.filename.replace(".txt", "-even.txt")
 
-        log.info("%s: sort the file" % self)
-        subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output=%s %s" %
-            (self.filename, self.filename), shell=True)
+            files_to_pad = (odd_filename, even_filename)
 
-        log.info("%s: build histogram" % self)
-        subprocess.check_output("./utils/print-histogram.py %s >> histogram.txt" % self.filename, shell=True)
+            with open(self.filename, "r") as fh:
+                with open(odd_filename, "w") as fh_odd:
+                    with open(even_filename, "w") as fh_even:
+                        for line in fh:
+                            if "_odd" in line:
+                                line = line.replace("_odd", "")
+                                fh_odd.write(line)
+                            elif "_even" in line:
+                                line = line.replace("_even", "")
+                                fh_even.write(line)
+                            else:
+                                raise Exception(line)
 
-        if self.use_cost_only:
-            log.info("%s: build cost-only copy of file" % self)
-            convert_to_cost_only(self.filename)
+        else:
+            files_to_pad = (self.filename, )
 
-        elif self.use_hash_cost_only:
-            log.info("%s: build hash-cost-only copy of file" % self)
-            convert_to_hash_cost_only(self.filename, self.bucketcount)
+        for filename in files_to_pad:
+            log.info("%s: pad the file" % self)
+            subprocess.check_output("./utils/pad-lines.py %s" % filename, shell=True)
+
+            log.info("%s: sort the file" % self)
+            subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output=%s %s" %
+                (filename, filename), shell=True)
+
+            log.info("%s: build histogram" % self)
+            subprocess.check_output("./utils/print-histogram.py %s >> histogram.txt" % filename, shell=True)
+
+            if self.use_cost_only:
+                log.info("%s: build cost-only copy of file" % self)
+                convert_to_cost_only(filename)
+
+            elif self.use_hash_cost_only:
+                log.info("%s: build hash-cost-only copy of file" % self)
+                convert_to_hash_cost_only(filename, self.bucketcount)
 
         self.time_in_save = (dt.datetime.now() - start_time).total_seconds()
 

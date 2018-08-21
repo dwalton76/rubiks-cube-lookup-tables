@@ -25,6 +25,31 @@ import sys
 
 log = logging.getLogger(__name__)
 
+def get_odd_even(steps, layer):
+    assert isinstance(steps, list)
+    quarter_wide_turns = 0
+
+    for step in steps:
+        if "w" in step and not step.endswith("2"):
+
+            if layer is None:
+                if (step.startswith("U") or
+                    step.startswith("L") or
+                    step.startswith("F") or
+                    step.startswith("R") or
+                    step.startswith("B") or
+                    step.startswith("D")):
+                    quarter_wide_turns += 1
+
+            else:
+                if step.startswith(layer):
+                    quarter_wide_turns += 1
+
+    if quarter_wide_turns % 2 == 0:
+        return "even"
+    else:
+        return "odd"
+
 
 midges_recolor_tuples_555 = (
     ('o', 3, 103), # upper
@@ -210,7 +235,13 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
             else:
                 cube_state_string = ''.join(cube_state)
-                to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
+
+                if "6x6x6-LR-inner-x-center-stage" in inputfile or "6x6x6-UD-inner-x-centers-stage" in inputfile:
+                    odd_even = get_odd_even(moves_to_scramble, "3")
+                    to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
+                else:
+                    to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
+
                 to_write_count += 1
 
             #if to_write_count >= WRITE_BATCH_SIZE or linenumber == end:

@@ -306,11 +306,11 @@ class Build555ULFRBDCenterSolve(BFS):
         )
 
 
-class Build555ULFRBDXCenterSolve(BFS):
+class Build555ULCenterSolve(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-x-centers-solve',
+            '5x5x5-UL-centers-solve',
 
             ("Fw", "Fw'",
              "Bw", "Bw'",
@@ -320,36 +320,36 @@ class Build555ULFRBDXCenterSolve(BFS):
              "Dw", "Dw'"),
 
             '5x5x5',
-            'lookup-table-5x5x5-step31-ULFRBD-x-centers-solve.txt',
+            'lookup-table-5x5x5-step31-UL-centers-solve.txt',
             True, # store_as_hex
 
             # starting cubes
             (("""
             . . . . .
-            . U . U .
-            . . . . .
-            . U . U .
+            . U U U .
+            . U U U .
+            . U U U .
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . L . L .  . F . F .  . x . x .  . x . x .
- . . . . .  . . . . .  . . . . .  . . . . .
- . L . L .  . F . F .  . x . x .  . x . x .
+ . L L L .  . . . . .  . x x x .  . . . . .
+ . L L L .  . . . . .  . x x x .  . . . . .
+ . L L L .  . . . . .  . x x x .  . . . . .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
-            . x . x .
-            . . . . .
-            . x . x .
+            . x x x .
+            . x x x .
+            . x x x .
             . . . . .""", "ascii"),)
         )
 
 
-class Build555ULFRBDTCenterSolve(BFS):
+class Build555UFCenterSolve(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-t-centers-solve',
+            '5x5x5-UF-centers-solve',
 
             ("Fw", "Fw'",
              "Bw", "Bw'",
@@ -359,32 +359,33 @@ class Build555ULFRBDTCenterSolve(BFS):
              "Dw", "Dw'"),
 
             '5x5x5',
-            'lookup-table-5x5x5-step32-ULFRBD-t-centers-solve.txt',
+            'lookup-table-5x5x5-step32-UF-centers-solve.txt',
             True, # store_as_hex
 
             # starting cubes
             (("""
             . . . . .
-            . . U . .
-            . U . U .
-            . . U . .
+            . U U U .
+            . U U U .
+            . U U U .
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . . L . .  . . F . .  . . x . .  . . x . .
- . L . L .  . F . F .  . x . x .  . x . x .
- . . L . .  . . F . .  . . x . .  . . x . .
+ . . . . .  . F F F .  . . . . .  . x x x .
+ . . . . .  . F F F .  . . . . .  . x x x .
+ . . . . .  . F F F .  . . . . .  . x x x .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
-            . . x . .
-            . x . x .
-            . . x . .
+            . x x x .
+            . x x x .
+            . x x x .
             . . . . .""", "ascii"),)
         )
 
 
-class Build555ULFRBDTCenterSolveTakeII(BFS):
+
+class Build555ULFRBDTCenterSolveTake(BFS):
 
     def __init__(self):
         BFS.__init__(self,

@@ -304,8 +304,7 @@ class Build666LRInnerXCenterStage(BFS):
             True, # store_as_hex
 
             # starting cubes
-            (
-             ("""
+            (("""
               . . . . . .
               . . . . . .
               . . . . . .
