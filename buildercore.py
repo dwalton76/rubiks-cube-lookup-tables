@@ -835,7 +835,7 @@ class BFS(object):
 
                         # If this move will put the centers into a state that cannot be solved within
                         # our move budget then do not bother adding it to the workq
-                        if centers:
+                        if centers and centers in self.lt_centers_json:
                             if (self.lt_centers_json[centers][next_move] + 1) > move_budget:
                                 continue
 
