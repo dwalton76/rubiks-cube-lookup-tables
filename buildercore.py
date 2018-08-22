@@ -587,32 +587,21 @@ class BFS(object):
             else:
                 pattern = ''
 
-            if self.name in (
-                    "5x5x5-edges-last-twelve",
-                    "5x5x5-edges-last-twelve-centers-staged",
-                ):
+            if self.name == "5x5x5-edges-second-four":
+                 with open(self.workq_filename, 'w') as fh:
+                     for cube in self.starting_cubes:
+                         for move in self.legal_moves:
 
-                '''
-                with open(self.workq_filename, 'w') as fh_write:
-                    for cube in self.starting_cubes:
-                        with open('555-centers-kept-solved.txt.9-deep', 'r') as fh_read:
-                            for line in fh_read:
-                                line = line.strip()
-                                workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), line)
-                                fh_write.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
-                                self.workq_size += 1
-                '''
-                with open(self.workq_filename, 'w') as fh:
-                    for cube in self.starting_cubes:
-                        for move in self.legal_moves:
+                            # These would break up one of the first four paired edges
+                            # at LB, LF, RB, RF
+                            if move in ("Uw", "Uw'", "Uw2", "Dw", "Dw'", "Dw2"):
+                                continue
+
+                            # For this table starting with an outer layer move does not change anything
                             if "w" not in move:
                                 continue
 
-                            if self.use_edges_pattern:
-                                workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), move)
-                            else:
-                                workq_line = "%s:%s" % (''.join(cube.state), move)
-
+                            workq_line = "%s:%s" % (''.join(cube.state), move)
                             fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
                             self.workq_size += 1
 
@@ -741,29 +730,22 @@ class BFS(object):
 
         if self.name in (
                 "5x5x5-edges-stage-first-four",
+                "5x5x5-edges-stage-second-four",
                 "5x5x5-edges-first-four",
                 "5x5x5-edges-second-four",
-                "5x5x5-edges-last-twelve",
-                "5x5x5-edges-last-twelve-centers-staged",
-                "5x5x5-edges-stage-second-four",
                 "5x5x5-edges-last-four-x-plane",
-                "5x5x5-edges-last-four-y-plane",
-                "5x5x5-edges-last-four-z-plane",
             ) and not self.lt_centers:
             self.lt_centers = {}
+            self.lt_centers_json = {}
 
             if self.name in (
                     "5x5x5-edges-stage-first-four",
-                    "5x5x5-edges-last-twelve",
                     "5x5x5-edges-first-four",
                     "5x5x5-edges-second-four",
                 ):
-                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt"
-                self.lt_centers_max_depth = 5
-
-            elif self.name == "5x5x5-edges-last-twelve-centers-staged":
-                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt"
-                self.lt_centers_max_depth = 6
+                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep" # dwalton
+                #self.lt_centers_max_depth = 5
+                self.lt_centers_max_depth = 4
 
             elif self.name == "5x5x5-edges-stage-second-four":
                 lt_centers_filename = "lookup-table-5x5x5-step101-ULFRBD-centers-solve-unstaged.txt"
@@ -771,14 +753,6 @@ class BFS(object):
 
             elif self.name == "5x5x5-edges-last-four-x-plane":
                 lt_centers_filename = "lookup-table-5x5x5-step500-ULFRBD-centers-solve-unstaged.txt"
-                self.lt_centers_max_depth = 6
-
-            elif self.name == "5x5x5-edges-last-four-y-plane":
-                lt_centers_filename = "lookup-table-5x5x5-step501-ULFRBD-centers-solve-unstaged.txt"
-                self.lt_centers_max_depth = 6
-
-            elif self.name == "5x5x5-edges-last-four-z-plane":
-                lt_centers_filename = "lookup-table-5x5x5-step502-ULFRBD-centers-solve-unstaged.txt"
                 self.lt_centers_max_depth = 6
 
             else:
@@ -791,14 +765,13 @@ class BFS(object):
                     self.lt_centers[state] = len(steps.split())
             log.info("end loading %s" % lt_centers_filename)
 
-        '''
-        if self.name == "5x5x5-edges-last-twelve":
+            if lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep":
+                log.info("begin loading %s json" % lt_centers_filename)
+                with open(lt_centers_filename + ".json", "r") as fh:
+                    self.lt_centers_json = json.load(fh)
 
-            with open(self.workq_filename_next, 'w') as fh_workq_next:
-                pass
+                log.info("end loading %s json" % lt_centers_filename)
 
-        elif max_depth is None or self.depth < max_depth:
-        '''
         if max_depth is None or self.depth < max_depth:
             to_write = []
             to_write_count = 0
@@ -809,31 +782,18 @@ class BFS(object):
                 for line in fh_new_states:
                     centers = None
 
+                    # Find the centers state
                     if self.use_edges_pattern:
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
 
                         if self.name in (
                                 "5x5x5-edges-first-four",
                                 "5x5x5-edges-second-four",
-                                "5x5x5-edges-last-twelve",
-                                "5x5x5-edges-last-twelve-centers-staged",
                                 "5x5x5-edges-last-four-x-plane",
-                                "5x5x5-edges-last-four-y-plane",
-                                "5x5x5-edges-last-four-z-plane",
                             ):
                             self.cube.state = list(state)
 
                             centers = pattern[0:54]
-                            '''
-                            centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth+1)
-
-                            if max_depth is not None and (self.depth + centers_cost) > max_depth:
-                                #log.info("%s has cost %d, depth %d, max_depth %d" % (centers, centers_cost, self.depth, max_depth))
-                                pruned += 1
-                                continue
-                            else:
-                                kept += 1
-                            '''
                     else:
                         (state, steps_to_solve) = line.rstrip().split(':')
 
@@ -844,11 +804,17 @@ class BFS(object):
                             self.cube.state = list(state)
                             centers = ''.join([self.cube.state[x] for x in centers_555])
 
+                    if max_depth is None:
+                        move_budget = 999
+                    else:
+                        move_budget = max_depth - self.depth + 1
+
+                    # Are the centers so scrambled that we cannot solve them in the steps
+                    # budget we have left? If so prune this branch.
                     if centers:
                         centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth+1)
 
-                        if max_depth is not None and (self.depth + centers_cost) > max_depth:
-                            #log.info("%s has cost %d, depth %d, max_depth %d" % (centers, centers_cost, self.depth, max_depth))
+                        if centers_cost > move_budget:
                             pruned += 1
                             continue
                         else:
@@ -866,6 +832,35 @@ class BFS(object):
 
                         if prev_step and next_move and steps_on_same_face_and_layer(prev_step, next_move):
                             continue
+
+                        # If this move will put the centers into a state that cannot be solved within
+                        # our move budget then do not bother adding it to the workq
+                        if centers:
+                            if (self.lt_centers_json[centers][next_move] + 1) > move_budget:
+                                continue
+
+                        # If this move will unpair the LB, LF, RF or RB edges then do not allow this move
+                        if self.name == "5x5x5-edges-second-four":
+                            if next_move in ("Uw", "Uw'", "Uw2", "Dw", "Dw'", "Dw2"):
+                                if self.cube.x_plane_has_LB_LF_RB_RF_edge():
+                                    #log.warning("%s would break an edge in x-plane" % next_move)
+                                    #self.cube.print_cube()
+                                    #sys.exit(0)
+                                    continue
+
+                            elif next_move in ("Lw", "Lw'", "Lw2", "Rw", "Rw'", "Rw2"):
+                                if self.cube.y_plane_has_LB_LF_RB_RF_edge():
+                                    #log.warning("%s would break an edge in y-plane" % next_move)
+                                    #self.cube.print_cube()
+                                    #sys.exit(0)
+                                    continue
+
+                            elif next_move in ("Fw", "Fw'", "Fw2", "Bw", "Bw'", "Bw2"):
+                                if self.cube.z_plane_has_LB_LF_RB_RF_edge():
+                                    #log.warning("%s would break an edge in z-plane" % next_move)
+                                    #self.cube.print_cube()
+                                    #sys.exit(0)
+                                    continue
 
                         if self.use_edges_pattern:
                             workq_line = "%s:%s:%s %s" % (pattern, state, steps_to_scramble, next_move)
@@ -1002,6 +997,8 @@ class BFS(object):
         # remove all of the '.'s and if convert to hex (if requested).
         log.info("%s: convert state to smaller format, file %s" % (self, self.filename))
         with open(self.filename, 'r') as fh_read, open("%s.small" % self.filename, 'w') as fh_final:
+            odd_even = ""
+
             if self.use_edges_pattern:
                 for line in fh_read:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
@@ -1009,11 +1006,7 @@ class BFS(object):
                     if self.name in (
                             "5x5x5-edges-first-four",
                             "5x5x5-edges-second-four",
-                            "5x5x5-edges-last-twelve",
-                            "5x5x5-edges-last-twelve-centers-staged",
                             "5x5x5-edges-last-four-x-plane",
-                            "5x5x5-edges-last-four-y-plane",
-                            "5x5x5-edges-last-four-z-plane",
                         ):
                         centers = pattern[0:54]
                         edges = pattern[54:]
