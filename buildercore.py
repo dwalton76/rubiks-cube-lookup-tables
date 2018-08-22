@@ -743,7 +743,7 @@ class BFS(object):
                     "5x5x5-edges-first-four",
                     "5x5x5-edges-second-four",
                 ):
-                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep" # dwalton
+                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.5-deep" # dwalton
                 #self.lt_centers_max_depth = 5
                 self.lt_centers_max_depth = 4
 
@@ -765,7 +765,7 @@ class BFS(object):
                     self.lt_centers[state] = len(steps.split())
             log.info("end loading %s" % lt_centers_filename)
 
-            if lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep":
+            if lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.5-deep":
                 log.info("begin loading %s json" % lt_centers_filename)
                 with open(lt_centers_filename + ".json", "r") as fh:
                     self.lt_centers_json = json.load(fh)
