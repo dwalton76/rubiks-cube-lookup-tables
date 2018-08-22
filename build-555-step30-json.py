@@ -17,12 +17,12 @@ data = {}
 lt_centers = {}
 lt_centers_max_depth = 4
 
-with open("lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep", "r") as fh:
+with open("lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.5-deep", "r") as fh:
     for line in fh:
         (state, steps) = line.strip().split(':')
         lt_centers[state] = len(steps.split())
 
-with open("lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep", "r") as fh:
+with open("lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.5-deep", "r") as fh:
     for (line_number, line) in enumerate(fh):
         (state, steps_to_solve) = line.strip().split(":")
         steps_to_solve = steps_to_solve.split()
@@ -71,8 +71,9 @@ with open("lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep", 
             #log.info("{} takes us to {} with cost of {}".format(step, centers, centers_cost))
             data[state][step] = centers_cost
 
-        if line_number % 10000 == 0:
-            log.info(line_number)
+        if line_number % 100000 == 0:
+            log.info("{:,}".format(line_number))
 
-with open("lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep.json", "w") as fh:
-    json.dump(data, fh, indent=4)
+with open("lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.5-deep.json", "w") as fh:
+    json.dump(data, fh)
+    #json.dump(data, fh, indent=4)
