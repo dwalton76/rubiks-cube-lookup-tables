@@ -601,7 +601,7 @@ class BFS(object):
                             if "w" not in move:
                                 continue
 
-                            workq_line = "%s:%s" % (''.join(cube.state), move)
+                            workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), move)
                             fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
                             self.workq_size += 1
 
