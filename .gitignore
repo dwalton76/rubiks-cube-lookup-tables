@@ -88,19 +88,11 @@ ENV/
 # Rope project settings
 .ropeproject
 
-*.swp
 backup-*
 lookup-table*.txt
-rotate
-tmp/sort*
-tmp/workq*
 utils/*.txt
-
-steps-3x3x3-preserved-LFRB-depth-7.txt
-steps-3x3x3-preserved-LFRB-depth-9.txt
 histogram.txt
 tmp
-keepers.txt
 *.swp
 nohup.out
 starting-states*.txt
