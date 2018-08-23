@@ -743,7 +743,7 @@ class BFS(object):
                     "5x5x5-edges-first-four",
                     "5x5x5-edges-second-four",
                 ):
-                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.5-deep" # dwalton
+                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
 
                 if lt_centers_filename.endswith("5-deep"):
                     self.lt_centers_max_depth = 5

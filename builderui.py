@@ -39,7 +39,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('type', type=str, help='The type of lookup table to build')
 parser.add_argument('--depth', type=int, default=None, help='The number of moves deep to explore')
 parser.add_argument('--cores', type=int, default=4, help='The number of cores to use')
-parser.add_argument('--code-gen', default=False, action='store_true', help='The number of cores to use')
+parser.add_argument('--code-gen', default=False, action='store_true', help='Print python classes for IDA')
 args = parser.parse_args()
 
 builder = get_class(args.type)()
