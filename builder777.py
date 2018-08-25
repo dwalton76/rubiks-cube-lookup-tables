@@ -767,3 +767,52 @@ class Build777Step62(BFS):
                 . . . . . . . """, "ascii"),)
         )
 
+class Build777Step63(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '7x7x7-step63',
+
+            # keep all centers staged
+            ("3Uw", "3Uw'", "Uw", "Uw'",
+             "3Lw", "3Lw'", "Lw", "Lw'",
+             "3Fw", "3Fw'", "Fw", "Fw'",
+             "3Rw", "3Rw'", "Rw", "Rw'",
+             "3Bw", "3Bw'", "Bw", "Bw'",
+             "3Dw", "3Dw'", "Dw", "Dw'",
+
+            # keep LR in horizontal stripes
+            "L", "L'", "R", "R'", "3Fw2", "3Bw2", "Fw2", "Bw2",
+
+            # keep UD in vertical stripes
+            "U", "U'", "D", "D'"),
+
+            '7x7x7',
+            'lookup-table-7x7x7-step63.txt',
+            True, # store_as_hex
+            (("""
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . U U U U U .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . L . . .  . . . . . . .  . . . x . . .  . . . . . . .
+ . . . L . . .  . . F F F . .  . . . x . . .  . . x x x . .
+ . . . L . . .  . . F F F . .  . . . x . . .  . . x x x . .
+ . . . L . . .  . . F F F . .  . . . x . . .  . . x x x . .
+ . . . L . . .  . . . . . . .  . . . x . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . x x x x x .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . . """, "ascii"),)
+        )
+

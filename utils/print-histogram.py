@@ -150,8 +150,12 @@ with open(filename, 'r') as fh:
 
         if ',' in steps:
             steps = steps.split(',')[0]
-        steps = steps.split()
-        len_steps = len(steps)
+
+        if steps.isdigit():
+            len_steps = int(steps)
+        else:
+            steps = steps.split()
+            len_steps = len(steps)
 
         if not len_steps:
             print("ERROR: %s" % line)
