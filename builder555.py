@@ -862,3 +862,40 @@ class Build555EdgesLastFourXPlane(BFS):
             . - - - .""", "ascii"),),
             use_edges_pattern=True,
         )
+
+
+# dwalton
+class Build555LFRBCentersStageFirstFourEdges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LFRB-centers-stage-first-four-edges',
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'"),
+            '5x5x5',
+            'lookup-table-5x5x5-step41-stage-first-four-edges.txt',
+            True, # store_as_hex
+            (("""
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .
+
+ . x x x .  . x x x .  . x x x .  . x x x .
+ L . . . L  L . . . L  L . . . L  L . . . L
+ L . . . L  L . . . L  L . . . L  L . . . L
+ L . . . L  L . . . L  L . . . L  L . . . L
+ . x x x .  . x x x .  . x x x .  . x x x .
+
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .""", "ascii"),)
+        )
+
