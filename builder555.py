@@ -905,6 +905,7 @@ class Build555Step41(BFS):
 class StartingStates555Step42(BFS):
     """
     There are 36 vertical bar patterns that can be made from the LFRB centers
+    6 patterns for LR * 6 patterns for FB
     """
 
     def __init__(self):
@@ -1007,6 +1008,7 @@ class Build555Step42(BFS):
 class StartingStates555Step40(BFS):
     """
     There are 36 vertical bar patterns that can be made from the LFRB centers
+    6 patterns for LR * 6 patterns for FB
     """
 
     def __init__(self):
@@ -1052,6 +1054,7 @@ class StartingStates555Step40(BFS):
 class Build555Step40(BFS):
     """
     There are 36 vertical bar patterns that can be made from the LFRB centers
+    6 patterns for LR * 6 patterns for FB
     """
 
     def __init__(self):
@@ -1151,7 +1154,11 @@ class Build555Step51(BFS):
             "L", "L'",
             "R", "R'",
             "F", "F'",
-            "B", "B'"),
+            "B", "B'",
+
+            # Do not break up the vertical bars in LFRB
+            "Uw2", "Dw2",
+            ),
 
             '5x5x5',
             'lookup-table-5x5x5-step51.txt',
@@ -1180,6 +1187,7 @@ class Build555Step51(BFS):
 class StartingStates555Step52(BFS):
     """
     There are 36 vertical bar patterns that can be made from the UFBD centers
+    6 patterns for UD * 6 patterns for FB
     """
 
     def __init__(self):
@@ -1232,6 +1240,7 @@ class StartingStates555Step52(BFS):
 class Build555Step52(BFS):
     """
     There are 36 vertical bar patterns that can be made from the UFBD centers
+    6 patterns for UD * 6 patterns for FB
     """
 
     def __init__(self):
@@ -1249,7 +1258,11 @@ class Build555Step52(BFS):
             "L", "L'",
             "R", "R'",
             "F", "F'",
-            "B", "B'"),
+            "B", "B'",
+
+            # Do not break up the vertical bars in LFRB
+            "Uw2", "Dw2",
+            ),
 
             '5x5x5',
             'starting-states-lookup-table-5x5x5-step52.txt',
@@ -1296,6 +1309,7 @@ class Build555Step52(BFS):
 class StartingStates555Step50(BFS):
     """
     There are 36 vertical bar patterns that can be made from the UFBD centers
+    6 patterns for UD * 6 patterns for FB
     """
 
     def __init__(self):
@@ -1348,6 +1362,7 @@ class StartingStates555Step50(BFS):
 class Build555Step50(BFS):
     """
     There are 36 vertical bar patterns that can be made from the UFBD centers
+    6 patterns for UD * 6 patterns for FB
     """
 
     def __init__(self):
@@ -1366,6 +1381,9 @@ class Build555Step50(BFS):
             "R", "R'",
             "F", "F'",
             "B", "B'",
+
+            # Do not break up the vertical bars in LFRB
+            "Uw2", "Dw2",
             ),
 
             '5x5x5',
