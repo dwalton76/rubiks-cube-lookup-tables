@@ -482,7 +482,8 @@ class BFS(object):
         CHARS_PER_STEP = 5
         MAX_STEPS = 20
 
-        if self.name.startswith("5x5x5-edges"):
+        # dwalton
+        if True or self.name.startswith("5x5x5-edges"):
             return 512
         else:
             return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)

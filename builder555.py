@@ -462,9 +462,9 @@ class Build555ULFRBDTCenterSolveTake(BFS):
         )
 
 
-# =====
-# Edges
-# =====
+# =====================================
+# Staging L4E Edges with solved centers
+# =====================================
 class Build555EdgesStageFirstFour(BFS):
 
     def __init__(self):
@@ -637,150 +637,9 @@ class Build555EdgesStageSecondFour(BFS):
         )
 
 
-# ===============================================
-# - solve 1st four without L4E staging
-# - solve 2nd four without breaking up first four
-# - solve 3rd four via L4E
-# ===============================================
-class Build555EdgesSolveFirstFour(BFS):
-    """
-    Get 4-edges paired in the x, y or z plane but once they are paired
-    always rotate them around to be in the x-plane.  This is needed
-    for solving the next four edges.
-    """
-
-    def __init__(self):
-
-        BFS.__init__(self,
-            '5x5x5-edges-first-four',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step700-edges-first-four.txt',
-            False, # store_as_hex
-            (("""
-            . - - - .
-            - U U U -
-            - U U U -
-            - U U U -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - D D D -
-            - D D D -
-            - D D D -
-            . - - - .""", "ascii"),
-
-            ("""
-            . U U U .
-            - U U U -
-            - U U U -
-            - U U U -
-            . U U U .
-
- . - - - .  . F F F .  . - - - .  . B B B .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- . - - - .  . F F F .  . - - - .  . B B B .
-
-            . D D D .
-            - D D D -
-            - D D D -
-            - D D D -
-            . D D D .""", "ascii"),
-
-            ("""
-            . - - - .
-            U U U U U
-            U U U U U
-            U U U U U
-            . - - - .
-
- . L L L .  . - - - .  . R R R .  . - - - .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- . L L L .  . - - - .  . R R R .  . - - - .
-
-            . - - - .
-            D D D D D
-            D D D D D
-            D D D D D
-            . - - - .""", "ascii")),
-            use_edges_pattern=True,
-        )
-
-
-class Build555EdgesSolveSecondFour(BFS):
-    """
-    Pair the 2nd four edges in the y or z plane.  When we are building
-    the table we will not perform any move that would break up the four
-    paired edges (LB, LF, RF, RB) that we paired in the previous phase.
-    """
-
-    def __init__(self):
-
-        BFS.__init__(self,
-            '5x5x5-edges-second-four',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step800-edges-second-four.txt',
-            False, # store_as_hex
-            (("""
-            . U U U .
-            - U U U -
-            - U U U -
-            - U U U -
-            . U U U .
-
- . - - - .  . F F F .  . - - - .  . B B B .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . - - - .  . F F F .  . - - - .  . B B B .
-
-            . D D D .
-            - D D D -
-            - D D D -
-            - D D D -
-            . D D D .""", "ascii"),
-
-            ("""
-            . - - - .
-            U U U U U
-            U U U U U
-            U U U U U
-            . - - - .
-
- . L L L .  . - - - .  . R R R .  . - - - .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . L L L .  . - - - .  . R R R .  . - - - .
-
-            . - - - .
-            D D D D D
-            D D D D D
-            D D D D D
-            . - - - .""", "ascii"),
-
-
-
-
-),
-            use_edges_pattern=True,
-        )
-
-
-# =========
-# L4E
-# =========
+# ==================================
+# Solve last L4E with solved centers
+# ==================================
 class Build555ULFRBDCenterSolveUnstagedEdgesLastFourXPlane(BFS):
     """
     Solve the L4E edges in the x-plane
@@ -865,8 +724,8 @@ class Build555EdgesLastFourXPlane(BFS):
 
 
 # =============================================================================
-# =============================================================================
 # dwalton
+# =============================================================================
 class Build555Step41(BFS):
 
     def __init__(self):
@@ -1265,7 +1124,7 @@ class Build555Step52(BFS):
             ),
 
             '5x5x5',
-            'starting-states-lookup-table-5x5x5-step52.txt',
+            'lookup-table-5x5x5-step52.txt',
             True, # store_as_hex
             (('......UUU..UUU..UUU.....................................FFF..FFF..FFF.....................................xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
              ('......UUU..UUU..UUU.....................................FFx..FFx..FFx.....................................Fxx..Fxx..Fxx............xxx..xxx..xxx......', 'ULFRBD'),
@@ -1387,7 +1246,7 @@ class Build555Step50(BFS):
             ),
 
             '5x5x5',
-            'starting-states-lookup-table-5x5x5-step50.txt',
+            'lookup-table-5x5x5-step50.txt',
             True, # store_as_hex
             (('.UUU.xUUUxxUUUxxUUUx.UUU..xxx.x...xx...xx...x.xxx..UUU.xFFFxxFFFxxFFFx.UUU..xxx.x...xx...xx...x.xxx..UUU.xxxxxxxxxxxxxxx.UUU..UUU.xxxxxxxxxxxxxxx.UUU.', 'ULFRBD'),
              ('.UUU.xUUUxxUUUxxUUUx.UUU..xxx.x...xx...xx...x.xxx..UUU.xFFxxxFFxxxFFxx.UUU..xxx.x...xx...xx...x.xxx..UUU.xFxxxxFxxxxFxxx.UUU..UUU.xxxxxxxxxxxxxxx.UUU.', 'ULFRBD'),
@@ -1428,22 +1287,242 @@ class Build555Step50(BFS):
         )
 
 
+class Build555Step60(BFS):
+    """
+    Pair all edges and solve all centers
+    - only allow a w turn if there is an L4E group in that plane
+    - only allow a w turn if all four centers involved are either solved or in bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step60',
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step60.txt',
+            False, # store_as_hex
+            (("""
+            . U U U .
+            U U U U U
+            U U U U U
+            U U U U U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D D D D D
+            D D D D D
+            D D D D D
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Step61(BFS):
+    """
+    Pair the y-plane edges and solve UFBD centers
+
+    There are 8!/(2*2*2*2) or 2520 center states
+    There are 40320 edge states (don't know the formula for this one)
+    2520 * 40320 = 101,606,400
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step61',
+            ("Fw", "Fw'", "Fw2",
+             "Bw", "Bw'", "Bw2",
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+
+            # Do not undo the L4E groups in x/y/z planes
+            "L", "L'",
+            "R", "R'",
+            "F", "F'",
+            "B", "B'",
+            "U", "U'",
+            "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step61.txt',
+            False, # store_as_hex
+            (("""
+            . U U U .
+            - U U U -
+            - U U U -
+            - U U U -
+            . U U U .
+
+ . - - - .  . F F F .  . - - - .  . B B B .
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ . - - - .  . F F F .  . - - - .  . B B B .
+
+            . D D D .
+            - D D D -
+            - D D D -
+            - D D D -
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Step62(BFS):
+    """
+    Pair the z-plane edges and solve ULRD centers
+
+    There are 8!/(2*2*2*2) or 2520 center states
+    There are 40320 edge states (don't know the formula for this one)
+    2520 * 40320 = 101,606,400
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step62',
+            ("Lw", "Lw'", "Lw2",
+             "Rw", "Rw'", "Rw2",
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+
+            # Do not undo the L4E groups in x/y/z planes
+            "L", "L'",
+            "R", "R'",
+            "F", "F'",
+            "B", "B'",
+            "U", "U'",
+            "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step62.txt',
+            False, # store_as_hex
+            (("""
+            . - - - .
+            U U U U U
+            U U U U U
+            U U U U U
+            . - - - .
+
+ . L L L .  . - - - .  . R R R .  . - - - .
+ - L L L -  - . . . -  - R R R -  - . . . -
+ - L L L -  - . . . -  - R R R -  - . . . -
+ - L L L -  - . . . -  - R R R -  - . . . -
+ . L L L .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            D D D D D
+            D D D D D
+            D D D D D
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Step63(BFS):
+    """
+    Pair the x-plane edges and solve LFRB centers
+
+    There are 8!/(2*2*2*2) or 2520 center states
+    There are 40320 edge states (don't know the formula for this one)
+    2520 * 40320 = 101,606,400
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step63',
+            ("Fw", "Fw'", "Fw2",
+             "Bw", "Bw'", "Bw2",
+             "Lw", "Lw'", "Lw2",
+             "Rw", "Rw'", "Rw2",
+
+            # Do not undo the L4E groups in x/y/z planes
+            "L", "L'",
+            "R", "R'",
+            "F", "F'",
+            "B", "B'",
+            "U", "U'",
+            "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step63.txt',
+            False, # store_as_hex
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Step65(BFS):
+    """
+    Solve all centers
+    - only allow a w turn if all four centers involved are either solved or in bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step65',
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step65.txt',
+            False, # store_as_hex
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),),
+        )
+
+
 '''
-Can we solve all three L4E groups and the centers at once?  Probably not but thinking outloud...
+DONE - rethink the thing where you consider a paired edge state the same regardless of orientation
 
-step60 table would be all centers solved and edges paired using edges_patterns
-- any w move is allowed (this is a MUST for solving a L4E group) but...
-- only allow a w move if
-    - there is a L4E group in that plane
-    - the centers in the plane are either solved or in bars and the w move will not break up the bars
+- Need IDA tables for solving centers and pairing edges in L4E. The difference in this vs the "solve
+  last four edges" table that we have today is that it requires the centers to be solved but our
+  centers are going to be in bars.
 
+- step60 attempt to pair all three L4E at once
+    - only allow a w turn if there is an L4E group in that plane
+    - only allow a w turn if all four centers involved are either solved or in bars
 
-step61 edges prune table
-
-step62 centers prune table
-- any w move is allowed (this is a MUST for solving a L4E group) but...
-- only allow a w move if
-    - the centers in the plane are either solved or in bars and the w move will not break up the bars
-- not sure how big this table will go but my gut says it is buildable. There are only 6 vertical bar
-    patterns per side
 '''
