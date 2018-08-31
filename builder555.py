@@ -1798,6 +1798,47 @@ class Build555Step400(BFS):
         )
 
 
+
+
+class Build555EdgesLastSixPlane(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-last-six',
+
+            ("Rw", "Rw'", "Rw2",
+             "Lw", "Lw'", "Lw2",
+             "Fw", "Fw'", "Fw2",
+             "Bw", "Bw'", "Bw2",
+             "L", "L'",
+             "F", "F'",
+             #"R", "R'",
+             "B", "B'"),
+            '5x5x5',
+            'lookup-table-5x5x5-step601-edges-last-six.txt',
+            False, # store_as_hex
+            (("""
+            . - - - .
+            - . . . U
+            - . . . U
+            - . . . U
+            . - - - .
+
+ . - - - .  . - - - .  . R R R .  . - - - .
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ . - - - .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            - . . . D
+            - . . . D
+            - . . . D
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
 '''
 DONE - rethink the thing where you consider a paired edge state the same regardless of orientation
 

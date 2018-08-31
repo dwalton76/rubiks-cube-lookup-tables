@@ -823,8 +823,21 @@ class BFS(object):
                                 continue
 
                         # dwalton
+                        if self.name == "5x5x5-edges-last-six":
+
+                            #if next_move in ("Uw", "Uw'", "Uw2", "Dw", "Dw'", "Dw2"):
+
+                            #    if not self.cube.LFRB_centers_horizontal_bars():
+                            #        #log.warning("%s would break centers in x-plane" % next_move)
+                            #        continue
+
+                            if next_move in ("R", "R'"):
+                                R_edges = [self.cube.state[x] for x in (77, 78, 79, 81, 85, 86, 90, 91, 95, 97, 98, 99)]
+                                if "-" in R_edges:
+                                    continue
+
                         # centers checks apply to both
-                        if self.name in ("5x5x5-step60", "5x5x5-step63"):
+                        elif self.name in ("5x5x5-step60", "5x5x5-step63"):
 
                             # Keep center colors in their home plane
                             LR_colors = self.cube.LR_centers_colors()
