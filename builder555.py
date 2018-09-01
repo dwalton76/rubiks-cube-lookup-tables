@@ -1800,20 +1800,15 @@ class Build555Step400(BFS):
 
 
 
-class Build555EdgesLastSixPlane(BFS):
+class Build555EdgesLastSix(BFS):
 
     def __init__(self):
         BFS.__init__(self,
             '5x5x5-edges-last-six',
 
-            ("Rw", "Rw'", "Rw2",
-             "Lw", "Lw'", "Lw2",
-             "Fw", "Fw'", "Fw2",
-             "Bw", "Bw'", "Bw2",
-             "L", "L'",
-             "F", "F'",
-             #"R", "R'",
-             "B", "B'"),
+            # illegal moves...will list legal moves instead
+            (),
+
             '5x5x5',
             'lookup-table-5x5x5-step601-edges-last-six.txt',
             False, # store_as_hex
@@ -1836,6 +1831,49 @@ class Build555EdgesLastSixPlane(BFS):
             - . . . D
             . - - - .""", "ascii"),),
             use_edges_pattern=True,
+            legal_moves=(
+                "L2", "F2", "R2", "R", "R'", "B2",
+                "u", "u'", "u2",
+                "d", "d'", "d2",
+            )
+        )
+
+
+class Build555EdgesLastSixCenters(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-last-six-centers',
+
+            # illegal moves...will list legal moves instead
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step602-edges-last-six-centers.txt',
+            False, # store_as_hex
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),),
+            legal_moves=(
+                "L2", "F2", "R2", "R", "R'", "B2",
+                "u", "u'", "u2",
+                "d", "d'", "d2",
+            )
         )
 
 
@@ -1852,10 +1890,10 @@ DONE - rethink the thing where you consider a paired edge state the same regardl
 
 
 
-brainstorming...
-================
-- stage centers
-    20 moves
+brainstorm #1
+=============
+step10,20 - stage centers
+    - 20 moves
 
 step40 - solve any 3-edges with 2-edge prune table
 
@@ -1870,125 +1908,58 @@ step40 - solve any 3-edges with 2-edge prune table
         - midges 24 * 22 = 528
         - wings 24 * 23 * 22 * 21 = 255,024
         - 528 * 255,024 = 134,652,672
+        ***************************************************
+        - This table is building now...hope math checks out
+        ***************************************************
 
     - 134652672/1023360307200 = 0.000 131 5789473684
-    - ~11 moves?
+    - ~8 moves?
 
-step50
-    - solve 1 more edge
-        - midges 18
-        - wings 18 * 17 = 306
-        - 18 * 306 = 5,508
-    - LFRB centers to vertical bars (24,010,000 states)
-    - put paired edges in x-plane 12!/(9!*3!) = 220 states
-    - restrict any move that would break a paired edge
-    - 24010000/(5508*24010000*220) = 0.000 000 825
-    - IDA would be slow...could always land the 4 paired edges anywhere and
-      do another phase that moves them to x-plane
-    - ~11 moves?
+step50 - solve another 3-edges
+    - IDA with 2-edge prune table
+    - do not break up any of the 3-edges from step40
+    ~8 moves?
 
-From here a few options
-(a) - L4E the y-plane and then solve y-plane and z-plane at the same time
-(b) - Pair the edges in y-plane then solve the z-plane (NOT FEASIBLE)
-(c) - in step50 EO the 8 unpaired edges
+step60
+    - do not break up 6-paired edges
+    - solve UD centers
+    - FB centers to horizontal bars or solved
+    - L centers to horizontal bars or solved
+    - R centers to horizontal bars, vertical bars or solved
+    - 70^6 = 117,649,000,000 center states
+    - multiple 24,010,000 center prune tables
 
-step60(a)
-- L4E the y-plane and put UD centers in solved, horizontal bars or vertical bars
-- ~10 moves
+    - place 6 paired edges in y-plane and LU LD
+    - 12!/(6!*6!) = 924 edge states
+    - 24010000/(924*117,649,000,000) = 0.000 000 220
+    - If this is too slow you can always just do the centers and
+      move the edges via another phase.
 
-step70(a)
-- IDA speed is unknown for solving two L4E groups at once. Worst case you can
-  do the y-plane then the z-plane but that would be ~22 moves.
-- this is currently my step60 I need to rename them to step70
-- ~17 moves
+    - FEASIBLE
+    ~12 moves?
 
-Would be 49 moves plus the 20 to stage centrs so 69 moves to reduce to 333
+step70
+    - solve LFRB centers
+    - pair last 6-edges
+    - this will use x-plane slices to keep 4 of the unpaired edges on side R, the
+      other two will be at LB LF
+    - x-plane slice is only allowed if side R is solved or horizontal bar
+    - edges prune table should be 12! or 479,001,600
+        ***************************************************
+        - This table is building now...hope math checks out
+        ***************************************************
+    - centers prune table should be 8!/(2*2*2*2) or 2520. It may be ~2x that
+      since the R centers can also be vertical bars...not huge though.
+    - 479001600/(479001600*2520*2) = 0.000 198
 
+    ~16 moves?
 
+This would reduce to 333 in ~64 steps so solve in ~84...that would be awesome
+There are slices in here though and each of those really counts as two.
 
-
-step60(b)
----------
-    - UD centers to solved or horizontal bars
-        4900 states
-
-    - pair 4-edges in y-plane?
-        - midges 16 * 14 * 12 * 10 = 26,880
-        - wings 16 * 15 * 14 * 13 * 12 * 11 * 10 * 9 = 518,918,400
-        - 26,880 * 518,918,400 = 13,948,526,592,000
-
-    - pair 3-edge prune table
-        - midges 16 * 14 * 12 = 2,688
-        - wings 16 * 15 * 14 * 13 * 12 * 11 = 5,765,760
-        - 2,688 * 5,765,760 = 15,498,362,880
-        - would be a HUGE prune table :(
-
-    - pair 2-edge prune table
-        - midges 16 * 14 = 224
-        - wings 16 * 15 * 14 * 13 = 43,680
-        - 224 * 43,680= 9,784,320
-
-    - 9784320/(4900*13948526592000) = 0.000 000 000 1431549051
-    - NOT FEASIBLE
-
-
-step60(c)
-    - solving centers
-        UD would have 4900 states
-        LR would have 6 states
-        FB would have 6 states
-        6 * 6 * 4900 = 176,400
-    - pair y-plane and z-plane edges
-        - not sure on the math here but if each were in an L4E plane they would have 115 states
-          so at a minimum this is 115^2 or 13,225
-    - 176400/(176400*13225) = 0.000 075 
-    - build the edges table for this to get the exact number...this IDA
-      is probably not feasible. I don't know how to do the step50 EO part right now either.
 
 
 brainstorm #2
-=============
-- stage centers
-
-step40 - solve 3-edges
-    ~10 moves?
-
-step50 - solve another 3-edges
-    ~10 moves?
-
-step60
-    - solve LR centers
-    - FB centers to vertical bars
-    - 24,010,000 center states
-    - place 6 paired edges in x-plane and LD RD
-    - 12!/(6!*6!) = 924 edge states
-    - 24010000/(924*24010000) = 0.001 082
-    - I think this will also have to make sure at least 2-edges are
-      oriented correctly in order for phase70 to work but given how
-      fast this IDA will be that should be ok.
-    - FEASIBLE
-    ~9 moves?
-
-step70
-    - I did the math it is not feasible to pair all 6-edges and solve centers in one phase
-    - pair 2-edges and place at LU RU
-        - midges 12 * 10 = 120
-        - wings 12 * 11 * 10 * 9 = 11,880
-        - 120 * 11,880 = 1,425,600
-    - UD centers to vertical bars, 4900 states
-    - 1,425,600 * 4900 = 6,985,440,000
-    - 1425600/6985440000 = 0.000 204
-    - FEASIBLE
-    ~10 moves?
-
-step80
-    - solve y-plane edges via L4E
-    11 moves
-
-This would reduce to 333 in ~70 steps so solve in ~90
-
-
-brainstorm #3
 =============
 - stage centers
 
@@ -2010,8 +1981,30 @@ step70
 
 step80
     - do y-plane and z-plane L4E at the same time?
-    - I have the tables but am not sure how fast this would be
-    ~17 moves
+    - I have the tables but am not sure how short the solutions will be since
+      you can only switch from solving y-plane to z-plane (or vice versa)
+      when the UD centers are solved. I don't think that would happen a ton
+      during a solve.  If you did them one plane at a time they would average
+      11 moves each so 22 moves is the worst case.
+    - you could test this today with the current edges strategy
+    ~17 moves?
 
 This would reduce to 333 in ~69 steps
+
+
+
+math on last 4-edges
+====================
+    midges 8 * 6 * 4 = 192
+    wings 8*7*6*5*4*3 = 20,160
+    192 * 20,160 = 3,870,720
+    But I know the answer is really 40,320
+
+    Each midge is one of 4 letters, lower or upper case depending on orientation
+    So 2^4 or 16 possibilties there...not 192. But I think it is really 2^3 because
+    you can't flip the O of the last midge by itself.
+
+    There are 8 wings that can be one of 4 letters (upper and lower case)
+    8! is 40,320...that is it!!
+
 '''

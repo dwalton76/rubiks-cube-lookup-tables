@@ -350,7 +350,6 @@ class BFS(object):
         self.use_cost_only = use_cost_only
         self.use_hash_cost_only = use_hash_cost_only
         self.use_edges_pattern = use_edges_pattern
-        self.size = size
         self.starting_cube_states = starting_cube_states
         self.rotations = rotations
         self.use_centers_then_edges = use_centers_then_edges
@@ -358,7 +357,7 @@ class BFS(object):
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
-        assert self.size in supported_sizes
+        assert self.size in supported_sizes, "%s not supported" % self.size
         assert isinstance(self.filename, str)
         assert isinstance(self.store_as_hex, bool)
         assert isinstance(starting_cube_states, tuple)
@@ -822,18 +821,19 @@ class BFS(object):
                             if (self.lt_centers_json[centers][next_move] + 1) > move_budget:
                                 continue
 
-                        # dwalton
                         if self.name == "5x5x5-edges-last-six":
-
-                            #if next_move in ("Uw", "Uw'", "Uw2", "Dw", "Dw'", "Dw2"):
-
-                            #    if not self.cube.LFRB_centers_horizontal_bars():
-                            #        #log.warning("%s would break centers in x-plane" % next_move)
-                            #        continue
 
                             if next_move in ("R", "R'"):
                                 R_edges = [self.cube.state[x] for x in (77, 78, 79, 81, 85, 86, 90, 91, 95, 97, 98, 99)]
                                 if "-" in R_edges:
+                                    continue
+
+                        elif self.name == "5x5x5-edges-last-six-centers":
+
+                            if next_move in ("u", "u'", "u2", "d", "d'", "d2"):
+
+                                if not self.cube.LFRB_centers_horizontal_bars():
+                                    #log.warning("%s would break centers in x-plane" % next_move)
                                     continue
 
                         # centers checks apply to both
