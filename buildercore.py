@@ -836,79 +836,6 @@ class BFS(object):
                                     #log.warning("%s would break centers in x-plane" % next_move)
                                     continue
 
-                        # centers checks apply to both
-                        elif self.name in ("5x5x5-step60", "5x5x5-step63"):
-
-                            # Keep center colors in their home plane
-                            LR_colors = self.cube.LR_centers_colors()
-                            FB_colors = self.cube.FB_centers_colors()
-
-                            if "L" in FB_colors or "R" in FB_colors:
-                                continue
-
-                            if "F" in LR_colors or "B" in LR_colors:
-                                continue
-
-                            if next_move in ("Uw", "Uw'", "Uw2", "Dw", "Dw'", "Dw2"):
-
-                                if not self.cube.LFRB_centers_horizontal_bars():
-                                    #log.warning("%s would break centers in x-plane" % next_move)
-                                    continue
-
-                            elif next_move in ("Lw", "Lw'", "Lw2", "Rw", "Rw'", "Rw2"):
-
-                                if not self.cube.UFDB_centers_vertical_bars():
-                                    #log.warning("%s would break centers in y-plane" % next_move)
-                                    continue
-
-                            elif next_move in ("Fw", "Fw'", "Fw2", "Bw", "Bw'", "Bw2"):
-
-                                if not self.cube.LR_centers_vertical_bars():
-                                    #log.warning("%s would break centers in z-plane" % next_move)
-                                    continue
-
-                                if not self.cube.UD_centers_horizontal_bars():
-                                    #log.warning("%s would break centers in z-plane" % next_move)
-                                    continue
-
-                        # edges checks are only for step60
-                        if self.name == "5x5x5-step60":
-                            # Always leave the x-plane of paired edges in the x-plane
-                            if self.cube.l4e_in_y_plane_paired() and self.cube.y_plane_has_LB_LF_RB_RF_edge():
-                                continue
-
-                            if self.cube.l4e_in_z_plane_paired() and self.cube.z_plane_has_LB_LF_RB_RF_edge():
-                                continue
-
-                            # If this move will unpair an L4E then do not allow this move.
-                            # If this move will break up the centers to anything outside of solved
-                            # or vertical/horizontal bars then do not allow this move.
-                            if next_move in ("Uw", "Uw'", "Uw2", "Dw", "Dw'", "Dw2"):
-                                if self.cube.x_plane_has_LB_LF_RB_RF_edge():
-                                    continue
-
-                                if not self.cube.l4e_in_x_plane():
-                                    #log.warning("%s would break an L4E in x-plane" % next_move)
-                                    continue
-
-                            elif next_move in ("Lw", "Lw'", "Lw2", "Rw", "Rw'", "Rw2"):
-
-                                if self.cube.y_plane_has_LB_LF_RB_RF_edge():
-                                    continue
-
-                                if not self.cube.l4e_in_y_plane():
-                                    #log.warning("%s would break an L4E in y-plane" % next_move)
-                                    continue
-
-                            elif next_move in ("Fw", "Fw'", "Fw2", "Bw", "Bw'", "Bw2"):
-
-                                if self.cube.z_plane_has_LB_LF_RB_RF_edge():
-                                    continue
-
-                                if not self.cube.l4e_in_z_plane():
-                                    #log.warning("%s would break an L4E in z-plane" % next_move)
-                                    continue
-
                         if self.use_edges_pattern:
                             workq_line = "%s:%s:%s %s" % (pattern, state, steps_to_scramble, next_move)
                         else:
@@ -1050,9 +977,7 @@ class BFS(object):
                 for line in fh_read:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
 
-                    if self.name in (
-                            "5x5x5-edges-last-four-x-plane",
-                        ):
+                    if self.name == "5x5x5-edges-last-four-x-plane":
                         centers = pattern[0:54]
                         edges = pattern[54:]
                         if centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
@@ -1101,21 +1026,6 @@ class BFS(object):
                             continue
 
                         cube_state_string_small = edges
-
-                    elif self.name in ("5x5x5-step60", "5x5x5-step63"):
-                        self.cube.state = list(cube_state_string)
-
-                        # Keep center colors in their home plane
-                        LR_colors = self.cube.LR_centers_colors()
-                        FB_colors = self.cube.FB_centers_colors()
-
-                        if "L" in FB_colors or "R" in FB_colors:
-                            continue
-
-                        if "F" in LR_colors or "B" in LR_colors:
-                            continue
-
-                        cube_state_string_small = cube_state_string[1:].replace('.', '')
 
                     else:
                         cube_state_string_small = cube_state_string[1:].replace('.', '')
@@ -1187,7 +1097,6 @@ class BFS(object):
                 if state_type == 'ULFRBD':
                     state = ''.join(state.split()).strip().replace('.', '')
 
-                    # dwalton implement use_hex
                     if use_hex:
                         state = convert_state_to_hex(state)
 
