@@ -9,10 +9,10 @@ from rubikscubennnsolver.RubiksCube555 import (
     solved_555,
     moves_555,
     rotate_555,
-    #tsai_phase3_orient_edges_555,
     centers_555,
-    edges_recolor_without_midges_555,
-    edges_recolor_with_midges_555,
+    edges_recolor_pattern_555,
+    wings_555,
+    midges_recolor_tuples_555,
 )
 
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
@@ -49,90 +49,6 @@ def get_odd_even(steps, layer):
         return "even"
     else:
         return "odd"
-
-
-midges_recolor_tuples_555 = (
-    ('o', 3, 103), # upper
-    ('p', 11, 28),
-    ('q', 15, 78),
-    ('r', 23, 53),
-
-    ('s', 36, 115), # left
-    ('t', 40, 61),
-
-    ('u', 86, 65),  # right
-    ('v', 90, 111),
-
-    ('w', 128, 73), # down
-    ('x', 136, 48),
-    ('y', 140, 98),
-    ('z', 148, 123)
-)
-
-
-wings_555= (
-    2, 3, 4, # Upper
-    6, 11, 16,
-    10, 15, 20,
-    22, 23, 24,
-
-    31, 36, 41, # Left
-    35, 40, 45,
-
-    81, 86, 91, # Right
-    85, 90, 95,
-
-    127, 128, 129, # Down
-    131, 136, 141,
-    135, 140, 145,
-    147, 148, 149
-)
-
-'''
-wings_555= (
-    ('0', 2, 104),  # upper
-    ('1', 4, 102),
-    ('2', 6, 27),
-    ('3', 10, 79),
-    ('4', 16, 29),
-    ('5', 20, 77),
-    ('6', 22, 52),
-    ('7', 24, 54),
-
-    ('8', 31, 110), # left
-    ('9', 35, 56),
-    ('a', 41, 120),
-    ('b', 45, 66),
-
-    ('c', 81, 60), # right
-    ('d', 85, 106),
-    ('e', 91, 70),
-    ('f', 95, 116),
-
-    ('g', 127, 72), # down
-    ('h', 129, 74),
-    ('i', 131, 49),
-    ('j', 135, 97),
-    ('k', 141, 47),
-    ('l', 145, 99),
-    ('m', 147, 124),
-    ('n', 149, 122)
-)
-'''
-
-def edges_recolor_pattern_555(state):
-    (edge_index, square_index, partner_index) = midges_recolor_tuples_555[0]
-    square_value = state[square_index]
-
-    # If the middle edges pieces are all "." then we ignore them and recolor the
-    # edges in terms of one edge piece as it relates to its partner piece.
-    if square_value == '.':
-        return edges_recolor_without_midges_555(state)
-
-    # If the middle edges are not "." though then we return recolor each edge
-    # as it relates to its midge.
-    else:
-        return edges_recolor_with_midges_555(state)
 
 
 def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern):
