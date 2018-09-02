@@ -1428,41 +1428,44 @@ class Build555Step400(BFS):
         )
 
 
-class Build555EdgesLastSix(BFS):
+class Build555EdgesLastSixEdges(BFS):
+    """
+    Should be 12! or 479,001,600 states
+    """
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-last-six',
+            '5x5x5-edges-last-six-edges',
 
             # illegal moves...will list legal moves instead
             (),
 
             '5x5x5',
-            'lookup-table-5x5x5-step601-edges-last-six.txt',
+            'lookup-table-5x5x5-step601-edges-last-six-edges.txt',
             False, # store_as_hex
             (("""
-            . - - - .
-            - . . . U
-            - . . . U
-            - . . . U
-            . - - - .
+            . U U U .
+            U . . . U
+            U . . . U
+            U . . . U
+            . U U U .
 
- . - - - .  . - - - .  . R R R .  . - - - .
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- . - - - .  . - - - .  . R R R .  . - - - .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . - - - .  . F F F .  . - - - .  . B B B .
 
-            . - - - .
-            - . . . D
-            - . . . D
-            - . . . D
-            . - - - .""", "ascii"),),
+            . D D D .
+            - . . . -
+            - . . . -
+            - . . . -
+            . D D D .""", "ascii"),),
             use_edges_pattern=True,
             legal_moves=(
-                "L2", "F2", "R2", "R", "R'", "B2",
-                "u", "u'", "u2",
-                "d", "d'", "d2",
+                "D2", "F2", "B2", "U", "U'", "U2",
+                "l", "l'", "l2",
+                "r", "r'", "r2",
             )
         )
 
@@ -1481,26 +1484,26 @@ class Build555EdgesLastSixCenters(BFS):
             False, # store_as_hex
             (("""
             . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
             . . . . .""", "ascii"),),
             legal_moves=(
-                "L2", "F2", "R2", "R", "R'", "B2",
-                "u", "u'", "u2",
-                "d", "d'", "d2",
+                "D2", "F2", "B2", "U", "U'", "U2",
+                "l", "l'", "l2",
+                "r", "r'", "r2",
             )
         )
 

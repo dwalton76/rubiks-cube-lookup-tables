@@ -821,18 +821,11 @@ class BFS(object):
                             if (self.lt_centers_json[centers][next_move] + 1) > move_budget:
                                 continue
 
-                        if self.name == "5x5x5-edges-last-six":
+                        if self.name == "5x5x5-edges-last-six" or self.name == "5x5x5-edges-last-six-centers":
 
-                            if next_move in ("R", "R'"):
-                                R_edges = [self.cube.state[x] for x in (77, 78, 79, 81, 85, 86, 90, 91, 95, 97, 98, 99)]
-                                if "-" in R_edges:
-                                    continue
+                            if next_move in ("l", "l'", "l2", "r", "r'", "r2"):
 
-                        elif self.name == "5x5x5-edges-last-six-centers":
-
-                            if next_move in ("u", "u'", "u2", "d", "d'", "d2"):
-
-                                if not self.cube.LFRB_centers_horizontal_bars():
+                                if not self.cube.UFBD_centers_vertical_bars():
                                     #log.warning("%s would break centers in x-plane" % next_move)
                                     continue
 
