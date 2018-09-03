@@ -345,10 +345,7 @@ class Build666Step50(BFS):
             '6x6x6-step50',
 
             ("3Rw", "3Rw'", "3Lw", "3Lw'", "3Fw", "3Fw'", "3Bw", "3Bw'", "3Uw", "3Uw'", "3Dw", "3Dw'", # do not mess up staged centers
-             "Rw", "Rw'", "Lw", "Lw'", "Fw", "Fw'", "Bw", "Bw'", "Uw", "Uw'", "Dw", "Dw'",             # do not mess up staged centers
-             "3Lw", "3Lw'", "3Lw2",        # can skip these for 6x6x6 cubes
-             "3Dw", "3Dw'", "3Dw2",
-             "3Bw", "3Bw'", "3Bw2"),
+             "Rw", "Rw'", "Lw", "Lw'", "Fw", "Fw'", "Bw", "Bw'", "Uw", "Uw'", "Dw", "Dw'"),            # do not mess up staged centers
 
             '6x6x6',
             'lookup-table-6x6x6-step50-UD-solve-inner-x-center-and-oblique-edges.txt',

@@ -136,7 +136,7 @@ class Build444UDCentersStage(BFS):
     def __init__(self):
         BFS.__init__(self,
             '4x4x4-UD-centers-stage',
-            ("Lw", "Lw'", "Lw2",
+            ("Lw", "Lw'", "Lw2", # can skip these for 4x4x4 cubes
              "Bw", "Bw'", "Bw2",
              "Dw", "Dw'", "Dw2"),
             '4x4x4',
@@ -156,7 +156,7 @@ class Build444LRCentersStage(BFS):
     def __init__(self):
         BFS.__init__(self,
             '4x4x4-LR-centers-stage',
-            ("Lw", "Lw'", "Lw2",
+            ("Lw", "Lw'", "Lw2", # can skip these for 4x4x4 cubes
              "Bw", "Bw'", "Bw2",
              "Dw", "Dw'", "Dw2"),
             '4x4x4',
@@ -176,7 +176,7 @@ class Build444FBCentersStage(BFS):
     def __init__(self):
         BFS.__init__(self,
             '4x4x4-FB-centers-stage',
-            ("Lw", "Lw'", "Lw2",
+            ("Lw", "Lw'", "Lw2", # can skip these for 4x4x4 cubes
              "Bw", "Bw'", "Bw2",
              "Dw", "Dw'", "Dw2"),
             '4x4x4',
@@ -196,7 +196,7 @@ class Build444ULFRBDCentersStage(BFS):
     def __init__(self):
         BFS.__init__(self,
             '4x4x4-ULFRBD-centers-stage',
-            ("Lw", "Lw'", "Lw2",
+            ("Lw", "Lw'", "Lw2", # can skip these for 4x4x4 cubes
              "Bw", "Bw'", "Bw2",
              "Dw", "Dw'", "Dw2"),
             '4x4x4',
@@ -302,10 +302,6 @@ class Build444HighLowEdgesEdges(BFS):
              "Bw", "Bw'",
              "Lw", "Lw'",
              "Rw", "Rw'"),
-            # TPR also restricts these
-            # "Lw", "Lw'", "Lw2",
-            # "Bw", "Bw'", "Bw2",
-            # "Dw", "Dw'", "Dw2"),
 
             '4x4x4',
             'lookup-table-4x4x4-step22-highlow-edges-edges.txt',
