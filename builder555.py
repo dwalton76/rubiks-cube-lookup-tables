@@ -862,8 +862,258 @@ class Build555Step40(BFS):
 
 
 # =============================================================================
-# dwalton
 # =============================================================================
+class StartingStates555Step50(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            'starting-states-5x5x5-step50',
+
+            ("Rw", "Rw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+            ),
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step50.txt',
+            True, # store_as_hex
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . x x x .  . x x x .
+ . L L L .  . F F F .  . x x x .  . x x x .
+ . L L L .  . F F F .  . x x x .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555Step50(BFS):
+    """
+    All centers to bar patterns or solved
+    """
+
+    def __init__(self):
+        from builder555ss import starting_states_step50
+        BFS.__init__(self,
+            '5x5x5-step50',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step50.txt',
+            True, # store_as_hex
+            starting_states_step50,
+        )
+
+
+class StartingStates555Step51(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            'starting-states-5x5x5-step51',
+
+            ("Rw", "Rw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+            ),
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step51.txt',
+            True, # store_as_hex
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F F .  . . . . .  . x x x .
+ . . . . .  . F F F .  . . . . .  . x x x .
+ . . . . .  . F F F .  . . . . .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555Step51(BFS):
+    """
+    All centers to bar patterns or solved
+    """
+
+    def __init__(self):
+        from builder555ss import starting_states_step51
+
+        BFS.__init__(self,
+            '5x5x5-step51',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step51.txt',
+            True, # store_as_hex
+            starting_states_step51
+        )
+
+
+class StartingStates555Step52(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            'starting-states-5x5x5-step52',
+
+            ("Rw", "Rw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+            ),
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step52.txt',
+            True, # store_as_hex
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . . . . .  . x x x .  . . . . .
+ . L L L .  . . . . .  . x x x .  . . . . .
+ . L L L .  . . . . .  . x x x .  . . . . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555Step52(BFS):
+    """
+    All centers to bar patterns or solved
+    """
+
+    def __init__(self):
+        from builder555ss import starting_states_step52
+
+        BFS.__init__(self,
+            '5x5x5-step52',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step52.txt',
+            True, # store_as_hex
+            starting_states_step52
+        )
+
+
+class StartingStates555Step53(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            'starting-states-5x5x5-step53',
+
+            ("Rw", "Rw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+            ),
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step53.txt',
+            True, # store_as_hex
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . x x x .  . x x x .
+ . L L L .  . F F F .  . x x x .  . x x x .
+ . L L L .  . F F F .  . x x x .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555Step53(BFS):
+    """
+    All centers to bar patterns or solved
+    """
+
+    def __init__(self):
+        from builder555ss import starting_states_step53
+
+        BFS.__init__(self,
+            '5x5x5-step53',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step53.txt',
+            True, # store_as_hex
+            starting_states_step53
+        )
+
+
 class Build555EdgesLastSixEdges(BFS):
     """
     Should be 12! or 479,001,600 states
@@ -969,18 +1219,16 @@ step40 - pair 4-edges
           among the 6 combos of 2-edges you can make from the 4-edges. This might
           be enough to make this feasible.
 
-    - if this is too slow then break this up into step40/50 where you pair 2-edges
-      in each that will be very fast IDA
+    - if this is too slow then break this up by pairing 2-edges then another 2-edges
     ~10 moves?
 
-
-step60
+step50
     - UD, LR and FB centers to bars or solved
     - do not break up previous 4-edges
     - 70^4/70^6 = 0.000 204
     ~10 moves? It is ~12 to solve centers so 10 seems reasonable
 
-step70
+step60
     - solve LR centers (6 states)
     - D centers to vertical bars (6 states)
     - FB centers to vertical bars (6 states)
@@ -994,7 +1242,7 @@ step70
     - 67326336/(67326336 * 495 * 6 * 6 * 6) = 0.000 009
     ~8 moves?
 
-step80
+step70
     - solve UFBD centers
     - pair last 6-edges
     - this will use y-plane slices to keep 4 of the unpaired edges on side U, the

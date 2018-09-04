@@ -481,8 +481,7 @@ class BFS(object):
         CHARS_PER_STEP = 5
         MAX_STEPS = 20
 
-        # dwalton
-        if True or self.name.startswith("5x5x5-edges"):
+        if self.name.startswith("5x5x5-edges"):
             return 512
         else:
             return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
@@ -824,9 +823,24 @@ class BFS(object):
                         if self.name == "5x5x5-edges-last-six" or self.name == "5x5x5-edges-last-six-centers":
 
                             if next_move in ("l", "l'", "l2", "r", "r'", "r2"):
-
                                 if not self.cube.UFBD_centers_vertical_bars():
-                                    #log.warning("%s would break centers in x-plane" % next_move)
+                                    continue
+
+                        elif self.name in ("starting-states-5x5x5-step50", "starting-states-5x5x5-step51", "starting-states-5x5x5-step52", "starting-states-5x5x5-step53"):
+                            # dwalton
+
+                            if next_move in ("Uw2", "Dw2"):
+                                if not self.cube.LFRB_centers_horizontal_bars():
+                                    continue
+
+                            elif next_move in ("Lw2", "Rw2"):
+                                if not self.cube.UFBD_centers_vertical_bars():
+                                    continue
+
+                            elif next_move in ("Fw2", "Bw2"):
+                                if not self.cube.LR_centers_vertical_bars():
+                                    continue
+                                if not self.cube.UD_centers_horizontal_bars():
                                     continue
 
                         if self.use_edges_pattern:
