@@ -98,6 +98,7 @@ nohup.out
 starting-states*.txt
 builder-crunch-workq
 builder-next-workq
+builder555ss.py
 builder666ss.py
 *~
 *.compact
