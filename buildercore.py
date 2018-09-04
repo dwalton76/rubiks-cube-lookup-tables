@@ -6,7 +6,7 @@ from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555, edges_555
+from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555, edges_555, edges_recolor_pattern_555, wings_for_edges_pattern_555
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
 from threading import Thread, Event
@@ -935,17 +935,17 @@ class BFS(object):
 
         to_write = []
         with open("%s.starting-states" % self.filename, 'r') as fh_read:
-          for line in fh_read:
-              (state, order) = line.strip().split("', '")
+            for line in fh_read:
+                (state, order) = line.strip().split("', '")
 
-              # remove the leading ('
-              state = state[2:]
-              state = state.replace('.', '')
+                # remove the leading ('
+                state = state[2:]
+                state = state.replace('.', '')
 
-              if self.store_as_hex:
-                  state = convert_state_to_hex(state)
+                if self.store_as_hex:
+                    state = convert_state_to_hex(state)
 
-              to_write.append("'%s'," % state)
+                to_write.append("'%s'," % state)
 
         with open("%s.starting-states.compact" % self.filename, 'w') as fh:
             to_write.sort()
@@ -1082,16 +1082,23 @@ class BFS(object):
 
         self.time_in_save = (dt.datetime.now() - start_time).total_seconds()
 
-    def get_starting_states(self, use_hex):
+    def get_starting_states(self, use_hex, use_edges_pattern):
         if self.starting_cube_states:
             foo = []
 
             for (state, state_type) in self.starting_cube_states:
                 if state_type == 'ULFRBD':
-                    state = ''.join(state.split()).strip().replace('.', '')
 
-                    if use_hex:
-                        state = convert_state_to_hex(state)
+                    if use_edges_pattern:
+                        self.cube.state = ["x"] + list(state)
+                        state = edges_recolor_pattern_555(self.cube.state[:])
+                        state = ''.join([state[index] for index in wings_for_edges_pattern_555])
+
+                    else:
+                        state = ''.join(state.split()).strip().replace('.', '')
+
+                        if use_hex:
+                            state = convert_state_to_hex(state)
 
                     foo.append("        '" + state + "'")
 
@@ -1119,7 +1126,7 @@ class BFS(object):
         }
 
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
-        starting_states = self.get_starting_states(self.store_as_hex)
+        starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
 
         print('''
 #class %s(LookupTableHashCostOnly):
