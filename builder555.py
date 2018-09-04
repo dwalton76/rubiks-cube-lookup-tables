@@ -9810,26 +9810,29 @@ step40 - pair 2-edges
 
 step50 - pair 2-edges
     - do not break up previous 2-edges
+    - it may be possible to combine these two phases...try and see
     ~6 moves?
 
 step60
-    - LR and FB centers to vertical bars
-    - UD centers to solved, vertical bars or horizontal bars
-    - move 4 paired edges to x-plane
-        12!/(4!*8!) = 495 states
-    - 70^4/(495 * 70^6) = 0.000 000 412
-        - there are three 70^4 prune tables so that will help
-        - if this is too slow move the 4 edges in another phase
-    ~12 moves?
+    - UD, LR and FB centers to bars or solved
+    - do not break up previous 4-edges
+    - 70^4/70^6 = 0.000 204
+    ~10 moves? It is ~12 to solve centers so 10 seems reasonable
 
 step70
     - solve LR centers (6 states)
     - D centers to vertical bars (6 states)
+    - FB centers to vertical bars (6 states)
+        - the centers are all already in bars so it is just
+          a matter of spinning them around the right way
+    - move 4 paired edges to x-plane
+        12!/(4!*8!) = 495 states
     - pair 2-edges at DL DR
-        midges 16 * 14 = 224
-        wings 16 * 15 * 14 * 13 = 43,680
-        224 * 43,680 = 9,784,320
-    - 9784320/(9784320 * 6 * 6) = 0.027
+        - midges 24 * 22 = 528
+        - wings 24 * 23 * 22 * 21 = 255,024
+        - 528 * 255,024 = 134,652,672
+        - will need to build a new 2-edge prune table to drive them specifically to DL DR
+    - 134652672/(134652672 * 495) = 0.002
     ~8 moves?
 
 step80
