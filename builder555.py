@@ -1150,8 +1150,8 @@ class Build555EdgesLastSixEdges(BFS):
             use_edges_pattern=True,
             legal_moves=(
                 "D2", "F2", "B2", "U", "U'", "U2",
-                "l", "l'", "l2",
-                "r", "r'", "r2",
+                "2L", "2L'", "2L2",
+                "2R", "2R'", "2R2",
             )
         )
 
@@ -1188,8 +1188,8 @@ class Build555EdgesLastSixCenters(BFS):
             . . . . .""", "ascii"),),
             legal_moves=(
                 "D2", "F2", "B2", "U", "U'", "U2",
-                "l", "l'", "l2",
-                "r", "r'", "r2",
+                "2L", "2L'", "2L2",
+                "2R", "2R'", "2R2",
             )
         )
 

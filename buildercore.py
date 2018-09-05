@@ -822,12 +822,15 @@ class BFS(object):
 
                         if self.name == "5x5x5-edges-last-six" or self.name == "5x5x5-edges-last-six-centers":
 
-                            if next_move in ("l", "l'", "l2", "r", "r'", "r2"):
+                            if next_move in ("2L", "2L'", "2L2", "2R", "2R'", "2R2"):
                                 if not self.cube.UFBD_centers_vertical_bars():
                                     continue
 
-                        elif self.name in ("starting-states-5x5x5-step50", "starting-states-5x5x5-step51", "starting-states-5x5x5-step52", "starting-states-5x5x5-step53"):
-                            # dwalton
+                        elif self.name in (
+                                "starting-states-5x5x5-step50",
+                                "starting-states-5x5x5-step51",
+                                "starting-states-5x5x5-step52",
+                                "starting-states-5x5x5-step53"):
 
                             if next_move in ("Uw2", "Dw2"):
                                 if not self.cube.LFRB_centers_horizontal_bars():

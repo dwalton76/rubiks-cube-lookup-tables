@@ -304,7 +304,7 @@ class Build444HighLowEdgesEdges(BFS):
              "Rw", "Rw'"),
 
             '4x4x4',
-            'lookup-table-4x4x4-step22-highlow-edges-edges.txt',
+            'lookup-table-4x4x4-step21-highlow-edges-edges.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -338,7 +338,7 @@ class Build444HighLowEdgesCenters(BFS):
              "Lw", "Lw'",
              "Rw", "Rw'"),
             '4x4x4',
-            'lookup-table-4x4x4-step21-highlow-edges-centers.txt',
+            'lookup-table-4x4x4-step22-highlow-edges-centers.txt',
             False, # store_as_hex
 
             # starting cubes
