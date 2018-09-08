@@ -85,6 +85,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     #else:
     #    exec_all_steps = False
     exec_all_steps = False
+    uppercase_paired_edges = "5x5x5-step50" in inputfile
 
     with open(inputfile, 'r') as fh_input:
 
@@ -140,7 +141,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
                     centers = ''.join([cube_state[x] for x in centers_444])
                 elif size == '5x5x5':
-                    state_for_edges = edges_recolor_pattern_555(cube_state[:])
+                    state_for_edges = edges_recolor_pattern_555(cube_state[:], uppercase_paired_edges=uppercase_paired_edges)
                     edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
                     centers = ''.join([cube_state[x] for x in centers_555])
                 else:

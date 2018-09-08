@@ -724,55 +724,88 @@ class Build555EdgesLastFourXPlane(BFS):
         )
 
 
-class StartingStates555Step41(BFS):
+# =================================
+# New edge pairing code starts here
+# =================================
+class StartingStates555Step40(BFS):
     """
-    Pair 2-edges anywhere
+    LR centers to horizontal bars or solved (4900 states)
+    Pair 2-edges at LU LD
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            'starting-states-5x5x5-step40',
+
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step40.txt',
+            False, # store_as_hex
+            (("""
+            . - - - .
+            U . . . -
+            U . . . -
+            U . . . -
+            . - - - .
+
+ . L L L .  . - - - .  . - - - .  . - - - .
+ - L L L -  . . . . .  - R R R -  - . . . -
+ - L L L -  . . . . .  - R R R -  - . . . -
+ - L L L -  . . . . .  - R R R -  - . . . -
+ . L L L .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            D . . . -
+            D . . . -
+            D . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves=(
+                "L2", "R2",
+                "2U2", "2D2",
+            )
+        )
+
+
+class Build555Step40(BFS):
+    """
+    LR centers to horizontal bars or solved (4900 states)
+    Pair 2-edges at LU LD
     """
 
     def __init__(self):
         BFS.__init__(self,
             '5x5x5-step41',
 
-            ("Fw", "Fw'", "Fw2",
-             "Bw", "Bw'", "Bw2",
-             "Lw", "Lw'", "Lw2",
-             "Rw", "Rw'", "Rw2",
-             "Uw", "Uw'", "Uw2",
-             "Dw", "Dw'", "Dw2",
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
             ),
 
             '5x5x5',
-            'starting-states-lookup-table-5x5x5-step41.txt',
+            'lookup-table-5x5x5-step40.txt',
             False, # store_as_hex
-            (("""
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- - . . . L  F . . . F  R . . . -  - . . . -
- - . . . L  F . . . F  R . . . -  - . . . -
- - . . . L  F . . . F  R . . . -  - . . . -
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""", "ascii"),),
+            (('.---.D...-D...-D...-.---..LLL.-LLL--LLL--LLL-.LLL..---.-....-....-.....---..---.-RRR--RRR--RRR-.---..---.-....-....-.....---..---.U...-U...-U...-.---.', 'ULFRBD'),
+             ('.---.D...-D...-D...-.---..LLL.-LLL--LLL--RRR-.LLL..---.-...--..........---..---.-LLL--RRR--RRR-.---..---......-....-...-.---..---.U...-U...-U...-.---.', 'ULFRBD'),
+             ('.---.D...-D...-D...-.---..LLL.-RRR--LLL--LLL-.LLL..---......-....-...-.---..---.-RRR--RRR--LLL-.---..---.-...--..........---..---.U...-U...-U...-.---.', 'ULFRBD'),
+             ('.---.U...-U...-U...-.---..LLL.-LLL--LLL--RRR-.LLL..---...........-...-.---..---.-RRR--RRR--LLL-.---..---.-...--...-......---..---.D...-D...-D...-.---.', 'ULFRBD'),
+             ('.---.U...-U...-U...-.---..LLL.-RRR--LLL--LLL-.LLL..---.-...-...........---..---.-LLL--RRR--RRR-.---..---......-...--...-.---..---.D...-D...-D...-.---.', 'ULFRBD'),
+             ('.---.U...-U...-U...-.---..LLL.-RRR--LLL--RRR-.LLL..---.-...-.....-...-.---..---.-LLL--RRR--LLL-.---..---......-...-......---..---.D...-D...-D...-.---.', 'ULFRBD')),
             use_edges_pattern=True
         )
 
 
 class Build555Step41(BFS):
     """
-    Pair 2-edges anywhere
+    Pair 2-edges at LU LD
     """
 
     def __init__(self):
-        from builder555ss import starting_states_step41
         BFS.__init__(self,
             '5x5x5-step41',
 
@@ -787,62 +820,76 @@ class Build555Step41(BFS):
             '5x5x5',
             'lookup-table-5x5x5-step41.txt',
             False, # store_as_hex
-            starting_states_step41,
-            use_edges_pattern=True
-        )
-
-
-class StartingStates555Step40(BFS):
-    """
-    Pair 4-edges anywhere
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-step40',
-
-            ("Fw", "Fw'", "Fw2",
-             "Bw", "Bw'", "Bw2",
-             "Lw", "Lw'", "Lw2",
-             "Rw", "Rw'", "Rw2",
-             "Uw", "Uw'", "Uw2",
-             "Dw", "Dw'", "Dw2",
-            ),
-
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step40.txt',
-            False, # store_as_hex
             (("""
             . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
+            U . . . -
+            U . . . -
+            U . . . -
             . - - - .
 
- . - - - .  . - - - .  . - - - .  . - - - .
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- . - - - .  . - - - .  . - - - .  . - - - .
+ . L L L .  . - - - .  . - - - .  . - - - .
+ - . . . -  . . . . .  - . . . -  - . . . -
+ - . . . -  . . . . .  - . . . -  - . . . -
+ - . . . -  . . . . .  - . . . -  - . . . -
+ . L L L .  . - - - .  . - - - .  . - - - .
 
             . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
+            D . . . -
+            D . . . -
+            D . . . -
             . - - - .""", "ascii"),),
             use_edges_pattern=True
         )
 
 
-class Build555Step40(BFS):
+class StartingStates555Step42(BFS):
     """
-    Pair 4-edges anywhere
+    LR centers to bars or solved
     """
 
     def __init__(self):
-        from builder555ss import starting_states_step40
         BFS.__init__(self,
-            '5x5x5-step40',
+            'starting-states-5x5x5-step42',
+
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step42.txt',
+            False, # store_as_hex
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),),
+            legal_moves=(
+                "L2", "R2",
+                "2U2", "2D2",
+            )
+        )
+
+
+class Build555Step42(BFS):
+    """
+    LR centers to horizontal bars or solved
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step42',
 
             ("Fw", "Fw'",
              "Bw", "Bw'",
@@ -853,186 +900,230 @@ class Build555Step40(BFS):
             ),
 
             '5x5x5',
-            'lookup-table-5x5x5-step40.txt',
+            'lookup-table-5x5x5-step42.txt',
             False, # store_as_hex
-            starting_states_step40,
-            use_edges_pattern=True
+            (('...............................LLL..LLL..LLL.....................................RRR..RRR..RRR........................................................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR.....................................LLL..RRR..RRR........................................................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR.....................................RRR..RRR..LLL........................................................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL.....................................LLL..RRR..RRR........................................................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL.....................................RRR..RRR..LLL........................................................', 'ULFRBD'),
+             ('...............................RRR..LLL..RRR.....................................LLL..RRR..LLL........................................................', 'ULFRBD'))
         )
 
 
-
-# =============================================================================
-# =============================================================================
 class StartingStates555Step50(BFS):
+    """
+    LR centers to horizontal bars or solved
+    FB centers to vertical bars or solved (4900 states)
+    pair 2-edges at RU RD
+    """
 
     def __init__(self):
         BFS.__init__(self,
             'starting-states-5x5x5-step50',
 
-            ("Rw", "Rw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-            ),
+            # illegal moves
+            (),
+
             '5x5x5',
             'starting-states-lookup-table-5x5x5-step50.txt',
-            True, # store_as_hex
+            False, # store_as_hex
             (("""
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
+            . - - - .
+            - . . . U
+            - . . . U
+            - . . . U
+            . - - - .
 
- . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . x x x .  . x x x .
- . L L L .  . F F F .  . x x x .  . x x x .
- . L L L .  . F F F .  . x x x .  . x x x .
- . . . . .  . . . . .  . . . . .  . . . . .
+ . - - - .  . - - - .  . R R R .  . - - - .
+ - L L L -  - F F F -  - R R R -  - B B B - 
+ - L L L -  - F F F -  - R R R -  - B B B - 
+ - L L L -  - F F F -  - R R R -  - B B B - 
+ . - - - .  . - - - .  . R R R .  . - - - .
 
-            . . . . .
-            . x x x .
-            . x x x .
-            . x x x .
-            . . . . .""", "ascii"),),
+            . - - - .
+            - . . . D
+            - . . . D
+            - . . . D
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves=(
+                "2R2", "2L2",
+                "F2", "B2",
+                "L2", "R2",
+                "2U2", "2D2",
+            )
         )
 
 
 class Build555Step50(BFS):
     """
-    All centers to bar patterns or solved
+    LR centers to horizontal bars or solved
+    FB centers to vertical bars or solved (4900 states)
+    pair 2-edges at RU RD
     """
 
     def __init__(self):
-        from builder555ss import starting_states_step50
+
         BFS.__init__(self,
             '5x5x5-step50',
 
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-            ),
+             # illegal moves
+             (),
 
             '5x5x5',
             'lookup-table-5x5x5-step50.txt',
-            True, # store_as_hex
-            starting_states_step50,
-        )
-
-
-class StartingStates555Step51(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            'starting-states-5x5x5-step51',
-
-            ("Rw", "Rw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-            ),
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step51.txt',
-            True, # store_as_hex
-            (("""
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . . . . .  . F F F .  . . . . .  . x x x .
- . . . . .  . F F F .  . . . . .  . x x x .
- . . . . .  . F F F .  . . . . .  . x x x .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . x x x .
-            . x x x .
-            . x x x .
-            . . . . .""", "ascii"),),
+            False, # store_as_hex
+            (('.---.-...D-...D-...D.---..---.-LLL--LLL--LLL-.---..---.-FFF--FFF--FFF-.---..RRR.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-BFB--BFB--BFB-.---..RRR.-LLL--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-BFB--BFB--BFB-.---..RRR.-RRR--RRR--LLL-.RRR..---.-FBF--FBF--FBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-BFF--BFF--BFF-.---..RRR.-LLL--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-BFF--BFF--BFF-.---..RRR.-LLL--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-BFF--BFF--BFF-.---..RRR.-RRR--RRR--LLL-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-BFF--BFF--BFF-.---..RRR.-RRR--RRR--LLL-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-FFB--FFB--FFB-.---..RRR.-LLL--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-FFB--FFB--FFB-.---..RRR.-LLL--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-FFB--FFB--FFB-.---..RRR.-RRR--RRR--LLL-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-FFB--FFB--FFB-.---..RRR.-RRR--RRR--LLL-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-FFF--FFF--FFF-.---..RRR.-LLL--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-LLL--LLL--RRR-.---..---.-FFF--FFF--FFF-.---..RRR.-RRR--RRR--LLL-.RRR..---.-BBB--BBB--BBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-BFB--BFB--BFB-.---..RRR.-LLL--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-BFB--BFB--BFB-.---..RRR.-RRR--RRR--LLL-.RRR..---.-FBF--FBF--FBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-BFF--BFF--BFF-.---..RRR.-LLL--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-BFF--BFF--BFF-.---..RRR.-LLL--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-BFF--BFF--BFF-.---..RRR.-RRR--RRR--LLL-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-BFF--BFF--BFF-.---..RRR.-RRR--RRR--LLL-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-FFB--FFB--FFB-.---..RRR.-LLL--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-FFB--FFB--FFB-.---..RRR.-LLL--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-FFB--FFB--FFB-.---..RRR.-RRR--RRR--LLL-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-FFB--FFB--FFB-.---..RRR.-RRR--RRR--LLL-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-FFF--FFF--FFF-.---..RRR.-LLL--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--LLL-.---..---.-FFF--FFF--FFF-.---..RRR.-RRR--RRR--LLL-.RRR..---.-BBB--BBB--BBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--RRR-.---..---.-BFB--BFB--BFB-.---..RRR.-LLL--RRR--LLL-.RRR..---.-FBF--FBF--FBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--RRR-.---..---.-BFF--BFF--BFF-.---..RRR.-LLL--RRR--LLL-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--RRR-.---..---.-BFF--BFF--BFF-.---..RRR.-LLL--RRR--LLL-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--RRR-.---..---.-FFB--FFB--FFB-.---..RRR.-LLL--RRR--LLL-.RRR..---.-BBF--BBF--BBF-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--RRR-.---..---.-FFB--FFB--FFB-.---..RRR.-LLL--RRR--LLL-.RRR..---.-FBB--FBB--FBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...D-...D-...D.---..---.-RRR--LLL--RRR-.---..---.-FFF--FFF--FFF-.---..RRR.-LLL--RRR--LLL-.RRR..---.-BBB--BBB--BBB-.---..---.-...U-...U-...U.---.', 'ULFRBD'),
+             ('.---.-...U-...U-...U.---..---.-LLL--LLL--LLL-.---..---.-BFB--BFB--BFB-.---..RRR.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.-...D-...D-...D.---.', 'ULFRBD'),
+             ('.---.-...U-...U-...U.---..---.-LLL--LLL--LLL-.---..---.-BFF--BFF--BFF-.---..RRR.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.-...D-...D-...D.---.', 'ULFRBD'),
+             ('.---.-...U-...U-...U.---..---.-LLL--LLL--LLL-.---..---.-BFF--BFF--BFF-.---..RRR.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.-...D-...D-...D.---.', 'ULFRBD'),
+             ('.---.-...U-...U-...U.---..---.-LLL--LLL--LLL-.---..---.-FFB--FFB--FFB-.---..RRR.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.-...D-...D-...D.---.', 'ULFRBD'),
+             ('.---.-...U-...U-...U.---..---.-LLL--LLL--LLL-.---..---.-FFB--FFB--FFB-.---..RRR.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.-...D-...D-...D.---.', 'ULFRBD')),
+            use_edges_pattern=True,
+            legal_moves=(
+                "F", "F'", "F2",
+                "B", "B'", "B2",
+                "L2",
+                "R", "R'", "R2",
+                "Lw2", "Rw2",
+                "2U2", "2D2",
+                "2L2", "2R2",
+            )
         )
 
 
 class Build555Step51(BFS):
     """
-    All centers to bar patterns or solved
+    pair 2-edges at RU RD
+
+    - midges 20 * 18 = 360
+    - wings 20 * 19 * 18 * 17 = 116,280
+    - 360 * 116,280 = 41,860,800
+    41,860,800 / 2 = 20,930,400
     """
 
+    # dwalton
     def __init__(self):
-        from builder555ss import starting_states_step51
 
         BFS.__init__(self,
             '5x5x5-step51',
 
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-            ),
+             # illegal moves
+             (),
 
             '5x5x5',
             'lookup-table-5x5x5-step51.txt',
-            True, # store_as_hex
-            starting_states_step51
+            False, # store_as_hex
+            (("""
+            . - - - .
+            - . . . U
+            - . . . U
+            - . . . U
+            . - - - .
+
+ . - - - .  . - - - .  . R R R .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . - 
+ - . . . -  - . . . -  - . . . -  - . . . - 
+ - . . . -  - . . . -  - . . . -  - . . . - 
+ . - - - .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            - . . . D
+            - . . . D
+            - . . . D
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves=(
+                "F", "F'", "F2",
+                "B", "B'", "B2",
+                "L2",
+                "R", "R'", "R2",
+                "Lw2", "Rw2",
+                "2U2", "2D2",
+                "2L2", "2R2",
+            )
         )
 
-
 class StartingStates555Step52(BFS):
+    """
+    LR centers to horizontal bars or solved
+    FB centers to bars or solved (4900 states)
+    """
 
     def __init__(self):
         BFS.__init__(self,
             'starting-states-5x5x5-step52',
 
-            ("Rw", "Rw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-            ),
+            # illegal moves
+            (),
+
             '5x5x5',
             'starting-states-lookup-table-5x5x5-step52.txt',
-            True, # store_as_hex
+            False, # store_as_hex
             (("""
             . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
+            . . . . .
+            . . . . .
+            . . . . .
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . . . . .  . x x x .  . . . . .
- . L L L .  . . . . .  . x x x .  . . . . .
- . L L L .  . . . . .  . x x x .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
-            . x x x .
-            . x x x .
-            . x x x .
+            . . . . .
+            . . . . .
+            . . . . .
             . . . . .""", "ascii"),),
+            legal_moves=(
+                "F2", "B2",
+                "2L2", "2R2",
+                "L2", "R2",
+                "2U2", "2D2",
+            )
         )
 
 
 class Build555Step52(BFS):
     """
-    All centers to bar patterns or solved
+    FB centers to bars or solved (4900 states)
     """
 
     def __init__(self):
-        from builder555ss import starting_states_step52
-
         BFS.__init__(self,
             '5x5x5-step52',
 
@@ -1046,72 +1137,48 @@ class Build555Step52(BFS):
 
             '5x5x5',
             'lookup-table-5x5x5-step52.txt',
-            True, # store_as_hex
-            starting_states_step52
+            False, # store_as_hex
+            (('...............................LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............BFB..BFB..BFB............LLL..RRR..RRR............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............BFB..BFB..BFB............RRR..RRR..LLL............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............BFF..BFF..BFF............LLL..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............BFF..BFF..BFF............LLL..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............BFF..BFF..BFF............RRR..RRR..LLL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............BFF..BFF..BFF............RRR..RRR..LLL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............FFB..FFB..FFB............LLL..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............FFB..FFB..FFB............LLL..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............FFB..FFB..FFB............RRR..RRR..LLL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............FFB..FFB..FFB............RRR..RRR..LLL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............FFF..FFF..FFF............LLL..RRR..RRR............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR............FFF..FFF..FFF............RRR..RRR..LLL............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............BFB..BFB..BFB............LLL..RRR..RRR............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............BFB..BFB..BFB............RRR..RRR..LLL............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............BFF..BFF..BFF............LLL..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............BFF..BFF..BFF............LLL..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............BFF..BFF..BFF............RRR..RRR..LLL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............BFF..BFF..BFF............RRR..RRR..LLL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............FFB..FFB..FFB............LLL..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............FFB..FFB..FFB............LLL..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............FFB..FFB..FFB............RRR..RRR..LLL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............FFB..FFB..FFB............RRR..RRR..LLL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............FFF..FFF..FFF............LLL..RRR..RRR............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL............FFF..FFF..FFF............RRR..RRR..LLL............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..RRR............BFB..BFB..BFB............LLL..RRR..LLL............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..RRR............BFF..BFF..BFF............LLL..RRR..LLL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..RRR............BFF..BFF..BFF............LLL..RRR..LLL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..RRR............FFB..FFB..FFB............LLL..RRR..LLL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..RRR............FFB..FFB..FFB............LLL..RRR..LLL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RRR..LLL..RRR............FFF..FFF..FFF............LLL..RRR..LLL............BBB..BBB..BBB...............................', 'ULFRBD'))
         )
 
 
-class StartingStates555Step53(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            'starting-states-5x5x5-step53',
-
-            ("Rw", "Rw'",
-             "Lw", "Lw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-            ),
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step53.txt',
-            True, # store_as_hex
-            (("""
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . x x x .  . x x x .
- . L L L .  . F F F .  . x x x .  . x x x .
- . L L L .  . F F F .  . x x x .  . x x x .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .""", "ascii"),),
-        )
 
 
-class Build555Step53(BFS):
-    """
-    All centers to bar patterns or solved
-    """
-
-    def __init__(self):
-        from builder555ss import starting_states_step53
-
-        BFS.__init__(self,
-            '5x5x5-step53',
-
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step53.txt',
-            True, # store_as_hex
-            starting_states_step53
-        )
 
 
 class Build555EdgesLastSixEdges(BFS):
@@ -1200,49 +1267,42 @@ brainstorm
 step10,20 - stage centers
     - 20 moves
 
-step40 - pair 4-edges
-    - solving any 2-edges anywhere
-        - 12!/(10!*2!) = 66 starting positions
+step40
+    - LR centers to horizontal bars or solved (4900 states)
+    - pair 2-edges at LU LD
         - midges 24 * 22 = 528
         - wings 24 * 23 * 22 * 21 = 255,024
         - 528 * 255,024 = 134,652,672
-        - It is actually this /2 am not sure why but have seen this pattern before
-            134,652,672 / 2 = 67326336
+        - It is actually this /2, I am not sure why but have seen this pattern before
+            134,652,672 / 2 = 67,326,336
+    ~7 moves?
 
-    - solving any 4-edges anywhere
-        - midges 24 * 22 * 20 * 18 = 190,080
-        - wings 24 * 23 * 22 * 21 * 20 * 19 * 18 *17 = 29,654,190,720
-        - 190,080 * 29,654,190,720 = 5,636,668,572,057,600
-        - Assume /2 here also 5,636,668,572,057,600 / 2 = 2,818,334,286,028,800
-        - 67326336/2818334286028800 = 0.000 000 023
-        - You can pick the 4 four edges with the lowest max() 2-edges cost
-          among the 6 combos of 2-edges you can make from the 4-edges. This might
-          be enough to make this feasible.
-
-    - if this is too slow then break this up by pairing 2-edges then another 2-edges
-    ~10 moves?
 
 step50
-    - UD, LR and FB centers to bars or solved
-    - do not break up previous 4-edges
-    - 70^4/70^6 = 0.000 204
-    ~10 moves? It is ~12 to solve centers so 10 seems reasonable
+    - FB centers to vertical bars or solved (4900 states)
+    - pair 2-edges at RU RD
+    - at the end of this stage to a L and R move to rotate those
+      horizontal bars to vertical.  This will also put the 4-edges
+      that are paired in the x-plane
+    ~9 moves?
 
 step60
     - solve LR centers (6 states)
-    - D centers to vertical bars (6 states)
-    - FB centers to vertical bars (6 states)
-        - the centers are all already in bars so it is just
-          a matter of spinning them around the right way
-    - move 4 paired edges to x-plane
-        12!/(4!*8!) = 495 states
+    - D centers to vertical bars
+    - U centers to solved or bars
+        - 4900 states
     - pair 2-edges at DL DR
-        - will need to build a new 2-edge prune table to drive them specifically to DL DR
-        - 67326336 states
-    - 67326336/(67326336 * 495 * 6 * 6 * 6) = 0.000 009
-    ~8 moves?
+        - 4-edges are paired and in x-plane so new math for 2-edges...
+            - midges 16 * 14 = 224
+            - wings 16 * 15 * 14 * 13 = 43680
+            - 224 * 43680 = 9,784,320
+            - 9,784,320/2 = 4,892,160
+    - 4,892,160/(4,892,160 * 4900 * 6) = 0.000 034
+    - (4,892,160 * 6)/(4,892,160 * 4900 * 6) = 0.000 204
+    ~10 moves?
 
-step70
+
+step80
     - solve UFBD centers
     - pair last 6-edges
     - this will use y-plane slices to keep 4 of the unpaired edges on side U, the
@@ -1253,5 +1313,5 @@ step70
     - 479001600/(479001600*4950) = 0.000 202
     ~14 moves?
 
-This would be reduce to 333 in 66 moves
+This would be reduce to 333 in ~65 moves
 '''

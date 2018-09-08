@@ -481,7 +481,7 @@ class BFS(object):
         CHARS_PER_STEP = 5
         MAX_STEPS = 20
 
-        if self.name.startswith("5x5x5-edges"):
+        if True or self.name.startswith("5x5x5-edges"):
             return 512
         else:
             return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
@@ -770,10 +770,7 @@ class BFS(object):
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
 
-                        if self.name in (
-                                "5x5x5-edges-last-four-x-plane",
-                            ):
-
+                        if self.name == "5x5x5-edges-last-four-x-plane":
                             centers = pattern[0:54]
                     else:
                         (state, steps_to_solve) = line.rstrip().split(':')
@@ -826,24 +823,20 @@ class BFS(object):
                                 if not self.cube.UFBD_centers_vertical_bars():
                                     continue
 
-                        elif self.name in (
-                                "starting-states-5x5x5-step50",
-                                "starting-states-5x5x5-step51",
-                                "starting-states-5x5x5-step52",
-                                "starting-states-5x5x5-step53"):
-
-                            if next_move in ("Uw2", "Dw2"):
-                                if not self.cube.LFRB_centers_horizontal_bars():
+                        # dwalton
+                        elif self.name == "starting-states-5x5x5-step50" or self.name == "starting-states-5x5x5-step52":
+                            if next_move in ("2U2", "2D2"):
+                                if not self.cube.FB_centers_horizontal_bars():
                                     continue
 
-                            elif next_move in ("Lw2", "Rw2"):
-                                if not self.cube.UFBD_centers_vertical_bars():
+                            if next_move in ("2R2", "2L2"):
+                                if not self.cube.FB_centers_vertical_bars():
                                     continue
 
-                            elif next_move in ("Fw2", "Bw2"):
-                                if not self.cube.LR_centers_vertical_bars():
-                                    continue
-                                if not self.cube.UD_centers_horizontal_bars():
+                        elif self.name == "5x5x5-step50":
+
+                            if next_move in ("2U2", "2D2"):
+                                if not self.cube.LR_centers_horizontal_bars():
                                     continue
 
                         if self.use_edges_pattern:
@@ -936,6 +929,17 @@ class BFS(object):
                     (cube_state_string, steps) = line.rstrip().split(':')
                     self.cube.state = list(cube_state_string)
                     #self.cube.print_cube()
+
+                # dwalton
+                if self.name == "starting-states-5x5x5-step50" or self.name == "starting-states-5x5x5-step52":
+                    self.cube.state = list(cube_state_string)
+
+                    if not self.cube.FB_centers_vertical_bars():
+                        continue
+
+                    if not self.cube.LR_centers_horizontal_bars():
+                        continue
+
                 to_write.append("             ('%s', 'ULFRBD')," % cube_state_string[1:])
 
                 for step in self.rotations:
@@ -1165,20 +1169,20 @@ class %s(LookupTable):
             self.state_targets,
             linecount=%d,
             max_depth=%d,
-            filesize=TBD)
+            filesize=%d)
         ''\'
         LookupTableHashCostOnly.__init__(
             self,
             parent,
             '%s',
             self.state_targets,
-            linecount=%d,
+            linecount=1,
             max_depth=%d,
             bucketcount=%d,
             filesize=%d)
         ''\'
 
-    def state(self):
+    def ida_heuristic(self, ida_threshold):
         parent_state = self.parent.state''' % (
     class_name,
     class_name,
@@ -1187,19 +1191,26 @@ class %s(LookupTable):
     self.filename,
     linecount,
     max_depth,
+    os.path.getsize(self.filename),
     self.filename.replace('.txt', '.hash-cost-only.txt'),
-    linecount,
     max_depth,
     next_prime.get(linecount, 0),
     next_prime.get(linecount, 0)+1, # +1 for the newline
     ))
 
         if self.store_as_hex:
-            print("        result = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
-            print("        return self.hex_format % int(result, 2)\n\n")
+            print("        state = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
+            print("        state = self.hex_format % int(state, 2)")
+
+        elif self.use_edges_pattern:
+            print("        state = edges_recolor_pattern_555(parent_state[:])")
+            print("        state = ''.join([state[index] for index in wings_for_edges_pattern_%s])" % self.size.replace('x', ''))
+
         else:
-            print("        result = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace('x', ''))
-            print("        return result\n\n")
+            print("        state = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace('x', ''))
+
+        print("        cost_to_goal = self.heuristic(state)")
+        print("        return (state, cost_to_goal)\n\n")
 
         #print("\n\n\n\n")
         #print("        self.lt_foo = %s(self)" % class_name)
@@ -1208,7 +1219,7 @@ class %s(LookupTable):
     def _code_gen_lookup_table_ida(self):
         class_name = type(self).__name__.replace('Build', 'LookupTableIDA')
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
-        starting_states = self.get_starting_states(self.store_as_hex)
+        starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
 
         print('''
 class %s(LookupTableIDA):
@@ -1237,7 +1248,7 @@ class %s(LookupTableIDA):
             max_depth=%d,
             filesize=%d)
 
-    def state(self):
+    def ida_heuristic(self, ida_threshold):
         parent_state = self.parent.state''' % (
     class_name,
     histogram,
@@ -1250,11 +1261,19 @@ class %s(LookupTableIDA):
     ))
 
         if self.store_as_hex:
-            print("        result = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
-            print("        return self.hex_format % int(result, 2)\n\n")
+            print("        lt_state = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
+            print("        lt_state = self.hex_format % int(lt_state, 2)\n\n")
+
+        elif self.use_edges_pattern:
+            print("        state = edges_recolor_pattern_555(parent_state[:])")
+            print("        edges_state = ''.join([state[index] for index in wings_for_edges_pattern_%s])" % self.size.replace('x', ''))
+            print("        lt_state = edges_state")
+
         else:
-            print("        result = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace('x', ''))
-            print("        return result\n\n")
+            print("        lt_state = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace('x', ''))
+
+        print("        cost_to_goal = max(foo_cost, bar_cost)")
+        print("        return (lt_state, cost_to_goal)\n\n")
 
     def code_gen(self):
         assert self.filename.startswith('lookup-table-'), "--code-gen only applies to BuildXYZ classes"
@@ -1262,7 +1281,7 @@ class %s(LookupTableIDA):
         if '0.txt' in self.filename:
             first_prune_table_filename = self.filename.replace('0.txt', '1.txt').replace('lookup-table', 'starting-states-lookup-table')
 
-            if os.path.exists(first_prune_table_filename):
+            if True or os.path.exists(first_prune_table_filename):
                 log.info("prune table %s does exist" % first_prune_table_filename)
                 self._code_gen_lookup_table_ida()
             else:
