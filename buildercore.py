@@ -833,7 +833,7 @@ class BFS(object):
                                 if not self.cube.FB_centers_vertical_bars():
                                     continue
 
-                        elif self.name == "5x5x5-step50":
+                        elif self.name == "5x5x5-step50" or self.name == "5x5x5-step52":
 
                             if next_move in ("2U2", "2D2"):
                                 if not self.cube.LR_centers_horizontal_bars():
