@@ -817,14 +817,7 @@ class BFS(object):
                             if (self.lt_centers_json[centers][next_move] + 1) > move_budget:
                                 continue
 
-                        if self.name == "5x5x5-edges-last-six" or self.name == "5x5x5-edges-last-six-centers":
-
-                            if next_move in ("2L", "2L'", "2L2", "2R", "2R'", "2R2"):
-                                if not self.cube.UFBD_centers_vertical_bars():
-                                    continue
-
-                        # dwalton
-                        elif self.name == "starting-states-5x5x5-step50" or self.name == "starting-states-5x5x5-step52":
+                        if self.name == "starting-states-5x5x5-step50" or self.name == "starting-states-5x5x5-step52":
                             if next_move in ("2U2", "2D2"):
                                 if not self.cube.FB_centers_horizontal_bars():
                                     continue
@@ -837,6 +830,42 @@ class BFS(object):
 
                             if next_move in ("2U2", "2D2"):
                                 if not self.cube.LR_centers_horizontal_bars():
+                                    continue
+
+                        elif self.name == "starting-states-5x5x5-step80":
+
+                            if next_move in ("2R2", "2L2"):
+                                if not self.cube.UD_centers_vertical_bars():
+                                    continue
+
+                            if next_move in ("2F2", "2B2"):
+                                if not self.cube.UD_centers_horizontal_bars():
+                                    continue
+
+                        elif self.name == "starting-states-5x5x5-step90":
+
+                            if next_move in ("2R2", "2L2"):
+                                if not self.cube.UD_centers_vertical_bars():
+                                    continue
+
+                                if self.cube.y_plane_has_DL_DR_edge():
+                                    continue
+
+                        elif self.name == "5x5x5-step92" or self.name == "5x5x5-step90":
+
+                            # Do not allow a slice move if it will break up the bars on UD
+                            if next_move in ("2L", "2L'", "2L2", "2R", "2R'", "2R2"):
+                                if not self.cube.UD_centers_vertical_bars():
+                                    continue
+
+                            elif next_move in ("2F", "2F'", "2F2", "2B", "2B'", "2B2"):
+                                if not self.cube.UD_centers_horizontal_bars():
+                                    continue
+
+                        elif self.name == "5x5x5-step100" or self.name == "5x5x5-step102":
+
+                            if next_move in ("2L", "2L'", "2L2", "2R", "2R'", "2R2"):
+                                if not self.cube.UFBD_centers_vertical_bars():
                                     continue
 
                         if self.use_edges_pattern:
@@ -924,13 +953,11 @@ class BFS(object):
             for line in fh_read:
                 if self.use_edges_pattern:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
-                    patterns.append(pattern)
                 else:
                     (cube_state_string, steps) = line.rstrip().split(':')
                     self.cube.state = list(cube_state_string)
                     #self.cube.print_cube()
 
-                # dwalton
                 if self.name == "starting-states-5x5x5-step50" or self.name == "starting-states-5x5x5-step52":
                     self.cube.state = list(cube_state_string)
 
@@ -939,6 +966,45 @@ class BFS(object):
 
                     if not self.cube.LR_centers_horizontal_bars():
                         continue
+
+                elif self.name == "starting-states-5x5x5-step80":
+                    self.cube.state = list(cube_state_string)
+
+                    if not self.cube.UD_centers_vertical_bars() and not self.cube.UD_centers_horizontal_bars():
+                        continue
+
+                elif self.name == "starting-states-5x5x5-step90":
+                    self.cube.state = list(cube_state_string)
+
+                    if self.cube.state[136] == "-" or self.cube.state[140] == "-":
+                        continue
+
+                    if not self.cube.sideD.west_edge_paired() or not self.cube.sideD.east_edge_paired():
+                        continue
+
+                    if not self.cube.U_centers_vertical_bars() and not self.cube.U_centers_horizontal_bars():
+                        continue
+
+                    if not self.cube.D_centers_vertical_bars():
+                        continue
+
+                elif self.name == "starting-states-5x5x5-step92":
+                    self.cube.state = list(cube_state_string)
+
+                    if not self.cube.U_centers_vertical_bars() and not self.cube.U_centers_horizontal_bars():
+                        continue
+
+                    if not self.cube.D_centers_vertical_bars():
+                        continue
+
+                    if not self.cube.LR_centers_vertical_bars():
+                        continue
+
+                    if not self.cube.FB_centers_vertical_bars():
+                        continue
+
+                if self.use_edges_pattern:
+                    patterns.append(pattern)
 
                 to_write.append("             ('%s', 'ULFRBD')," % cube_state_string[1:])
 
@@ -1145,6 +1211,7 @@ class BFS(object):
             67326336 : 67326361,
             165636900 : 165636907,
             239500800 : 239500847,
+            479001600: 479001629,
         }
 
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
@@ -1278,7 +1345,7 @@ class %s(LookupTableIDA):
     def code_gen(self):
         assert self.filename.startswith('lookup-table-'), "--code-gen only applies to BuildXYZ classes"
 
-        if '0.txt' in self.filename:
+        if True or '0.txt' in self.filename:
             first_prune_table_filename = self.filename.replace('0.txt', '1.txt').replace('lookup-table', 'starting-states-lookup-table')
 
             if True or os.path.exists(first_prune_table_filename):
