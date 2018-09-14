@@ -853,13 +853,10 @@ class BFS(object):
 
                         elif self.name == "5x5x5-step92" or self.name == "5x5x5-step90":
 
+                            # dwalton
                             # Do not allow a slice move if it will break up the bars on UD
                             if next_move in ("2L", "2L'", "2L2", "2R", "2R'", "2R2"):
                                 if not self.cube.UD_centers_vertical_bars():
-                                    continue
-
-                            elif next_move in ("2F", "2F'", "2F2", "2B", "2B'", "2B2"):
-                                if not self.cube.UD_centers_horizontal_bars():
                                     continue
 
                         elif self.name == "5x5x5-step100" or self.name == "5x5x5-step102":
@@ -982,22 +979,16 @@ class BFS(object):
                     if not self.cube.sideD.west_edge_paired() or not self.cube.sideD.east_edge_paired():
                         continue
 
-                    if not self.cube.U_centers_vertical_bars() and not self.cube.U_centers_horizontal_bars():
+                    if not self.cube.sideU.centers_solved() or not self.cube.sideD.centers_solved():
                         continue
 
-                    if not self.cube.D_centers_vertical_bars():
+                    if not self.cube.FB_centers_vertical_bars():
                         continue
 
                 elif self.name == "starting-states-5x5x5-step92":
                     self.cube.state = list(cube_state_string)
 
-                    if not self.cube.U_centers_vertical_bars() and not self.cube.U_centers_horizontal_bars():
-                        continue
-
-                    if not self.cube.D_centers_vertical_bars():
-                        continue
-
-                    if not self.cube.LR_centers_vertical_bars():
+                    if not self.cube.sideU.centers_solved() or not self.cube.sideD.centers_solved():
                         continue
 
                     if not self.cube.FB_centers_vertical_bars():

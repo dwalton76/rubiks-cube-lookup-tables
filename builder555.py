@@ -931,7 +931,8 @@ class Build555Step60(BFS):
 
 class StartingStates555Step70(BFS):
     """
-    FB centers to vertical bars
+    FB centers to vertical bars or solved
+    LR centers to solved
     """
 
     def __init__(self):
@@ -952,9 +953,9 @@ class StartingStates555Step70(BFS):
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . . . . .  . F F F .  . . . . .  . B B B .
- . . . . .  . F F F .  . . . . .  . B B B .
- . . . . .  . F F F .  . . . . .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
@@ -971,7 +972,8 @@ class StartingStates555Step70(BFS):
 
 class Build555Step70(BFS):
     """
-    FB centers to vertical bars
+    FB centers to vertical bars or solved
+    LR centers to solved
     """
 
     def __init__(self):
@@ -988,17 +990,18 @@ class Build555Step70(BFS):
              "D", "D'",
              "L", "L'",
              "R", "R'",
+             "Fw2", "Bw2",
             ),
 
             '5x5x5',
             'lookup-table-5x5x5-step70.txt',
             False, # store_as_hex
-            (('........................................................BFB..BFB..BFB.....................................FBF..FBF..FBF...............................', 'ULFRBD'),
-             ('........................................................BFF..BFF..BFF.....................................BBF..BBF..BBF...............................', 'ULFRBD'),
-             ('........................................................BFF..BFF..BFF.....................................FBB..FBB..FBB...............................', 'ULFRBD'),
-             ('........................................................FFB..FFB..FFB.....................................BBF..BBF..BBF...............................', 'ULFRBD'),
-             ('........................................................FFB..FFB..FFB.....................................FBB..FBB..FBB...............................', 'ULFRBD'),
-             ('........................................................FFF..FFF..FFF.....................................BBB..BBB..BBB...............................', 'ULFRBD'))
+            (('...............................LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB...............................', 'ULFRBD'))
         )
 
 
@@ -1062,6 +1065,7 @@ class Build555Step80(BFS):
              "R", "R'",
              "F", "F'",
              "B", "B'",
+             "Bw2", "Fw2",
             ),
 
             '5x5x5',
@@ -1083,9 +1087,8 @@ class Build555Step80(BFS):
 
 class StartingStates555Step90(BFS):
     """
-    - solve LR centers
-    - D centers to vertical bars
-    - U centers to solved or bars
+    - FB centers stay in vertical bars
+    - UD centers to solved
     - pair 2-edges at DL DR
     """
 
@@ -1107,9 +1110,9 @@ class StartingStates555Step90(BFS):
             . - - - .
 
  . - - - .  . - - - .  . - - - .  . - - - .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
  . L L L .  . - - - .  . R R R .  . - - - .
 
             . - - - .
@@ -1126,9 +1129,9 @@ class StartingStates555Step90(BFS):
             . - - - .
 
  . - - - .  . - - - .  . - - - .  . - - - .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
  . D D D .  . - - - .  . R R R .  . - - - .
 
             . - - - .
@@ -1145,9 +1148,9 @@ class StartingStates555Step90(BFS):
             . - - - .
 
  . - - - .  . - - - .  . - - - .  . - - - .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
  . L L L .  . - - - .  . D D D .  . - - - .
 
             . - - - .
@@ -1164,9 +1167,9 @@ class StartingStates555Step90(BFS):
             . - - - .
 
  . - - - .  . - - - .  . - - - .  . - - - .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
+ - . . . -  - F F F -  - . . . -  - B B B -
  . D D D .  . - - - .  . D D D .  . - - - .
 
             . - - - .
@@ -1189,10 +1192,9 @@ class StartingStates555Step90(BFS):
 
 class Build555Step90(BFS):
     """
-    solve LR centers (6 states)
-    D centers to vertical bars
-    U centers to solved or bars
-    FB centers stay in vertical bars
+    - FB centers stay in vertical bars
+    - UD centers to solved
+    - pair 2-edges at DL DR
     """
 
     def __init__(self):
@@ -1205,276 +1207,34 @@ class Build555Step90(BFS):
             '5x5x5',
             'lookup-table-5x5x5-step90.txt',
             False, # store_as_hex
-            (('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RUDUDRUDUDRUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBF--FBF--FBF-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBF--FBF--FBF-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.RDDULRDDULRDDUL.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBF--BBF--BBF-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.RUDDLRUDDLRUDDL.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBB--FBB--FBB-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.RRR..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDULDDDULDDDUL.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.RRR..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBF--BBF--BBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.RRR..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDDLDUDDLDUDDL.---.', 'ULFRBD'),
-             ('.---.-DDD--UUU--UUU-.---..---.-LLL--LLL--LLL-.RRR..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBB--FBB--FBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LUDUDLUDUDLUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LUDURLUDURLUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RUDUDRUDUDRUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DUDURDUDURDUDUR.---.', 'ULFRBD'),
-             ('.---.-DUD--DUD--DUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DUDUDDUDUDDUDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBF--FBF--FBF-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBF--FBF--FBF-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.RDDULRDDULRDDUL.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBF--BBF--BBF-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.LLL..---.-FBB--FBB--FBB-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.LLL..---.-BBF--BBF--BBF-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBB--FBB--FBB-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.RRR..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDULDDDULDDDUL.---.', 'ULFRBD'),
-             ('.---.-DUU--DUU--DUU-.---..---.-LLL--LLL--LLL-.RRR..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBF--BBF--BBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBF--FBF--FBF-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBF--FBF--FBF-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBF--BBF--BBF-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.LLL..---.-FBB--FBB--FBB-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.RUDDLRUDDLRUDDL.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.LLL..---.-BBF--BBF--BBF-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBB--FBB--FBB-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.RRR..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDDLDUDDLDUDDL.---.', 'ULFRBD'),
-             ('.---.-UUD--UUD--UUD-.---..---.-LLL--LLL--LLL-.RRR..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBB--FBB--FBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBF--FBF--FBF-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBF--FBF--FBF-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.RDDULRDDULRDDUL.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBF--BBF--BBF-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.RUDDLRUDDLRUDDL.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBB--FBB--FBB-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LUDDDLUDDDLUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LDDUDLDDUDLDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LDDURLDDURLDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LUDDRLUDDRLUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RDDUDRDDUDRDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RUDDDRUDDDRUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DDDURDDDURDDDUR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DUDDRDUDDRDUDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.RRR..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDULDDDULDDDUL.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.RRR..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBF--BBF--BBF-.---..---.DDDUDDDDUDDDDUD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.RRR..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DUDDLDUDDLDUDDL.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--DDD-.---..---.-LLL--LLL--LLL-.RRR..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBB--FBB--FBB-.---..---.DUDDDDUDDDDUDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.LLL..---.-FBF--FBF--FBF-.---..---.RDDDDRDDDDRDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LDDDDLDDDDLDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LDDDDLDDDDLDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.LDDDDLDDDDLDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.LDDDDLDDDDLDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.DDD..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.LLL..---.-BBB--BBB--BBB-.---..---.RDDDDRDDDDRDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBF--FBF--FBF-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFB--BFB--BFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBF--FBF--FBF-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-BFF--BFF--BFF-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-BBF--BBF--BBF-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.DDD..---.-FBB--FBB--FBB-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-BBF--BBF--BBF-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFB--FFB--FFB-.---..---.-RRR--RRR--RRR-.RRR..---.-FBB--FBB--FBB-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.DDD..---.-BBB--BBB--BBB-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
-             ('.---.-UUU--UUU--UUU-.---..---.-LLL--LLL--LLL-.LLL..---.-FFF--FFF--FFF-.---..---.-RRR--RRR--RRR-.RRR..---.-BBB--BBB--BBB-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD')),
+            (('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-BFB--BFB--BFB-.---..---.-...--...--...-.DDD..---.-FBF--FBF--FBF-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-BFB--BFB--BFB-.---..---.-...--...--...-.LLL..---.-FBF--FBF--FBF-.---..---.RDDDDRDDDDRDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-BFF--BFF--BFF-.---..---.-...--...--...-.DDD..---.-BBF--BBF--BBF-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-BFF--BFF--BFF-.---..---.-...--...--...-.DDD..---.-FBB--FBB--FBB-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-BFF--BFF--BFF-.---..---.-...--...--...-.RRR..---.-BBF--BBF--BBF-.---..---.LDDDDLDDDDLDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-BFF--BFF--BFF-.---..---.-...--...--...-.RRR..---.-FBB--FBB--FBB-.---..---.LDDDDLDDDDLDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-FFB--FFB--FFB-.---..---.-...--...--...-.DDD..---.-BBF--BBF--BBF-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-FFB--FFB--FFB-.---..---.-...--...--...-.DDD..---.-FBB--FBB--FBB-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-FFB--FFB--FFB-.---..---.-...--...--...-.RRR..---.-BBF--BBF--BBF-.---..---.LDDDDLDDDDLDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-FFB--FFB--FFB-.---..---.-...--...--...-.RRR..---.-FBB--FBB--FBB-.---..---.LDDDDLDDDDLDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-FFF--FFF--FFF-.---..---.-...--...--...-.DDD..---.-BBB--BBB--BBB-.---..---.LDDDRLDDDRLDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.DDD..---.-FFF--FFF--FFF-.---..---.-...--...--...-.LLL..---.-BBB--BBB--BBB-.---..---.RDDDDRDDDDRDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-BFB--BFB--BFB-.---..---.-...--...--...-.DDD..---.-FBF--FBF--FBF-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-BFB--BFB--BFB-.---..---.-...--...--...-.RRR..---.-FBF--FBF--FBF-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-BFF--BFF--BFF-.---..---.-...--...--...-.DDD..---.-BBF--BBF--BBF-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-BFF--BFF--BFF-.---..---.-...--...--...-.DDD..---.-FBB--FBB--FBB-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-BFF--BFF--BFF-.---..---.-...--...--...-.RRR..---.-BBF--BBF--BBF-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-BFF--BFF--BFF-.---..---.-...--...--...-.RRR..---.-FBB--FBB--FBB-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-FFB--FFB--FFB-.---..---.-...--...--...-.DDD..---.-BBF--BBF--BBF-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-FFB--FFB--FFB-.---..---.-...--...--...-.DDD..---.-FBB--FBB--FBB-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-FFB--FFB--FFB-.---..---.-...--...--...-.RRR..---.-BBF--BBF--BBF-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-FFB--FFB--FFB-.---..---.-...--...--...-.RRR..---.-FBB--FBB--FBB-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-FFF--FFF--FFF-.---..---.-...--...--...-.DDD..---.-BBB--BBB--BBB-.---..---.DDDDRDDDDRDDDDR.---.', 'ULFRBD'),
+             ('.---.-UUU--UUU--UUU-.---..---.-...--...--...-.LLL..---.-FFF--FFF--FFF-.---..---.-...--...--...-.RRR..---.-BBB--BBB--BBB-.---..---.DDDDDDDDDDDDDDD.---.', 'ULFRBD')),
             use_edges_pattern=True,
             legal_moves=(
                 "2L", "2L'", "2L2",
                 "2R", "2R'", "2R2",
-                "2F", "2F'", "2F2",
-                "2B", "2B'", "2B2",
                 "L2", "R2",
                 "F2", "B2",
                 "U", "U'", "U2",
@@ -1583,8 +1343,6 @@ class Build555Step91(BFS):
             legal_moves=(
                 "2L", "2L'", "2L2",
                 "2R", "2R'", "2R2",
-                "2F", "2F'", "2F2",
-                "2B", "2B'", "2B2",
                 "L2", "R2",
                 "F2", "B2",
                 "U", "U'", "U2",
@@ -1596,10 +1354,8 @@ class Build555Step91(BFS):
 
 class StartingStates555Step92(BFS):
     """
-    solve LR centers (6 states)
-    D centers to vertical bars
-    U centers to solved or bars
-    FB centers stay in vertical bars
+    - FB centers stay in vertical bars
+    - UD centers to solved
     """
 
     def __init__(self):
@@ -1620,9 +1376,9 @@ class StartingStates555Step92(BFS):
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
@@ -1640,10 +1396,8 @@ class StartingStates555Step92(BFS):
 
 class Build555Step92(BFS):
     """
-    solve LR centers (6 states)
-    D centers to vertical bars
-    U centers to solved or bars
-    FB centers stay in vertical bars
+    - FB centers stay in vertical bars
+    - UD centers to solved
     """
 
     def __init__(self):
@@ -1656,55 +1410,13 @@ class Build555Step92(BFS):
             '5x5x5',
             'lookup-table-5x5x5-step92.txt',
             False, # store_as_hex
-            (('......DDD..UUU..DDD............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............UDU..UDU..UDU......', 'ULFRBD'),
-             ('......DDD..UUU..DDD............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............UDU..UDU..UDU......', 'ULFRBD'),
-             ('......DDD..UUU..DDD............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............UDU..UDU..UDU......', 'ULFRBD'),
-             ('......DDD..UUU..DDD............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............UDU..UDU..UDU......', 'ULFRBD'),
-             ('......DDD..UUU..UUU............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......DDD..UUU..UUU............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......DDD..UUU..UUU............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......DDD..UUU..UUU............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......DDD..UUU..UUU............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......DDD..UUU..UUU............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......DDD..UUU..UUU............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......DDD..UUU..UUU............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......DUD..DUD..DUD............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............UDU..UDU..UDU......', 'ULFRBD'),
-             ('......DUD..DUD..DUD............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............UDU..UDU..UDU......', 'ULFRBD'),
-             ('......DUD..DUD..DUD............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............UDU..UDU..UDU......', 'ULFRBD'),
-             ('......DUD..DUD..DUD............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............UDU..UDU..UDU......', 'ULFRBD'),
-             ('......DUU..DUU..DUU............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......DUU..DUU..DUU............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......DUU..DUU..DUU............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......DUU..DUU..DUU............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......DUU..DUU..DUU............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......DUU..DUU..DUU............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......DUU..DUU..DUU............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......DUU..DUU..DUU............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......UUD..UUD..UUD............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......UUD..UUD..UUD............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......UUD..UUD..UUD............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......UUD..UUD..UUD............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......UUD..UUD..UUD............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......UUD..UUD..UUD............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......UUD..UUD..UUD............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......UUD..UUD..UUD............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......UUU..UUU..DDD............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......UUU..UUU..DDD............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......UUU..UUU..DDD............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......UUU..UUU..DDD............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......UUU..UUU..DDD............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......UUU..UUU..DDD............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......UUU..UUU..DDD............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............DDU..DDU..DDU......', 'ULFRBD'),
-             ('......UUU..UUU..DDD............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............UDD..UDD..UDD......', 'ULFRBD'),
-             ('......UUU..UUU..UUU............LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF............DDD..DDD..DDD......', 'ULFRBD'),
-             ('......UUU..UUU..UUU............LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF............DDD..DDD..DDD......', 'ULFRBD'),
-             ('......UUU..UUU..UUU............LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB............DDD..DDD..DDD......', 'ULFRBD'),
-             ('......UUU..UUU..UUU............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............DDD..DDD..DDD......', 'ULFRBD')),
+            (('......UUU..UUU..UUU.....................................BFB..BFB..BFB.....................................FBF..FBF..FBF............DDD..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................BFF..BFF..BFF.....................................BBF..BBF..BBF............DDD..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................FFB..FFB..FFB.....................................FBB..FBB..FBB............DDD..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................FFF..FFF..FFF.....................................BBB..BBB..BBB............DDD..DDD..DDD......', 'ULFRBD')),
             legal_moves=(
                 "2L", "2L'", "2L2",
                 "2R", "2R'", "2R2",
-                "2F", "2F'", "2F2",
-                "2B", "2B'", "2B2",
                 "L2", "R2",
                 "F2", "B2",
                 "U", "U'", "U2",
@@ -1862,18 +1574,23 @@ step60
     ~6 moves?
 
 step70
-    - FB centers to vertical bars
+    - FB centers to vertical bars (4900 states)
+    - LR centers solved (6 states)
     - At the end of this stage do a L and R to move the LR centers to vertical bars
     - LFRB centers will be vertical bars with 4-edges in x-plane
     ~7 moves?
+
+    TODO Trying to pair 2-edges in step90 is just brutal.  Can we do that here and put them
+    at BL BR?  Then when we do the L R move to put the 4-edges in x-plane the other 2-edges
+    will be at DL DR like we need.
 
 
 step80
     - UD centers to bars
     ~4 moves?
+    TODO could we skip this and do it as part of step100?
 
 step90
-    - solve LR centers (6 states)
     - pair 2-edges at DL DR
         - 4-edges are paired and in x-plane so new math for 2-edges...
             - midges 16 * 14 = 224
@@ -1899,6 +1616,18 @@ step100
     - centers prune table is 4950
     - 479001600/(479001600*4950) = 0.000 202
     ~14 moves?
+
+
+step100 pair 8-edges?
+    _ 6 UD states?
+    _ 4 FB states
+    - 8-edges
+        - midges 16 * 14 * 12 * 10 * 8 * 6 * 4 = 5,160,960
+        - wings 16 * 15 * 14 * 13 * 12 * 11 * 10 * 9 * 8 * 7 * 6 * 5 * 4 * 3 = 10,461,394,944,000
+       10461394944000 * 5160960 = 53990840850186240000 
+        NOT FEASIBVLE
+        
+
 
 This would be reduce to 333 in ~79 moves
 '''
