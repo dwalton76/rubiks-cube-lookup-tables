@@ -31,7 +31,7 @@ with open(filename, "r") as fh:
 
         for step in steps_to_scramble:
             cube.rotate(step)
+
         cube.print_cube()
         log.info("steps_to_scramble %s" % " ".join(steps_to_scramble))
         log.info("steps_to_solve    %s\n\n" % " ".join(steps_to_solve))
-        #break

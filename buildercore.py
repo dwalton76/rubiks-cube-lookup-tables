@@ -853,7 +853,6 @@ class BFS(object):
 
                         elif self.name == "5x5x5-step92" or self.name == "5x5x5-step90":
 
-                            # dwalton
                             # Do not allow a slice move if it will break up the bars on UD
                             if next_move in ("2L", "2L'", "2L2", "2R", "2R'", "2R2"):
                                 if not self.cube.UD_centers_vertical_bars():
