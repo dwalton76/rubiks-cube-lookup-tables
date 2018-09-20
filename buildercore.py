@@ -711,6 +711,7 @@ class BFS(object):
         if self.name in (
                 "5x5x5-edges-stage-first-four",
                 "5x5x5-edges-stage-second-four",
+                "5x5x5-edges-solve-second-four",
                 "5x5x5-edges-last-four-x-plane",
             ) and not self.lt_centers:
             self.lt_centers = {}
@@ -729,8 +730,12 @@ class BFS(object):
                     raise Exception()
 
             elif self.name == "5x5x5-edges-stage-second-four":
-                lt_centers_filename = "lookup-table-5x5x5-step101-ULFRBD-centers-solve-unstaged.txt"
-                self.lt_centers_max_depth = 7
+                lt_centers_filename = "lookup-table-5x5x5-step211-ULFRBD-centers-solve.txt"
+                self.lt_centers_max_depth = 9
+
+            elif self.name == "5x5x5-edges-solve-second-four":
+                lt_centers_filename = "lookup-table-5x5x5-step241-ULFRBD-centers-solve.txt"
+                self.lt_centers_max_depth = 9
 
             elif self.name == "5x5x5-edges-last-four-x-plane":
                 lt_centers_filename = "lookup-table-5x5x5-step500-ULFRBD-centers-solve-unstaged.txt"
@@ -747,7 +752,9 @@ class BFS(object):
             log.info("end loading %s" % lt_centers_filename)
 
             if (lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.5-deep" or
-                lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"):
+                lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep" or
+                lt_centers_filename == "lookup-table-5x5x5-step241-ULFRBD-centers-solve.txt" or
+                lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt"):
 
                 log.info("begin loading %s json" % lt_centers_filename)
                 with open(lt_centers_filename + ".json", "r") as fh:
@@ -770,7 +777,10 @@ class BFS(object):
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
 
-                        if self.name == "5x5x5-edges-last-four-x-plane":
+                        if self.name in (
+                                "5x5x5-edges-last-four-x-plane",
+                                "5x5x5-edges-solve-second-four",
+                            ):
                             centers = pattern[0:54]
                     else:
                         (state, steps_to_solve) = line.rstrip().split(':')
@@ -815,54 +825,8 @@ class BFS(object):
                         # our move budget then do not bother adding it to the workq
                         if centers and centers in self.lt_centers_json:
                             if (self.lt_centers_json[centers][next_move] + 1) > move_budget:
+                                pruned += 1
                                 continue
-
-                        if self.name == "starting-states-5x5x5-step50" or self.name == "starting-states-5x5x5-step52":
-                            if next_move in ("2U2", "2D2"):
-                                if not self.cube.FB_centers_horizontal_bars():
-                                    continue
-
-                            if next_move in ("2R2", "2L2"):
-                                if not self.cube.FB_centers_vertical_bars():
-                                    continue
-
-                        elif self.name == "5x5x5-step50" or self.name == "5x5x5-step52":
-
-                            if next_move in ("2U2", "2D2"):
-                                if not self.cube.LR_centers_horizontal_bars():
-                                    continue
-
-                        elif self.name == "starting-states-5x5x5-step80":
-
-                            if next_move in ("2R2", "2L2"):
-                                if not self.cube.UD_centers_vertical_bars():
-                                    continue
-
-                            if next_move in ("2F2", "2B2"):
-                                if not self.cube.UD_centers_horizontal_bars():
-                                    continue
-
-                        elif self.name == "starting-states-5x5x5-step90":
-
-                            if next_move in ("2R2", "2L2"):
-                                if not self.cube.UD_centers_vertical_bars():
-                                    continue
-
-                                if self.cube.y_plane_has_DL_DR_edge():
-                                    continue
-
-                        elif self.name == "5x5x5-step92" or self.name == "5x5x5-step90":
-
-                            # Do not allow a slice move if it will break up the bars on UD
-                            if next_move in ("2L", "2L'", "2L2", "2R", "2R'", "2R2"):
-                                if not self.cube.UD_centers_vertical_bars():
-                                    continue
-
-                        elif self.name == "5x5x5-step100" or self.name == "5x5x5-step102":
-
-                            if next_move in ("2L", "2L'", "2L2", "2R", "2R'", "2R2"):
-                                if not self.cube.UFBD_centers_vertical_bars():
-                                    continue
 
                         if self.use_edges_pattern:
                             workq_line = "%s:%s:%s %s" % (pattern, state, steps_to_scramble, next_move)
@@ -949,49 +913,14 @@ class BFS(object):
             for line in fh_read:
                 if self.use_edges_pattern:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
+                    self.cube.state = list(cube_state_string)
                 else:
                     (cube_state_string, steps) = line.rstrip().split(':')
                     self.cube.state = list(cube_state_string)
-                    #self.cube.print_cube()
 
-                if self.name == "starting-states-5x5x5-step50" or self.name == "starting-states-5x5x5-step52":
-                    self.cube.state = list(cube_state_string)
-
-                    if not self.cube.FB_centers_vertical_bars():
-                        continue
-
-                    if not self.cube.LR_centers_horizontal_bars():
-                        continue
-
-                elif self.name == "starting-states-5x5x5-step80":
-                    self.cube.state = list(cube_state_string)
-
-                    if not self.cube.UD_centers_vertical_bars() and not self.cube.UD_centers_horizontal_bars():
-                        continue
-
-                elif self.name == "starting-states-5x5x5-step90":
-                    self.cube.state = list(cube_state_string)
-
-                    if self.cube.state[136] == "-" or self.cube.state[140] == "-":
-                        continue
-
-                    if not self.cube.sideD.west_edge_paired() or not self.cube.sideD.east_edge_paired():
-                        continue
-
-                    if not self.cube.sideU.centers_solved() or not self.cube.sideD.centers_solved():
-                        continue
-
-                    if not self.cube.FB_centers_vertical_bars():
-                        continue
-
-                elif self.name == "starting-states-5x5x5-step92":
-                    self.cube.state = list(cube_state_string)
-
-                    if not self.cube.sideU.centers_solved() or not self.cube.sideD.centers_solved():
-                        continue
-
-                    if not self.cube.FB_centers_vertical_bars():
-                        continue
+                #if self.name == "starting-states-5x5x5-edges-solve-second-four":
+                #    if not self.cube.l4e_in_y_plane():
+                #        continue
 
                 if self.use_edges_pattern:
                     patterns.append(pattern)
@@ -1047,7 +976,10 @@ class BFS(object):
                 for line in fh_read:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
 
-                    if self.name == "5x5x5-edges-last-four-x-plane":
+                    if self.name in (
+                            "5x5x5-edges-last-four-x-plane",
+                            "5x5x5-edges-solve-second-four",
+                        ):
                         centers = pattern[0:54]
                         edges = pattern[54:]
                         if centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":

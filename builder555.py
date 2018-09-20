@@ -528,12 +528,153 @@ class Build555EdgesStageFirstFour(BFS):
         )
 
 
+class Build555ULFRBDCenterSolveSecondFour(BFS):
+    """
+    This is the centers table that is used for pruning when building
+    the Build555EdgesSolveSecondFour table.
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-stage-second-four-centers-solve',
+
+            # illegal moves
+            (),
+
+
+            '5x5x5',
+            'lookup-table-5x5x5-step241-ULFRBD-centers-solve.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),),
+            legal_moves = (
+                "U", "U'", "U2",
+                "D", "D'", "D2",
+                "L2", "F2", "R2", "B2",
+                "Lw2", "Fw2", "Rw2", "Bw2",
+            )
+        )
+
+
+# dwalton
+class Build555EdgesSolveSecondFour(BFS):
+    """
+    The first L4E group will be in the x-plane, they can move around
+    just do not un-L4E them.
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-solve-second-four',
+
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step240-solve-second-four-edges.txt',
+            False, # store_as_hex
+            (("""
+            . U U U .
+            - U U U -
+            - U U U -
+            - U U U -
+            . U U U .
+
+ . - - - .  . F F F .  . - - - .  . B B B .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . - - - .  . F F F .  . - - - .  . B B B .
+
+            . D D D .
+            - D D D -
+            - D D D -
+            - D D D -
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves = (
+                "U", "U'", "U2",
+                "D", "D'", "D2",
+                "L2", "F2", "R2", "B2",
+                "Lw2", "Fw2", "Rw2", "Bw2",
+            )
+        )
+
+
+'''
+class Build555ULFRBDCenterSolveStageSecondFour(BFS):
+    """
+    This is the centers table that is used for pruning when building
+    the Build555EdgesSolveSecondFour table.
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-stage-second-four-centers-solve',
+
+            ("Rw", "Rw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "L", "L'",
+             "F", "F'",
+             "R", "R'",
+             "B", "B'",
+
+             # These six moves do not buy us anything
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step211-ULFRBD-centers-solve.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),)
+        )
+
+
 class Build555EdgesStageSecondFour(BFS):
     """
     The first L4E group will be in the x-plane, they can move around
     just do not un-L4E them.
     """
-    # dwalton build the centers table for this and rebuild it
 
     def __init__(self):
         BFS.__init__(self,
@@ -547,7 +688,12 @@ class Build555EdgesStageSecondFour(BFS):
              "L", "L'",
              "F", "F'",
              "R", "R'",
-             "B", "B'"),
+             "B", "B'",
+
+             # These six moves do not buy us anything
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+            ),
             '5x5x5',
             'lookup-table-5x5x5-step210-stage-second-four-edges.txt',
             True, # store_as_hex
@@ -589,6 +735,7 @@ class Build555EdgesStageSecondFour(BFS):
             L D D D L
             . - - - .""", "ascii"))
         )
+'''
 
 
 # ==================================
@@ -641,7 +788,6 @@ class Build555ULFRBDCenterSolveUnstagedEdgesLastFourXPlane(BFS):
 
 class Build555EdgesLastFourXPlane(BFS):
 
-    # dwalton rebuild this with all 16 possible EO of the x-plane
     def __init__(self):
         BFS.__init__(self,
             '5x5x5-edges-last-four-x-plane',
@@ -680,7 +826,16 @@ class Build555EdgesLastFourXPlane(BFS):
 
 
 '''
-brainstorm
+brainstorm #1
 - can we stage all three L4E groups at once?
+    - 1st table would be allowed to break up centers
+    - 2nd table must keep centers staged, so we can build this deeper than the 1st table
+    - 3rd table must keep centers staged and LR in one of 432 states, so we can build deeper than the 2nd table
+    - combine all of these tables
+
 - can we solve the last two L4E groups at once? I think this is 1.6 billion entries so might be doable
+
+brainstorm #2
+- can we solve 1st L4E and stage 2nd L4E at the same time?
+    - I cannot think of a good way to do this
 '''
