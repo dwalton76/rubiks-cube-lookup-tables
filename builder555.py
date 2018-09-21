@@ -574,7 +574,53 @@ class Build555ULFRBDCenterSolveSecondFour(BFS):
         )
 
 
-# dwalton
+class Build555EdgesSolveSecondFourEdgesOnly(BFS):
+    """
+    The first L4E group will be in the x-plane, they can move around
+    just do not un-L4E them.
+    """
+
+    # dwalton
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-solve-second-four-edges-only',
+
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step242-solve-second-four-edges.txt',
+            False, # store_as_hex
+            (("""
+            . U U U .
+            - . . . -
+            - . . . -
+            - . . . -
+            . U U U .
+
+ . - - - .  . F F F .  . - - - .  . B B B .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . - - - .  . F F F .  . - - - .  . B B B .
+
+            . D D D .
+            - . . . -
+            - . . . -
+            - . . . -
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves = (
+                "U", "U'", "U2",
+                "D", "D'", "D2",
+                "L2", "F2", "R2", "B2",
+                "Lw2", "Fw2", "Rw2", "Bw2",
+            )
+        )
+
+
+
+
 class Build555EdgesSolveSecondFour(BFS):
     """
     The first L4E group will be in the x-plane, they can move around
@@ -826,16 +872,22 @@ class Build555EdgesLastFourXPlane(BFS):
 
 
 '''
-brainstorm #1
-- can we stage all three L4E groups at once?
-    - 1st table would be allowed to break up centers
-    - 2nd table must keep centers staged, so we can build this deeper than the 1st table
-    - 3rd table must keep centers staged and LR in one of 432 states, so we can build deeper than the 2nd table
-    - combine all of these tables
+brainstorm...
+Can we pair the first L4E group without staging first?
+    - This is probably not feasible but worth a try
+    - Pair 4-edges anywhere then move them to x, y or z planes via another phase
+        or
+    - If there are 4-edges that are spread over 8 or fewer edges then we could
+      use the "pair second L4E" table. We would have to do some pre-steps to move
+      those 8-edges to y-plane and z-plane in order to use the "pair second L4E"
+      table.
 
-- can we solve the last two L4E groups at once? I think this is 1.6 billion entries so might be doable
+Can we pair the second L4E group without staging first?
+    - I think this is feasible
+    - possible to use IDA here
 
-brainstorm #2
-- can we solve 1st L4E and stage 2nd L4E at the same time?
-    - I cannot think of a good way to do this
+Can we pair the 1st and 3rd L4E groups at the same time?
+    - Should be 40,320^2 or 1,625,702,400 entries
+    - I have tried this before and the IDA was slow, I think we
+      would have to prebuild all of these solutions. That table would be MASSIVE :(
 '''
