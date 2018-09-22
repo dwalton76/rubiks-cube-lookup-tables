@@ -711,8 +711,6 @@ class BFS(object):
         if self.name in (
                 "5x5x5-edges-stage-first-four",
                 "5x5x5-edges-stage-second-four",
-                "5x5x5-edges-solve-second-four",
-                "5x5x5-edges-last-four-x-plane",
             ) and not self.lt_centers:
             self.lt_centers = {}
             self.lt_centers_json = {}
@@ -732,14 +730,6 @@ class BFS(object):
             elif self.name == "5x5x5-edges-stage-second-four":
                 lt_centers_filename = "lookup-table-5x5x5-step211-ULFRBD-centers-solve.txt"
                 self.lt_centers_max_depth = 9
-
-            elif self.name == "5x5x5-edges-solve-second-four":
-                lt_centers_filename = "lookup-table-5x5x5-step241-ULFRBD-centers-solve.txt"
-                self.lt_centers_max_depth = 9
-
-            elif self.name == "5x5x5-edges-last-four-x-plane":
-                lt_centers_filename = "lookup-table-5x5x5-step500-ULFRBD-centers-solve-unstaged.txt"
-                self.lt_centers_max_depth = 6
 
             else:
                 raise Exception("Implement this %s" % self.name)
@@ -778,8 +768,7 @@ class BFS(object):
                         self.cube.state = list(state)
 
                         if self.name in (
-                                "5x5x5-edges-last-four-x-plane",
-                                "5x5x5-edges-solve-second-four",
+                                "5x5x5-edges-last-four-x-plane-FOOBAR",
                             ):
                             centers = pattern[0:54]
                     else:
@@ -918,10 +907,6 @@ class BFS(object):
                     (cube_state_string, steps) = line.rstrip().split(':')
                     self.cube.state = list(cube_state_string)
 
-                #if self.name == "starting-states-5x5x5-edges-solve-second-four":
-                #    if not self.cube.l4e_in_y_plane():
-                #        continue
-
                 if self.use_edges_pattern:
                     patterns.append(pattern)
 
@@ -977,8 +962,7 @@ class BFS(object):
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
 
                     if self.name in (
-                            "5x5x5-edges-last-four-x-plane",
-                            "5x5x5-edges-solve-second-four",
+                            "5x5x5-edges-last-four-x-plane-FOOBAR",
                         ):
                         centers = pattern[0:54]
                         edges = pattern[54:]
@@ -1267,7 +1251,8 @@ class %s(LookupTableIDA):
     def code_gen(self):
         assert self.filename.startswith('lookup-table-'), "--code-gen only applies to BuildXYZ classes"
 
-        if True or '0.txt' in self.filename:
+        # dwalton
+        if '0.txt' in self.filename:
             first_prune_table_filename = self.filename.replace('0.txt', '1.txt').replace('lookup-table', 'starting-states-lookup-table')
 
             if True or os.path.exists(first_prune_table_filename):
