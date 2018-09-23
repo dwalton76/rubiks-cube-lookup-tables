@@ -1122,7 +1122,7 @@ class Build555Step51(BFS):
 
             '5x5x5',
             'lookup-table-5x5x5-step51.txt',
-            True, # store_as_hex
+            False, # store_as_hex
             (("""
             . x x x .
             x . . . x
@@ -1264,23 +1264,23 @@ class StartingStates555Step50(BFS):
 
             # starting cubes
             (("""
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .
 
- . . . . .  . . . . .  . . . . .  . . . . .
+ . x x x .  . x x x .  . x x x .  . x x x .
  L L L L L  L F F F L  L R R R L  L B B B L
  L L L L L  L F F F L  L R R R L  L B B B L
  L L L L L  L F F F L  L R R R L  L B B B L
- . . . . .  . . . . .  . . . . .  . . . . .
+ . x x x .  . x x x .  . x x x .  . x x x .
 
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .""", "ascii"),),
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .""", "ascii"),),
             legal_moves = (
                 "L2", "R2", "F2", "B2",
                 "2L2", "2R2", "2F2", "2B2",
@@ -1314,42 +1314,43 @@ class Build555Step50(BFS):
             False, # store_as_hex
 
             # starting cubes
-            (('..............................LLLLLLLLLLLLLLL..........LBFBLLBFBLLBFBL..........LRRRLLRRRLLRRRL..........LFBFLLFBFLLFBFL..............................', 'ULFRBD'),
-             ('..............................LLLLLLLLLLLLLLL..........LBFFLLBFFLLBFFL..........LRRRLLRRRLLRRRL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LLLLLLLLLLLLLLL..........LBFFLLBFFLLBFFL..........LRRRLLRRRLLRRRL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LLLLLLLLLLLLLLL..........LFFBLLFFBLLFFBL..........LRRRLLRRRLLRRRL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LLLLLLLLLLLLLLL..........LFFBLLFFBLLFFBL..........LRRRLLRRRLLRRRL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LLLLLLLLLLLLLLL..........LFFFLLFFFLLFFFL..........LRRRLLRRRLLRRRL..........LBBBLLBBBLLBBBL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LBFBLLBFBLLBFBL..........LLRRLLLRRLLLRRL..........LFBFLLFBFLLFBFL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LBFBLLBFBLLBFBL..........LRRLLLRRLLLRRLL..........LFBFLLFBFLLFBFL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LBFFLLBFFLLBFFL..........LLRRLLLRRLLLRRL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LBFFLLBFFLLBFFL..........LLRRLLLRRLLLRRL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LBFFLLBFFLLBFFL..........LRRLLLRRLLLRRLL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LBFFLLBFFLLBFFL..........LRRLLLRRLLLRRLL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LFFBLLFFBLLFFBL..........LLRRLLLRRLLLRRL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LFFBLLFFBLLFFBL..........LLRRLLLRRLLLRRL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LFFBLLFFBLLFFBL..........LRRLLLRRLLLRRLL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LFFBLLFFBLLFFBL..........LRRLLLRRLLLRRLL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LFFFLLFFFLLFFFL..........LLRRLLLRRLLLRRL..........LBBBLLBBBLLBBBL..............................', 'ULFRBD'),
-             ('..............................LLLRLLLLRLLLLRL..........LFFFLLFFFLLFFFL..........LRRLLLRRLLLRRLL..........LBBBLLBBBLLBBBL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LBFBLLBFBLLBFBL..........LLRRLLLRRLLLRRL..........LFBFLLFBFLLFBFL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LBFBLLBFBLLBFBL..........LRRLLLRRLLLRRLL..........LFBFLLFBFLLFBFL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LBFFLLBFFLLBFFL..........LLRRLLLRRLLLRRL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LBFFLLBFFLLBFFL..........LLRRLLLRRLLLRRL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LBFFLLBFFLLBFFL..........LRRLLLRRLLLRRLL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LBFFLLBFFLLBFFL..........LRRLLLRRLLLRRLL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LFFBLLFFBLLFFBL..........LLRRLLLRRLLLRRL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LFFBLLFFBLLFFBL..........LLRRLLLRRLLLRRL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LFFBLLFFBLLFFBL..........LRRLLLRRLLLRRLL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LFFBLLFFBLLFFBL..........LRRLLLRRLLLRRLL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LFFFLLFFFLLFFFL..........LLRRLLLRRLLLRRL..........LBBBLLBBBLLBBBL..............................', 'ULFRBD'),
-             ('..............................LRLLLLRLLLLRLLL..........LFFFLLFFFLLFFFL..........LRRLLLRRLLLRRLL..........LBBBLLBBBLLBBBL..............................', 'ULFRBD'),
-             ('..............................LRLRLLRLRLLRLRL..........LBFBLLBFBLLBFBL..........LLRLLLLRLLLLRLL..........LFBFLLFBFLLFBFL..............................', 'ULFRBD'),
-             ('..............................LRLRLLRLRLLRLRL..........LBFFLLBFFLLBFFL..........LLRLLLLRLLLLRLL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LRLRLLRLRLLRLRL..........LBFFLLBFFLLBFFL..........LLRLLLLRLLLLRLL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LRLRLLRLRLLRLRL..........LFFBLLFFBLLFFBL..........LLRLLLLRLLLLRLL..........LBBFLLBBFLLBBFL..............................', 'ULFRBD'),
-             ('..............................LRLRLLRLRLLRLRL..........LFFBLLFFBLLFFBL..........LLRLLLLRLLLLRLL..........LFBBLLFBBLLFBBL..............................', 'ULFRBD'),
-             ('..............................LRLRLLRLRLLRLRL..........LFFFLLFFFLLFFFL..........LLRLLLLRLLLLRLL..........LBBBLLBBBLLBBBL..............................', 'ULFRBD'))
+            (('.xxx.x...xx...xx...x.xxx..xxx.LLLLLLLLLLLLLLL.xxx..xxx.LBFBLLBFBLLBFBL.xxx..xxx.LRRRLLRRRLLRRRL.xxx..xxx.LFBFLLFBFLLFBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLLLLLLLLLLLLL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LRRRLLRRRLLRRRL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLLLLLLLLLLLLL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LRRRLLRRRLLRRRL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLLLLLLLLLLLLL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LRRRLLRRRLLRRRL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLLLLLLLLLLLLL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LRRRLLRRRLLRRRL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLLLLLLLLLLLLL.xxx..xxx.LFFFLLFFFLLFFFL.xxx..xxx.LRRRLLRRRLLRRRL.xxx..xxx.LBBBLLBBBLLBBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LBFBLLBFBLLBFBL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LFBFLLFBFLLFBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LBFBLLBFBLLBFBL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LFBFLLFBFLLFBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LFFFLLFFFLLFFFL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LBBBLLBBBLLBBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LLLRLLLLRLLLLRL.xxx..xxx.LFFFLLFFFLLFFFL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LBBBLLBBBLLBBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LBFBLLBFBLLBFBL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LFBFLLFBFLLFBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LBFBLLBFBLLBFBL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LFBFLLFBFLLFBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LFFFLLFFFLLFFFL.xxx..xxx.LLRRLLLRRLLLRRL.xxx..xxx.LBBBLLBBBLLBBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLLLLRLLLLRLLL.xxx..xxx.LFFFLLFFFLLFFFL.xxx..xxx.LRRLLLRRLLLRRLL.xxx..xxx.LBBBLLBBBLLBBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLRLLRLRLLRLRL.xxx..xxx.LBFBLLBFBLLBFBL.xxx..xxx.LLRLLLLRLLLLRLL.xxx..xxx.LFBFLLFBFLLFBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLRLLRLRLLRLRL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LLRLLLLRLLLLRLL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLRLLRLRLLRLRL.xxx..xxx.LBFFLLBFFLLBFFL.xxx..xxx.LLRLLLLRLLLLRLL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLRLLRLRLLRLRL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LLRLLLLRLLLLRLL.xxx..xxx.LBBFLLBBFLLBBFL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLRLLRLRLLRLRL.xxx..xxx.LFFBLLFFBLLFFBL.xxx..xxx.LLRLLLLRLLLLRLL.xxx..xxx.LFBBLLFBBLLFBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD'),
+             ('.xxx.x...xx...xx...x.xxx..xxx.LRLRLLRLRLLRLRL.xxx..xxx.LFFFLLFFFLLFFFL.xxx..xxx.LLRLLLLRLLLLRLL.xxx..xxx.LBBBLLBBBLLBBBL.xxx..xxx.x...xx...xx...x.xxx.', 'ULFRBD')),
+            use_centers_then_edges=True
         )
 
 

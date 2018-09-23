@@ -85,7 +85,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     #else:
     #    exec_all_steps = False
     exec_all_steps = False
-    uppercase_paired_edges = "5x5x5-step50" in inputfile
+    uppercase_paired_edges = False
 
     with open(inputfile, 'r') as fh_input:
 
