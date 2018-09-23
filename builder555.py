@@ -1469,10 +1469,14 @@ class Build555EdgesSolveSecondFourEdgesOnly(BFS):
         )
 
 
-class Build555ULFRBDCenterSolveSecondFour(BFS):
+class StartingStates555ULFRBDCenterSolveSecondFour(BFS):
     """
     The first L4E group will be in the x-plane, they can move around
     just do not un-L4E them.
+
+    FB centers to solved
+    LR centers to vertical bars
+    UD centers to horizontal bars
     """
 
     def __init__(self):
@@ -1483,7 +1487,7 @@ class Build555ULFRBDCenterSolveSecondFour(BFS):
             (),
 
             '5x5x5',
-            'lookup-table-5x5x5-step242-ULFRBD-centers-solve.txt',
+            'starting-states-lookup-table-5x5x5-step242-ULFRBD-centers-solve.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -1506,6 +1510,71 @@ class Build555ULFRBDCenterSolveSecondFour(BFS):
             . D D D .
             . . . . .""", "ascii"),),
             legal_moves = (
+                "2F2", "2B2",
+                "U2", "D2", "L2", "R2",
+            )
+        )
+
+
+class Build555ULFRBDCenterSolveSecondFour(BFS):
+    """
+    The first L4E group will be in the x-plane, they can move around
+    just do not un-L4E them.
+
+    FB centers to solved
+    LR centers to vertical bars
+    UD centers to horizontal bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-solve-second-four-centers-only',
+
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step242-ULFRBD-centers-solve.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('......DDD..UUU..DDD............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............UUU..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..DDD............LLR..LLR..LLR............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............UUU..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..DDD............LLR..LLR..LLR............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............UUU..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..DDD............RLL..RLL..RLL............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............UUU..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..DDD............RLL..RLL..RLL............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............UUU..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..DDD............RLR..RLR..RLR............FFF..FFF..FFF............LRL..LRL..LRL............BBB..BBB..BBB............UUU..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............LLR..LLR..LLR............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............LLR..LLR..LLR............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............LLR..LLR..LLR............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............LLR..LLR..LLR............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............RLL..RLL..RLL............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............RLL..RLL..RLL............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............RLL..RLL..RLL............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............RLL..RLL..RLL............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............RLR..RLR..RLR............FFF..FFF..FFF............LRL..LRL..LRL............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......DDD..UUU..UUU............RLR..RLR..RLR............FFF..FFF..FFF............LRL..LRL..LRL............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............LLR..LLR..LLR............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............LLR..LLR..LLR............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............LLR..LLR..LLR............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............LLR..LLR..LLR............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............RLL..RLL..RLL............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............RLL..RLL..RLL............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............RLL..RLL..RLL............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............RLL..RLL..RLL............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............RLR..RLR..RLR............FFF..FFF..FFF............LRL..LRL..LRL............BBB..BBB..BBB............DDD..DDD..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..DDD............RLR..RLR..RLR............FFF..FFF..FFF............LRL..LRL..LRL............BBB..BBB..BBB............UUU..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..UUU............LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB............DDD..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..UUU............LLR..LLR..LLR............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............DDD..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..UUU............LLR..LLR..LLR............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............DDD..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..UUU............RLL..RLL..RLL............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB............DDD..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..UUU............RLL..RLL..RLL............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB............DDD..DDD..DDD......', 'ULFRBD'),
+             ('......UUU..UUU..UUU............RLR..RLR..RLR............FFF..FFF..FFF............LRL..LRL..LRL............BBB..BBB..BBB............DDD..DDD..DDD......', 'ULFRBD')),
+            legal_moves = (
                 "U", "U'", "U2",
                 "D", "D'", "D2",
                 "L2", "F2", "R2", "B2",
@@ -1514,12 +1583,14 @@ class Build555ULFRBDCenterSolveSecondFour(BFS):
         )
 
 
-
-
-class Build555EdgesSolveSecondFour(BFS):
+class StartingStates555EdgesSolveSecondFour(BFS):
     """
     The first L4E group will be in the x-plane, they can move around
     just do not un-L4E them.
+
+    FB centers to solved
+    LR centers to vertical bars
+    UD centers to horizontal bars
     """
 
     def __init__(self):
@@ -1530,7 +1601,7 @@ class Build555EdgesSolveSecondFour(BFS):
             (),
 
             '5x5x5',
-            'lookup-table-5x5x5-step240-solve-second-four-edges.txt',
+            'starting-states-lookup-table-5x5x5-step240-solve-second-four-edges.txt',
             False, # store_as_hex
             (("""
             . U U U .
@@ -1550,6 +1621,69 @@ class Build555EdgesSolveSecondFour(BFS):
             - D D D -
             - D D D -
             . D D D .""", "ascii"),),
+            legal_moves = (
+                "2F2", "2B2",
+                "U2", "D2", "L2", "R2",
+            )
+        )
+
+
+class Build555EdgesSolveSecondFour(BFS):
+    """
+    The first L4E group will be in the x-plane, they can move around
+    just do not un-L4E them.
+
+    FB centers to solved
+    LR centers to vertical bars
+    UD centers to horizontal bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-solve-second-four',
+
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step240-solve-second-four-edges.txt',
+            False, # store_as_hex
+            (('.UUU.-DDD--UUU--DDD-.UUU..---.-LLL--LLL--LLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRR--RRR--RRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--DDD-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--DDD-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--DDD-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--DDD-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--DDD-.UUU..---.-RLR--RLR--RLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRL--LRL--LRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-LLL--LLL--LLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRR--RRR--RRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-LLL--LLL--LLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRR--RRR--RRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-RLR--RLR--RLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRL--LRL--LRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-DDD--UUU--UUU-.UUU..---.-RLR--RLR--RLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRL--LRL--LRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-LLL--LLL--LLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRR--RRR--RRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-LLL--LLL--LLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRR--RRR--RRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-RLR--RLR--RLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRL--LRL--LRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--UUU-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--DDD-.UUU..---.-RLR--RLR--RLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRL--LRL--LRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--UUU-.UUU..---.-LLL--LLL--LLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRR--RRR--RRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--UUU-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--UUU-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--UUU-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--UUU-.UUU..---.-RLL--RLL--RLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRL--RRL--RRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--DDD-.DDD.', 'ULFRBD'),
+             ('.UUU.-UUU--UUU--UUU-.UUU..---.-RLR--RLR--RLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRL--LRL--LRL-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-DDD--DDD--DDD-.DDD.', 'ULFRBD')),
             use_edges_pattern=True,
             legal_moves = (
                 "U", "U'", "U2",

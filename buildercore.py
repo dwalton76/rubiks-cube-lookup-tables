@@ -910,6 +910,13 @@ class BFS(object):
                 if self.use_edges_pattern:
                     patterns.append(pattern)
 
+                if self.name == "5x5x5-edges-solve-second-four":
+                    if (self.cube.state[53] != "F" or
+                        self.cube.state[73] != "F" or
+                        self.cube.state[103] != "B" or
+                        self.cube.state[123] != "B"):
+                        continue
+
                 to_write.append("             ('%s', 'ULFRBD')," % cube_state_string[1:])
 
                 for step in self.rotations:
@@ -1116,6 +1123,7 @@ class BFS(object):
             24010000 : 24010031,
             67326336 : 67326361,
             165636900 : 165636907,
+            197568000 : 197568011,
             239500800 : 239500847,
             479001600: 479001629,
         }
