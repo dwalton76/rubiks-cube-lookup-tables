@@ -626,7 +626,6 @@ class Build555LRCenterStage432PairOneEdge(BFS):
              "R", "R'",
             ),
 
-            # dwalton
             '5x5x5',
             'lookup-table-5x5x5-step43-LR-centers-stage-432-pair-one-edge.txt',
             False, # store_as_hex
@@ -1182,7 +1181,7 @@ class Build555Step51(BFS):
 
             '5x5x5',
             'lookup-table-5x5x5-step51.txt',
-            False, # store_as_hex
+            True, # store_as_hex
             (("""
             . x x x .
             x . . . x
@@ -1424,7 +1423,7 @@ class Build555EdgesStageFirstFour(BFS):
             '5x5x5-edges-stage-first-four',
             (),
             '5x5x5',
-            'lookup-table-5x5x5-step200-stage-first-four-edges.txt',
+            'lookup-table-5x5x5-step100-stage-first-four-edges.txt',
             True, # store_as_hex
             (("""
             . - - - .
@@ -1485,7 +1484,7 @@ class Build555EdgesStageFirstFour(BFS):
         )
 
 
-class Build555EdgesSolveSecondFourEdgesOnly(BFS):
+class Build555EdgesYPlaneEdgesOnly(BFS):
     """
     The first L4E group will be in the x-plane, they can move around
     just do not un-L4E them.
@@ -1493,13 +1492,13 @@ class Build555EdgesSolveSecondFourEdgesOnly(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-solve-second-four-edges-only',
+            '5x5x5-edges-edges-y-plane-only',
 
             # illegal moves
             (),
 
             '5x5x5',
-            'lookup-table-5x5x5-step241-solve-second-four-edges-edges-only.txt',
+            'lookup-table-5x5x5-step201-edges-y-plane-edges-only.txt',
             False, # store_as_hex
             (("""
             . U U U .
@@ -1541,13 +1540,13 @@ class StartingStates555ULFRBDCenterSolveSecondFour(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-solve-second-four-centers-only',
+            '5x5x5-edges-y-plane-centers-only',
 
             # illegal moves
             (),
 
             '5x5x5',
-            'starting-states-lookup-table-5x5x5-step242-ULFRBD-centers-solve.txt',
+            'starting-states-lookup-table-5x5x5-step202-edges-y-plane-centers-only.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -1588,13 +1587,13 @@ class Build555ULFRBDCenterSolveSecondFour(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-solve-second-four-centers-only',
+            '5x5x5-edges-y-plane-centers-only',
 
             # illegal moves
             (),
 
             '5x5x5',
-            'lookup-table-5x5x5-step242-ULFRBD-centers-solve.txt',
+            'lookup-table-5x5x5-step202-edges-y-plane-centers-only.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -1643,7 +1642,7 @@ class Build555ULFRBDCenterSolveSecondFour(BFS):
         )
 
 
-class StartingStates555EdgesSolveSecondFour(BFS):
+class StartingStates555EdgesYPlane(BFS):
     """
     The first L4E group will be in the x-plane, they can move around
     just do not un-L4E them.
@@ -1655,13 +1654,13 @@ class StartingStates555EdgesSolveSecondFour(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-solve-second-four',
+            '5x5x5-edges-y-plane',
 
             # illegal moves
             (),
 
             '5x5x5',
-            'starting-states-lookup-table-5x5x5-step240-solve-second-four-edges.txt',
+            'starting-states-lookup-table-5x5x5-step200-edges-y-plane.txt',
             False, # store_as_hex
             (("""
             . U U U .
@@ -1688,7 +1687,7 @@ class StartingStates555EdgesSolveSecondFour(BFS):
         )
 
 
-class Build555EdgesSolveSecondFour(BFS):
+class Build555EdgesYPlane(BFS):
     """
     The first L4E group will be in the x-plane, they can move around
     just do not un-L4E them.
@@ -1700,13 +1699,13 @@ class Build555EdgesSolveSecondFour(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-solve-second-four',
+            '5x5x5-edges-y-plane',
 
             # illegal moves
             (),
 
             '5x5x5',
-            'lookup-table-5x5x5-step240-solve-second-four-edges.txt',
+            'lookup-table-5x5x5-step200-edges-y-plane.txt',
             False, # store_as_hex
             (('.UUU.-DDD--UUU--DDD-.UUU..---.-LLL--LLL--LLL-.---..FFF.-FFF--FFF--FFF-.FFF..---.-RRR--RRR--RRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--UUU-.DDD.', 'ULFRBD'),
              ('.UUU.-DDD--UUU--DDD-.UUU..---.-LLR--LLR--LLR-.---..FFF.-FFF--FFF--FFF-.FFF..---.-LRR--LRR--LRR-.---..BBB.-BBB--BBB--BBB-.BBB..DDD.-UUU--DDD--UUU-.DDD.', 'ULFRBD'),
@@ -1757,14 +1756,14 @@ class Build555EdgesSolveSecondFour(BFS):
 # ==================================
 # Solve last L4E with solved centers
 # ==================================
-class Build555EdgesLastFourXPlaneEdgesOnly(BFS):
+class Build555EdgesXPlaneEdgesOnly(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-last-four-x-plane-edges-only',
+            '5x5x5-edges-x-plane-edges-only',
              (), # illegal moves
             '5x5x5',
-            'lookup-table-5x5x5-step221-edges-last-four-x-plane-edges-only.txt',
+            'lookup-table-5x5x5-step301-edges-x-plane-edges-only.txt',
             False, # store_as_hex
             (("""
             . - - - .
@@ -1793,14 +1792,14 @@ class Build555EdgesLastFourXPlaneEdgesOnly(BFS):
         )
 
 
-class Build555EdgesLastFourXPlaneCentersOnly(BFS):
+class Build555EdgesXPlaneCentersOnly(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-last-four-x-plane-centers-only',
+            '5x5x5-edges-x-plane-centers-only',
              (), # illegal moves
             '5x5x5',
-            'lookup-table-5x5x5-step222-edges-last-four-x-plane-centers-only.txt',
+            'lookup-table-5x5x5-step302-edges-x-plane-centers-only.txt',
             False, # store_as_hex
             # starting cubes
             (("""
@@ -1829,14 +1828,14 @@ class Build555EdgesLastFourXPlaneCentersOnly(BFS):
         )
 
 
-class Build555EdgesLastFourXPlane(BFS):
+class Build555EdgesXPlane(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-last-four-x-plane',
+            '5x5x5-edges-x-plane',
              (), # illegal moves
             '5x5x5',
-            'lookup-table-5x5x5-step220-edges-last-four-x-plane.txt',
+            'lookup-table-5x5x5-step300-edges-x-plane.txt',
             False, # store_as_hex
 
             (("""
@@ -1867,31 +1866,32 @@ class Build555EdgesLastFourXPlane(BFS):
 
 
 '''
-1st L4E brainstorm...
-Can we pair the first L4E group without staging first?
-    - If there are 4-edges that are spread over 8 or fewer edges then we could
-      use the "pair second L4E" table. We would have to do some pre-steps to move
-      those 8-edges to y-plane and z-plane in order to use the "pair second L4E"
-      table.
-    - No idea how many steps this would take..would not need centers solved though just
-        - vertical bar LR
-        - vertical bar FB
-        - UD can be anything
-        - This would allow us to use the 2nd L4E table
-        ~5 moves??
+TODO
 
-or
-
-# dwalton do this
-- Do not solve the centers instead do:
-    - LR centers to one of 432 states solveable without L L' R R'
-    - FB centers staged
-        - can we do this without staging these centers?
+Getting LR and FB centers to vertical bars
+with L4E in x-plane needs two approaches
+------------------------------------------
+# centers are NOT solved
+- when we reduce LR to 432 we need to also split edges into high/low groups. This
+  will make step50 faster as it will have way more wing_str_combos to choose from.
         - (16!/(4!*4!*8!))^2 = 811,620,810,000
         - (16!/(8!*8!))^2 = 165,636,900 would be a "stage LR and FB" prune table
         - 165636900 / 811620810000 = 0.000 204
+- step50 will put LR/FB centers in vertical bars and L4E in x-plane
+    - if there are 8-edges in high/low could we solve 4-edges in the x-plane here instead?
+      Probably not as this IDA is already slow.  That would be cool though.
 
-- then do
+# centers are solved...this will be the case for any larger cube using a fake_555
+- keep using the pre-built "stage L4E to x-plane while maintaining centers" table
+    - build a version of this that solves 4-edges?
+- keep trying solutions until we find one where at least 4-edges are oriented
+  so they can be solved without L L' R R'
+- today this code path brings the tables back to solved but we do not need that, we
+  only need LR/FB in vertical bars and UD can be anything.  We could save some moves
+  here.
+
+
+step50 notes:
     - LR and FB centers to vertical bars
     - UD centers to anything
     - stage the 1st L4E group to one of
@@ -1899,41 +1899,8 @@ or
         - outside the x-plane so we can use the "second L4E" table
         - which is better? Outside the x-plane would have many more goal
           states and would be more flexible.
-    - the edges table here is (12!/(8!*4!)) * (24!/(16!*8!)) or 364,058,145
-    - 364058145 / (364058145 * 432 * 4900) = 0.000 000 472 so slow but might be doable
+    - the edges table here is (12!/(8!*4!))^3 or 121,287,375
+    - 121287375/(121287375 * 432 * 4900) = 0.000 000 472 so slow but might be doable
         given the flexibility we have in picking which 4-edges to stage.
 
-
-2nd L4E brainstorm...
-Can we pair the second L4E group without staging first?
-    - use IDA
-    - centers prune table is pretty small, it goes 9-deep and averages 6.78 moves
-        176,400 states (4900 * 6 * 6)
-    - midge orientation will not change so only wings change
-        There should be 16*15*14*13*12*11*10*9 or 518,918,400 entries
-        I think this will average ~11.5 moves...building now on LJs machine
-
-        There will be 70 wing_str combos to choose from though so that will bring
-            down the realistic average.  Say we average ~10 for this.
-
-    - 518,918,400 / (518,918,400 * 176,400) = 0.000 005 so maybe slow but feasible
-    - Do we really need to solve the UD LR centers or can we bar them?
-        - if we are solving the 2nd L4E group then we need to:
-            - vertical bar LR
-            - horizontal bar UD
-            - solve FB
-            - let the 3rd L4E steps solve those centers.  The 3rd L4E will need to use IDA but that is an easy change.
-            ~12 moves?
-        - if we are solving the 1st L4E group then we need to
-            - horizontal bar UD
-            - horizontal bar FB...given move restrictions I do not think this is possible, we will have to solve FB
-            - LR can be anything
-            ~12 moves?
-
-So that would be:
-    17 moves for 1st L4E
-    12 moves for 2nd L4E
-    11 moves for 3rd L4E
-
-40 moves...if that happened I would be very happy, it takes 50 moves today
 '''
