@@ -6,10 +6,6 @@ import sys
 
 log = logging.getLogger(__name__)
 
-# TODO
-# - rebuild the step41 table on LJ's machine, it now is 2-edges anywhere
-#   with any orientation...maybe I started rebuilding and the counts are all the same
-#   Can't hurt but is low priority
 
 class Build555UDCenterStage(BFS):
     """
@@ -612,6 +608,70 @@ class Build555LRCenterStage432TCentersOnly(BFS):
              ('................................R...RLR...R..............F...FFF...F..............L...LRL...L..............F...FFF...F................................', 'ULFRBD'))
         )
 
+
+class Build555LRCenterStage432PairOneEdge(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LR-center-stage-432-pair-one-edge',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'",
+            ),
+
+            # dwalton
+            '5x5x5',
+            'lookup-table-5x5x5-step43-LR-centers-stage-432-pair-one-edge.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . U U U .
+
+ . - - - .  . F F F .  . - - - .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . F F F .
+
+ . - - - .  . U U U .  . - - - .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii")),
+
+            use_edges_pattern=True,
+        )
 
 
 class StartingStates555LRCenterStage432(BFS):
