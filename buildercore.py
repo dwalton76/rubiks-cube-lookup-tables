@@ -711,13 +711,12 @@ class BFS(object):
         if self.name in (
                 "5x5x5-edges-stage-first-four",
                 "5x5x5-edges-stage-second-four",
+                "5x5x5-edges-x-plane-with-solved-centers",
             ) and not self.lt_centers:
             self.lt_centers = {}
             self.lt_centers_json = {}
 
-            if self.name in (
-                    "5x5x5-edges-stage-first-four",
-                ):
+            if self.name == "5x5x5-edges-stage-first-four":
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
 
                 if lt_centers_filename.endswith("5-deep"):
@@ -730,6 +729,10 @@ class BFS(object):
             elif self.name == "5x5x5-edges-stage-second-four":
                 lt_centers_filename = "lookup-table-5x5x5-step211-ULFRBD-centers-solve.txt"
                 self.lt_centers_max_depth = 9
+
+            elif self.name == "5x5x5-edges-x-plane-with-solved-centers":
+                lt_centers_filename = "lookup-table-5x5x5-step302-edges-x-plane-centers-only.txt"
+                self.lt_centers_max_depth = 6
 
             else:
                 raise Exception("Implement this %s" % self.name)
@@ -767,9 +770,7 @@ class BFS(object):
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
 
-                        if self.name in (
-                                "5x5x5-edges-last-four-x-plane-FOOBAR",
-                            ):
+                        if self.name == "5x5x5-edges-x-plane-with-solved-centers":
                             centers = pattern[0:54]
                     else:
                         (state, steps_to_solve) = line.rstrip().split(':')
@@ -969,7 +970,7 @@ class BFS(object):
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
 
                     if self.name in (
-                            "5x5x5-edges-last-four-x-plane-FOOBAR",
+                            "5x5x5-edges-x-plane-with-solved-centers",
                         ):
                         centers = pattern[0:54]
                         edges = pattern[54:]
@@ -990,11 +991,19 @@ class BFS(object):
                         centers = centers.replace('.', '')
                         edges = edges.replace('.', '')
 
+                        if self.store_as_hex:
+                            centers = convert_state_to_hex(centers)
+                            edges = convert_state_to_hex(edges)
+
                     elif self.size == '5x5x5':
                         centers = ''.join([self.cube.state[x] for x in centers_555])
                         edges = ''.join([self.cube.state[x] for x in edges_555])
                         centers = centers.replace('.', '')
                         edges = edges.replace('.', '')
+
+                        if self.store_as_hex:
+                            centers = convert_state_to_hex(centers)
+                            edges = convert_state_to_hex(edges)
 
                     else:
                         raise Exception("Add support for %s" % self.size)
