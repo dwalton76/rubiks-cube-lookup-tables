@@ -1902,6 +1902,51 @@ class Build555EdgesXPlaneWithSolvedCenters(BFS):
         )
 
 
+# dwalton
+class Build555EdgesZPlane(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-z-plane',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'",
+            ),
+            '5x5x5',
+            'lookup-table-5x5x5-step341-edges-z-plane.txt',
+            False, # store_as_hex
+
+            (("""
+            . - - - .
+            U . . . U
+            U . . . U
+            U . . . U
+            . - - - .
+
+ . L L L .  . - - - .  . R R R .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . L L L .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            D . . . -
+            D . . . -
+            D . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+'''
+'''
+
+
 
 '''
 TODO
