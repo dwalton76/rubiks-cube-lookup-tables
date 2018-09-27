@@ -673,6 +673,146 @@ class Build555LRCenterStage432PairOneEdge(BFS):
         )
 
 
+class Build555PairLastEightEdgesEdgesOnly(BFS):
+    """
+    Should be (8!^2)/2 812,851,200
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-pair-last-eight-edges-edges-only',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . U U U .
+            U . . . U
+            U . . . U
+            U . . . U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D . . . D
+            D . . . D
+            D . . . D
+            . D D D .""", "ascii"),)
+        )
+
+class Build555PairLastEightEdgesCentersOnly(BFS):
+    """
+    Should be 6 x 6 x 4900 = 176,400
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-pair-last-eight-edges-centers-only',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step502-pair-last-eight-edges-centers-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),)
+        )
+
+class Build555PairLastEightEdges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-pair-last-eight-edges',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step500-pair-last-eight-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . U U U .
+            U U U U U
+            U U U U U
+            U U U U U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D D D D D
+            D D D D D
+            D D D D D
+            . D D D .""", "ascii"),)
+        )
+
+
+
 class StartingStates555LRCenterStage432(BFS):
 
     def __init__(self):
@@ -1902,7 +2042,6 @@ class Build555EdgesXPlaneWithSolvedCenters(BFS):
         )
 
 
-# dwalton
 class Build555EdgesZPlane(BFS):
 
     def __init__(self):
@@ -1934,12 +2073,12 @@ class Build555EdgesZPlane(BFS):
  - . . . -  - . . . -  - . . . -  - . . . -
  - . . . -  - . . . -  - . . . -  - . . . -
  - . . . -  - . . . -  - . . . -  - . . . -
- . L L L .  . - - - .  . - - - .  . - - - .
+ . - - - .  . - - - .  . - - - .  . - - - .
 
             . - - - .
-            D . . . -
-            D . . . -
-            D . . . -
+            - . . . -
+            - . . . -
+            - . . . -
             . - - - .""", "ascii"),),
             use_edges_pattern=True,
         )
@@ -2007,9 +2146,11 @@ New thinking
     - could potentially EO the outer orbit of edges here to save
       some moves when using fake_444 to pair outer orbit of edges.
   12 moves
-    
+
 - use fake_444 to pair outer orbit of edges
   ~20 moves unless they were already EOed then it would be ~14
+  DID NOT WORK...it breaks up the t-centers :(  That kind of kills
+  this entire strategy
 
 then
 
@@ -2019,7 +2160,7 @@ then
 - pair last 8-edges, keep centers solved
     16*14*12*10*8*6*4 = 5,160,960 states for the wings
 
-or 
+or
 - use middle layer slices to pair 6-edges (x-plane, DL and DR), keep centers solved
     24*22*20*18*16*14 = 42,577,920
 
@@ -2029,4 +2170,162 @@ or
     This opens the door for also doing something with the corners in this phase? That
     could reduce the move count for solving 333.
 
+'''
+
+# brainstorm #3
+'''
+stage UD
+    10 moves
+
+stage LR to 432 but with 4-edges EO
+    - something to think about here is can we also but FB into one of 432 states? If
+      we did then in the next phase we might be able to do LR vertical, FB vertical
+      and paired to x-plane. That all depends on how much my math is off on the 3-edge
+      prune table though...need to figure that out first. We would need to rebuild the
+      PairOneEdge table that we use to ID the 4-edges in EO to also not use F F' B B'.
+      If we ended up doing this we would need to build 6 "EO remaining 8 edges via slices"
+      tables (one for each FB vertical bar pattern) but that is minor.
+
+      I gave this a quick try, when you restrict F F' B B' it reduces the number of edge
+      states by a good bit. It makes this phase very very slow.
+    11 moves
+
+LR to horizontal bars and pair 4-edges in z-plane
+    option 1 - do this in one phase
+    - A 2-edge prune table is
+        ((12*11)^2/2) is how many states the wings can be in.  The wings are in high/low groups
+            of 12 but there is a parity constraint thus the /2
+        12!/10! = 132 is how many states the midges can be in.  I thought this would have been 12!/(10!/2!) = 66 though.
+            I need to dig into this more, this makes a big difference.
+        ((12*11)^2/2) * (12!/10!) = 1,149,984
+        if I have a bug this would be
+        ((12*11)^2/2) * (12!/(10!*2!)) = 574,992
+
+    - A 3-edge prune table is
+        ((12*11*10)^2/2) * (12!/9!) = 1,149,984,000
+
+    - A 4-edge prune table is
+        ((12*11*10*9)^2/2) * (12!/8!) = 838,338,336,000
+
+    - So 838,338,336,000 * 432 = 362,162,161,152,000 states
+
+    Using a 2-edge pt
+    1149984/362162161152000 = 0.000 000 003
+
+    Using a 3-edge pt
+    1149984000/362162161152000 = 0.000 003
+    So this is feasible but it would take 1.2G of RAM to load this pt
+
+
+    option 2 - pair 4-edges then in another phase do the LR centers
+    Using a 2-edge pt
+    1149984/838338336000 = 0.000 001
+
+    A pt of just the wings for 4-edges would be
+    ((12*11*10*9)^2/2) = 70,567,200
+    70567200/838338336000 = 0.000 084
+
+    You would have to put these in the y-plane so that you could bar the LR centers (~5 moves)
+    then move these to the z-plane (2 moves).  You figure it was probably already 12 or 13 moves
+    to pair the 4-edges so you are looking at close to 20 moves here.
+
+    For now assume we do option 1, 1.2G of RAM isn't that crazy these days.
+    ~13 moves??? Educated guess based on xyzzy solves here:
+    http://cubesolvingprograms.freeforums.net/thread/37/results-5x5x5-fewest-moves-challenge
+
+EO remaining 8 edges via slices so they can be solved without L L' R R' F F' B B'
+    - keep z-plane edges paired
+    - keep LR in horiztonal bars
+    - keep UD and FB staged
+    - midges can be in (2^8)/2 = 128 states
+    - wings can be in 16!/(8!*8!) = 12,870 states
+        once F F' B B' are restricted can we get to all 12,870 states?
+        # dwalton figure this out next
+    - 128 * 12,870 = 1,647,360
+    - We will need to prebuild this table as it will require unstaging the UD FB centers
+      This will be similar to how the "stage L4E" tables were built
+    - legal moves
+        F F' F2
+        B B' B2
+        L2 R2 U2 B2
+
+        Uw2 Dw2
+        Lw2 Rw2
+
+        2U2 2D2
+        2L 2L' 2L2
+        2R 2R' 2R2
+        3L 3L' 3L2  ?? This would complicate things as the center squares would move. Would that
+            really hurt anything though? It would make the solution short and you can always rotate
+            the entire cube to get the center squares back in place. One downside is there is no way
+            for say a 7x7x7 to slice the 3 layers in the middle in one move. You have to do 2 moves
+            plus a rotate to do that for 7x7x7.
+
+            It is probably worth building the table with/without this to see how much difference it makes
+            and then decide whether or not to use it.
+
+            If we dot NOT use this then the orientation of the midges would never change so at that point
+            we only have to EO the wings relative to the midge orientation.  That becomes just 12,870 states!!
+            This sounds almost too good to be true.
+
+    - 8 moves?
+
+
+FB to vertical bars
+    - could we do this as part of the previous "EO 8-edges phase"?
+        1,647,360 * 4900 = 8,072,064,000 so we could not prebuild that
+        Would have to find a way to make the previous phase work via IDA...worry about this later
+    - if you made this IDA you could explore a bunch of options that setup the edges nicely for the final phase
+    5 moves
+
+L and R to put paired edges in x-plane and flip LR horizontal bars to vertical
+    2 moves
+
+At this point
+    - LR and FB in vertical bars
+    - x-plane edges solved
+    - 8-edges EOed
+~49 moves to here
+
+solve all centers and pair all edges
+    - 6 x 6 x 4900 x (8!^2)/2 = 143,386,951,680,000
+    - (8!^2)/2 = 812851200
+    - 812851200/143386951680000 = 0.000 005
+    ~15 moves??? Another educated guess based on xyzzy numbers
+
+~64 moves to reduce to 333
+
+'''
+
+
+# brainstorm #5
+'''
+- stage UD centers
+    10 moves
+
+- stage LR centers but do so such that
+    - LR centers are in one of 432 states that can be solved without L L' R R'
+    - There are at least 6-edges that can be solved without L L' R R'
+    11 moves
+
+- LR to vertical bars and pair 4-edges in x-plane
+    ~13 moves??? Educated guess based on xyzzy solves here:
+    http://cubesolvingprograms.freeforums.net/thread/37/results-5x5x5-fewest-moves-challenge
+
+- phase4
+    LR centers to solved
+    UD centers to bars
+    pair 2-edges at DL DR
+    14 moves??
+
+At this point LR solved, UD bars, FB staged and there are 6-edges unpaired in y-plane and UL UR
+    ~48 moves
+
+Need to get FB centers to vertical bars but this will be tricky since we cannot move paired edges out of x-plane
+    ~10 moves?
+
+Pair the last 6-edges and solve UD FB centers
+    ~18 moves
+
+~76 moves to reduce to 333 yuck!!
 '''
