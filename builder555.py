@@ -808,7 +808,8 @@ class Build555PairLastEightEdges(BFS):
             D D D D D
             D D D D D
             D D D D D
-            . D D D .""", "ascii"),)
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True
         )
 
 
@@ -2042,11 +2043,14 @@ class Build555EdgesXPlaneWithSolvedCenters(BFS):
         )
 
 
-class Build555EdgesZPlane(BFS):
+class Build555EdgesZPlaneEdgesOnly(BFS):
+    """
+    Pair 4-edges in z-plane
+    """
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-z-plane',
+            '5x5x5-edges-z-plane-edges-only',
 
             # illegal moves
             ("Fw", "Fw'",
@@ -2059,7 +2063,7 @@ class Build555EdgesZPlane(BFS):
              "R", "R'",
             ),
             '5x5x5',
-            'lookup-table-5x5x5-step341-edges-z-plane.txt',
+            'lookup-table-5x5x5-step341-edges-z-plane-edges-only.txt',
             False, # store_as_hex
 
             (("""
@@ -2082,10 +2086,151 @@ class Build555EdgesZPlane(BFS):
             . - - - .""", "ascii"),),
             use_edges_pattern=True,
         )
-'''
-'''
 
 
+class StartingStates555EdgesZPlaneCentersOnly(BFS):
+    """
+    LR centers to horizontal bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-z-plane-centers-only',
+
+            # illegal moves
+            (),
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step342-edges-z-plane-centers-only.txt',
+            False, # store_as_hex
+
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),),
+            legal_moves=(
+                "L2", "R2", "2U2", "2D2",
+            )
+        )
+
+
+class Build555EdgesZPlaneCentersOnly(BFS):
+    """
+    LR centers to horizontal bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-z-plane-centers-only',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'",
+            ),
+            '5x5x5',
+            'lookup-table-5x5x5-step342-edges-z-plane-centers-only.txt',
+            False, # store_as_hex
+            (('...............................LLL..LLL..LLL.....................................RRR..RRR..RRR........................................................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR.....................................LLL..RRR..RRR........................................................', 'ULFRBD'),
+             ('...............................LLL..LLL..RRR.....................................RRR..RRR..LLL........................................................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL.....................................LLL..RRR..RRR........................................................', 'ULFRBD'),
+             ('...............................RRR..LLL..LLL.....................................RRR..RRR..LLL........................................................', 'ULFRBD'),
+             ('...............................RRR..LLL..RRR.....................................LLL..RRR..LLL........................................................', 'ULFRBD')),
+        )
+
+
+class StartingStates555EdgesZPlane(BFS):
+    """
+    LR centers to horizontal bars
+    Pair 4-edges in z-plane
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-z-plane',
+
+            # illegal moves
+            (),
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step340-edges-z-plane.txt',
+            False, # store_as_hex
+
+            (("""
+            . - - - .
+            U . . . U
+            U . . . U
+            U . . . U
+            . - - - .
+
+ . L L L .  . - - - .  . R R R .  . - - - .
+ - L L L -  - . . . -  - R R R -  - . . . -
+ - L L L -  - . . . -  - R R R -  - . . . -
+ - L L L -  - . . . -  - R R R -  - . . . -
+ . L L L .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            D . . . D
+            D . . . D
+            D . . . D
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves=(
+                "L2", "R2", "2U2", "2D2",
+            )
+        )
+
+
+
+class Build555EdgesZPlane(BFS):
+    """
+    LR centers to horizontal bars
+    Pair 4-edges in z-plane
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-z-plane',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'",
+            ),
+            '5x5x5',
+            'lookup-table-5x5x5-step340-edges-z-plane.txt',
+            False, # store_as_hex
+            (('.---.D...UD...UD...U.---..LLL.-LLL--LLL--LLL-.LLL..---.-...--...--...-.---..RRR.-RRR--RRR--RRR-.RRR..---.-...--...--...-.---..---.U...DU...DU...D.---.', 'ULFRBD'),
+             ('.---.D...UD...UD...U.---..LLL.-LLL--LLL--RRR-.LLL..---.-...--...--...-.---..RRR.-LLL--RRR--RRR-.RRR..---.-...--...--...-.---..---.U...DU...DU...D.---.', 'ULFRBD'),
+             ('.---.D...UD...UD...U.---..LLL.-RRR--LLL--LLL-.LLL..---.-...--...--...-.---..RRR.-RRR--RRR--LLL-.RRR..---.-...--...--...-.---..---.U...DU...DU...D.---.', 'ULFRBD'),
+             ('.---.U...UU...UU...U.---..LLL.-LLL--LLL--RRR-.LLL..---.-...--...--...-.---..RRR.-RRR--RRR--LLL-.RRR..---.-...--...--...-.---..---.D...DD...DD...D.---.', 'ULFRBD'),
+             ('.---.U...UU...UU...U.---..LLL.-RRR--LLL--LLL-.LLL..---.-...--...--...-.---..RRR.-LLL--RRR--RRR-.RRR..---.-...--...--...-.---..---.D...DD...DD...D.---.', 'ULFRBD'),
+             ('.---.U...UU...UU...U.---..LLL.-RRR--LLL--RRR-.LLL..---.-...--...--...-.---..RRR.-LLL--RRR--LLL-.RRR..---.-...--...--...-.---..---.D...DD...DD...D.---.', 'ULFRBD')),
+            use_edges_pattern=True
+        )
 
 '''
 TODO
@@ -2191,45 +2336,21 @@ stage LR to 432 but with 4-edges EO
     11 moves
 
 LR to horizontal bars and pair 4-edges in z-plane
-    option 1 - do this in one phase
-    - A 2-edge prune table is
-        ((12*11)^2/2) is how many states the wings can be in.  The wings are in high/low groups
-            of 12 but there is a parity constraint thus the /2
-        12!/10! = 132 is how many states the midges can be in.  I thought this would have been 12!/(10!/2!) = 66 though.
-            I need to dig into this more, this makes a big difference.
-        ((12*11)^2/2) * (12!/10!) = 1,149,984
-        if I have a bug this would be
-        ((12*11)^2/2) * (12!/(10!*2!)) = 574,992
 
     - A 3-edge prune table is
-        ((12*11*10)^2/2) * (12!/9!) = 1,149,984,000
+        ((12*11*10)^2/2) is how many states the wings can be in.  The wings are in high/low groups
+            of 12 but there is a parity constraint thus the /2
+        ((12!/(9!*3!)) * 2) is how many states the midges can be in
+        ((12*11*10)^2/2) * ((12!/(9!*3!)) * 2) = 383,328,000
 
     - A 4-edge prune table is
-        ((12*11*10*9)^2/2) * (12!/8!) = 838,338,336,000
+        ((12*11*10*9)^2/2) * ((12!/(8!*4!)) * 2) = 69,861,528,000
 
-    - So 838,338,336,000 * 432 = 362,162,161,152,000 states
-
-    Using a 2-edge pt
-    1149984/362162161152000 = 0.000 000 003
+    - 69,861,528,000 * 432 = 30,180,180,096,000 states
 
     Using a 3-edge pt
-    1149984000/362162161152000 = 0.000 003
-    So this is feasible but it would take 1.2G of RAM to load this pt
+    383,328,000/30,180,180,096,000 = 0.000 012
 
-
-    option 2 - pair 4-edges then in another phase do the LR centers
-    Using a 2-edge pt
-    1149984/838338336000 = 0.000 001
-
-    A pt of just the wings for 4-edges would be
-    ((12*11*10*9)^2/2) = 70,567,200
-    70567200/838338336000 = 0.000 084
-
-    You would have to put these in the y-plane so that you could bar the LR centers (~5 moves)
-    then move these to the z-plane (2 moves).  You figure it was probably already 12 or 13 moves
-    to pair the 4-edges so you are looking at close to 20 moves here.
-
-    For now assume we do option 1, 1.2G of RAM isn't that crazy these days.
     ~13 moves??? Educated guess based on xyzzy solves here:
     http://cubesolvingprograms.freeforums.net/thread/37/results-5x5x5-fewest-moves-challenge
 
