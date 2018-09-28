@@ -453,6 +453,9 @@ class Build555ULFRBDTCenterSolve(BFS):
         )
 
 
+# =====================================
+# Stage LR centers to one of 432 states
+# =====================================
 class StartingStates555LRCenterStage432XCentersOnly(BFS):
 
     def __init__(self):
@@ -671,147 +674,6 @@ class Build555LRCenterStage432PairOneEdge(BFS):
 
             use_edges_pattern=True,
         )
-
-
-class Build555PairLastEightEdgesEdgesOnly(BFS):
-    """
-    Should be (8!^2)/2 812,851,200
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-pair-last-eight-edges-edges-only',
-
-            # illegal moves
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'", "Uw2",
-             "Dw", "Dw'", "Dw2",
-             "L", "L'",
-             "R", "R'",
-             "F", "F'",
-             "B", "B'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . U U U .
-            U . . . U
-            U . . . U
-            U . . . U
-            . U U U .
-
- . L L L .  . F F F .  . R R R .  . B B B .
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- . L L L .  . F F F .  . R R R .  . B B B .
-
-            . D D D .
-            D . . . D
-            D . . . D
-            D . . . D
-            . D D D .""", "ascii"),)
-        )
-
-class Build555PairLastEightEdgesCentersOnly(BFS):
-    """
-    Should be 6 x 6 x 4900 = 176,400
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-pair-last-eight-edges-centers-only',
-
-            # illegal moves
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'", "Uw2",
-             "Dw", "Dw'", "Dw2",
-             "L", "L'",
-             "R", "R'",
-             "F", "F'",
-             "B", "B'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step502-pair-last-eight-edges-centers-only.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . D D D .
-            . D D D .
-            . D D D .
-            . . . . .""", "ascii"),)
-        )
-
-class Build555PairLastEightEdges(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-pair-last-eight-edges',
-
-            # illegal moves
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'", "Uw2",
-             "Dw", "Dw'", "Dw2",
-             "L", "L'",
-             "R", "R'",
-             "F", "F'",
-             "B", "B'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step500-pair-last-eight-edges.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . U U U .
-            U U U U U
-            U U U U U
-            U U U U U
-            . U U U .
-
- . L L L .  . F F F .  . R R R .  . B B B .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- . L L L .  . F F F .  . R R R .  . B B B .
-
-            . D D D .
-            D D D D D
-            D D D D D
-            D D D D D
-            . D D D .""", "ascii"),),
-            use_edges_pattern=True
-        )
-
 
 
 class StartingStates555LRCenterStage432(BFS):
@@ -1301,228 +1163,10 @@ class Build555LRCenterStage432(BFS):
         )
 
 
-
-
-# =====================================
-# Staging L4E Edges with solved centers
-# =====================================
-class Build555EdgesStageFirstFour(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-stage-first-four',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step100-stage-first-four-edges.txt',
-            True, # store_as_hex
-            (("""
-            . - - - .
-            - U U U -
-            - U U U -
-            - U U U -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L L L L L  L F F F L  L R R R L  L B B B L
- L L L L L  L F F F L  L R R R L  L B B B L
- L L L L L  L F F F L  L R R R L  L B B B L
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - D D D -
-            - D D D -
-            - D D D -
-            . - - - .""", "ascii"),
-
-            ("""
-            . L L L .
-            - U U U -
-            - U U U -
-            - U U U -
-            . L L L .
-
- . - - - .  . L L L .  . - - - .  . L L L .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- . - - - .  . L L L .  . - - - .  . L L L .
-
-            . L L L .
-            - D D D -
-            - D D D -
-            - D D D -
-            . L L L .""", "ascii"),
-
-            ("""
-            . - - - .
-            L U U U L
-            L U U U L
-            L U U U L
-            . - - - .
-
- . L L L .  . - - - .  . L L L .  . - - - .
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- . L L L .  . - - - .  . L L L .  . - - - .
-
-            . - - - .
-            L D D D L
-            L D D D L
-            L D D D L
-            . - - - .""", "ascii"))
-        )
-
-
-# ==================================
-# Solve last L4E with solved centers
-# ==================================
-class Build555EdgesXPlaneEdgesOnly(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-x-plane-edges-only',
-             (), # illegal moves
-            '5x5x5',
-            'lookup-table-5x5x5-step301-edges-x-plane-edges-only.txt',
-            False, # store_as_hex
-            (("""
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""", "ascii"),),
-            use_edges_pattern=True,
-            legal_moves = (
-                "L2", "F2", "R2", "B2",
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-            )
-        )
-
-
-class Build555EdgesXPlaneCentersOnly(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-x-plane-centers-only',
-             (), # illegal moves
-            '5x5x5',
-            'lookup-table-5x5x5-step302-edges-x-plane-centers-only.txt',
-            False, # store_as_hex
-            # starting cubes
-            (("""
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .""", "ascii"),),
-            legal_moves = (
-                "L2", "F2", "R2", "B2",
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-            )
-        )
-
-
-class Build555EdgesXPlane(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-x-plane',
-             (), # illegal moves
-            '5x5x5',
-            'lookup-table-5x5x5-step300-edges-x-plane.txt',
-            False, # store_as_hex
-
-            (("""
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""", "ascii"),),
-            use_edges_pattern=True,
-            legal_moves = (
-                "L2", "F2", "R2", "B2",
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-            )
-        )
-
-
-class Build555EdgesXPlaneWithSolvedCenters(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-x-plane-with-solved-centers',
-             (), # illegal moves
-            '5x5x5',
-            'lookup-table-5x5x5-step310-edges-x-plane-with-solved-centers.txt',
-            False, # store_as_hex
-
-            (("""
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""", "ascii"),),
-            use_edges_pattern=True,
-            legal_moves = (
-                "L2", "F2", "R2", "B2",
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-            )
-        )
-
-
+# =============================
+# Pair first 4-edges in z-plane
+# LR centers to horizontal bars
+# =============================
 class Build555EdgesZPlaneEdgesOnly(BFS):
     """
     Pair 3-edges in z-plane
@@ -1679,7 +1323,6 @@ class StartingStates555EdgesZPlane(BFS):
         )
 
 
-
 class Build555EdgesZPlane(BFS):
     """
     LR centers to horizontal bars
@@ -1712,6 +1355,378 @@ class Build555EdgesZPlane(BFS):
             use_edges_pattern=True
         )
 
+# dwalton stopped here
+# ==============================================
+# EO remaining 8 edges via slices so they can be
+# solved without L L' R R' F F' B B'
+# ==============================================
+
+
+# ==============================================
+# Pair last 8-edges in y-plane and z-plane
+# Solve center (LR and FB will be vertical bars)
+# ==============================================
+class Build555PairLastEightEdgesEdgesOnly(BFS):
+    """
+    Should be (8!^2)/2 812,851,200
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-pair-last-eight-edges-edges-only',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . U U U .
+            U . . . U
+            U . . . U
+            U . . . U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D . . . D
+            D . . . D
+            D . . . D
+            . D D D .""", "ascii"),)
+        )
+
+
+class Build555PairLastEightEdgesCentersOnly(BFS):
+    """
+    Should be 6 x 6 x 4900 = 176,400
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-pair-last-eight-edges-centers-only',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step502-pair-last-eight-edges-centers-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),)
+        )
+
+class Build555PairLastEightEdges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-pair-last-eight-edges',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step500-pair-last-eight-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . U U U .
+            U U U U U
+            U U U U U
+            U U U U U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D D D D D
+            D D D D D
+            D D D D D
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True
+        )
+
+
+
+
+# ==========================
+# L4E last-four-edges tables
+# ==========================
+class Build555EdgesStageFirstFour(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-stage-first-four',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step100-stage-first-four-edges.txt',
+            True, # store_as_hex
+            (("""
+            . - - - .
+            - U U U -
+            - U U U -
+            - U U U -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - D D D -
+            - D D D -
+            - D D D -
+            . - - - .""", "ascii"),
+
+            ("""
+            . L L L .
+            - U U U -
+            - U U U -
+            - U U U -
+            . L L L .
+
+ . - - - .  . L L L .  . - - - .  . L L L .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . - - - .  . L L L .  . - - - .  . L L L .
+
+            . L L L .
+            - D D D -
+            - D D D -
+            - D D D -
+            . L L L .""", "ascii"),
+
+            ("""
+            . - - - .
+            L U U U L
+            L U U U L
+            L U U U L
+            . - - - .
+
+ . L L L .  . - - - .  . L L L .  . - - - .
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ . L L L .  . - - - .  . L L L .  . - - - .
+
+            . - - - .
+            L D D D L
+            L D D D L
+            L D D D L
+            . - - - .""", "ascii"))
+        )
+
+
+class Build555EdgesXPlaneEdgesOnly(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-x-plane-edges-only',
+             (), # illegal moves
+            '5x5x5',
+            'lookup-table-5x5x5-step301-edges-x-plane-edges-only.txt',
+            False, # store_as_hex
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves = (
+                "L2", "F2", "R2", "B2",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+            )
+        )
+
+
+class Build555EdgesXPlaneCentersOnly(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-x-plane-centers-only',
+             (), # illegal moves
+            '5x5x5',
+            'lookup-table-5x5x5-step302-edges-x-plane-centers-only.txt',
+            False, # store_as_hex
+            # starting cubes
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),),
+            legal_moves = (
+                "L2", "F2", "R2", "B2",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+            )
+        )
+
+
+class Build555EdgesXPlane(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-x-plane',
+             (), # illegal moves
+            '5x5x5',
+            'lookup-table-5x5x5-step300-edges-x-plane.txt',
+            False, # store_as_hex
+
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves = (
+                "L2", "F2", "R2", "B2",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+            )
+        )
+
+
+class Build555EdgesXPlaneWithSolvedCenters(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-x-plane-with-solved-centers',
+             (), # illegal moves
+            '5x5x5',
+            'lookup-table-5x5x5-step310-edges-x-plane-with-solved-centers.txt',
+            False, # store_as_hex
+
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves = (
+                "L2", "F2", "R2", "B2",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+            )
+        )
+
+
+
 # brainstorm #3
 '''
 stage UD
@@ -1739,6 +1754,8 @@ LR to horizontal bars and pair 4-edges in z-plane
     ~13 moves??? Educated guess based on xyzzy solves here:
     http://cubesolvingprograms.freeforums.net/thread/37/results-5x5x5-fewest-moves-challenge
 
+
+# dwalton
 EO remaining 8 edges via slices so they can be solved without L L' R R' F F' B B'
     - keep z-plane edges paired
     - keep LR in horiztonal bars
@@ -1746,7 +1763,7 @@ EO remaining 8 edges via slices so they can be solved without L L' R R' F F' B B
     - midges can be in (2^8)/2 = 128 states
     - wings can be in 16!/(8!*8!) = 12,870 states
         once F F' B B' are restricted can we get to all 12,870 states?
-        # dwalton figure this out next
+        # TODO figure this out next
     - 128 * 12,870 = 1,647,360
     - We will need to prebuild this table as it will require unstaging the UD FB centers
       This will be similar to how the "stage L4E" tables were built
