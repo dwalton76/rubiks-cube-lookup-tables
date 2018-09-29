@@ -1355,12 +1355,124 @@ class Build555EdgesZPlane(BFS):
             use_edges_pattern=True
         )
 
-# dwalton stopped here
+# dwalton stopped here...fix this it needs to have a L' and R applied
 # ==============================================
 # EO remaining 8 edges via slices so they can be
 # solved without L L' R R' F F' B B'
 # ==============================================
+class Build555LXPlaneYPlaneEdgesOrientEdgesOnly(BFS):
+    """
+    """
 
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-y-plane-edges-orient-edges-only',
+
+            # illegal moves
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step351-x-plane-y-plane-edges-orient-edges-only.txt',
+            False, # store_as_hex
+            (("""
+            . U x D .
+            D . . . U
+            x . . . x
+            U . . . D
+            . D x U .
+
+ . D x U .  . D x U .  . D x U .  . D x U .
+ D . . . U  U . . . D  D . . . U  U . . . D
+ x . . . x  x . . . x  x . . . x  x . . . x
+ U . . . D  D . . . U  U . . . D  D . . . U
+ . U x D .  . U x D .  . U x D .  . U x D .
+
+            . U x D .
+            D . . . U
+            x . . . x
+            U . . . D
+            . D x U .""", "ascii"),),
+
+            legal_moves=(
+                "F", "F'", "F2",
+                "B", "B'", "B2",
+                "L2", "R2", "U2", "B2",
+
+                "Uw2", "Dw2",
+                "Lw2", "Rw2",
+
+                "2U2", "2D2",
+                "2L", "2L'", "2L2",
+                "2R", "2R'", "2R2",
+            )
+        )
+
+class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-y-plane-edges-orient-centers-only',
+
+            # illegal moves
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step352-x-plane-y-plane-edges-orient-centers-only.txt',
+            False, # store_as_hex
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F F .  . . . . .  . F F F .
+ . . . . .  . F F F .  . . . . .  . F F F .
+ . . . . .  . F F F .  . . . . .  . F F F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .""", "ascii"),),
+
+            legal_moves=(
+                "F", "F'", "F2",
+                "B", "B'", "B2",
+                "L2", "R2", "U2", "B2",
+
+                "Uw2", "Dw2",
+                "Lw2", "Rw2",
+
+                "2U2", "2D2",
+                "2L", "2L'", "2L2",
+                "2R", "2R'", "2R2",
+            )
+        )
+
+
+'''
+            (("""
+            . U x D .
+            D . . . U
+            x . . . x
+            U . . . D
+            . D x U .
+
+ . D x U .  . D x U .  . D x U .  . D x U .
+ D . . . U  U . . . D  D . . . U  U . . . D
+ x . . . x  x . . . x  x . . . x  x . . . x
+ U . . . D  D . . . U  U . . . D  D . . . U
+ . U x D .  . U x D .  . U x D .  . U x D .
+
+            . U x D .
+            D . . . U
+            x . . . x
+            U . . . D
+            . D x U .""", "ascii"),),
+'''
 
 # ==============================================
 # Pair last 8-edges in y-plane and z-plane
@@ -1761,13 +1873,20 @@ EO remaining 8 edges via slices so they can be solved without L L' R R' F F' B B
     - keep z-plane edges paired
     - keep LR in horiztonal bars
     - keep UD and FB staged
-    - midges can be in (2^8)/2 = 128 states
+    - Two things for wings
+        - they must be split into high/low groups
+        - they must match the orienation of their midge
+
+    - midges can be in (2^8)/2 = 128 states...maybe???
+        I do not think we need to change the midge orientation. As long as we
+        are not slicing the middle layer it should not change.
+
     - wings can be in 16!/(8!*8!) = 12,870 states
-        once F F' B B' are restricted can we get to all 12,870 states?
-        # TODO figure this out next
-    - 128 * 12,870 = 1,647,360
+
     - We will need to prebuild this table as it will require unstaging the UD FB centers
-      This will be similar to how the "stage L4E" tables were built
+      This will be similar to how the "stage L4E" tables were built. We only need 12,870
+      entries though.
+
     - legal moves
         F F' F2
         B B' B2
@@ -1779,27 +1898,13 @@ EO remaining 8 edges via slices so they can be solved without L L' R R' F F' B B
         2U2 2D2
         2L 2L' 2L2
         2R 2R' 2R2
-        3L 3L' 3L2  ?? This would complicate things as the center squares would move. Would that
-            really hurt anything though? It would make the solution short and you can always rotate
-            the entire cube to get the center squares back in place. One downside is there is no way
-            for say a 7x7x7 to slice the 3 layers in the middle in one move. You have to do 2 moves
-            plus a rotate to do that for 7x7x7.
-
-            It is probably worth building the table with/without this to see how much difference it makes
-            and then decide whether or not to use it.
-
-            If we dot NOT use this then the orientation of the midges would never change so at that point
-            we only have to EO the wings relative to the midge orientation.  That becomes just 12,870 states!!
-            This sounds almost too good to be true.
 
     - 8 moves?
 
-
 FB to vertical bars
     - could we do this as part of the previous "EO 8-edges phase"?
-        1,647,360 * 4900 = 8,072,064,000 so we could not prebuild that
-        Would have to find a way to make the previous phase work via IDA...worry about this later
-    - if you made this IDA you could explore a bunch of options that setup the edges nicely for the final phase
+        12,870 * 4900 = 63,063,000
+      That is worth exploring
     5 moves
 
 L and R to put paired edges in x-plane and flip LR horizontal bars to vertical

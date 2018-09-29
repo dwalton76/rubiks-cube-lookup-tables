@@ -545,3 +545,62 @@ class Build444Reduce333(BFS):
              ('.DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU.', 'ULFRBD')),
             use_edges_pattern=True
         )
+
+# brainstorm 1
+'''
+phase1
+- stage UD centers
+
+phase2
+- LR centers to vertical bars
+- FB centers to vertical bars
+    63,063,000 LR FB states
+- pair 4-edges and place in x-plane
+- EO remaining 8-edges in y-plane and y-plane
+
+phase3
+- pair 8-edges
+- solve centers
+'''
+
+# brainstorm 2
+'''
+phase1
+- stage UD centers
+- stage FB centers
+- stage LR centers to one of 12 states
+- at least 4-edges must be pairable without L L' R R'
+
+phase2
+- LR centers to horizontal bars
+    12 states
+
+- pair 4-edges in z-plane
+    ((12*11*10*9)^2)/2 = 70,567,200 states
+
+phase 3
+- FB centers to vertical bars
+    70 states
+
+- EO remaining 8-edges in y-plane and z-plane
+    16!/(8!*8!) = 12,870
+
+- 70 * 12870 = 900,900 states
+- L and R' to move LR centers to vertical bars
+
+- orient corners to reduce 333 solve? Corners would
+  need to be placed into a position they can solve from
+  without L2 F2 R2 B2...how many is that?
+
+phase4
+- pair 8-edges
+    8! / 2 = 20160
+    I am not 100% sure this is correct...would be easy to build to test though
+    Even if it is (8!^2)/2 that is still buildable (800 million)
+
+- solve centers
+    4 * 4 * 70 = 1120
+
+I think this would only be worth it if something can be done with the
+corners so that you reduce the 333 solution to a single phase.
+'''
