@@ -1410,7 +1410,8 @@ class Build555PairLastEightEdgesEdgesOnly(BFS):
             D . . . D
             D . . . D
             D . . . D
-            . D D D .""", "ascii"),)
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True
         )
 
 
