@@ -1362,18 +1362,7 @@ class Build555EdgesZPlane(BFS):
 # ==============================================
 class Build555LXPlaneYPlaneEdgesOrientEdgesOnly(BFS):
     """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-x-plane-y-plane-edges-orient-edges-only',
-
-            # illegal moves
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step351-x-plane-y-plane-edges-orient-edges-only.txt',
-            False, # store_as_hex
-            (("""
+    To build the ascii starting_state for this table we took the following:
             . U x D .
             D . . . U
             x . . . x
@@ -1390,7 +1379,44 @@ class Build555LXPlaneYPlaneEdgesOrientEdgesOnly(BFS):
             D . . . U
             x . . . x
             U . . . D
-            . D x U .""", "ascii"),),
+            . D x U .
+
+    And applied L' R
+    We did this because when this phase runs the LR centers are in horizontal bars with
+    the z-plane edges paired.  After this phase we will do a L R' to move the LR centers
+    to vertical bars with the x-plane edges paired.  After that L R' we need the remaining
+    8-edges to be EOed.  So that is why we are starting with the following table.
+
+    I Xed out the z-plane edges...not need to track those
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-y-plane-edges-orient-edges-only',
+
+            # illegal moves
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step351-x-plane-y-plane-edges-orient-edges-only.txt',
+            False, # store_as_hex
+            (("""
+            . U . D .
+            . . . . .
+            . . . . .
+            . . . . .
+            . D . U .
+
+ . . . . .  . D . U .  . . . . .  . D . U .
+ U . . . D  D . . . U  U . . . D  D . . . U
+ . . . . .  . . . . .  . . . . .  . . . . .
+ D . . . U  U . . . D  D . . . U  U . . . D
+ . . . . .  . U . D .  . . . . .  . U . D .
+
+            . U . D .
+            . . . . .
+            . . . . .
+            . . . . .
+            . D . U .""", "ascii"),),
 
             legal_moves=(
                 "F", "F'", "F2",
@@ -1405,6 +1431,7 @@ class Build555LXPlaneYPlaneEdgesOrientEdgesOnly(BFS):
                 "2R", "2R'", "2R2",
             )
         )
+
 
 class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
     """
@@ -1452,27 +1479,52 @@ class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
             )
         )
 
+# dwalton here now
+class Build555LXPlaneYPlaneEdgesOrient(BFS):
+    """
+    """
 
-'''
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-y-plane-edges-orient',
+
+            # illegal moves
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step350-x-plane-y-plane-edges-orient.txt',
+            False, # store_as_hex
             (("""
-            . U x D .
-            D . . . U
-            x . . . x
-            U . . . D
-            . D x U .
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .
 
- . D x U .  . D x U .  . D x U .  . D x U .
- D . . . U  U . . . D  D . . . U  U . . . D
- x . . . x  x . . . x  x . . . x  x . . . x
- U . . . D  D . . . U  U . . . D  D . . . U
- . U x D .  . U x D .  . U x D .  . U x D .
+ . . . . .  . D . U .  . . . . .  . D . U .
+ U . . . D  D F F F U  U . . . D  D F F F U
+ . . . . .  . F F F .  . . . . .  . F F F .
+ D . . . U  U F F F D  D . . . U  U F F F D
+ . . . . .  . U . D .  . . . . .  . U . D .
 
-            . U x D .
-            D . . . U
-            x . . . x
-            U . . . D
-            . D x U .""", "ascii"),),
-'''
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .""", "ascii"),),
+            use_centers_then_edges=True,
+            legal_moves=(
+                "F", "F'", "F2",
+                "B", "B'", "B2",
+                "L2", "R2", "U2", "B2",
+
+                "Uw2", "Dw2",
+                "Lw2", "Rw2",
+
+                "2U2", "2D2",
+                "2L", "2L'", "2L2",
+                "2R", "2R'", "2R2",
+            )
+        )
 
 # ==============================================
 # Pair last 8-edges in y-plane and z-plane
