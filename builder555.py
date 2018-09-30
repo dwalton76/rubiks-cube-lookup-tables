@@ -1433,6 +1433,47 @@ class Build555LXPlaneYPlaneEdgesOrientEdgesOnly(BFS):
         )
 
 
+class StartingStates555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-y-plane-edges-orient-centers-only',
+
+            # illegal moves
+            (),
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step352-x-plane-y-plane-edges-orient-centers-only.txt',
+            False, # store_as_hex
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .""", "ascii"),),
+
+            legal_moves=(
+                "F2",
+                "B2",
+                "2L2",
+                "2R2",
+            )
+        )
+
+
 class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
     """
     """
@@ -1446,24 +1487,12 @@ class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
             '5x5x5',
             'lookup-table-5x5x5-step352-x-plane-y-plane-edges-orient-centers-only.txt',
             False, # store_as_hex
-            (("""
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . . . . .  . F F F .  . . . . .  . F F F .
- . . . . .  . F F F .  . . . . .  . F F F .
- . . . . .  . F F F .  . . . . .  . F F F .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .""", "ascii"),),
+            (('......UUU..UUU..UUU.....................................BFB..BFB..BFB.....................................FBF..FBF..FBF............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................BFF..BFF..BFF.....................................BBF..BBF..BBF............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................BFF..BFF..BFF.....................................FBB..FBB..FBB............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................FFB..FFB..FFB.....................................BBF..BBF..BBF............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................FFB..FFB..FFB.....................................FBB..FBB..FBB............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................FFF..FFF..FFF.....................................BBB..BBB..BBB............UUU..UUU..UUU......', 'ULFRBD')),
 
             legal_moves=(
                 "F", "F'", "F2",
