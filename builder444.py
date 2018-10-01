@@ -546,61 +546,163 @@ class Build444Reduce333(BFS):
             use_edges_pattern=True
         )
 
+
+
+class Build444PairXPlaneEdges(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-pair-x-plane-edges',
+            ("Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step301-pair-x-plane-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . - - .
+          - . . -
+          - . . -
+          . - - .
+
+ . - - .  . - - .  . - - .  . - - .
+ L . . L  F . . F  R . . R  B . . B
+ L . . L  F . . F  R . . R  B . . B
+ . - - .  . - - .  . - - .  . - - .
+
+          . - - .
+          - . . -
+          - . . -
+          . - - .""", 'ascii'),),
+            use_edges_pattern=True,
+        )
+
+
 # brainstorm 1
 '''
-phase1
+phase 1
 - stage UD centers
+- stage FB centers
+- stage LR centers
+10 moves
 
-phase2
-- LR centers to vertical bars
-- FB centers to vertical bars
-    63,063,000 LR FB states
-- pair 4-edges and place in x-plane
-- EO remaining 8-edges in y-plane and y-plane
+phase 2
+- LR centers to one of 12 states
+    70
+- EO all edges to final orienation
+    24!/(12!*12!) = 2,704,156 states
+- Orient the corners to states that can be solved without L L' R R'
+    Each of the eight corners can be in 3 positions so
+    3^8 = 6,561 states
+
+- total states
+2704156*6561*70 = 1241937726120
+
+70*2,704,156 = 189,290,920 pt
+
+(70*2704156)/1241937726120 = 0.000 152
+IDA is doable
+8 moves??
+
 
 phase3
-- pair 8-edges
-- solve centers
+- reduce to 333
+14 moves
+
+
+phase4 - solve reduced 333
+    Will be solveable without L L' R R' how much difference will this make?
+        12! or 479,001,600 edge states
+        ? corner states..I know it is as least 35 million (built it 9-deep)
+        so this IDA would be brutal
+
+    Would need to use the optimal cube explorer solver
+    12 moves????
+
+Would be 44 moves total but I am guessing at how many steps solving 333 would
+be
 '''
+
+
 
 # brainstorm 2
 '''
-phase1
+phase 1
 - stage UD centers
 - stage FB centers
-- stage LR centers to one of 12 states
-- at least 4-edges must be pairable without L L' R R'
+- stage LR centers
+10 moves
 
-phase2
-- LR centers to horizontal bars
+phase 2
+- LR centers to one of 12 states
+    70
+- EO all edges to final orienation
+    24!/(12!*12!) = 2,704,156 states
+- Orient the corners to states that can be solved without L L' R R'
+    Each of the eight corners can be in 3 positions so
+    3^8 = 6,561 states
+
+- total states
+2704156*6561*70 = 1241937726120
+
+70*2,704,156 = 189,290,920 pt
+
+(70*2704156)/1241937726120 = 0.000 152
+IDA is doable
+8 moves??
+
+phase3
+- LR centers to vertical bars
     12 states
 
-- pair 4-edges in z-plane
-    ((12*11*10*9)^2)/2 = 70,567,200 states
-
-phase 3
 - FB centers to vertical bars
     70 states
 
-- EO remaining 8-edges in y-plane and z-plane
-    16!/(8!*8!) = 12,870
+- pair 4-edges in x-plane
+    12*11*10*9 * 12!/(8!*4!) = 5,880,600
 
-- 70 * 12870 = 900,900 states
-- L and R' to move LR centers to vertical bars
+- Orient the corners to states that can be solved without L L' R R' F F' B B'
+    Each of the eight corners can be in 2 positions??? not sure on this
+    2^8 = 256 states
 
-- orient corners to reduce 333 solve? Corners would
-  need to be placed into a position they can solve from
-  without L2 F2 R2 B2...how many is that?
+- edges will also need to be placed so they can be solved without L L' R R' F F' B B'
+    There are 967,679 target states but there has to be a better way to represent this?
 
-phase4
-- pair 8-edges
-    8! / 2 = 20160
-    I am not 100% sure this is correct...would be easy to build to test though
-    Even if it is (8!^2)/2 that is still buildable (800 million)
+- total states
+    12 * 70 * 70,567,200 * 256 = 15,174,770,688,000
 
-- solve centers
-    4 * 4 * 70 = 1120
+70567200/15174770688000 = 0.000 004
+12 moves?
 
-I think this would only be worth it if something can be done with the
-corners so that you reduce the 333 solution to a single phase.
+phase4...reduce to 333
+- LR centers solve
+    4 states
+- FB centers solve
+    4 states
+- UD centers solve
+    70 states
+- pair 8-edges in y-plane and z-plane
+12 moves???
+
+
+phase 5 - solved reduced 333 without L L' R R' F F' B B'
+    - 40,320 corner states
+    - 967,679 edge states
+
+    40320 * 967679 = 39016817280
+
+    967679/39016817280  = 0.000 024
+  
+11 moves???
+  
+That would be 53 moves....not worth it
 '''

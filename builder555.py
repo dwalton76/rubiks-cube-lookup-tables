@@ -1530,16 +1530,111 @@ class Build555LXPlaneYPlaneEdgesOrient(BFS):
             . D . U .
 
  . . . . .  . D . U .  . . . . .  . D . U .
- U . . . D  D F F F U  U . . . D  D F F F U
- . . . . .  . F F F .  . . . . .  . F F F .
- D . . . U  U F F F D  D . . . U  U F F F D
+ U . . . D  D B F B U  U . . . D  D F B F U
+ . . . . .  . B F B .  . . . . .  . F B F .
+ D . . . U  U B F B D  D . . . U  U F B F D
  . . . . .  . U . D .  . . . . .  . U . D .
 
             . U . D .
             . U U U .
             . U U U .
             . U U U .
-            . D . U .""", "ascii"),),
+            . D . U .""", "ascii"),
+
+            ("""
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .
+
+ . . . . .  . D . U .  . . . . .  . D . U .
+ U . . . D  D B F F U  U . . . D  D B B F U
+ . . . . .  . B F F .  . . . . .  . B B F .
+ D . . . U  U B F F D  D . . . U  U B B F D
+ . . . . .  . U . D .  . . . . .  . U . D .
+
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .""", "ascii"),
+
+            ("""
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .
+
+ . . . . .  . D . U .  . . . . .  . D . U .
+ U . . . D  D B F F U  U . . . D  D F B B U
+ . . . . .  . B F F .  . . . . .  . F B B .
+ D . . . U  U B F F D  D . . . U  U F B B D
+ . . . . .  . U . D .  . . . . .  . U . D .
+
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .""", "ascii"),
+
+            ("""
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .
+
+ . . . . .  . D . U .  . . . . .  . D . U .
+ U . . . D  D F F B U  U . . . D  D B B F U
+ . . . . .  . F F B .  . . . . .  . B B F .
+ D . . . U  U F F B D  D . . . U  U B B F D
+ . . . . .  . U . D .  . . . . .  . U . D .
+
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .""", "ascii"),
+
+            ("""
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .
+
+ . . . . .  . D . U .  . . . . .  . D . U .
+ U . . . D  D F F B U  U . . . D  D F B B U
+ . . . . .  . F F B .  . . . . .  . F B B .
+ D . . . U  U F F B D  D . . . U  U F B B D
+ . . . . .  . U . D .  . . . . .  . U . D .
+
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .""", "ascii"),
+
+            ("""
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .
+
+ . . . . .  . D . U .  . . . . .  . D . U .
+ U . . . D  D F F F U  U . . . D  D B B B U
+ . . . . .  . F F F .  . . . . .  . B B B .
+ D . . . U  U F F F D  D . . . U  U B B B D
+ . . . . .  . U . D .  . . . . .  . U . D .
+
+            . U . D .
+            . U U U .
+            . U U U .
+            . U U U .
+            . D . U .""", "ascii")),
             use_centers_then_edges=True,
             legal_moves=(
                 "F", "F'", "F2",
