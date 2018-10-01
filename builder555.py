@@ -1433,49 +1433,11 @@ class Build555LXPlaneYPlaneEdgesOrientEdgesOnly(BFS):
         )
 
 
-class StartingStates555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-x-plane-y-plane-edges-orient-centers-only',
-
-            # illegal moves
-            (),
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step352-x-plane-y-plane-edges-orient-centers-only.txt',
-            False, # store_as_hex
-            (("""
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . . . . .  . F F F .  . . . . .  . B B B .
- . . . . .  . F F F .  . . . . .  . B B B .
- . . . . .  . F F F .  . . . . .  . B B B .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .""", "ascii"),),
-
-            legal_moves=(
-                "F2",
-                "B2",
-                "2L2",
-                "2R2",
-            )
-        )
-
-
 class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
     """
+    (16!/(8!*8!))^2 = 165,636,900 states
+
+    We can only get to 6,370,650 of them though
     """
 
     def __init__(self):
@@ -1487,12 +1449,24 @@ class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
             '5x5x5',
             'lookup-table-5x5x5-step352-x-plane-y-plane-edges-orient-centers-only.txt',
             False, # store_as_hex
-            (('......UUU..UUU..UUU.....................................BFB..BFB..BFB.....................................FBF..FBF..FBF............UUU..UUU..UUU......', 'ULFRBD'),
-             ('......UUU..UUU..UUU.....................................BFF..BFF..BFF.....................................BBF..BBF..BBF............UUU..UUU..UUU......', 'ULFRBD'),
-             ('......UUU..UUU..UUU.....................................BFF..BFF..BFF.....................................FBB..FBB..FBB............UUU..UUU..UUU......', 'ULFRBD'),
-             ('......UUU..UUU..UUU.....................................FFB..FFB..FFB.....................................BBF..BBF..BBF............UUU..UUU..UUU......', 'ULFRBD'),
-             ('......UUU..UUU..UUU.....................................FFB..FFB..FFB.....................................FBB..FBB..FBB............UUU..UUU..UUU......', 'ULFRBD'),
-             ('......UUU..UUU..UUU.....................................FFF..FFF..FFF.....................................BBB..BBB..BBB............UUU..UUU..UUU......', 'ULFRBD')),
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F F .  . . . . .  . F F F .
+ . . . . .  . F F F .  . . . . .  . F F F .
+ . . . . .  . F F F .  . . . . .  . F F F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .""", "ascii"),),
 
             legal_moves=(
                 "F", "F'", "F2",
@@ -1508,7 +1482,7 @@ class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
             )
         )
 
-# dwalton here now
+
 class Build555LXPlaneYPlaneEdgesOrient(BFS):
     """
     """
@@ -2016,7 +1990,7 @@ class Build555EdgesXPlaneWithSolvedCenters(BFS):
 
 
 
-# brainstorm #3
+# brainstorm #1
 '''
 stage UD
     10 moves
@@ -2099,4 +2073,37 @@ solve all centers and pair all edges
     ~15 moves??? Another educated guess based on xyzzy numbers
 
 ~64 moves to reduce to 333
+'''
+
+
+# brainstorm 2
+'''
+phase 1
+    - stage LR centers to one of 432
+    - 4-edges must be EO
+    - There are 165,636,900 staging states the UD FB centers can be in. We
+      need to hit one of the 6,370,650 of those that will make phase 3 possible.
+      That is exactly 1/26th of 165,636,900 so this shouldn't be horrible.
+    11 moves
+
+phase 2
+    - LR to horizontal bars
+    - Pair 4-edges in z-plane
+    11 moves
+
+phase 3
+    - EO remaining 8-edges
+    - FB to vertical bars
+    - UD staged
+    - L and R’ move to move LR bars to vertical and paired 4-edges to x-plane...or solve
+        to some state where Lw Rw' or Lw' Rw put us in the desired state.
+        That may be more trouble that it is worth we are talking about 2 moves here.
+    13 moves
+
+phase 4
+    - solve centers
+    - Pair 8-edges
+    - 15 moves
+
+Reduce to 333 in 50 moves
 '''
