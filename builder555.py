@@ -1355,33 +1355,36 @@ class Build555EdgesZPlane(BFS):
             use_edges_pattern=True
         )
 
-# dwalton stopped here...fix this it needs to have a L' and R applied
+
 # ==============================================
 # EO remaining 8 edges via slices so they can be
 # solved without L L' R R' F F' B B'
 # ==============================================
 class Build555LXPlaneYPlaneEdgesOrientEdgesOnly(BFS):
     """
-    To build the ascii starting_state for this table we took the following:
-            . U x D .
-            D . . . U
-            x . . . x
-            U . . . D
-            . D x U .
+    To build the ascii starting_state for this table we
+    - took a solved cube
+    - applied L' R
+    - got the following
 
- . D x U .  . D x U .  . D x U .  . D x U .
- D . . . U  U . . . D  D . . . U  U . . . D
- x . . . x  x . . . x  x . . . x  x . . . x
+            . U U D .
+            U . . . D
+            D . . . D
+            D . . . U
+            . D U U .
+
+ . U D D .  . D U U .  . U D D .  . D U U .
  U . . . D  D . . . U  U . . . D  D . . . U
- . U x D .  . U x D .  . U x D .  . U x D .
+ D . . . D  D . . . D  D . . . D  D . . . D
+ D . . . U  U . . . D  D . . . U  U . . . D
+ . D D U .  . U U D .  . D D U .  . U U D .
 
-            . U x D .
-            D . . . U
-            x . . . x
+            . U U D .
             U . . . D
-            . D x U .
+            D . . . D
+            D . . . U
+            . D U U .
 
-    And applied L' R
     We did this because when this phase runs the LR centers are in horizontal bars with
     the z-plane edges paired.  After this phase we will do a L R' to move the LR centers
     to vertical bars with the x-plane edges paired.  After that L R' we need the remaining
@@ -1400,23 +1403,23 @@ class Build555LXPlaneYPlaneEdgesOrientEdgesOnly(BFS):
             'lookup-table-5x5x5-step351-x-plane-y-plane-edges-orient-edges-only.txt',
             False, # store_as_hex
             (("""
-            . U . D .
-            . . . . .
-            . . . . .
-            . . . . .
-            . D . U .
+            . U U D .
+            U . . . D
+            D . . . D
+            D . . . U
+            . D U U .
 
- . . . . .  . D . U .  . . . . .  . D . U .
+ . U D D .  . D U U .  . U D D .  . D U U .
  U . . . D  D . . . U  U . . . D  D . . . U
- . . . . .  . . . . .  . . . . .  . . . . .
+ D . . . D  D . . . D  D . . . D  D . . . D
  D . . . U  U . . . D  D . . . U  U . . . D
- . . . . .  . U . D .  . . . . .  . U . D .
+ . D D U .  . U U D .  . D D U .  . U U D .
 
-            . U . D .
-            . . . . .
-            . . . . .
-            . . . . .
-            . D . U .""", "ascii"),),
+            . U U D .
+            U . . . D
+            D . . . D
+            D . . . U
+            . D U U .""", "ascii"),),
 
             legal_moves=(
                 "F", "F'", "F2",
@@ -1497,118 +1500,119 @@ class Build555LXPlaneYPlaneEdgesOrient(BFS):
             'lookup-table-5x5x5-step350-x-plane-y-plane-edges-orient.txt',
             False, # store_as_hex
             (("""
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .
 
- . . . . .  . D . U .  . . . . .  . D . U .
- U . . . D  D B F B U  U . . . D  D F B F U
- . . . . .  . B F B .  . . . . .  . F B F .
- D . . . U  U B F B D  D . . . U  U F B F D
- . . . . .  . U . D .  . . . . .  . U . D .
-
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .""", "ascii"),
-
-            ("""
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .
-
- . . . . .  . D . U .  . . . . .  . D . U .
- U . . . D  D B F F U  U . . . D  D B B F U
- . . . . .  . B F F .  . . . . .  . B B F .
- D . . . U  U B F F D  D . . . U  U B B F D
- . . . . .  . U . D .  . . . . .  . U . D .
-
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .""", "ascii"),
-
-            ("""
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .
-
- . . . . .  . D . U .  . . . . .  . D . U .
- U . . . D  D B F F U  U . . . D  D F B B U
- . . . . .  . B F F .  . . . . .  . F B B .
- D . . . U  U B F F D  D . . . U  U F B B D
- . . . . .  . U . D .  . . . . .  . U . D .
-
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .""", "ascii"),
-
-            ("""
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .
-
- . . . . .  . D . U .  . . . . .  . D . U .
- U . . . D  D F F B U  U . . . D  D B B F U
- . . . . .  . F F B .  . . . . .  . B B F .
- D . . . U  U F F B D  D . . . U  U B B F D
- . . . . .  . U . D .  . . . . .  . U . D .
-
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .""", "ascii"),
-
-            ("""
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .
-
- . . . . .  . D . U .  . . . . .  . D . U .
- U . . . D  D F F B U  U . . . D  D F B B U
- . . . . .  . F F B .  . . . . .  . F B B .
- D . . . U  U F F B D  D . . . U  U F B B D
- . . . . .  . U . D .  . . . . .  . U . D .
-
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .""", "ascii"),
-
-            ("""
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .
-
- . . . . .  . D . U .  . . . . .  . D . U .
+ . U D D .  . D U U .  . U D D .  . D U U .
  U . . . D  D F F F U  U . . . D  D B B B U
- . . . . .  . F F F .  . . . . .  . B B B .
+ D . . . D  D F F F D  D . . . D  D B B B D
  D . . . U  U F F F D  D . . . U  U B B B D
- . . . . .  . U . D .  . . . . .  . U . D .
+ . D D U .  . U U D .  . D D U .  . U U D .
 
-            . U . D .
-            . U U U .
-            . U U U .
-            . U U U .
-            . D . U .""", "ascii")),
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .""", "ascii"),
+
+            ("""
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .
+
+ . U D D .  . D U U .  . U D D .  . D U U .
+ U . . . D  D B F B U  U . . . D  D F B F U
+ D . . . D  D B F B D  D . . . D  D F B F D
+ D . . . U  U B F B D  D . . . U  U F B F D
+ . D D U .  . U U D .  . D D U .  . U U D .
+
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .""", "ascii"),
+
+            ("""
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .
+
+ . U D D .  . D U U .  . U D D .  . D U U .
+ U . . . D  D B F F U  U . . . D  D B B F U
+ D . . . D  D B F F D  D . . . D  D B B F D
+ D . . . U  U B F F D  D . . . U  U B B F D
+ . D D U .  . U U D .  . D D U .  . U U D .
+
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .""", "ascii"),
+
+            ("""
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .
+
+ . U D D .  . D U U .  . U D D .  . D U U .
+ U . . . D  D B F F U  U . . . D  D F B B U
+ D . . . D  D B F F D  D . . . D  D F B B D
+ D . . . U  U B F F D  D . . . U  U F B B D
+ . D D U .  . U U D .  . D D U .  . U U D .
+
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .""", "ascii"),
+
+            ("""
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .
+
+ . U D D .  . D U U .  . U D D .  . D U U .
+ U . . . D  D F F B U  U . . . D  D B B F U
+ D . . . D  D F F B D  D . . . D  D B B F D
+ D . . . U  U F F B D  D . . . U  U B B F D
+ . D D U .  . U U D .  . D D U .  . U U D .
+
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .""", "ascii"),
+
+            ("""
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .
+
+ . U D D .  . D U U .  . U D D .  . D U U .
+ U . . . D  D F F B U  U . . . D  D F B B U
+ D . . . D  D F F B D  D . . . D  D F B B D
+ D . . . U  U F F B D  D . . . U  U F B B D
+ . D D U .  . U U D .  . D D U .  . U U D .
+
+            . U U D .
+            U U U U D
+            D U U U D
+            D U U U U
+            . D U U .""", "ascii")),
+
             use_centers_then_edges=True,
             legal_moves=(
                 "F", "F'", "F2",
