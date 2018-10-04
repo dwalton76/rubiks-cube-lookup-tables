@@ -1207,7 +1207,64 @@ class Build555EdgesZPlaneEdgesOnly(BFS):
             D . . . -
             D . . . -
             D . . . -
-            . - - - .""", "ascii"),),
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            U . . . U
+            U . . . U
+            U . . . U
+            . - - - .
+
+ . L L L .  . - - - .  . R R R .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . - - - .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            - . . . D
+            - . . . D
+            - . . . D
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            - . . . U
+            - . . . U
+            - . . . U
+            . - - - .
+
+ . - - - .  . - - - .  . R R R .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . L L L .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            D . . . D
+            D . . . D
+            D . . . D
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            U . . . -
+            U . . . -
+            U . . . -
+            . - - - .
+
+ . L L L .  . - - - .  . - - - .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . L L L .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            D . . . D
+            D . . . D
+            D . . . D
+            . - - - .""", "ascii")),
             use_edges_pattern=True,
         )
 
@@ -1484,6 +1541,53 @@ class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
                 "2R", "2R'", "2R2",
             )
         )
+
+
+class Build555LXPlaneYPlaneEdgesOrientPairOneEdge(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-y-plane-edges-orient-one-edge',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step353-x-plane-y-plane-edges-orient-pair-one-edge.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . U U U .
+
+ . - - - .  . F F F .  . - - - .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
 
 
 class Build555LXPlaneYPlaneEdgesOrient(BFS):
