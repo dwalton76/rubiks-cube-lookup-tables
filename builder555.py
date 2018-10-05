@@ -1951,6 +1951,61 @@ class Build555EdgesStageFirstFour(BFS):
         )
 
 
+class Build555PairSecondFourEdges(BFS):
+    """
+    Should be (8!^2)/2 812,851,200
+
+    ((8!/4!)^2)/2 = 1,411,200
+
+    But there are 8!/(4!*4!) or 70 ways they can be arranged
+    70 * 1,411,200 = 98,784,000
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-pair-second-four-edges-edges-only',
+
+            # illegal moves
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step601-pair-second-four-edges-edges-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - - - .
+            U . . . U
+            U . . . U
+            U . . . U
+            . - - - .
+
+ . L L L .  . - - - .  . R R R .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . L L L .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            D . . . D
+            D . . . D
+            D . . . D
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True
+        )
+
+
+
 class Build555EdgesXPlaneEdgesOnly(BFS):
 
     def __init__(self):
@@ -2098,15 +2153,18 @@ class Build555EdgesXPlaneWithSolvedCenters(BFS):
 
 
 
-# brainstorm #1
+# =========================================
+# solving edges when centers are NOT paired
+# =========================================
+# today we do the following (this is fairly new)
 '''
-stage UD
+phase 1 - stage UD
     10 moves
 
-stage LR to 432 but with 4-edges EO
+phase 2 - stage LR to 432 but with 4-edges EO
     11 moves
 
-LR to horizontal bars and pair 4-edges in z-plane
+phase 3 - LR to horizontal bars and pair 4-edges in z-plane
 
     - A 3-edge prune table is
         ((12*11*10)^2/2) is how many states the wings can be in.  The wings are in high/low groups
@@ -2122,12 +2180,11 @@ LR to horizontal bars and pair 4-edges in z-plane
     Using a 3-edge pt
     383,328,000/30,180,180,096,000 = 0.000 012
 
-    ~13 moves??? Educated guess based on xyzzy solves here:
+    ~14 moves??? Educated guess based on xyzzy solves here:
     http://cubesolvingprograms.freeforums.net/thread/37/results-5x5x5-fewest-moves-challenge
 
 
-# dwalton
-EO remaining 8 edges via slices so they can be solved without L L' R R' F F' B B'
+phase 4 - LR and FB to vertical bars, EO remaining 8 edges via slices so they can be solved without L L' R R' F F' B B'
     - keep z-plane edges paired
     - keep LR in horiztonal bars
     - keep UD and FB staged
@@ -2139,52 +2196,22 @@ EO remaining 8 edges via slices so they can be solved without L L' R R' F F' B B
         I do not think we need to change the midge orientation. As long as we
         are not slicing the middle layer it should not change.
 
-    - wings can be in 16!/(8!*8!) = 12,870 states
+    - edges can be in one of 900,900 states
+    - centers can be in one of 6,370,650 states
+    - end with L and R moves to put paired edges in x-plane and flip LR horizontal bars to vertical
+    ~15 moves?
 
-    - We will need to prebuild this table as it will require unstaging the UD FB centers
-      This will be similar to how the "stage L4E" tables were built. We only need 12,870
-      entries though.
-
-    - legal moves
-        F F' F2
-        B B' B2
-        L2 R2 U2 B2
-
-        Uw2 Dw2
-        Lw2 Rw2
-
-        2U2 2D2
-        2L 2L' 2L2
-        2R 2R' 2R2
-
-    - 8 moves?
-
-FB to vertical bars
-    - could we do this as part of the previous "EO 8-edges phase"?
-        12,870 * 4900 = 63,063,000
-      That is worth exploring
-    5 moves
-
-L and R to put paired edges in x-plane and flip LR horizontal bars to vertical
-    2 moves
-
-At this point
-    - LR and FB in vertical bars
-    - x-plane edges solved
-    - 8-edges EOed
-~49 moves to here
-
-solve all centers and pair all edges
+phase 5 - solve all centers and pair all edges
     - 6 x 6 x 4900 x (8!^2)/2 = 143,386,951,680,000
     - (8!^2)/2 = 812851200
     - 812851200/143386951680000 = 0.000 005
-    ~15 moves??? Another educated guess based on xyzzy numbers
+    ~16 moves???
 
-~64 moves to reduce to 333
+~66 moves to reduce to 333
 '''
 
 
-# brainstorm 2
+# brainstorm 1
 '''
 phase 1
     - stage LR centers to one of 432
@@ -2195,23 +2222,44 @@ phase 1
     11 moves
 
 phase 2
+    - this is the same as todays phase3
     - LR to horizontal bars
     - Pair 4-edges in z-plane
-    11 moves
+    ~14 moves?
 
-phase 3
-    - EO remaining 8-edges
-    - FB to vertical bars
-    - UD staged
-    - L and R’ move to move LR bars to vertical and paired 4-edges to x-plane...or solve
-        to some state where Lw Rw' or Lw' Rw put us in the desired state.
-        That may be more trouble that it is worth we are talking about 2 moves here.
-    13 moves
+phase 3 - LR and FB to vertical bars, EO remaining 8 edges via slices so they can be solved without L L' R R' F F' B B'
+    - this is the same as todays phase4
+    - end with L and R moves to put paired edges in x-plane and flip LR horizontal bars to vertical
+    ~15 moves
 
-phase 4
-    - solve centers
-    - Pair 8-edges
-    - 15 moves
+phase 4 - solve all centers and pair all edges
+    - this is the same as todays phase5
+    ~16 moves?
 
-Reduce to 333 in 50 moves
+Reduce to 333 in 56 moves!!
+'''
+
+# =====================================
+# solving edges when centers are paired
+# =====================================
+# today we do the following
+'''
+phase 1 - stage 1st L4E group
+phase 2 - solve 1st L4E group
+phase 3 - stage 2nd L4E group
+phase 4 - solve 2nd L4E group
+phase 5 - solve 3rd L4E group
+
+This normally takes ~52 steps
+'''
+
+# brainstorm 1
+'''
+phase 1 - stage 1st L4E group but look for a solution that also allows 4-edges to be paired without L L' R R' F F' B B'
+phase 2 - solve 1st L4E group in x-plane
+phase 3 - solve 4-edges that are EOed...this will be similar to our step500 table today where we pair 8-edges but will be smaller
+    The key is we can pair another 4-edges without staging them first.
+phase 4 - solve 3rd L4E group
+
+I think this will be in the low 40s of steps
 '''
