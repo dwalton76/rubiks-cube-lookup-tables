@@ -2152,6 +2152,649 @@ class Build555EdgesXPlaneWithSolvedCenters(BFS):
         )
 
 
+# dwalton here now
+class StartingStates555InitLRCenterStage432XCentersOnly(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LR-center-stage-432-x-centers-only',
+            (), # illegal moves
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step701-LR-centers-stage-432-x-centers-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . x . x .
+            . . x . .
+            . x . x .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . x . x .  . R . R .  . x . x .
+ . . L . .  . . x . .  . . R . .  . . x . .
+ . L . L .  . x . x .  . R . R .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x . x .
+            . . x . .
+            . x . x .
+            . . . . .""", "ascii"),),
+            legal_moves = (
+                "L2", "R2",
+                "Uw2", "Dw2", "Fw2", "Bw2",
+            )
+        )
+
+class Build555InitLRCenterStage432XCentersOnly(BFS):
+    """
+    24!/(4!*4!*16!) = 51,482,970
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LR-center-stage-432-x-centers-only',
+
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step701-LR-centers-stage-432-x-centers-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('......x.x...x...x.x............L.L...L...L.L............x.x...x...x.x............R.R...R...R.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............L.L...L...R.R............x.x...x...x.x............L.L...R...R.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............L.L...L...R.R............x.x...x...x.x............R.R...R...L.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............L.R...L...L.R............x.x...x...x.x............L.R...R...L.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............L.R...L...L.R............x.x...x...x.x............R.L...R...R.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............L.R...L...R.L............x.x...x...x.x............R.L...R...L.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............R.L...L...L.R............x.x...x...x.x............L.R...R...R.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............R.L...L...R.L............x.x...x...x.x............L.R...R...L.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............R.L...L...R.L............x.x...x...x.x............R.L...R...R.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............R.R...L...L.L............x.x...x...x.x............L.L...R...R.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............R.R...L...L.L............x.x...x...x.x............R.R...R...L.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
+             ('......x.x...x...x.x............R.R...L...R.R............x.x...x...x.x............L.L...R...L.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'))
+        )
+
+
+class StartingStates555InitLRCenterStage432TCentersOnly(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LR-center-stage-432-t-centers-only',
+            (), # illegal moves
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step702-LR-centers-stage-432-t-centers-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . x . .
+            . x x x .
+            . . x . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . x . .  . . R . .  . . x . .
+ . L L L .  . x x x .  . R R R .  . x x x .
+ . . L . .  . . x . .  . . R . .  . . x . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . x . .
+            . x x x .
+            . . x . .
+            . . . . .""", "ascii"),),
+            legal_moves = (
+                "L2", "R2",
+                "Uw2", "Dw2", "Fw2", "Bw2",
+            )
+        )
+
+
+class Build555InitLRCenterStage432TCentersOnly(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LR-center-stage-432-t-centers-only',
+
+            # illegal moves
+            (),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step702-LR-centers-stage-432-t-centers-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.......x...xxx...x..............L...LLL...L..............x...xxx...x..............R...RRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...LLL...R..............x...xxx...x..............L...RRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...LLL...R..............x...xxx...x..............R...RRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...LLR...L..............x...xxx...x..............R...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...LLR...L..............x...xxx...x..............R...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...LLR...R..............x...xxx...x..............L...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...LLR...R..............x...xxx...x..............L...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...LLR...R..............x...xxx...x..............R...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...LLR...R..............x...xxx...x..............R...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...RLL...L..............x...xxx...x..............R...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...RLL...L..............x...xxx...x..............R...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...RLL...R..............x...xxx...x..............L...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...RLL...R..............x...xxx...x..............L...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...RLL...R..............x...xxx...x..............R...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...RLL...R..............x...xxx...x..............R...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...RLR...L..............x...xxx...x..............R...LRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...RLR...R..............x...xxx...x..............L...LRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............L...RLR...R..............x...xxx...x..............R...LRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...LLL...L..............x...xxx...x..............L...RRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...LLL...L..............x...xxx...x..............R...RRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...LLL...R..............x...xxx...x..............L...RRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...LLR...L..............x...xxx...x..............L...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...LLR...L..............x...xxx...x..............L...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...LLR...L..............x...xxx...x..............R...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...LLR...L..............x...xxx...x..............R...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...LLR...R..............x...xxx...x..............L...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...LLR...R..............x...xxx...x..............L...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...RLL...L..............x...xxx...x..............L...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...RLL...L..............x...xxx...x..............L...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...RLL...L..............x...xxx...x..............R...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...RLL...L..............x...xxx...x..............R...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...RLL...R..............x...xxx...x..............L...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...RLL...R..............x...xxx...x..............L...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...RLR...L..............x...xxx...x..............L...LRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...RLR...L..............x...xxx...x..............R...LRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
+             ('.......x...xxx...x..............R...RLR...R..............x...xxx...x..............L...LRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'))
+        )
+
+class StartingStates555InitLRCenterStage432(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LR-center-stage-432',
+            (), # illegal moves
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step700-LR-centers-stage-432.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . x x x .  . R R R .  . x x x .
+ . L L L .  . x x x .  . R R R .  . x x x .
+ . L L L .  . x x x .  . R R R .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
+            . . . . .""", "ascii"),),
+            legal_moves = (
+                "L2", "R2",
+                "Uw2", "Dw2", "Fw2", "Bw2",
+            )
+        )
+
+class Build555InitLRCenterStage432(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-lr-center-stage-432',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step700-LR-centers-stage-432.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('......xxx..xxx..xxx............LLL..LLL..LLL............xxx..xxx..xxx............RRR..RRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLL..LRL............xxx..xxx..xxx............RLR..RRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLL..LRL............xxx..xxx..xxx............RRR..RRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLL..RLR............xxx..xxx..xxx............LRL..RRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLL..RLR............xxx..xxx..xxx............RRR..RRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLL..RRR............xxx..xxx..xxx............LLL..RRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLL..RRR............xxx..xxx..xxx............LRL..RRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLL..RRR............xxx..xxx..xxx............RLR..RRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLL..RRR............xxx..xxx..xxx............RRR..RRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..LLL............xxx..xxx..xxx............RRR..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..LLL............xxx..xxx..xxx............RRR..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..LRL............xxx..xxx..xxx............RLR..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..LRL............xxx..xxx..xxx............RLR..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..LRL............xxx..xxx..xxx............RRR..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..LRL............xxx..xxx..xxx............RRR..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RLR............xxx..xxx..xxx............LRL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RLR............xxx..xxx..xxx............LRL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RLR............xxx..xxx..xxx............RRR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RLR............xxx..xxx..xxx............RRR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RRR............xxx..xxx..xxx............LLL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RRR............xxx..xxx..xxx............LLL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RRR............xxx..xxx..xxx............LRL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RRR............xxx..xxx..xxx............LRL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RRR............xxx..xxx..xxx............RLR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RRR............xxx..xxx..xxx............RLR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RRR............xxx..xxx..xxx............RRR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..LLR..RRR............xxx..xxx..xxx............RRR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..LLL............xxx..xxx..xxx............RRR..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..LLL............xxx..xxx..xxx............RRR..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..LRL............xxx..xxx..xxx............RLR..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..LRL............xxx..xxx..xxx............RLR..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..LRL............xxx..xxx..xxx............RRR..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..LRL............xxx..xxx..xxx............RRR..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RLR............xxx..xxx..xxx............LRL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RLR............xxx..xxx..xxx............LRL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RLR............xxx..xxx..xxx............RRR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RLR............xxx..xxx..xxx............RRR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RRR............xxx..xxx..xxx............LLL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RRR............xxx..xxx..xxx............LLL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RRR............xxx..xxx..xxx............LRL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RRR............xxx..xxx..xxx............LRL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RRR............xxx..xxx..xxx............RLR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RRR............xxx..xxx..xxx............RLR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RRR............xxx..xxx..xxx............RRR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLL..RRR............xxx..xxx..xxx............RRR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLR..LLL............xxx..xxx..xxx............RRR..LRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLR..LRL............xxx..xxx..xxx............RLR..LRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLR..LRL............xxx..xxx..xxx............RRR..LRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLR..RLR............xxx..xxx..xxx............LRL..LRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLR..RLR............xxx..xxx..xxx............RRR..LRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLR..RRR............xxx..xxx..xxx............LLL..LRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLR..RRR............xxx..xxx..xxx............LRL..LRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLR..RRR............xxx..xxx..xxx............RLR..LRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLL..RLR..RRR............xxx..xxx..xxx............RRR..LRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLL..LLR............xxx..xxx..xxx............LRR..RRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLL..LLR............xxx..xxx..xxx............RRL..RRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLL..LRR............xxx..xxx..xxx............LLR..RRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLL..LRR............xxx..xxx..xxx............LRR..RRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLL..LRR............xxx..xxx..xxx............RLL..RRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLL..LRR............xxx..xxx..xxx............RRL..RRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLL..RLL............xxx..xxx..xxx............RRL..RRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLL..RRL............xxx..xxx..xxx............RLL..RRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLL..RRL............xxx..xxx..xxx............RRL..RRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LLR............xxx..xxx..xxx............LRR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LLR............xxx..xxx..xxx............LRR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LLR............xxx..xxx..xxx............RRL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LLR............xxx..xxx..xxx............RRL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LRR............xxx..xxx..xxx............LLR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LRR............xxx..xxx..xxx............LLR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LRR............xxx..xxx..xxx............LRR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LRR............xxx..xxx..xxx............LRR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LRR............xxx..xxx..xxx............RLL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LRR............xxx..xxx..xxx............RLL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LRR............xxx..xxx..xxx............RRL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..LRR............xxx..xxx..xxx............RRL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..RLL............xxx..xxx..xxx............RRL..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..RLL............xxx..xxx..xxx............RRL..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..RRL............xxx..xxx..xxx............RLL..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..RRL............xxx..xxx..xxx............RLL..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..RRL............xxx..xxx..xxx............RRL..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..LLR..RRL............xxx..xxx..xxx............RRL..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LLR............xxx..xxx..xxx............LRR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LLR............xxx..xxx..xxx............LRR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LLR............xxx..xxx..xxx............RRL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LLR............xxx..xxx..xxx............RRL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LRR............xxx..xxx..xxx............LLR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LRR............xxx..xxx..xxx............LLR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LRR............xxx..xxx..xxx............LRR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LRR............xxx..xxx..xxx............LRR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LRR............xxx..xxx..xxx............RLL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LRR............xxx..xxx..xxx............RLL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LRR............xxx..xxx..xxx............RRL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..LRR............xxx..xxx..xxx............RRL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..RLL............xxx..xxx..xxx............RRL..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..RLL............xxx..xxx..xxx............RRL..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..RRL............xxx..xxx..xxx............RLL..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..RRL............xxx..xxx..xxx............RLL..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..RRL............xxx..xxx..xxx............RRL..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLL..RRL............xxx..xxx..xxx............RRL..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLR..LLR............xxx..xxx..xxx............LRR..LRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLR..LLR............xxx..xxx..xxx............RRL..LRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLR..LRR............xxx..xxx..xxx............LLR..LRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLR..LRR............xxx..xxx..xxx............LRR..LRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLR..LRR............xxx..xxx..xxx............RLL..LRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLR..LRR............xxx..xxx..xxx............RRL..LRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLR..RLL............xxx..xxx..xxx............RRL..LRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLR..RRL............xxx..xxx..xxx............RLL..LRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LLR..RLR..RRL............xxx..xxx..xxx............RRL..LRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLL..LLL............xxx..xxx..xxx............RLR..RRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLL..LLL............xxx..xxx..xxx............RRR..RRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLL..LRL............xxx..xxx..xxx............RLR..RRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLL..RLR............xxx..xxx..xxx............LLL..RRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLL..RLR............xxx..xxx..xxx............LRL..RRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLL..RLR............xxx..xxx..xxx............RLR..RRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLL..RLR............xxx..xxx..xxx............RRR..RRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLL..RRR............xxx..xxx..xxx............LLL..RRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLL..RRR............xxx..xxx..xxx............RLR..RRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..LLL............xxx..xxx..xxx............RLR..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..LLL............xxx..xxx..xxx............RLR..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..LLL............xxx..xxx..xxx............RRR..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..LLL............xxx..xxx..xxx............RRR..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..LRL............xxx..xxx..xxx............RLR..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..LRL............xxx..xxx..xxx............RLR..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RLR............xxx..xxx..xxx............LLL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RLR............xxx..xxx..xxx............LLL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RLR............xxx..xxx..xxx............LRL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RLR............xxx..xxx..xxx............LRL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RLR............xxx..xxx..xxx............RLR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RLR............xxx..xxx..xxx............RLR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RLR............xxx..xxx..xxx............RRR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RLR............xxx..xxx..xxx............RRR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RRR............xxx..xxx..xxx............LLL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RRR............xxx..xxx..xxx............LLL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RRR............xxx..xxx..xxx............RLR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..LLR..RRR............xxx..xxx..xxx............RLR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..LLL............xxx..xxx..xxx............RLR..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..LLL............xxx..xxx..xxx............RLR..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..LLL............xxx..xxx..xxx............RRR..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..LLL............xxx..xxx..xxx............RRR..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..LRL............xxx..xxx..xxx............RLR..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..LRL............xxx..xxx..xxx............RLR..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RLR............xxx..xxx..xxx............LLL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RLR............xxx..xxx..xxx............LLL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RLR............xxx..xxx..xxx............LRL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RLR............xxx..xxx..xxx............LRL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RLR............xxx..xxx..xxx............RLR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RLR............xxx..xxx..xxx............RLR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RLR............xxx..xxx..xxx............RRR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RLR............xxx..xxx..xxx............RRR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RRR............xxx..xxx..xxx............LLL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RRR............xxx..xxx..xxx............LLL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RRR............xxx..xxx..xxx............RLR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLL..RRR............xxx..xxx..xxx............RLR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLR..LLL............xxx..xxx..xxx............RLR..LRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLR..LLL............xxx..xxx..xxx............RRR..LRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLR..LRL............xxx..xxx..xxx............RLR..LRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLR..RLR............xxx..xxx..xxx............LLL..LRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLR..RLR............xxx..xxx..xxx............LRL..LRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLR..RLR............xxx..xxx..xxx............RLR..LRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLR..RLR............xxx..xxx..xxx............RRR..LRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLR..RRR............xxx..xxx..xxx............LLL..LRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRL..RLR..RRR............xxx..xxx..xxx............RLR..LRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLL..LLR............xxx..xxx..xxx............LLR..RRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLL..LLR............xxx..xxx..xxx............LRR..RRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLL..LLR............xxx..xxx..xxx............RLL..RRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLL..LLR............xxx..xxx..xxx............RRL..RRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLL..LRR............xxx..xxx..xxx............LLR..RRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLL..LRR............xxx..xxx..xxx............RLL..RRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLL..RLL............xxx..xxx..xxx............RLL..RRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLL..RLL............xxx..xxx..xxx............RRL..RRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLL..RRL............xxx..xxx..xxx............RLL..RRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LLR............xxx..xxx..xxx............LLR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LLR............xxx..xxx..xxx............LLR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LLR............xxx..xxx..xxx............LRR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LLR............xxx..xxx..xxx............LRR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LLR............xxx..xxx..xxx............RLL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LLR............xxx..xxx..xxx............RLL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LLR............xxx..xxx..xxx............RRL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LLR............xxx..xxx..xxx............RRL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LRR............xxx..xxx..xxx............LLR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LRR............xxx..xxx..xxx............LLR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LRR............xxx..xxx..xxx............RLL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..LRR............xxx..xxx..xxx............RLL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..RLL............xxx..xxx..xxx............RLL..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..RLL............xxx..xxx..xxx............RLL..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..RLL............xxx..xxx..xxx............RRL..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..RLL............xxx..xxx..xxx............RRL..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..RRL............xxx..xxx..xxx............RLL..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..LLR..RRL............xxx..xxx..xxx............RLL..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LLR............xxx..xxx..xxx............LLR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LLR............xxx..xxx..xxx............LLR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LLR............xxx..xxx..xxx............LRR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LLR............xxx..xxx..xxx............LRR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LLR............xxx..xxx..xxx............RLL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LLR............xxx..xxx..xxx............RLL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LLR............xxx..xxx..xxx............RRL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LLR............xxx..xxx..xxx............RRL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LRR............xxx..xxx..xxx............LLR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LRR............xxx..xxx..xxx............LLR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LRR............xxx..xxx..xxx............RLL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..LRR............xxx..xxx..xxx............RLL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..RLL............xxx..xxx..xxx............RLL..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..RLL............xxx..xxx..xxx............RLL..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..RLL............xxx..xxx..xxx............RRL..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..RLL............xxx..xxx..xxx............RRL..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..RRL............xxx..xxx..xxx............RLL..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLL..RRL............xxx..xxx..xxx............RLL..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLR..LLR............xxx..xxx..xxx............LLR..LRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLR..LLR............xxx..xxx..xxx............LRR..LRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLR..LLR............xxx..xxx..xxx............RLL..LRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLR..LLR............xxx..xxx..xxx............RRL..LRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLR..LRR............xxx..xxx..xxx............LLR..LRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLR..LRR............xxx..xxx..xxx............RLL..LRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLR..RLL............xxx..xxx..xxx............RLL..LRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLR..RLL............xxx..xxx..xxx............RRL..LRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............LRR..RLR..RRL............xxx..xxx..xxx............RLL..LRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLL..LLR............xxx..xxx..xxx............LRR..RRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLL..LRR............xxx..xxx..xxx............LLR..RRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLL..LRR............xxx..xxx..xxx............LRR..RRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLL..RLL............xxx..xxx..xxx............LRR..RRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLL..RLL............xxx..xxx..xxx............RRL..RRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLL..RRL............xxx..xxx..xxx............LLR..RRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLL..RRL............xxx..xxx..xxx............LRR..RRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLL..RRL............xxx..xxx..xxx............RLL..RRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLL..RRL............xxx..xxx..xxx............RRL..RRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..LLR............xxx..xxx..xxx............LRR..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..LLR............xxx..xxx..xxx............LRR..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..LRR............xxx..xxx..xxx............LLR..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..LRR............xxx..xxx..xxx............LLR..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..LRR............xxx..xxx..xxx............LRR..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..LRR............xxx..xxx..xxx............LRR..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RLL............xxx..xxx..xxx............LRR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RLL............xxx..xxx..xxx............LRR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RLL............xxx..xxx..xxx............RRL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RLL............xxx..xxx..xxx............RRL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RRL............xxx..xxx..xxx............LLR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RRL............xxx..xxx..xxx............LLR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RRL............xxx..xxx..xxx............LRR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RRL............xxx..xxx..xxx............LRR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RRL............xxx..xxx..xxx............RLL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RRL............xxx..xxx..xxx............RLL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RRL............xxx..xxx..xxx............RRL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..LLR..RRL............xxx..xxx..xxx............RRL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..LLR............xxx..xxx..xxx............LRR..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..LLR............xxx..xxx..xxx............LRR..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..LRR............xxx..xxx..xxx............LLR..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..LRR............xxx..xxx..xxx............LLR..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..LRR............xxx..xxx..xxx............LRR..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..LRR............xxx..xxx..xxx............LRR..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RLL............xxx..xxx..xxx............LRR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RLL............xxx..xxx..xxx............LRR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RLL............xxx..xxx..xxx............RRL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RLL............xxx..xxx..xxx............RRL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RRL............xxx..xxx..xxx............LLR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RRL............xxx..xxx..xxx............LLR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RRL............xxx..xxx..xxx............LRR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RRL............xxx..xxx..xxx............LRR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RRL............xxx..xxx..xxx............RLL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RRL............xxx..xxx..xxx............RLL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RRL............xxx..xxx..xxx............RRL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLL..RRL............xxx..xxx..xxx............RRL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLR..LLR............xxx..xxx..xxx............LRR..LRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLR..LRR............xxx..xxx..xxx............LLR..LRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLR..LRR............xxx..xxx..xxx............LRR..LRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLR..RLL............xxx..xxx..xxx............LRR..LRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLR..RLL............xxx..xxx..xxx............RRL..LRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLR..RRL............xxx..xxx..xxx............LLR..LRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLR..RRL............xxx..xxx..xxx............LRR..LRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLR..RRL............xxx..xxx..xxx............RLL..LRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLL..RLR..RRL............xxx..xxx..xxx............RRL..LRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLL..LLL............xxx..xxx..xxx............LRL..RRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLL..LLL............xxx..xxx..xxx............RRR..RRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLL..LRL............xxx..xxx..xxx............LLL..RRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLL..LRL............xxx..xxx..xxx............LRL..RRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLL..LRL............xxx..xxx..xxx............RLR..RRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLL..LRL............xxx..xxx..xxx............RRR..RRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLL..RLR............xxx..xxx..xxx............LRL..RRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLL..RRR............xxx..xxx..xxx............LLL..RRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLL..RRR............xxx..xxx..xxx............LRL..RRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LLL............xxx..xxx..xxx............LRL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LLL............xxx..xxx..xxx............LRL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LLL............xxx..xxx..xxx............RRR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LLL............xxx..xxx..xxx............RRR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LRL............xxx..xxx..xxx............LLL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LRL............xxx..xxx..xxx............LLL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LRL............xxx..xxx..xxx............LRL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LRL............xxx..xxx..xxx............LRL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LRL............xxx..xxx..xxx............RLR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LRL............xxx..xxx..xxx............RLR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LRL............xxx..xxx..xxx............RRR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..LRL............xxx..xxx..xxx............RRR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..RLR............xxx..xxx..xxx............LRL..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..RLR............xxx..xxx..xxx............LRL..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..RRR............xxx..xxx..xxx............LLL..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..RRR............xxx..xxx..xxx............LLL..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..RRR............xxx..xxx..xxx............LRL..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..LLR..RRR............xxx..xxx..xxx............LRL..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LLL............xxx..xxx..xxx............LRL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LLL............xxx..xxx..xxx............LRL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LLL............xxx..xxx..xxx............RRR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LLL............xxx..xxx..xxx............RRR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LRL............xxx..xxx..xxx............LLL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LRL............xxx..xxx..xxx............LLL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LRL............xxx..xxx..xxx............LRL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LRL............xxx..xxx..xxx............LRL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LRL............xxx..xxx..xxx............RLR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LRL............xxx..xxx..xxx............RLR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LRL............xxx..xxx..xxx............RRR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..LRL............xxx..xxx..xxx............RRR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..RLR............xxx..xxx..xxx............LRL..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..RLR............xxx..xxx..xxx............LRL..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..RRR............xxx..xxx..xxx............LLL..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..RRR............xxx..xxx..xxx............LLL..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..RRR............xxx..xxx..xxx............LRL..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLL..RRR............xxx..xxx..xxx............LRL..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLR..LLL............xxx..xxx..xxx............LRL..LRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLR..LLL............xxx..xxx..xxx............RRR..LRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLR..LRL............xxx..xxx..xxx............LLL..LRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLR..LRL............xxx..xxx..xxx............LRL..LRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLR..LRL............xxx..xxx..xxx............RLR..LRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLR..LRL............xxx..xxx..xxx............RRR..LRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLR..RLR............xxx..xxx..xxx............LRL..LRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLR..RRR............xxx..xxx..xxx............LLL..LRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RLR..RLR..RRR............xxx..xxx..xxx............LRL..LRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLL..LLR............xxx..xxx..xxx............LLR..RRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLL..LLR............xxx..xxx..xxx............LRR..RRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLL..LRR............xxx..xxx..xxx............LLR..RRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLL..RLL............xxx..xxx..xxx............LLR..RRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLL..RLL............xxx..xxx..xxx............LRR..RRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLL..RLL............xxx..xxx..xxx............RLL..RRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLL..RLL............xxx..xxx..xxx............RRL..RRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLL..RRL............xxx..xxx..xxx............LLR..RRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLL..RRL............xxx..xxx..xxx............RLL..RRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..LLR............xxx..xxx..xxx............LLR..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..LLR............xxx..xxx..xxx............LLR..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..LLR............xxx..xxx..xxx............LRR..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..LLR............xxx..xxx..xxx............LRR..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..LRR............xxx..xxx..xxx............LLR..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..LRR............xxx..xxx..xxx............LLR..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RLL............xxx..xxx..xxx............LLR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RLL............xxx..xxx..xxx............LLR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RLL............xxx..xxx..xxx............LRR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RLL............xxx..xxx..xxx............LRR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RLL............xxx..xxx..xxx............RLL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RLL............xxx..xxx..xxx............RLL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RLL............xxx..xxx..xxx............RRL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RLL............xxx..xxx..xxx............RRL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RRL............xxx..xxx..xxx............LLR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RRL............xxx..xxx..xxx............LLR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RRL............xxx..xxx..xxx............RLL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..LLR..RRL............xxx..xxx..xxx............RLL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..LLR............xxx..xxx..xxx............LLR..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..LLR............xxx..xxx..xxx............LLR..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..LLR............xxx..xxx..xxx............LRR..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..LLR............xxx..xxx..xxx............LRR..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..LRR............xxx..xxx..xxx............LLR..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..LRR............xxx..xxx..xxx............LLR..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RLL............xxx..xxx..xxx............LLR..LRR..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RLL............xxx..xxx..xxx............LLR..RRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RLL............xxx..xxx..xxx............LRR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RLL............xxx..xxx..xxx............LRR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RLL............xxx..xxx..xxx............RLL..LRR..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RLL............xxx..xxx..xxx............RLL..RRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RLL............xxx..xxx..xxx............RRL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RLL............xxx..xxx..xxx............RRL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RRL............xxx..xxx..xxx............LLR..LRR..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RRL............xxx..xxx..xxx............LLR..RRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RRL............xxx..xxx..xxx............RLL..LRR..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLL..RRL............xxx..xxx..xxx............RLL..RRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLR..LLR............xxx..xxx..xxx............LLR..LRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLR..LLR............xxx..xxx..xxx............LRR..LRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLR..LRR............xxx..xxx..xxx............LLR..LRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLR..RLL............xxx..xxx..xxx............LLR..LRL..LRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLR..RLL............xxx..xxx..xxx............LRR..LRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLR..RLL............xxx..xxx..xxx............RLL..LRL..RRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLR..RLL............xxx..xxx..xxx............RRL..LRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLR..RRL............xxx..xxx..xxx............LLR..LRL..LLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRL..RLR..RRL............xxx..xxx..xxx............RLL..LRL..RLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLL..LLL............xxx..xxx..xxx............LLL..RRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLL..LLL............xxx..xxx..xxx............LRL..RRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLL..LLL............xxx..xxx..xxx............RLR..RRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLL..LLL............xxx..xxx..xxx............RRR..RRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLL..LRL............xxx..xxx..xxx............LLL..RRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLL..LRL............xxx..xxx..xxx............RLR..RRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLL..RLR............xxx..xxx..xxx............LLL..RRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLL..RLR............xxx..xxx..xxx............LRL..RRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLL..RRR............xxx..xxx..xxx............LLL..RRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LLL............xxx..xxx..xxx............LLL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LLL............xxx..xxx..xxx............LLL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LLL............xxx..xxx..xxx............LRL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LLL............xxx..xxx..xxx............LRL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LLL............xxx..xxx..xxx............RLR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LLL............xxx..xxx..xxx............RLR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LLL............xxx..xxx..xxx............RRR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LLL............xxx..xxx..xxx............RRR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LRL............xxx..xxx..xxx............LLL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LRL............xxx..xxx..xxx............LLL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LRL............xxx..xxx..xxx............RLR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..LRL............xxx..xxx..xxx............RLR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..RLR............xxx..xxx..xxx............LLL..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..RLR............xxx..xxx..xxx............LLL..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..RLR............xxx..xxx..xxx............LRL..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..RLR............xxx..xxx..xxx............LRL..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..RRR............xxx..xxx..xxx............LLL..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..LLR..RRR............xxx..xxx..xxx............LLL..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LLL............xxx..xxx..xxx............LLL..LRR..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LLL............xxx..xxx..xxx............LLL..RRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LLL............xxx..xxx..xxx............LRL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LLL............xxx..xxx..xxx............LRL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LLL............xxx..xxx..xxx............RLR..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LLL............xxx..xxx..xxx............RLR..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LLL............xxx..xxx..xxx............RRR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LLL............xxx..xxx..xxx............RRR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LRL............xxx..xxx..xxx............LLL..LRR..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LRL............xxx..xxx..xxx............LLL..RRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LRL............xxx..xxx..xxx............RLR..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..LRL............xxx..xxx..xxx............RLR..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..RLR............xxx..xxx..xxx............LLL..LRR..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..RLR............xxx..xxx..xxx............LLL..RRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..RLR............xxx..xxx..xxx............LRL..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..RLR............xxx..xxx..xxx............LRL..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..RRR............xxx..xxx..xxx............LLL..LRR..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLL..RRR............xxx..xxx..xxx............LLL..RRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLR..LLL............xxx..xxx..xxx............LLL..LRL..RRR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLR..LLL............xxx..xxx..xxx............LRL..LRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLR..LLL............xxx..xxx..xxx............RLR..LRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLR..LLL............xxx..xxx..xxx............RRR..LRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLR..LRL............xxx..xxx..xxx............LLL..LRL..RLR............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLR..LRL............xxx..xxx..xxx............RLR..LRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLR..RLR............xxx..xxx..xxx............LLL..LRL..LRL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLR..RLR............xxx..xxx..xxx............LRL..LRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'),
+             ('......xxx..xxx..xxx............RRR..RLR..RRR............xxx..xxx..xxx............LLL..LRL..LLL............xxx..xxx..xxx............xxx..xxx..xxx......', 'ULFRBD'))
+        )
+
+
+
 
 # =========================================
 # solving edges when centers are NOT paired
