@@ -1235,9 +1235,6 @@ class %s(LookupTableIDA):
             # illegal moves
             (TBD),
 
-            # prune tables
-            (parent.lt_foo,
-             parent.lt_bar),
             linecount=%d,
             max_depth=%d,
             filesize=%d)
