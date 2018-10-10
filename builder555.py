@@ -1493,7 +1493,7 @@ class Build555LXPlaneYPlaneEdgesOrientEdgesOnly(BFS):
         )
 
 
-class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
+class Build555LXPlaneYPlaneEdgesOrientStageCentersOnly(BFS):
     """
     (16!/(8!*8!))^2 = 165,636,900 states
 
@@ -1589,6 +1589,79 @@ class Build555LXPlaneYPlaneEdgesOrientPairOneEdge(BFS):
         )
 
 
+# dwalton
+class StartingStates555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-y-plane-edges-orient-centers-only',
+
+            # illegal moves
+            (),
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step354-x-plane-y-plane-edges-orient-centers-only.txt',
+            False, # store_as_hex
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .""", "ascii"),),
+
+            legal_moves=(
+                "F2", "B2",
+                "2L2", "2R2",
+            )
+        )
+
+
+class Build555LXPlaneYPlaneEdgesOrientCentersOnly(BFS):
+    """
+    (16!/(8!*8!))^2 = 165,636,900 states
+
+    We can only get to 6,370,650 of them though
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-plane-y-plane-edges-orient-centers-only',
+
+            # illegal moves
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step354-x-plane-y-plane-edges-orient-centers-only.txt',
+            False, # store_as_hex
+            (('......UUU..UUU..UUU.....................................BFB..BFB..BFB.....................................FBF..FBF..FBF............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................BFF..BFF..BFF.....................................BBF..BBF..BBF............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................BFF..BFF..BFF.....................................FBB..FBB..FBB............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................FFB..FFB..FFB.....................................BBF..BBF..BBF............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................FFB..FFB..FFB.....................................FBB..FBB..FBB............UUU..UUU..UUU......', 'ULFRBD'),
+             ('......UUU..UUU..UUU.....................................FFF..FFF..FFF.....................................BBB..BBB..BBB............UUU..UUU..UUU......', 'ULFRBD')),
+            legal_moves=(
+                "F", "F'", "F2",
+                "B", "B'", "B2",
+                "L2", "R2", "U2", "B2",
+
+                "Uw2", "Dw2",
+                "Lw2", "Rw2",
+
+                "2U2", "2D2",
+                "2L", "2L'", "2L2",
+                "2R", "2R'", "2R2",
+            )
+        )
 
 class Build555LXPlaneYPlaneEdgesOrient(BFS):
     """
@@ -2004,7 +2077,6 @@ class Build555PairSecondFourEdgesEdgesOnly(BFS):
             use_edges_pattern=True
         )
 
-# dwalton here now
 class StartingStates555PairSecondFourEdgesCentersOnly(BFS):
     """
     """
@@ -2357,161 +2429,6 @@ class Build555EdgesXPlaneWithSolvedCenters(BFS):
         )
 
 
-class StartingStates555InitLRCenterStage432XCentersOnly(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-LR-center-stage-432-x-centers-only',
-            (), # illegal moves
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step701-LR-centers-stage-432-x-centers-only.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . x . x .
-            . . x . .
-            . x . x .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . L . L .  . x . x .  . R . R .  . x . x .
- . . L . .  . . x . .  . . R . .  . . x . .
- . L . L .  . x . x .  . R . R .  . x . x .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . x . x .
-            . . x . .
-            . x . x .
-            . . . . .""", "ascii"),),
-            legal_moves = (
-                "L2", "R2",
-                "Uw2", "Dw2", "Fw2", "Bw2",
-            )
-        )
-
-class Build555InitLRCenterStage432XCentersOnly(BFS):
-    """
-    24!/(4!*4!*16!) = 51,482,970
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-LR-center-stage-432-x-centers-only',
-
-            # illegal moves
-            (),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step701-LR-centers-stage-432-x-centers-only.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('......x.x...x...x.x............L.L...L...L.L............x.x...x...x.x............R.R...R...R.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............L.L...L...R.R............x.x...x...x.x............L.L...R...R.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............L.L...L...R.R............x.x...x...x.x............R.R...R...L.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............L.R...L...L.R............x.x...x...x.x............L.R...R...L.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............L.R...L...L.R............x.x...x...x.x............R.L...R...R.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............L.R...L...R.L............x.x...x...x.x............R.L...R...L.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............R.L...L...L.R............x.x...x...x.x............L.R...R...R.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............R.L...L...R.L............x.x...x...x.x............L.R...R...L.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............R.L...L...R.L............x.x...x...x.x............R.L...R...R.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............R.R...L...L.L............x.x...x...x.x............L.L...R...R.R............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............R.R...L...L.L............x.x...x...x.x............R.R...R...L.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'),
-             ('......x.x...x...x.x............R.R...L...R.R............x.x...x...x.x............L.L...R...L.L............x.x...x...x.x............x.x...x...x.x......', 'ULFRBD'))
-        )
-
-
-class StartingStates555InitLRCenterStage432TCentersOnly(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-LR-center-stage-432-t-centers-only',
-            (), # illegal moves
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step702-LR-centers-stage-432-t-centers-only.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . . x . .
-            . x x x .
-            . . x . .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . . L . .  . . x . .  . . R . .  . . x . .
- . L L L .  . x x x .  . R R R .  . x x x .
- . . L . .  . . x . .  . . R . .  . . x . .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . . x . .
-            . x x x .
-            . . x . .
-            . . . . .""", "ascii"),),
-            legal_moves = (
-                "L2", "R2",
-                "Uw2", "Dw2", "Fw2", "Bw2",
-            )
-        )
-
-
-class Build555InitLRCenterStage432TCentersOnly(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-LR-center-stage-432-t-centers-only',
-
-            # illegal moves
-            (),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step702-LR-centers-stage-432-t-centers-only.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('.......x...xxx...x..............L...LLL...L..............x...xxx...x..............R...RRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...LLL...R..............x...xxx...x..............L...RRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...LLL...R..............x...xxx...x..............R...RRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...LLR...L..............x...xxx...x..............R...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...LLR...L..............x...xxx...x..............R...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...LLR...R..............x...xxx...x..............L...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...LLR...R..............x...xxx...x..............L...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...LLR...R..............x...xxx...x..............R...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...LLR...R..............x...xxx...x..............R...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...RLL...L..............x...xxx...x..............R...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...RLL...L..............x...xxx...x..............R...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...RLL...R..............x...xxx...x..............L...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...RLL...R..............x...xxx...x..............L...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...RLL...R..............x...xxx...x..............R...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...RLL...R..............x...xxx...x..............R...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...RLR...L..............x...xxx...x..............R...LRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...RLR...R..............x...xxx...x..............L...LRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............L...RLR...R..............x...xxx...x..............R...LRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...LLL...L..............x...xxx...x..............L...RRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...LLL...L..............x...xxx...x..............R...RRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...LLL...R..............x...xxx...x..............L...RRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...LLR...L..............x...xxx...x..............L...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...LLR...L..............x...xxx...x..............L...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...LLR...L..............x...xxx...x..............R...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...LLR...L..............x...xxx...x..............R...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...LLR...R..............x...xxx...x..............L...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...LLR...R..............x...xxx...x..............L...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...RLL...L..............x...xxx...x..............L...LRR...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...RLL...L..............x...xxx...x..............L...RRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...RLL...L..............x...xxx...x..............R...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...RLL...L..............x...xxx...x..............R...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...RLL...R..............x...xxx...x..............L...LRR...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...RLL...R..............x...xxx...x..............L...RRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...RLR...L..............x...xxx...x..............L...LRL...R..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...RLR...L..............x...xxx...x..............R...LRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'),
-             ('.......x...xxx...x..............R...RLR...R..............x...xxx...x..............L...LRL...L..............x...xxx...x..............x...xxx...x.......', 'ULFRBD'))
-        )
-
 class StartingStates555InitLRCenterStage432(BFS):
 
     def __init__(self):
@@ -2547,16 +2464,19 @@ class StartingStates555InitLRCenterStage432(BFS):
             )
         )
 
+
+# dwalton here now
 class Build555InitLRCenterStage432(BFS):
 
     def __init__(self):
         BFS.__init__(self,
             '5x5x5-lr-center-stage-432',
 
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'"),
+            # illegal moves
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'"),
 
             '5x5x5',
             'lookup-table-5x5x5-step700-LR-centers-stage-432.txt',
@@ -3109,4 +3029,16 @@ phase 3 - solve 4-edges that are EOed...this will be similar to our step500 tabl
 phase 4 - solve 3rd L4E group
 
 I think this will be in the low 40s of steps
+This ended up being more in the 47-48 range which is still an improvement
+'''
+
+# brainstorm 2
+'''
+phase 1
+- stage 1st L4E group
+- EO the other 8-edges to be pairable without L L' R R' F F' B B'
+- LFRB in horizontal bars
+- UD can be anything
+
+build this 9-deep and see where it gets us?
 '''
