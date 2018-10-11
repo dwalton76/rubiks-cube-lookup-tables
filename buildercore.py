@@ -1177,7 +1177,7 @@ class %s(LookupTable):
             filesize=%d)
         ''\'
 
-    def ida_heuristic(self, ida_threshold):
+    def ida_heuristic(self):
         parent_state = self.parent.state''' % (
     class_name,
     class_name,
@@ -1240,7 +1240,7 @@ class %s(LookupTableIDA):
             max_depth=%d,
             filesize=%d)
 
-    def ida_heuristic(self, ida_threshold):
+    def ida_heuristic(self):
         parent_state = self.parent.state''' % (
     class_name,
     histogram,
