@@ -710,6 +710,7 @@ class BFS(object):
 
         if self.name in (
                 "5x5x5-edges-stage-first-four",
+                "5x5x5-edges-stage-first-four-foo",
                 "5x5x5-edges-stage-second-four",
                 "5x5x5-edges-x-plane-with-solved-centers",
             ) and not self.lt_centers:
@@ -725,6 +726,10 @@ class BFS(object):
                     self.lt_centers_max_depth = 4
                 else:
                     raise Exception()
+
+            elif self.name == "5x5x5-edges-stage-first-four-foo":
+                lt_centers_filename = "lookup-table-5x5x5-step105-stage-first-four-edges-foo-centers.txt"
+                self.lt_centers_max_depth = 3
 
             elif self.name == "5x5x5-edges-stage-second-four":
                 lt_centers_filename = "lookup-table-5x5x5-step211-ULFRBD-centers-solve.txt"
@@ -781,6 +786,9 @@ class BFS(object):
                                 "5x5x5-edges-stage-second-four",
                             ):
                             centers = ''.join([self.cube.state[x] for x in centers_555])
+
+                        elif self.name == "5x5x5-edges-stage-first-four-foo":
+                            centers = ''.join(["U" if self.cube.state[x] in ("U", "D") else self.cube.state[x] for x in centers_555])
 
                     if max_depth is None:
                         move_budget = 999
@@ -1016,16 +1024,25 @@ class BFS(object):
 
                     if self.name in (
                         "5x5x5-edges-stage-first-four",
+                        "5x5x5-edges-stage-first-four-foo",
                         "5x5x5-edges-stage-second-four",
                         ):
 
                         self.cube.state = list(cube_state_string)
-                        centers = ''.join([self.cube.state[x] for x in centers_555])
                         edges = ''.join([self.cube.state[x] for x in edges_555])
                         edges = edges.replace('-', 'x')
 
-                        if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-                            continue
+                        if name == "5x5x5-edges-stage-first-four-foo":
+                            centers = ''.join(["U" if self.cube.state[x] in ("U", "D") else self.cube.state[x] for x in centers_555])
+
+                            if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBUUUUUUUUU":
+                                continue
+
+                        elif name in ("5x5x5-edges-stage-first-four", "5x5x5-edges-stage-second-four"):
+                            centers = ''.join([self.cube.state[x] for x in centers_555])
+
+                            if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
+                                continue
 
                         cube_state_string_small = edges
 
