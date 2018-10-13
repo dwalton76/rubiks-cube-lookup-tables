@@ -7752,43 +7752,6 @@ class Build555EdgesXPlane(BFS):
         )
 
 
-class Build555EdgesXPlaneWithSolvedCenters(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-x-plane-with-solved-centers',
-             (), # illegal moves
-            '5x5x5',
-            'lookup-table-5x5x5-step310-edges-x-plane-with-solved-centers.txt',
-            False, # store_as_hex
-
-            (("""
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""", "ascii"),),
-            use_edges_pattern=True,
-            legal_moves = (
-                "L2", "F2", "R2", "B2",
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-            )
-        )
-
-
 # =========================================
 # solving edges when centers are NOT paired
 # =========================================

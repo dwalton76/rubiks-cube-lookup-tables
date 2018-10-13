@@ -710,7 +710,6 @@ class BFS(object):
         if self.name in (
                 "5x5x5-edges-stage-first-four",
                 "5x5x5-edges-stage-first-four-foo",
-                "5x5x5-edges-x-plane-with-solved-centers",
             ) and not self.lt_centers:
             self.lt_centers = {}
 
@@ -727,10 +726,6 @@ class BFS(object):
             elif self.name == "5x5x5-edges-stage-first-four-foo":
                 lt_centers_filename = "lookup-table-5x5x5-step105-stage-first-four-edges-foo-centers.txt"
                 self.lt_centers_max_depth = 3
-
-            elif self.name == "5x5x5-edges-x-plane-with-solved-centers":
-                lt_centers_filename = "lookup-table-5x5x5-step302-edges-x-plane-centers-only.txt"
-                self.lt_centers_max_depth = 6
 
             else:
                 raise Exception("Implement this %s" % self.name)
@@ -757,8 +752,6 @@ class BFS(object):
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
 
-                        if self.name == "5x5x5-edges-x-plane-with-solved-centers":
-                            centers = pattern[0:54]
                     else:
                         (state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
@@ -948,17 +941,8 @@ class BFS(object):
             if self.use_edges_pattern:
                 for line in fh_read:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
-
-                    if self.name in (
-                            "5x5x5-edges-x-plane-with-solved-centers",
-                        ):
-                        centers = pattern[0:54]
-                        edges = pattern[54:]
-                        if centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-                            fh_final.write("%s:%s\n" % (edges, steps))
-                    else:
-                        pattern = pattern.replace('.', '')
-                        fh_final.write("%s:%s\n" % (pattern, steps))
+                    pattern = pattern.replace('.', '')
+                    fh_final.write("%s:%s\n" % (pattern, steps))
 
             elif self.use_centers_then_edges:
                 for line in fh_read:
