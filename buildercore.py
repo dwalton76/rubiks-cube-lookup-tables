@@ -710,7 +710,6 @@ class BFS(object):
         if self.name in (
                 "5x5x5-edges-stage-first-four",
                 "5x5x5-edges-stage-first-four-foo",
-                "5x5x5-edges-stage-second-four",
                 "5x5x5-edges-x-plane-with-solved-centers",
             ) and not self.lt_centers:
             self.lt_centers = {}
@@ -728,10 +727,6 @@ class BFS(object):
             elif self.name == "5x5x5-edges-stage-first-four-foo":
                 lt_centers_filename = "lookup-table-5x5x5-step105-stage-first-four-edges-foo-centers.txt"
                 self.lt_centers_max_depth = 3
-
-            elif self.name == "5x5x5-edges-stage-second-four":
-                lt_centers_filename = "lookup-table-5x5x5-step211-ULFRBD-centers-solve.txt"
-                self.lt_centers_max_depth = 9
 
             elif self.name == "5x5x5-edges-x-plane-with-solved-centers":
                 lt_centers_filename = "lookup-table-5x5x5-step302-edges-x-plane-centers-only.txt"
@@ -768,10 +763,7 @@ class BFS(object):
                         (state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
 
-                        if self.name in (
-                                "5x5x5-edges-stage-first-four",
-                                "5x5x5-edges-stage-second-four",
-                            ):
+                        if self.name == "5x5x5-edges-stage-first-four":
                             centers = ''.join([self.cube.state[x] for x in centers_555])
 
                         elif self.name == "5x5x5-edges-stage-first-four-foo":
@@ -1005,7 +997,6 @@ class BFS(object):
                     if self.name in (
                         "5x5x5-edges-stage-first-four",
                         "5x5x5-edges-stage-first-four-foo",
-                        "5x5x5-edges-stage-second-four",
                         ):
 
                         self.cube.state = list(cube_state_string)
@@ -1018,7 +1009,7 @@ class BFS(object):
                             if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBUUUUUUUUU":
                                 continue
 
-                        elif name in ("5x5x5-edges-stage-first-four", "5x5x5-edges-stage-second-four"):
+                        elif name == "5x5x5-edges-stage-first-four":
                             centers = ''.join([self.cube.state[x] for x in centers_555])
 
                             if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
