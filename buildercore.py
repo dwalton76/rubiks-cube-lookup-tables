@@ -13,7 +13,6 @@ from threading import Thread, Event
 import argparse
 import datetime as dt
 import gc
-import json
 import logging
 import math
 import os
@@ -715,7 +714,6 @@ class BFS(object):
                 "5x5x5-edges-x-plane-with-solved-centers",
             ) and not self.lt_centers:
             self.lt_centers = {}
-            self.lt_centers_json = {}
 
             if self.name == "5x5x5-edges-stage-first-four":
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
@@ -748,17 +746,6 @@ class BFS(object):
                     (state, steps) = line.strip().split(':')
                     self.lt_centers[state] = len(steps.split())
             log.info("end loading %s" % lt_centers_filename)
-
-            if (lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.5-deep" or
-                lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep" or
-                lt_centers_filename == "lookup-table-5x5x5-step241-ULFRBD-centers-solve.txt" or
-                lt_centers_filename == "lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt"):
-
-                log.info("begin loading %s json" % lt_centers_filename)
-                with open(lt_centers_filename + ".json", "r") as fh:
-                    self.lt_centers_json = json.load(fh)
-
-                log.info("end loading %s json" % lt_centers_filename)
 
         if max_depth is None or self.depth < max_depth:
             to_write = []
@@ -818,13 +805,6 @@ class BFS(object):
 
                         if prev_step and next_move and steps_on_same_face_and_layer(prev_step, next_move):
                             continue
-
-                        # If this move will put the centers into a state that cannot be solved within
-                        # our move budget then do not bother adding it to the workq
-                        if centers and centers in self.lt_centers_json:
-                            if (self.lt_centers_json[centers][next_move] + 1) > move_budget:
-                                pruned += 1
-                                continue
 
                         if self.use_edges_pattern:
                             workq_line = "%s:%s:%s %s" % (pattern, state, steps_to_scramble, next_move)
