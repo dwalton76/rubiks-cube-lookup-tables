@@ -756,11 +756,11 @@ class BFS(object):
                         (state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
 
-                        if self.name == "5x5x5-edges-stage-first-four":
-                            centers = ''.join([self.cube.state[x] for x in centers_555])
+                    if self.name == "5x5x5-edges-stage-first-four":
+                        centers = ''.join([self.cube.state[x] for x in centers_555])
 
-                        elif self.name == "5x5x5-edges-stage-first-four-foo":
-                            centers = ''.join(["U" if self.cube.state[x] in ("U", "D") else self.cube.state[x] for x in centers_555])
+                    elif self.name == "5x5x5-edges-stage-first-four-foo":
+                        centers = ''.join(["U" if self.cube.state[x] in ("U", "D") else self.cube.state[x] for x in centers_555])
 
                     if max_depth is None:
                         move_budget = 999
@@ -949,7 +949,22 @@ class BFS(object):
                     (cube_state_string, steps) = line.rstrip().split(':')
                     self.cube.state = list(cube_state_string)
 
-                    if self.size == '4x4x4':
+                    if self.name == "5x5x5-edges-stage-first-four-foo":
+                        centers = ''.join(["U" if self.cube.state[x] in ("U", "D") else self.cube.state[x] for x in centers_555])
+                        edges = ''.join([self.cube.state[x] for x in edges_444])
+                        edges = edges.replace('.', '')
+
+                        # We want to keep all of the entries where
+                        # - UD centers are staged
+                        # - LR/FB centers are solved
+                        #
+                        # We do this because we want the entries in the table to take the LR/FB centers
+                        # to a horizontal bar pattern but we only need UD to be staged, we do not need
+                        # them in a specific pattern.
+                        if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBUUUUUUUUU":
+                            continue
+
+                    elif self.size == '4x4x4':
                         centers = ''.join([self.cube.state[x] for x in centers_444])
                         edges = ''.join([self.cube.state[x] for x in edges_444])
                         centers = centers.replace('.', '')
@@ -978,29 +993,16 @@ class BFS(object):
                 for line in fh_read:
                     (cube_state_string, steps) = line.rstrip().split(':')
 
-                    if self.name in (
-                        "5x5x5-edges-stage-first-four",
-                        "5x5x5-edges-stage-first-four-foo",
-                        ):
-
+                    if self.name == "5x5x5-edges-stage-first-four":
                         self.cube.state = list(cube_state_string)
                         edges = ''.join([self.cube.state[x] for x in edges_555])
                         edges = edges.replace('-', 'x')
+                        centers = ''.join([self.cube.state[x] for x in centers_555])
 
-                        if name == "5x5x5-edges-stage-first-four-foo":
-                            centers = ''.join(["U" if self.cube.state[x] in ("U", "D") else self.cube.state[x] for x in centers_555])
-
-                            if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBUUUUUUUUU":
-                                continue
-
-                        elif name == "5x5x5-edges-stage-first-four":
-                            centers = ''.join([self.cube.state[x] for x in centers_555])
-
-                            if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-                                continue
+                        if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
+                            continue
 
                         cube_state_string_small = edges
-
                     else:
                         cube_state_string_small = cube_state_string[1:].replace('.', '')
 
