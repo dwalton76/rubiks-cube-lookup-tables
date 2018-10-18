@@ -7,6 +7,40 @@ import sys
 log = logging.getLogger(__name__)
 
 
+class Build555Ultimate(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-ultimate',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step00-ultimate.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            U U U U U
+            U U U U U
+            U U U U U
+            U U U U U
+            U U U U U
+
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+
+            D D D D D
+            D D D D D
+            D D D D D
+            D D D D D
+            D D D D D""", "ascii"),),
+        )
+
+
 class Build555UDCenterStage(BFS):
     """
     """
@@ -1694,7 +1728,7 @@ class Build555XPlaneYPlaneEdgesOrientFBCentersEdgesOnly(BFS):
     to vertical bars with the x-plane edges paired.  After that L R' we need the remaining
     8-edges to be EOed.  So that is why we are starting with the following table.
 
-    I Xed out the z-plane edges...not need to track those
+    I Xed out the z-plane edges...no need to track those
     """
 
     def __init__(self):
@@ -1731,9 +1765,6 @@ class Build555XPlaneYPlaneEdgesOrientFBCentersEdgesOnly(BFS):
 
                 "Uw2", "Dw2",
                 "Lw2", "Rw2",
-
-                "2U2", "2D2",
-                "2L2", "2R2",
             )
         )
 
@@ -1871,9 +1902,6 @@ class Build555XPlaneYPlaneEdgesOrientFBCentersOnly(BFS):
 
                 "Uw2", "Dw2",
                 "Lw2", "Rw2",
-
-                "2U2", "2D2",
-                "2L2", "2R2",
             )
         )
 
@@ -2013,9 +2041,6 @@ class Build555XPlaneYPlaneEdgesOrientFBCenters(BFS):
 
                 "Uw2", "Dw2",
                 "Lw2", "Rw2",
-
-                "2U2", "2D2",
-                "2L2", "2R2",
             )
         )
 

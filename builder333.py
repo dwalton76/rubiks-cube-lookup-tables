@@ -10,6 +10,37 @@ import sys
 
 log = logging.getLogger(__name__)
 
+
+class Build333Ultimate(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '3x3x3-ultimate',
+
+            # illegal moves
+            (),
+
+            '3x3x3',
+            'lookup-table-3x3x3-step00-ultimate.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+        U U U
+        U U U
+        U U U
+
+ L L L  F F F  R R R  B B B
+ L L L  F F F  R R R  B B B
+ L L L  F F F  R R R  B B B
+
+        D D D
+        D D D
+        D D D""", 'ascii'),),
+        )
+
+
+
 # Implements your own two-phase 3x3x3 solver someday...
 # http://kociemba.org/math/twophase.htm
 # https://ruwix.com/the-rubiks-cube/herbert-kociemba-optimal-cube-solver-cube-explorer/

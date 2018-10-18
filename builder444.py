@@ -11,6 +11,37 @@ import sys
 log = logging.getLogger(__name__)
 
 
+class Build444Ultimate(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-ultimate',
+            (),
+            '4x4x4',
+            'lookup-table-4x4x4-step00-ultimate.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          U U U U
+          U U U U
+          U U U U
+          U U U U
+
+ L L L L  F F F F  R R R R  B B B B
+ L L L L  F F F F  R R R R  B B B B
+ L L L L  F F F F  R R R R  B B B B
+ L L L L  F F F F  R R R R  B B B B
+
+          D D D D
+          D D D D
+          D D D D
+          D D D D""", 'ascii'),),
+        )
+
+
+
+
 class StartingStates444UDCentersStage(BFS):
 
     def __init__(self):
