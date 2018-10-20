@@ -5,7 +5,7 @@ from rubikscubennnsolver.misc import parse_ascii_222, parse_ascii_333, parse_asc
 from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
-from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444
+from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444, edges_recolor_pattern_444, wings_for_edges_recolor_pattern_444
 from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555, edges_555, edges_recolor_pattern_555, wings_for_edges_pattern_555
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
@@ -1074,8 +1074,15 @@ class BFS(object):
 
                     if use_edges_pattern:
                         self.cube.state = ["x"] + list(state)
-                        state = edges_recolor_pattern_555(self.cube.state[:])
-                        state = ''.join([state[index] for index in wings_for_edges_pattern_555])
+
+                        if self.size == "5x5x5":
+                            state = edges_recolor_pattern_555(self.cube.state[:])
+                            state = ''.join([state[index] for index in wings_for_edges_pattern_555])
+                        elif self.size == "4x4x4":
+                            state = edges_recolor_pattern_444(self.cube.state[:])
+                            state = ''.join([state[index] for (_, index, _) in wings_for_edges_recolor_pattern_444])
+                        else:
+                            raise Exception("use_edges_pattern not supported for %s" % self.size)
 
                     else:
                         state = ''.join(state.split()).strip().replace('.', '')
@@ -1104,6 +1111,7 @@ class BFS(object):
         next_prime = {
             12870 : 12889,
             176400 : 176401,
+            5880600 : 5880601,
             24010000 : 24010031,
             51482970 : 51482999,
             67326336 : 67326361,
@@ -1172,7 +1180,7 @@ class %s(LookupTable):
             print("        state = self.hex_format % int(state, 2)")
 
         elif self.use_edges_pattern:
-            print("        state = edges_recolor_pattern_555(parent_state[:])")
+            print("        state = edges_recolor_pattern_%s(parent_state[:])" % self.size.replace('x', ''))
             print("        state = ''.join([state[index] for index in wings_for_edges_pattern_%s])" % self.size.replace('x', ''))
 
         else:
@@ -1231,7 +1239,7 @@ class %s(LookupTableIDA):
             print("        lt_state = self.hex_format % int(lt_state, 2)\n\n")
 
         elif self.use_edges_pattern:
-            print("        state = edges_recolor_pattern_555(parent_state[:])")
+            print("        state = edges_recolor_pattern_%s(parent_state[:])" % self.size.replace('x', ''))
             print("        edges_state = ''.join([state[index] for index in wings_for_edges_pattern_%s])" % self.size.replace('x', ''))
             print("        lt_state = edges_state")
 

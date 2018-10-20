@@ -576,3 +576,351 @@ class Build444Reduce333(BFS):
              ('.DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU.', 'ULFRBD')),
             use_edges_pattern=True
         )
+
+
+# The following is a two phase alternative to the
+# step30, 31, 32 phase above.  This is to be used
+# by smaller platforms (raspberry pi) with less
+# cpu/memory.
+# ==================================================
+# Pair the last eight EOed edges
+# ==================================================
+class Build444FirstFourEdgesEdgesOnly(BFS):
+    """
+    Solve the first 4-edges in x-plane
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-edges',
+            ("Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step41.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . - - .
+          - . . -
+          - . . -
+          . - - .
+
+ . - - .  . - - .  . - - .  . - - .
+ L . . L  F . . F  R . . R  B . . B
+ L . . L  F . . F  R . . R  B . . B
+ . - - .  . - - .  . - - .  . - - .
+
+          . - - .
+          - . . -
+          - . . -
+          . - - .""", 'ascii'),),
+
+            use_edges_pattern=True,
+        )
+
+
+class StartingStates444FirstFourEdgesCentersOnly(BFS):
+    """
+    LR FB to vertical bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333',
+            moves_444,
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step42.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . . . .
+          . . . .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . F F .  . R R .  . B B .
+ . L L .  . F F .  . R R .  . B B .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . . . .
+          . . . .
+          . . . .""", 'ascii'),),
+            legal_moves=(
+                "L2", "F2", "R2", "B2",
+                "Lw2", "Fw2", "Rw2", "Bw2",
+            )
+        )
+
+
+class Build444FirstFourEdgesCentersOnly(BFS):
+    """
+    LR FB to vertical bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333',
+            ("Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step42.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.....................LL..LL..........BB..BB..........RR..RR..........FF..FF.....................', 'ULFRBD'),
+             ('.....................LL..LL..........BF..BF..........RR..RR..........BF..BF.....................', 'ULFRBD'),
+             ('.....................LL..LL..........BF..BF..........RR..RR..........FB..FB.....................', 'ULFRBD'),
+             ('.....................LL..LL..........FB..FB..........RR..RR..........BF..BF.....................', 'ULFRBD'),
+             ('.....................LL..LL..........FB..FB..........RR..RR..........FB..FB.....................', 'ULFRBD'),
+             ('.....................LL..LL..........FF..FF..........RR..RR..........BB..BB.....................', 'ULFRBD'),
+             ('.....................LR..LR..........BB..BB..........LR..LR..........FF..FF.....................', 'ULFRBD'),
+             ('.....................LR..LR..........BB..BB..........RL..RL..........FF..FF.....................', 'ULFRBD'),
+             ('.....................LR..LR..........BF..BF..........LR..LR..........BF..BF.....................', 'ULFRBD'),
+             ('.....................LR..LR..........BF..BF..........LR..LR..........FB..FB.....................', 'ULFRBD'),
+             ('.....................LR..LR..........BF..BF..........RL..RL..........BF..BF.....................', 'ULFRBD'),
+             ('.....................LR..LR..........BF..BF..........RL..RL..........FB..FB.....................', 'ULFRBD'),
+             ('.....................LR..LR..........FB..FB..........LR..LR..........BF..BF.....................', 'ULFRBD'),
+             ('.....................LR..LR..........FB..FB..........LR..LR..........FB..FB.....................', 'ULFRBD'),
+             ('.....................LR..LR..........FB..FB..........RL..RL..........BF..BF.....................', 'ULFRBD'),
+             ('.....................LR..LR..........FB..FB..........RL..RL..........FB..FB.....................', 'ULFRBD'),
+             ('.....................LR..LR..........FF..FF..........LR..LR..........BB..BB.....................', 'ULFRBD'),
+             ('.....................LR..LR..........FF..FF..........RL..RL..........BB..BB.....................', 'ULFRBD'),
+             ('.....................RL..RL..........BB..BB..........LR..LR..........FF..FF.....................', 'ULFRBD'),
+             ('.....................RL..RL..........BB..BB..........RL..RL..........FF..FF.....................', 'ULFRBD'),
+             ('.....................RL..RL..........BF..BF..........LR..LR..........BF..BF.....................', 'ULFRBD'),
+             ('.....................RL..RL..........BF..BF..........LR..LR..........FB..FB.....................', 'ULFRBD'),
+             ('.....................RL..RL..........BF..BF..........RL..RL..........BF..BF.....................', 'ULFRBD'),
+             ('.....................RL..RL..........BF..BF..........RL..RL..........FB..FB.....................', 'ULFRBD'),
+             ('.....................RL..RL..........FB..FB..........LR..LR..........BF..BF.....................', 'ULFRBD'),
+             ('.....................RL..RL..........FB..FB..........LR..LR..........FB..FB.....................', 'ULFRBD'),
+             ('.....................RL..RL..........FB..FB..........RL..RL..........BF..BF.....................', 'ULFRBD'),
+             ('.....................RL..RL..........FB..FB..........RL..RL..........FB..FB.....................', 'ULFRBD'),
+             ('.....................RL..RL..........FF..FF..........LR..LR..........BB..BB.....................', 'ULFRBD'),
+             ('.....................RL..RL..........FF..FF..........RL..RL..........BB..BB.....................', 'ULFRBD'),
+             ('.....................RR..RR..........BB..BB..........LL..LL..........FF..FF.....................', 'ULFRBD'),
+             ('.....................RR..RR..........BF..BF..........LL..LL..........BF..BF.....................', 'ULFRBD'),
+             ('.....................RR..RR..........BF..BF..........LL..LL..........FB..FB.....................', 'ULFRBD'),
+             ('.....................RR..RR..........FB..FB..........LL..LL..........BF..BF.....................', 'ULFRBD'),
+             ('.....................RR..RR..........FB..FB..........LL..LL..........FB..FB.....................', 'ULFRBD'),
+             ('.....................RR..RR..........FF..FF..........LL..LL..........BB..BB.....................', 'ULFRBD'))
+        )
+
+
+class StartingStates444FirstFourEdges(BFS):
+    """
+    Solve the first 4-edges in x-plane
+    LR FB to vertical bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333',
+            moves_444,
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step40.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . - - .
+          - . . -
+          - . . -
+          . - - .
+
+ . - - .  . - - .  . - - .  . - - .
+ L L L L  F F F F  R R R R  B B B B
+ L L L L  F F F F  R R R R  B B B B
+ . - - .  . - - .  . - - .  . - - .
+
+          . - - .
+          - . . -
+          - . . -
+          . - - .""", 'ascii'),),
+            use_edges_pattern=True,
+            legal_moves=(
+                "L2", "F2", "R2", "B2",
+                "Lw2", "Fw2", "Rw2", "Bw2",
+            )
+        )
+
+class Build444FirstFourEdges(BFS):
+    """
+    Solve the first 4-edges in x-plane
+    LR FB to vertical bars
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333',
+            ("Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step40.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.--.-..--..-.--..--.LLLLLLLL.--..--.BBBBBBBB.--..--.RRRRRRRR.--..--.FFFFFFFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLLLLLLL.--..--.BBFFBBFF.--..--.RRRRRRRR.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLLLLLLL.--..--.BFFFBFFF.--..--.RRRRRRRR.--..--.BBBFBBBF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLLLLLLL.--..--.FFBBFFBB.--..--.RRRRRRRR.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLLRLLLR.--..--.BBFFBBFF.--..--.LRRRLRRR.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLLRLLLR.--..--.FFBBFFBB.--..--.LRRRLRRR.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRLLLRL.--..--.BBBBBBBB.--..--.RRLRRRLR.--..--.FFFFFFFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRLLLRL.--..--.BBFFBBFF.--..--.RLRRRLRR.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRLLLRL.--..--.FFBBFFBB.--..--.RLRRRLRR.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRRLLRR.--..--.BBBBBBBB.--..--.LLRRLLRR.--..--.FFFFFFFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRRLLRR.--..--.BBFFBBFF.--..--.LLRRLLRR.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRRLLRR.--..--.BBFFBBFF.--..--.RRLLRRLL.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRRLLRR.--..--.BBFFBBFF.--..--.RRLLRRLL.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRRLLRR.--..--.BFFFBFFF.--..--.RRLLRRLL.--..--.BBBFBBBF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRRLLRR.--..--.FFBBFFBB.--..--.LLRRLLRR.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRRLLRR.--..--.FFBBFFBB.--..--.RRLLRRLL.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRRLLRR.--..--.FFBBFFBB.--..--.RRLLRRLL.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LLRRLLRR.--..--.FFFFFFFF.--..--.LLRRLLRR.--..--.BBBBBBBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LRLLLRLL.--..--.BBBBBBBB.--..--.RLRRRLRR.--..--.FFFFFFFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LRLLLRLL.--..--.BBFFBBFF.--..--.RRLRRRLR.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LRLLLRLL.--..--.FFBBFFBB.--..--.RRLRRRLR.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LRRRLRRR.--..--.BBFFBBFF.--..--.LLLRLLLR.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.LRRRLRRR.--..--.FFBBFFBB.--..--.LLLRLLLR.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRLLRRLL.--..--.BBBBBBBB.--..--.RRLLRRLL.--..--.FFFFFFFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRLLRRLL.--..--.BBFFBBFF.--..--.LLRRLLRR.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRLLRRLL.--..--.BBFFBBFF.--..--.LLRRLLRR.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRLLRRLL.--..--.BBFFBBFF.--..--.RRLLRRLL.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRLLRRLL.--..--.BFFFBFFF.--..--.LLRRLLRR.--..--.BBBFBBBF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRLLRRLL.--..--.FFBBFFBB.--..--.LLRRLLRR.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRLLRRLL.--..--.FFBBFFBB.--..--.LLRRLLRR.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRLLRRLL.--..--.FFBBFFBB.--..--.RRLLRRLL.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRLLRRLL.--..--.FFFFFFFF.--..--.RRLLRRLL.--..--.BBBBBBBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRRRRRRR.--..--.BBBBBBBB.--..--.LLLLLLLL.--..--.FFFFFFFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRRRRRRR.--..--.BBFFBBFF.--..--.LLLLLLLL.--..--.BBFFBBFF.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRRRRRRR.--..--.FFBBFFBB.--..--.LLLLLLLL.--..--.FFBBFFBB.--..--.-..--..-.--.', 'ULFRBD'),
+             ('.--.-..--..-.--..--.RRRRRRRR.--..--.FFFFFFFF.--..--.LLLLLLLL.--..--.BBBBBBBB.--..--.-..--..-.--.', 'ULFRBD')),
+            use_edges_pattern=True,
+        )
+
+
+# ==================================================
+# Pair the last eight EOed edges
+# ==================================================
+class Build444LastEightEdgesEdgesOnly(BFS):
+    """
+    Solve the last 8-edges in z-plane and y-plane
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333-edges',
+            ("Uw", "Uw'", "Uw2",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+            '4x4x4',
+            'lookup-table-4x4x4-step51.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . U U .
+          U . . U
+          U . . U
+          . U U .
+
+ . L L .  . F F .  . R R .  . B B .
+ L . . L  F . . F  R . . R  B . . B
+ L . . L  F . . F  R . . R  B . . B
+ . L L .  . F F .  . R R .  . B B .
+
+          . D D .
+          D . . D
+          D . . D
+          . D D .""", 'ascii'),),
+
+            use_edges_pattern=True,
+        )
+
+class Build444LastEightEdgesCentersOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333-centers',
+            ("Uw", "Uw'", "Uw2",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+            '4x4x4',
+            'lookup-table-4x4x4-step52.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.....UU..UU..........LL..LL..........FF..FF..........RR..RR..........BB..BB..........DD..DD.....', 'ULFRBD'),
+             ('.....UU..UU..........RR..RR..........BB..BB..........LL..LL..........FF..FF..........DD..DD.....', 'ULFRBD'),
+             ('.....DD..DD..........LL..LL..........BB..BB..........RR..RR..........FF..FF..........UU..UU.....', 'ULFRBD'),
+             ('.....DD..DD..........RR..RR..........FF..FF..........LL..LL..........BB..BB..........UU..UU.....', 'ULFRBD'))
+        )
+
+
+class Build444LastEightEdges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-reduce333',
+            ("Uw", "Uw'", "Uw2",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'", "Dw2",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+            '4x4x4',
+            'lookup-table-4x4x4-step50.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.UU.UUUUUUUU.UU..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..DD.DDDDDDDD.DD.', 'ULFRBD'),
+             ('.UU.UUUUUUUU.UU..RR.RRRRRRRR.RR..BB.BBBBBBBB.BB..LL.LLLLLLLL.LL..FF.FFFFFFFF.FF..DD.DDDDDDDD.DD.', 'ULFRBD'),
+             ('.DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU.', 'ULFRBD'),
+             ('.DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU.', 'ULFRBD')),
+            use_edges_pattern=True
+        )

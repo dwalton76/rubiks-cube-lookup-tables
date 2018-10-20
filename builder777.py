@@ -816,3 +816,117 @@ class Build777Step63(BFS):
                 . . . . . . . """, "ascii"),)
         )
 
+
+# =================================================================
+# The following is a 2-phase alternative to step60 above. This will
+# - solve the FB centers
+# - L R U D to move LR to vertical bars and UD to horizontal bars
+# - solve LR UD centers
+# =================================================================
+class Build777Step70(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '7x7x7-step70',
+
+            # keep all centers staged
+            ("3Uw", "3Uw'", "Uw", "Uw'",
+             "3Lw", "3Lw'", "Lw", "Lw'",
+             "3Fw", "3Fw'", "Fw", "Fw'",
+             "3Rw", "3Rw'", "Rw", "Rw'",
+             "3Bw", "3Bw'", "Bw", "Bw'",
+             "3Dw", "3Dw'", "Dw", "Dw'",
+
+            # keep LR in horizontal stripes
+            "L", "L'", "R", "R'", "3Fw2", "3Bw2", "Fw2", "Bw2",
+
+            # keep UD in vertical stripes
+            "U", "U'", "D", "D'"),
+
+            '7x7x7',
+            'lookup-table-7x7x7-step70.txt',
+            True, # store_as_hex
+            (("""
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . F F F F F .  . . . . . . .  . x x x x x .
+ . . . . . . .  . F F F F F .  . . . . . . .  . x x x x x .
+ . . . . . . .  . F F F F F .  . . . . . . .  . x x x x x .
+ . . . . . . .  . F F F F F .  . . . . . . .  . x x x x x .
+ . . . . . . .  . F F F F F .  . . . . . . .  . x x x x x .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . .
+                . . . . . . . """, "ascii"),)
+        )
+
+
+class Build777Step80(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '7x7x7-step80',
+
+            # keep all centers staged
+            ("3Uw", "3Uw'", "Uw", "Uw'",
+             "3Lw", "3Lw'", "Lw", "Lw'",
+             "3Fw", "3Fw'", "Fw", "Fw'",
+             "3Rw", "3Rw'", "Rw", "Rw'",
+             "3Bw", "3Bw'", "Bw", "Bw'",
+             "3Dw", "3Dw'", "Dw", "Dw'",
+
+            # keep LR in vertical stripes
+            "L", "L'", "R", "R'",
+
+            # keep UD in horizontal stripes
+            "U", "U'", "D", "D'",
+
+            # keep FB centers solved
+            "3Uw2", "3Dw2", "Uw2", "Dw2",
+            "3Lw2", "3Rw2", "Lw2", "Rw2",
+            "F", "F'", "F2", "B", "B'", "B2",
+            ),
+
+            '7x7x7',
+            'lookup-table-7x7x7-step80.txt',
+            False, # store_as_hex
+
+            (("""
+                . . . . . . .
+                . U U U U U .
+                . U U U U U .
+                . U U U U U .
+                . U U U U U .
+                . U U U U U .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . L L L L L .  . . . . . . .  . R R R R R .  . . . . . . .
+ . L L L L L .  . . . . . . .  . R R R R R .  . . . . . . .
+ . L L L L L .  . . . . . . .  . R R R R R .  . . . . . . .
+ . L L L L L .  . . . . . . .  . R R R R R .  . . . . . . .
+ . L L L L L .  . . . . . . .  . R R R R R .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . D D D D D .
+                . D D D D D .
+                . D D D D D .
+                . D D D D D .
+                . D D D D D .
+                . . . . . . . """, "ascii"),)
+        )
+
+
