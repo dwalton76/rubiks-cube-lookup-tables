@@ -319,7 +319,20 @@ def write_cycles_for_depth(depth):
 #save_outer_layer_sequences(5)
 #save_outer_layer_sequences(6)
 
+# INFO: (0, 1, 3, 1, False): found 239,760 cycles
+# INFO: (0, 1, 3, 1, False): found 1,296 keepers
 #write_cycles_for_depth(5) # (0, 1, 3, 1)
-write_cycles_for_depth(6) # (0, 1, 4, 1)
-write_cycles_for_depth(7) # (0, 1, 5, 1)
-#write_cycles_for_depth(8) # (0, 1, 6, 1)
+
+
+# Took ~15 minutes
+# INFO: (0, 1, 4, 1, False): found 3,645,000 cycles
+# INFO: (0, 1, 4, 1, False): found 21,816 keepers
+#write_cycles_for_depth(6) # (0, 1, 4, 1)
+
+# Took 4 1/2 hours
+# INFO: (0, 1, 5, 1, False): found 54,645,840 cycles
+# INFO: (0, 1, 5, 1, False): found 259,200 keepers
+#write_cycles_for_depth(7) # (0, 1, 5, 1)
+
+
+write_cycles_for_depth(8) # (0, 1, 6, 1)

@@ -21,28 +21,27 @@ def get_outer_layer_steps():
     with open("utils/cycles-outer-layer-1-deep.json", "r") as fh:
         outer_layer_1deep = json.load(fh)
 
-    with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
-        outer_layer_2deep = json.load(fh)
+    #with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
+    #    outer_layer_2deep = json.load(fh)
 
-    with open("utils/cycles-outer-layer-3-deep.json", "r") as fh:
-        outer_layer_3deep = json.load(fh)
+    #with open("utils/cycles-outer-layer-3-deep.json", "r") as fh:
+    #    outer_layer_3deep = json.load(fh)
 
-    with open("utils/cycles-outer-layer-4-deep.json", "r") as fh:
-        outer_layer_4deep = json.load(fh)
+    #with open("utils/cycles-outer-layer-4-deep.json", "r") as fh:
+    #    outer_layer_4deep = json.load(fh)
 
-    with open("utils/cycles-outer-layer-5-deep.json", "r") as fh:
-        outer_layer_5deep = json.load(fh)
+    #with open("utils/cycles-outer-layer-5-deep.json", "r") as fh:
+    #    outer_layer_5deep = json.load(fh)
 
     #with open("utils/cycles-outer-layer-6-deep.json", "r") as fh:
     #    outer_layer_6deep = json.load(fh)
 
-    outer_layer_steps =\
-        outer_layer_1deep +\
-        outer_layer_2deep +\
-        outer_layer_3deep
-        # outer_layer_4deep +\
-        # outer_layer_5deep +\
-        # outer_layer_6deep
+    outer_layer_steps = outer_layer_1deep
+    #outer_layer_steps += outer_layer_2deep
+    #outer_layer_steps += outer_layer_3deep
+    #outer_layer_steps += outer_layer_4deep
+    #outer_layer_steps += outer_layer_5deep
+    #outer_layer_steps += outer_layer_6deep
     outer_layer_steps.append([])
 
     return outer_layer_steps
@@ -107,6 +106,11 @@ def get_cycle_steps():
             steps_in_cycle = line.strip().split()
             results.append(steps_in_cycle)
 
+    with open("utils/cycles-7-deep.txt", "r") as fh:
+        for line in fh:
+            steps_in_cycle = line.strip().split()
+            results.append(steps_in_cycle)
+
     return results
 
 
@@ -160,6 +164,7 @@ if __name__ == "__main__":
     log.info("{:,} cycle sequences".format(len(cycle_steps)))
 
     index_target = len(outer_layer_steps) * len(cycle_steps)
+    log.info("{:,} outer layer + cycle combos".format(index_target))
 
     results_filename = "lookup-table-555-step800-edges.txt"
     cube = RubiksCube555(solved_555, 'URFDLB')
@@ -180,7 +185,9 @@ if __name__ == "__main__":
                     cube.rotate(step)
 
                 #assert cube.centers_solved(), "centers should be solved but are not"
-                state = edges_recolor_pattern_555(cube.state[:])
+
+                # let us try to pair 2-edges for now...
+                state = edges_recolor_pattern_555(cube.state[:], only_colors=("LF", "RF"))
                 edges_state = ''.join([state[index] for index in wings_for_edges_pattern_555])
 
                 to_write.append("%s:%s" % (edges_state, " ".join(steps_to_solve)))
@@ -192,10 +199,10 @@ if __name__ == "__main__":
                     to_write = []
                     to_write_count = 0
                     log.info("{:,}/{:,}".format(index, index_target))
-                    break
+                    #break
 
-            if index >= BATCH_SIZE:
-                break
+            #if index >= BATCH_SIZE:
+            #    break
 
     subprocess.check_output("LC_ALL=C sort --temporary-directory=./tmp/ --output %s %s " %
         (results_filename, results_filename), shell=True)
