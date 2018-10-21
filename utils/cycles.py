@@ -4,6 +4,7 @@ from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face
 from rubikscubennnsolver.RubiksCube333 import moves_333
 from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555
 from pprint import pprint, pformat
+import json
 import itertools
 import sys
 import logging
@@ -103,7 +104,8 @@ def combo_steps_cancel(combo):
 #log.info("wide moves: %s" % pformat(wide_moves))
 def count_permutations(MAX_MOVES):
     PHASE2_MOVES = 1
-    PHASE3_MIN_MOVES = 2
+    PHASE3_MIN_MOVES = 3
+    PHASE3_MAX_MOVES = 6
     PHASE4_MOVES = 1
     PHASE234_MIN_MOVES = PHASE2_MOVES + PHASE3_MIN_MOVES + PHASE4_MOVES
     PHASE1_MAX_MOVES = MAX_MOVES - PHASE234_MIN_MOVES
@@ -114,7 +116,7 @@ def count_permutations(MAX_MOVES):
     for phase1_move_count in range(PHASE1_MAX_MOVES+1):
 
         # phase 3 is 2 or more outer layer moves
-        phase3_max_moves = MAX_MOVES - PHASE4_MOVES - PHASE2_MOVES - phase1_move_count
+        phase3_max_moves = min(PHASE3_MAX_MOVES, MAX_MOVES - PHASE4_MOVES - PHASE2_MOVES - phase1_move_count)
 
         if phase1_move_count >= PHASE3_MIN_MOVES and phase1_move_count != phase3_max_moves:
             double_time = True
@@ -132,6 +134,62 @@ def count_permutations(MAX_MOVES):
         log.info("(%d, %d, %d, %d, %s)" % (phase1_move_count, PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES, double_time))
 
     return count_permutations
+
+
+def get_outer_layer_sequences(depth):
+    results = []
+    for combo in itertools.product(moves_333, repeat=depth):
+        if not combo_steps_cancel(combo):
+            results.append(combo)
+    return results
+
+
+def save_outer_layer_sequences(depth):
+    log.info("depth {}: find cycles".format(depth))
+    cycles = get_outer_layer_sequences(depth)
+    BATCH_SIZE = 10000000
+
+    with open("cycles-outer-layer-%d-deep.json" % depth, "w") as fh:
+        log.info("depth {}: found {:,} cycles".format(depth, len(cycles)))
+        #json.dump(cycles, fh, indent=4)
+        json.dump(cycles, fh)
+
+        '''
+        while cycles:
+            if len(cycles) > BATCH_SIZE:
+                fh.write("\n".join(cycles[0:BATCH_SIZE]) + "\n")
+                cycles = cycles[BATCH_SIZE:]
+            else:
+                fh.write("\n".join(cycles) + "\n")
+                cycles = []
+        '''
+        log.info("depth {}: wrote cycles\n\n".format(depth))
+
+
+def combo_move_on_other_axis(wide_move, combo):
+
+    if wide_move == "U" or wide_move == "D":
+        for step in combo:
+            first_letter = step[0]
+
+            if first_letter in ("L", "R", "F", "B"):
+                return True
+
+    elif wide_move == "L" or wide_move == "R":
+        for step in combo:
+            first_letter = step[0]
+
+            if first_letter in ("U", "D", "F", "B"):
+                return True
+
+    elif wide_move == "F" or wide_move == "B":
+        for step in combo:
+            first_letter = step[0]
+
+            if first_letter in ("U", "D", "L", "R"):
+                return True
+
+    return False
 
 def get_cycles(count_permutation):
     results = []
@@ -191,6 +249,9 @@ def get_cycles(count_permutation):
 
             for phase3_combo in phase3_combos:
 
+                if not combo_move_on_other_axis(opening_wide_move[0], phase3_combo):
+                    continue
+
                 for closing_wide_move in closing_wide_moves[opening_wide_move]:
                     moves_for_cycle = phase1_combo[:]
                     moves_for_cycle.append(opening_wide_move)
@@ -206,15 +267,40 @@ def write_cycles_for_depth(depth):
     BATCH_SIZE = 10000000
     
     with open("cycles-%d-deep.txt" % depth, "w") as fh:
+        cube = RubiksCube555(solved_555, 'URFDLB')
+
         for permutation in count_permutations(depth):
-
-            #if permutation == (0, 1, 5, 1, False):
-            #    continue
-
             log.info("{}: find cycles".format(permutation))
+            #continue
+
+            if permutation[0] != 0:
+                continue
+
             cycles = get_cycles(permutation)
             log.info("{}: found {:,} cycles".format(permutation, len(cycles)))
+            keepers = []
 
+            for cycle in cycles:
+                cube.re_init()
+
+                for step in cycle.split():
+                    cube.rotate(step)
+
+                if cube.centers_solved():
+                    keepers.append(cycle)
+
+            log.info("{}: found {:,} keepers".format(permutation, len(keepers)))
+
+            while keepers:
+                if len(keepers) > BATCH_SIZE:
+                    fh.write("\n".join(keepers[0:BATCH_SIZE]) + "\n")
+                    keepers = keepers[BATCH_SIZE:]
+                else:
+                    fh.write("\n".join(keepers) + "\n")
+                    keepers = []
+            log.info("{}: wrote keepers\n\n".format(permutation))
+
+            '''
             while cycles:
                 if len(cycles) > BATCH_SIZE:
                     fh.write("\n".join(cycles[0:BATCH_SIZE]) + "\n")
@@ -223,5 +309,17 @@ def write_cycles_for_depth(depth):
                     fh.write("\n".join(cycles) + "\n")
                     cycles = []
             log.info("{}: wrote cycles\n\n".format(permutation))
+            '''
 
-write_cycles_for_depth(8)
+# Ran these once to build the cycles*.json files
+#save_outer_layer_sequences(1)
+#save_outer_layer_sequences(2)
+#save_outer_layer_sequences(3)
+#save_outer_layer_sequences(4)
+#save_outer_layer_sequences(5)
+#save_outer_layer_sequences(6)
+
+#write_cycles_for_depth(5) # (0, 1, 3, 1)
+write_cycles_for_depth(6) # (0, 1, 4, 1)
+write_cycles_for_depth(7) # (0, 1, 5, 1)
+#write_cycles_for_depth(8) # (0, 1, 6, 1)
