@@ -1109,7 +1109,9 @@ class BFS(object):
         class_name = type(self).__name__.replace('Build', 'LookupTable')
 
         next_prime = {
+            2520 : 2521,
             12870 : 12889,
+            20160 : 20161,
             176400 : 176401,
             5880600 : 5880601,
             24010000 : 24010031,
