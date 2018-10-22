@@ -21,11 +21,11 @@ def get_outer_layer_steps():
     with open("utils/cycles-outer-layer-1-deep.json", "r") as fh:
         outer_layer_1deep = json.load(fh)
 
-    #with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
-    #    outer_layer_2deep = json.load(fh)
+    with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
+        outer_layer_2deep = json.load(fh)
 
-    #with open("utils/cycles-outer-layer-3-deep.json", "r") as fh:
-    #    outer_layer_3deep = json.load(fh)
+    with open("utils/cycles-outer-layer-3-deep.json", "r") as fh:
+        outer_layer_3deep = json.load(fh)
 
     #with open("utils/cycles-outer-layer-4-deep.json", "r") as fh:
     #    outer_layer_4deep = json.load(fh)
@@ -36,7 +36,8 @@ def get_outer_layer_steps():
     #with open("utils/cycles-outer-layer-6-deep.json", "r") as fh:
     #    outer_layer_6deep = json.load(fh)
 
-    outer_layer_steps = outer_layer_1deep
+    outer_layer_steps = []
+    #outer_layer_steps = outer_layer_1deep
     #outer_layer_steps += outer_layer_2deep
     #outer_layer_steps += outer_layer_3deep
     #outer_layer_steps += outer_layer_4deep
@@ -187,7 +188,9 @@ if __name__ == "__main__":
                 #assert cube.centers_solved(), "centers should be solved but are not"
 
                 # let us try to pair 2-edges for now...
-                state = edges_recolor_pattern_555(cube.state[:], only_colors=("LF", "RF"))
+                #state = edges_recolor_pattern_555(cube.state[:], only_colors=("LF", "RF"))
+
+                state = edges_recolor_pattern_555(cube.state[:])
                 edges_state = ''.join([state[index] for index in wings_for_edges_pattern_555])
 
                 to_write.append("%s:%s" % (edges_state, " ".join(steps_to_solve)))

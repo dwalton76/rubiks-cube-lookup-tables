@@ -709,11 +709,14 @@ class BFS(object):
 
         if self.name in (
                 "5x5x5-edges-stage-first-four",
-                "5x5x5-edges-stage-first-four-foo",
+                "5x5x5-edges-solve-first-two",
             ) and not self.lt_centers:
             self.lt_centers = {}
 
-            if self.name == "5x5x5-edges-stage-first-four":
+            if self.name in (
+                    "5x5x5-edges-stage-first-four",
+                    "5x5x5-edges-solve-first-two",
+                ):
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
 
                 if lt_centers_filename.endswith("5-deep"):
@@ -722,10 +725,6 @@ class BFS(object):
                     self.lt_centers_max_depth = 4
                 else:
                     raise Exception()
-
-            elif self.name == "5x5x5-edges-stage-first-four-foo":
-                lt_centers_filename = "lookup-table-5x5x5-step105-stage-first-four-edges-foo-centers.txt"
-                self.lt_centers_max_depth = 3
 
             else:
                 raise Exception("Implement this %s" % self.name)
@@ -756,11 +755,11 @@ class BFS(object):
                         (state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
 
-                    if self.name == "5x5x5-edges-stage-first-four":
+                    if self.name in (
+                            "5x5x5-edges-stage-first-four",
+                            "5x5x5-edges-solve-first-two",
+                        ):
                         centers = ''.join([self.cube.state[x] for x in centers_555])
-
-                    elif self.name == "5x5x5-edges-stage-first-four-foo":
-                        centers = ''.join(["U" if self.cube.state[x] in ("U", "D") else self.cube.state[x] for x in centers_555])
 
                     if max_depth is None:
                         move_budget = 999
@@ -942,6 +941,15 @@ class BFS(object):
                 for line in fh_read:
                     (pattern, cube_state_string, steps) = line.rstrip().split(':')
                     pattern = pattern.replace('.', '')
+                    self.cube.state = list(cube_state_string)
+
+                    if self.name == "5x5x5-edges-solve-first-two":
+                        centers = ''.join([self.cube.state[x] for x in centers_555])
+
+                        # Only keep the entries where centers are solved
+                        if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
+                            continue
+
                     fh_final.write("%s:%s\n" % (pattern, steps))
 
             elif self.use_centers_then_edges:
@@ -949,22 +957,7 @@ class BFS(object):
                     (cube_state_string, steps) = line.rstrip().split(':')
                     self.cube.state = list(cube_state_string)
 
-                    if self.name == "5x5x5-edges-stage-first-four-foo":
-                        centers = ''.join(["U" if self.cube.state[x] in ("U", "D") else self.cube.state[x] for x in centers_555])
-                        edges = ''.join([self.cube.state[x] for x in edges_444])
-                        edges = edges.replace('.', '')
-
-                        # We want to keep all of the entries where
-                        # - UD centers are staged
-                        # - LR/FB centers are solved
-                        #
-                        # We do this because we want the entries in the table to take the LR/FB centers
-                        # to a horizontal bar pattern but we only need UD to be staged, we do not need
-                        # them in a specific pattern.
-                        if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBUUUUUUUUU":
-                            continue
-
-                    elif self.size == '4x4x4':
+                    if self.size == '4x4x4':
                         centers = ''.join([self.cube.state[x] for x in centers_444])
                         edges = ''.join([self.cube.state[x] for x in edges_444])
                         centers = centers.replace('.', '')

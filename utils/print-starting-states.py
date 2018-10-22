@@ -40,6 +40,3 @@ with open(filename, "r") as fh:
         cube.state = ["x"] + list(state)
         #pprint(cube.state)
         cube.print_cube()
-        #break
-
-
