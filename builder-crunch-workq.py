@@ -160,9 +160,16 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 if "6x6x6-LR-inner-x-center-stage" in inputfile or "6x6x6-UD-inner-x-centers-stage" in inputfile:
                     odd_even = get_odd_even(moves_to_scramble, "3")
                     to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
+
                 elif "5x5x5-lr-t-center-stage" in inputfile:
                     odd_even = get_odd_even(moves_to_scramble, "2")
                     to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
+
+                elif "4x4x4-LRFB-centers-stage" in inputfile:
+                    odd_even = get_odd_even(moves_to_scramble, "2")
+                    to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
+
+                # dwalton
                 else:
                     to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
 

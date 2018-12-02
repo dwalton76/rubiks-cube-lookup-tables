@@ -2571,9 +2571,9 @@ class Build555EdgesXPlaneCentersOnly(BFS):
             # starting cubes
             (("""
             . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
+            - . . . -
+            - . . . -
+            - . . . -
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
@@ -2583,9 +2583,9 @@ class Build555EdgesXPlaneCentersOnly(BFS):
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
+            - . . . -
+            - . . . -
+            - . . . -
             . . . . .""", "ascii"),),
             legal_moves = (
                 "L2", "F2", "R2", "B2",
@@ -2630,6 +2630,40 @@ class Build555EdgesXPlane(BFS):
                 "Dw", "Dw'", "Dw2",
             )
         )
+
+
+class Build555AllEdgesCentersUnstaged(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step900-edges-centers-unstaged',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step900-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . U U U .
+            U U U U U
+            U U U U U
+            U U U U U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D D D D D
+            D D D D D
+            D D D D D
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
 
 
 # =========================================

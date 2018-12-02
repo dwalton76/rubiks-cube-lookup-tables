@@ -90,7 +90,6 @@ ENV/
 
 backup-*
 lookup-table*.txt
-utils/*.txt
 histogram.txt
 tmp
 *.swp

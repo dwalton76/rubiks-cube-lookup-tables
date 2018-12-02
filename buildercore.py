@@ -353,6 +353,7 @@ class BFS(object):
         self.rotations = rotations
         self.use_centers_then_edges = use_centers_then_edges
         self.lt_centers = {}
+        self.lt_centers_max_depth = None
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
@@ -589,6 +590,11 @@ class BFS(object):
                 for cube in self.starting_cubes:
                     for move in self.legal_moves:
 
+                        # Do not start with outer layer moves those are a waste of cycles
+                        if self.name == "5x5x5-step900-edges-centers-unstaged":
+                            if move in moves_333:
+                                continue
+
                         if self.use_edges_pattern:
                             workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), move)
                         else:
@@ -709,13 +715,13 @@ class BFS(object):
 
         if self.name in (
                 "5x5x5-edges-stage-first-four",
-                "5x5x5-edges-solve-first-two",
+                "5x5x5-step900-edges-centers-unstaged",
             ) and not self.lt_centers:
             self.lt_centers = {}
 
             if self.name in (
                     "5x5x5-edges-stage-first-four",
-                    "5x5x5-edges-solve-first-two",
+                    "5x5x5-step900-edges-centers-unstaged",
                 ):
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
 
@@ -725,6 +731,11 @@ class BFS(object):
                     self.lt_centers_max_depth = 4
                 else:
                     raise Exception()
+
+            # do an edges table where the centers remain staged so we can build it deeper
+            elif self.name == "foobar":
+                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt"
+                self.lt_centers_max_depth = 6
 
             else:
                 raise Exception("Implement this %s" % self.name)
@@ -755,25 +766,26 @@ class BFS(object):
                         (state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
 
-                    if self.name in (
-                            "5x5x5-edges-stage-first-four",
-                            "5x5x5-edges-solve-first-two",
-                        ):
-                        centers = ''.join([self.cube.state[x] for x in centers_555])
-
                     if max_depth is None:
                         move_budget = 999
                     else:
                         move_budget = max_depth - self.depth + 1
 
-                    # Are the centers so scrambled that we cannot solve them in the steps
-                    # budget we have left? If so prune this branch.
-                    if centers:
+                    if self.lt_centers_max_depth:
+                        centers = ''.join([self.cube.state[x] for x in centers_555])
                         centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth+1)
 
+                        # Are the centers so scrambled that we cannot solve them in the steps
+                        # budget we have left? If so prune this branch.
                         if centers_cost > move_budget:
                             pruned += 1
                             continue
+
+                        # Or if the centers are backed to solved we can prune this branch
+                        elif centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
+                            pruned += 1
+                            continue
+
                         else:
                             kept += 1
 
@@ -943,12 +955,14 @@ class BFS(object):
                     pattern = pattern.replace('.', '')
                     self.cube.state = list(cube_state_string)
 
-                    if self.name == "5x5x5-edges-solve-first-two":
+                    if self.lt_centers_max_depth:
                         centers = ''.join([self.cube.state[x] for x in centers_555])
 
                         # Only keep the entries where centers are solved
                         if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
                             continue
+
+                        pattern = pattern.replace("UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD", "")
 
                     fh_final.write("%s:%s\n" % (pattern, steps))
 
@@ -986,7 +1000,8 @@ class BFS(object):
                 for line in fh_read:
                     (cube_state_string, steps) = line.rstrip().split(':')
 
-                    if self.name == "5x5x5-edges-stage-first-four":
+                    #if self.name == "5x5x5-edges-stage-first-four":
+                    if self.lt_centers_max_depth:
                         self.cube.state = list(cube_state_string)
                         edges = ''.join([self.cube.state[x] for x in edges_555])
                         edges = edges.replace('-', 'x')

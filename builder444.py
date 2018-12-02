@@ -924,3 +924,37 @@ class Build444LastEightEdges(BFS):
              ('.DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU.', 'ULFRBD')),
             use_edges_pattern=True
         )
+
+
+class Build444LRFBCentersStage(BFS):
+
+    """
+    UD must already be staged
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-LRFB-centers-stage',
+            ("Lw", "Lw'", "Rw", "Rw'",
+             "Fw", "Fw'", "Bw", "Bw'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step110-LRFB-centers-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . . . .
+          . . . .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . x x .  . L L .  . x x .
+ . L L .  . x x .  . L L .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . . . .
+          . . . .
+          . . . .""", 'ascii'),)
+        )

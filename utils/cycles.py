@@ -2,7 +2,7 @@
 
 from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube333 import moves_333
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555
+from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555
 from pprint import pprint, pformat
 import json
 import itertools
@@ -62,24 +62,24 @@ pprint(closing_wide_moves)
 '''
 
 closing_wide_moves = {
-    'Bw': ['Fw', "Fw'", 'Bw', "Bw'"],
-    "Bw'": ['Fw', "Fw'", 'Bw', "Bw'"],
-    'Bw2': ['Fw2', 'Bw2'],
-    'Dw': ['Uw', "Uw'", 'Dw', "Dw'"],
-    "Dw'": ['Uw', "Uw'", 'Dw', "Dw'"],
-    'Dw2': ['Uw2', 'Dw2'],
-    'Fw': ['Fw', "Fw'", 'Bw', "Bw'"],
-    "Fw'": ['Fw', "Fw'", 'Bw', "Bw'"],
-    'Fw2': ['Fw2', 'Bw2'],
-    'Lw': ['Lw', "Lw'", 'Rw', "Rw'"],
-    "Lw'": ['Lw', "Lw'", 'Rw', "Rw'"],
-    'Lw2': ['Lw2', 'Rw2'],
-    'Rw': ['Lw', "Lw'", 'Rw', "Rw'"],
-    "Rw'": ['Lw', "Lw'", 'Rw', "Rw'"],
-    'Rw2': ['Lw2', 'Rw2'],
-    'Uw': ['Uw', "Uw'", 'Dw', "Dw'"],
-    "Uw'": ['Uw', "Uw'", 'Dw', "Dw'"],
-    'Uw2': ['Uw2', 'Dw2']
+    "Bw": ["Bw'", "Fw"],
+    "Bw'": ["Bw", "Fw'"],
+    "Bw2": ["Bw2", "Fw2"],
+    "Dw": ["Dw'", "Uw"],
+    "Dw'": ["Dw", "Uw'"],
+    "Dw2": ["Dw2", "Uw2"],
+    "Fw": ["Fw'", "Bw"],
+    "Fw'": ["Fw", "Bw'"],
+    "Fw2": ["Fw2", "Bw2"],
+    "Lw": ["Lw'", "Rw"],
+    "Lw'": ["Lw", "Rw'"],
+    "Lw2": ["Lw2", "Rw2"],
+    "Rw": ["Rw'", "Lw"],
+    "Rw'": ["Rw", "Lw'"],
+    "Rw2": ["Rw2", "Lw2"],
+    "Uw": ["Uw'", "Dw"],
+    "Uw'": ["Uw", "Dw'"],
+    "Uw2": ["Uw2", "Dw2"]
 }
 
 
@@ -271,7 +271,6 @@ def write_cycles_for_depth(depth):
 
         for permutation in count_permutations(depth):
             log.info("{}: find cycles".format(permutation))
-            #continue
 
             if permutation[0] != 0:
                 continue
@@ -284,10 +283,13 @@ def write_cycles_for_depth(depth):
                 cube.re_init()
 
                 for step in cycle.split():
-                    cube.rotate(step)
+                    cube.state = rotate_555(cube.state[:], step)
 
                 if cube.centers_solved():
                     keepers.append(cycle)
+                #    log.info("{}: centers solved {}".format(permutation, cycle))
+                #else:
+                #    log.info("{}: centers broken {}".format(permutation, cycle))
 
             log.info("{}: found {:,} keepers".format(permutation, len(keepers)))
 
@@ -319,20 +321,22 @@ def write_cycles_for_depth(depth):
 #save_outer_layer_sequences(5)
 #save_outer_layer_sequences(6)
 
-# INFO: (0, 1, 3, 1, False): found 239,760 cycles
+# Took 6s
+# INFO: (0, 1, 3, 1, False): found 143,856 cycles
 # INFO: (0, 1, 3, 1, False): found 1,296 keepers
 #write_cycles_for_depth(5) # (0, 1, 3, 1)
 
-
-# Took ~15 minutes
-# INFO: (0, 1, 4, 1, False): found 3,645,000 cycles
+# Took 1m 43s
+# INFO: (0, 1, 4, 1, False): found found 2,181,168 cycles
 # INFO: (0, 1, 4, 1, False): found 21,816 keepers
 #write_cycles_for_depth(6) # (0, 1, 4, 1)
 
-# Took 4 1/2 hours
-# INFO: (0, 1, 5, 1, False): found 54,645,840 cycles
+# Took 29m 38s
+# INFO: (0, 1, 5, 1, False): found 32,787,504 cycles
 # INFO: (0, 1, 5, 1, False): found 259,200 keepers
 #write_cycles_for_depth(7) # (0, 1, 5, 1)
 
-
+# Took 8hr 45m
+# INFO: (0, 1, 6, 1, False): found 492,022,512 cycles
+# INFO: (0, 1, 6, 1, False): found 3,163,968 keepers
 write_cycles_for_depth(8) # (0, 1, 6, 1)
