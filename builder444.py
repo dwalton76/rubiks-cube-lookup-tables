@@ -605,6 +605,71 @@ class Build444UDCentersStageFast(BFS):
         )
 
 
+class Build444LRFBCentersStage(BFS):
+
+    """
+    UD must already be staged
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-LRFB-centers-stage',
+            ("Lw", "Lw'", "Rw", "Rw'",
+             "Fw", "Fw'", "Bw", "Bw'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step120-LRFB-centers-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . . . .
+          . . . .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . x x .  . L L .  . x x .
+ . L L .  . x x .  . L L .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . . . .
+          . . . .
+          . . . .""", 'ascii'),)
+        )
+
+
+class Build444LRFBCentersSolve(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-LRFB-centers-solve',
+            ("Lw", "Lw'", "Rw", "Rw'",
+             "Fw", "Fw'", "Bw", "Bw'",
+             "Uw", "Uw'", "Dw", "Dw'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step130-LRFB-centers-solve.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . . . .
+          . . . .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . F F .  . R R .  . B B .
+ . L L .  . F F .  . R R .  . B B .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . . . .
+          . . . .
+          . . . .""", 'ascii'),)
+        )
+
+
 class Build444FirstFourEdgesEdgesOnly(BFS):
     """
     Solve the first 4-edges in x-plane
@@ -622,7 +687,7 @@ class Build444FirstFourEdgesEdgesOnly(BFS):
              "L", "L'",
              "R", "R'"),
             '4x4x4',
-            'lookup-table-4x4x4-step41.txt',
+            'lookup-table-4x4x4-step141.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -656,7 +721,7 @@ class StartingStates444FirstFourEdgesCentersOnly(BFS):
             '444-reduce333',
             moves_444,
             '4x4x4',
-            'starting-states-lookup-table-4x4x4-step42.txt',
+            'starting-states-lookup-table-4x4x4-step142.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -699,7 +764,7 @@ class Build444FirstFourEdgesCentersOnly(BFS):
              "L", "L'",
              "R", "R'"),
             '4x4x4',
-            'lookup-table-4x4x4-step42.txt',
+            'lookup-table-4x4x4-step142.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -753,7 +818,7 @@ class StartingStates444FirstFourEdges(BFS):
             '444-reduce333',
             moves_444,
             '4x4x4',
-            'starting-states-lookup-table-4x4x4-step40.txt',
+            'starting-states-lookup-table-4x4x4-step140.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -798,7 +863,7 @@ class Build444FirstFourEdges(BFS):
              "L", "L'",
              "R", "R'"),
             '4x4x4',
-            'lookup-table-4x4x4-step40.txt',
+            'lookup-table-4x4x4-step140.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -862,7 +927,7 @@ class Build444LastEightEdgesEdgesOnly(BFS):
              "B", "B'",
             ),
             '4x4x4',
-            'lookup-table-4x4x4-step51.txt',
+            'lookup-table-4x4x4-step161.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -904,7 +969,7 @@ class Build444LastEightEdgesCentersOnly(BFS):
              "B", "B'",
             ),
             '4x4x4',
-            'lookup-table-4x4x4-step52.txt',
+            'lookup-table-4x4x4-step162.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -932,7 +997,7 @@ class Build444LastEightEdges(BFS):
              "B", "B'",
             ),
             '4x4x4',
-            'lookup-table-4x4x4-step50.txt',
+            'lookup-table-4x4x4-step160.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -941,69 +1006,4 @@ class Build444LastEightEdges(BFS):
              ('.DD.DDDDDDDD.DD..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..UU.UUUUUUUU.UU.', 'ULFRBD'),
              ('.DD.DDDDDDDD.DD..RR.RRRRRRRR.RR..FF.FFFFFFFF.FF..LL.LLLLLLLL.LL..BB.BBBBBBBB.BB..UU.UUUUUUUU.UU.', 'ULFRBD')),
             use_edges_pattern=True
-        )
-
-
-class Build444LRFBCentersStage(BFS):
-
-    """
-    UD must already be staged
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-LRFB-centers-stage',
-            ("Lw", "Lw'", "Rw", "Rw'",
-             "Fw", "Fw'", "Bw", "Bw'"),
-            '4x4x4',
-            'lookup-table-4x4x4-step110-LRFB-centers-stage.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-          . . . .
-          . . . .
-          . . . .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . x x .  . L L .  . x x .
- . L L .  . x x .  . L L .  . x x .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . . . .
-          . . . .
-          . . . .""", 'ascii'),)
-        )
-
-
-class Build444LRFBCentersSolve(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '4x4x4-LRFB-centers-solve',
-            ("Lw", "Lw'", "Rw", "Rw'",
-             "Fw", "Fw'", "Bw", "Bw'",
-             "Uw", "Uw'", "Dw", "Dw'"),
-            '4x4x4',
-            'lookup-table-4x4x4-step150-LRFB-centers-solve.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-          . . . .
-          . . . .
-          . . . .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . F F .  . R R .  . B B .
- . L L .  . F F .  . R R .  . B B .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . . . .
-          . . . .
-          . . . .""", 'ascii'),)
         )
