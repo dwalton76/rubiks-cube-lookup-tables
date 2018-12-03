@@ -42,6 +42,188 @@ class Build444Ultimate(BFS):
 
 
 
+# ===============================
+# --fast, --normal, --slow tables
+# ===============================
+class StartingStates444HighLowEdges(BFS):
+    """
+    Combine tsai phases 1 and 2
+    - Need all 3 opposite side pairs to be elligible for 12 states
+    - Need those to happen at any of 24 rotations
+    - Need high/low edges in this too
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-highlow-edges',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'"),
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step20-highlow-edges.txt',
+            False, # store_as_hex
+
+            (("""
+          . U D .
+          D . . U
+          U . . D
+          . D U .
+
+ . D U .  . D U .  . D U .  . D U .
+ D L L U  U . . D  D R R U  U . . D
+ U L L D  D . . U  U R R D  D . . U
+ . U D .  . U D .  . U D .  . U D .
+
+          . U D .
+          D . . U
+          U . . D
+          . D U .""", 'ascii'),)
+        )
+
+
+class StartingStates444HighLowEdgesCenters(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-highlow-edges-centers',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+            "L", "L'",
+            "R", "R'"),
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step21-highlow-edges-centers.txt',
+            False, # store_as_hex
+            # starting cubes
+            (("""
+          . . . .
+          . . . .
+          . . . .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . . . .  . R R .  . . . .
+ . L L .  . . . .  . R R .  . . . .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . . . .
+          . . . .
+          . . . .""", 'ascii'),)
+        )
+
+
+class Build444HighLowEdgesEdges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-highlow-edges-edges',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+
+            '4x4x4',
+            'lookup-table-4x4x4-step21-highlow-edges-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . U D .
+          D . . U
+          U . . D
+          . D U .
+
+ . D U .  . D U .  . D U .  . D U .
+ D . . U  U . . D  D . . U  U . . D
+ U . . D  D . . U  U . . D  D . . U
+ . U D .  . U D .  . U D .  . U D .
+
+          . U D .
+          D . . U
+          U . . D
+          . D U .""", 'ascii'),)
+        )
+
+
+class Build444HighLowEdgesCenters(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-highlow-edges-centers',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step22-highlow-edges-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.....................LL..LL..........................RR..RR.....................................', 'ULFRBD'),
+             ('.....................LL..RR..........................LL..RR.....................................', 'ULFRBD'),
+             ('.....................LL..RR..........................RR..LL.....................................', 'ULFRBD'),
+             ('.....................LR..LR..........................LR..LR.....................................', 'ULFRBD'),
+             ('.....................LR..LR..........................RL..RL.....................................', 'ULFRBD'),
+             ('.....................LR..RL..........................RL..LR.....................................', 'ULFRBD'),
+             ('.....................RL..LR..........................LR..RL.....................................', 'ULFRBD'),
+             ('.....................RL..RL..........................LR..LR.....................................', 'ULFRBD'),
+             ('.....................RL..RL..........................RL..RL.....................................', 'ULFRBD'),
+             ('.....................RR..LL..........................LL..RR.....................................', 'ULFRBD'),
+             ('.....................RR..LL..........................RR..LL.....................................', 'ULFRBD'),
+             ('.....................RR..RR..........................LL..LL.....................................', 'ULFRBD'))
+        )
+
+
+class Build444HighLowEdges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-highlow-edges',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step20-highlow-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.UD.D..UU..D.DU..DU.DLLUULLD.UD..DU.U..DD..U.UD..DU.DRRUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DLRUURLD.UD..DU.U..DD..U.UD..DU.DRLUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRLUULRD.UD..DU.U..DD..U.UD..DU.DLRUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
+             ('.UD.D..UU..D.DU..DU.DRRUURRD.UD..DU.U..DD..U.UD..DU.DLLUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD')),
+            use_centers_then_edges=True
+        )
+
+
+# ======================
+# --normal/--slow tables
+# ======================
 class StartingStates444UDCentersStage(BFS):
 
     def __init__(self):
@@ -244,182 +426,6 @@ class Build444ULFRBDCentersStage(BFS):
         )
 
 
-class StartingStates444HighLowEdges(BFS):
-    """
-    Combine tsai phases 1 and 2
-    - Need all 3 opposite side pairs to be elligible for 12 states
-    - Need those to happen at any of 24 rotations
-    - Need high/low edges in this too
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '444-highlow-edges',
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "L", "L'",
-             "R", "R'"),
-            '4x4x4',
-            'starting-states-lookup-table-4x4x4-step20-highlow-edges.txt',
-            False, # store_as_hex
-
-            (("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L L U  U . . D  D R R U  U . . D
- U L L D  D . . U  U R R D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .""", 'ascii'),)
-        )
-
-
-class StartingStates444HighLowEdgesCenters(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '444-highlow-edges-centers',
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-            "L", "L'",
-            "R", "R'"),
-            '4x4x4',
-            'starting-states-lookup-table-4x4x4-step21-highlow-edges-centers.txt',
-            False, # store_as_hex
-            # starting cubes
-            (("""
-          . . . .
-          . . . .
-          . . . .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . . . .  . R R .  . . . .
- . L L .  . . . .  . R R .  . . . .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . . . .
-          . . . .
-          . . . .""", 'ascii'),)
-        )
-
-
-class Build444HighLowEdgesEdges(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '444-highlow-edges-edges',
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'"),
-
-            '4x4x4',
-            'lookup-table-4x4x4-step21-highlow-edges-edges.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D . . U  U . . D  D . . U  U . . D
- U . . D  D . . U  U . . D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .""", 'ascii'),)
-        )
-
-
-class Build444HighLowEdgesCenters(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '444-highlow-edges-centers',
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'"),
-            '4x4x4',
-            'lookup-table-4x4x4-step22-highlow-edges-centers.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('.....................LL..LL..........................RR..RR.....................................', 'ULFRBD'),
-             ('.....................LL..RR..........................LL..RR.....................................', 'ULFRBD'),
-             ('.....................LL..RR..........................RR..LL.....................................', 'ULFRBD'),
-             ('.....................LR..LR..........................LR..LR.....................................', 'ULFRBD'),
-             ('.....................LR..LR..........................RL..RL.....................................', 'ULFRBD'),
-             ('.....................LR..RL..........................RL..LR.....................................', 'ULFRBD'),
-             ('.....................RL..LR..........................LR..RL.....................................', 'ULFRBD'),
-             ('.....................RL..RL..........................LR..LR.....................................', 'ULFRBD'),
-             ('.....................RL..RL..........................RL..RL.....................................', 'ULFRBD'),
-             ('.....................RR..LL..........................LL..RR.....................................', 'ULFRBD'),
-             ('.....................RR..LL..........................RR..LL.....................................', 'ULFRBD'),
-             ('.....................RR..RR..........................LL..LL.....................................', 'ULFRBD'))
-        )
-
-
-class Build444HighLowEdges(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '444-highlow-edges',
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'"),
-            '4x4x4',
-            'lookup-table-4x4x4-step20-highlow-edges.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (('.UD.D..UU..D.DU..DU.DLLUULLD.UD..DU.U..DD..U.UD..DU.DRRUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DLRUURLD.UD..DU.U..DD..U.UD..DU.DRLUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRLUULRD.UD..DU.U..DD..U.UD..DU.DLRUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD'),
-             ('.UD.D..UU..D.DU..DU.DRRUURRD.UD..DU.U..DD..U.UD..DU.DLLUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.', 'ULFRBD')),
-            use_centers_then_edges=True
-        )
-
-
 class Build444Reduce333Edges(BFS):
     """
     This is the TPR edges table.
@@ -578,13 +584,27 @@ class Build444Reduce333(BFS):
         )
 
 
-# The following is a two phase alternative to the
-# step30, 31, 32 phase above.  This is to be used
-# by smaller platforms (raspberry pi) with less
-# cpu/memory.
-# ==================================================
-# Pair the last eight EOed edges
-# ==================================================
+# dwalton
+# =============
+# --fast tables
+# =============
+class Build444UDCentersStageFast(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-UD-centers-stage-fast',
+            (),
+            '4x4x4',
+            'lookup-table-4x4x4-step110-UD-centers-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (('.....UU..UU..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........UU..UU.....', 'ULFRBD'),
+             ('.....xx..xx..........UU..UU..........xx..xx..........UU..UU..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xx..xx..........UU..UU..........xx..xx..........UU..UU..........xx..xx.....', 'ULFRBD')),
+        )
+
+
 class Build444FirstFourEdgesEdgesOnly(BFS):
     """
     Solve the first 4-edges in x-plane
@@ -759,6 +779,7 @@ class StartingStates444FirstFourEdges(BFS):
             )
         )
 
+
 class Build444FirstFourEdges(BFS):
     """
     Solve the first 4-edges in x-plane
@@ -821,9 +842,6 @@ class Build444FirstFourEdges(BFS):
         )
 
 
-# ==================================================
-# Pair the last eight EOed edges
-# ==================================================
 class Build444LastEightEdgesEdgesOnly(BFS):
     """
     Solve the last 8-edges in z-plane and y-plane
@@ -951,6 +969,37 @@ class Build444LRFBCentersStage(BFS):
  . . . .  . . . .  . . . .  . . . .
  . L L .  . x x .  . L L .  . x x .
  . L L .  . x x .  . L L .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . . . .
+          . . . .
+          . . . .""", 'ascii'),)
+        )
+
+
+class Build444LRFBCentersSolve(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '4x4x4-LRFB-centers-solve',
+            ("Lw", "Lw'", "Rw", "Rw'",
+             "Fw", "Fw'", "Bw", "Bw'",
+             "Uw", "Uw'", "Dw", "Dw'"),
+            '4x4x4',
+            'lookup-table-4x4x4-step150-LRFB-centers-solve.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . . . .
+          . . . .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . F F .  . R R .  . B B .
+ . L L .  . F F .  . R R .  . B B .
  . . . .  . . . .  . . . .  . . . .
 
           . . . .
