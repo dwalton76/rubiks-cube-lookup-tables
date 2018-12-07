@@ -2665,6 +2665,47 @@ class Build555AllEdgesCentersUnstaged(BFS):
         )
 
 
+class Build555AllEdgesCentersStaged(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step910-edges-centers-staged',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step910-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . U U U .
+            U U U U U
+            U U U U U
+            U U U U U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D D D D D
+            D D D D D
+            D D D D D
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+
 
 # =========================================
 # solving edges when centers are NOT paired

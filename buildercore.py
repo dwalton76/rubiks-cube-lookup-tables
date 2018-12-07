@@ -591,7 +591,8 @@ class BFS(object):
                     for move in self.legal_moves:
 
                         # Do not start with outer layer moves those are a waste of cycles
-                        if self.name == "5x5x5-step900-edges-centers-unstaged":
+                        if (self.name == "5x5x5-step900-edges-centers-unstaged" or
+                            self.name == "5x5x5-step910-edges-centers-staged"):
                             if move in moves_333:
                                 continue
 
@@ -716,6 +717,7 @@ class BFS(object):
         if self.name in (
                 "5x5x5-edges-stage-first-four",
                 "5x5x5-step900-edges-centers-unstaged",
+                "5x5x5-step910-edges-centers-staged",
             ) and not self.lt_centers:
             self.lt_centers = {}
 
@@ -732,8 +734,8 @@ class BFS(object):
                 else:
                     raise Exception()
 
-            # do an edges table where the centers remain staged so we can build it deeper
-            elif self.name == "foobar":
+            # The centers remain staged so we can build it deeper
+            elif self.name == "5x5x5-step910-edges-centers-staged":
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt"
                 self.lt_centers_max_depth = 6
 

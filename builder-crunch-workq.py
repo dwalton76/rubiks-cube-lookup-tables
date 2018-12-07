@@ -89,7 +89,6 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     #else:
     #    exec_all_steps = False
     exec_all_steps = False
-    uppercase_paired_edges = False
 
     with open(inputfile, 'r') as fh_input:
 
@@ -145,7 +144,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
                     centers = ''.join([cube_state[x] for x in centers_444])
                 elif size == '5x5x5':
-                    state_for_edges = edges_recolor_pattern_555(cube_state[:], uppercase_paired_edges=uppercase_paired_edges)
+                    state_for_edges = edges_recolor_pattern_555(cube_state[:])
                     edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
                     centers = ''.join([cube_state[x] for x in centers_555])
                 else:
@@ -169,7 +168,6 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     odd_even = get_odd_even(moves_to_scramble, "2")
                     to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
 
-                # dwalton
                 else:
                     to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
 

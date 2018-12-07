@@ -38,8 +38,8 @@ def get_outer_layer_steps():
     with open("utils/cycles-outer-layer-1-deep.json", "r") as fh:
         outer_layer_1deep = json.load(fh)
 
-    with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
-        outer_layer_2deep = json.load(fh)
+    #with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
+    #    outer_layer_2deep = json.load(fh)
 
     #with open("utils/cycles-outer-layer-3-deep.json", "r") as fh:
     #    outer_layer_3deep = json.load(fh)
@@ -114,7 +114,7 @@ def get_cycle_steps():
     phase2 - three or more outer layer turns
     phase3 - a wide turn to bring the centers back to solved
     """
-    cycles = set()
+    cycles = []
 
     for filename in (
             "utils/cycles-5-deep.txt",
@@ -126,13 +126,14 @@ def get_cycle_steps():
         with open(filename, "r") as fh:
             for line in fh:
                 steps_in_cycle = line.strip()
-                cycles.add(steps_in_cycle)
+                cycles.append(steps_in_cycle)
 
     with open("lookup-table-5x5x5-step900-edges.txt", "r") as fh:
         for line in fh:
             (_state, steps_in_cycle) = line.strip().split(":")
-            #steps_in_cycle = steps_in_cycle.split()
-            cycles.add(steps_in_cycle)
+            cycles.append(steps_in_cycle)
+
+    cycles = list(set(cycles))
 
     results = []
     for x in cycles:
