@@ -293,6 +293,47 @@ class Build555ULFRBDCenterSolveUnstaged(BFS):
         )
 
 
+class Build555ULFRBDCenterSolveWithoutLR(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-centers-solve-without-LR',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step30-ULFRBD-centers-solve-without-LR.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),)
+        )
+
 class Build555ULFRBDCenterSolve(BFS):
 
     def __init__(self):
@@ -2680,6 +2721,49 @@ class Build555AllEdgesCentersStaged(BFS):
 
             '5x5x5',
             'lookup-table-5x5x5-step910-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . U U U .
+            U U U U U
+            U U U U U
+            U U U U U
+            . U U U .
+
+ . L L L .  . F F F .  . R R R .  . B B B .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . L L L .  . F F F .  . R R R .  . B B B .
+
+            . D D D .
+            D D D D D
+            D D D D D
+            D D D D D
+            . D D D .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555AllEdgesCentersStagedWithoutLR(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step920-edges-centers-staged-without-LR',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step920-edges.txt',
             False, # store_as_hex
 
             # starting cubes
