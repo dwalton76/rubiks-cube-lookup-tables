@@ -38,8 +38,8 @@ def get_outer_layer_steps():
     with open("utils/cycles-outer-layer-1-deep.json", "r") as fh:
         outer_layer_1deep = json.load(fh)
 
-    #with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
-    #    outer_layer_2deep = json.load(fh)
+    with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
+        outer_layer_2deep = json.load(fh)
 
     #with open("utils/cycles-outer-layer-3-deep.json", "r") as fh:
     #    outer_layer_3deep = json.load(fh)
@@ -121,6 +121,7 @@ def get_cycle_steps():
             "utils/cycles-6-deep.txt",
             "utils/cycles-7-deep.txt",
             "utils/cycles-8-deep.txt",
+            "utils/cycles-multiple-wide-moves.txt",
         ):
 
         with open(filename, "r") as fh:
@@ -128,10 +129,15 @@ def get_cycle_steps():
                 steps_in_cycle = line.strip()
                 cycles.append(steps_in_cycle)
 
-    with open("lookup-table-5x5x5-step900-edges.txt", "r") as fh:
-        for line in fh:
-            (_state, steps_in_cycle) = line.strip().split(":")
-            cycles.append(steps_in_cycle)
+    for filename in (
+            "lookup-table-5x5x5-step900-edges.txt",
+            "lookup-table-5x5x5-step310-edges-x-plane-with-solved-centers.txt",
+            ):
+
+        with open(filename, "r") as fh:
+            for line in fh:
+                (_state, steps_in_cycle) = line.strip().split(":")
+                cycles.append(steps_in_cycle)
 
     cycles = list(set(cycles))
 
