@@ -117,6 +117,43 @@ def combo_move_on_other_axis(wide_move, combo):
     return False
 
 
+def combo_even_turns_on_plane(wide_move, combo):
+    U_count = 0
+    L_count = 0
+    F_count = 0
+    R_count = 0
+    B_count = 0
+    D_count = 0
+
+    for step in combo:
+        if step == "U" or step == "U'":
+            U_count += 1
+        elif step == "L" or step == "L'":
+            L_count += 1
+        elif step == "F" or step == "F'":
+            F_count += 1
+        elif step == "R" or step == "R'":
+            R_count += 1
+        elif step == "B" or step == "B'":
+            B_count += 1
+        elif step == "D" or step == "D'":
+            D_count += 1
+
+    if wide_move == "U" or wide_move == "D":
+        if L_count % 2 or F_count % 2 or R_count % 2 or B_count % 2:
+            return False
+
+    elif wide_move == "L" or wide_move == "R":
+        if U_count % 2 or F_count % 2 or D_count % 2 or B_count % 2:
+            return False
+
+    elif wide_move == "F" or wide_move == "B":
+        if L_count % 2 or U_count % 2 or R_count % 2 or D_count % 2:
+            return False
+
+    return True
+
+
 def get_cycles(phase3_count):
     results = []
 
@@ -134,6 +171,9 @@ def get_cycles(phase3_count):
         for phase3_combo in phase3_combos:
 
             if not combo_move_on_other_axis(opening_wide_move[0], phase3_combo):
+                continue
+
+            if not combo_even_turns_on_plane(opening_wide_move[0], phase3_combo):
                 continue
 
             for closing_wide_move in closing_wide_moves[opening_wide_move]:
@@ -192,22 +232,22 @@ def write_cycles_for_depth(depth):
 #save_outer_layer_sequences(5)
 #save_outer_layer_sequences(6)
 
-# Took 6s
-# INFO: (0, 1, 3, 1, False): found 143,856 cycles
+# Took 1.7s
+# INFO: (0, 1, 3, 1, False): found 25,488 cycles
 # INFO: (0, 1, 3, 1, False): found 1,296 keepers
-write_cycles_for_depth(5) # (1, 3, 1)
+#write_cycles_for_depth(5) # (1, 3, 1)
 
-# Took 1m 43s
-# INFO: (0, 1, 4, 1, False): found found 2,181,168 cycles
+# Took 17s
+# INFO: (0, 1, 4, 1, False): found found 304,560 cycles
 # INFO: (0, 1, 4, 1, False): found 21,816 keepers
 #write_cycles_for_depth(6) # (1, 4, 1)
 
-# Took 29m 38s
-# INFO: (0, 1, 5, 1, False): found 32,787,504 cycles
+# Took 3m 58s
+# INFO: (0, 1, 5, 1, False): found 3,761,424 cycles
 # INFO: (0, 1, 5, 1, False): found 259,200 keepers
-#write_cycles_for_depth(7) # (1, 5, 1)
+write_cycles_for_depth(7) # (1, 5, 1)
 
-# Took 8hr 45m
+# Took 8hr 45m but this was before I added combo_even_turns_on_plane which makes a HUGE difference (about 7x)
 # INFO: (0, 1, 6, 1, False): found 492,022,512 cycles
 # INFO: (0, 1, 6, 1, False): found 3,163,968 keepers
 #write_cycles_for_depth(8) # (1, 6, 1)
