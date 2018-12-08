@@ -72,33 +72,6 @@ def combo_steps_cancel(combo):
     return False
 
 
-#log.info("wide moves: %s" % pformat(wide_moves))
-def count_permutations(MAX_MOVES):
-    PHASE2_MOVES = 1
-    PHASE3_MIN_MOVES = 3
-    PHASE3_MAX_MOVES = 6
-    PHASE4_MOVES = 1
-    PHASE234_MIN_MOVES = PHASE2_MOVES + PHASE3_MIN_MOVES + PHASE4_MOVES
-    count_permutations = []
-
-    # phase 3 is 2 or more outer layer moves
-    phase3_max_moves = min(PHASE3_MAX_MOVES, MAX_MOVES - PHASE4_MOVES - PHASE2_MOVES)
-
-    '''
-    if (PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES) in count_permutations:
-        continue
-
-    if (phase3_max_moves, PHASE2_MOVES, PHASE4_MOVES, True) in count_permutations:
-        log.info("SKIP: (%d, %d, %d, %d, %s)" % (PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES))
-        continue
-    '''
-
-    count_permutations.append((PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES))
-    log.info("(%d, %d, %d)" % (PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES))
-
-    return count_permutations
-
-
 def get_outer_layer_sequences(depth):
     results = []
     for combo in itertools.product(moves_333, repeat=depth):
@@ -144,20 +117,19 @@ def combo_move_on_other_axis(wide_move, combo):
     return False
 
 
-def get_cycles(count_permutation):
+def get_cycles(phase3_count):
     results = []
-    (phase2_count, phase3_count, phase4_count) = count_permutation
 
     phase3_combos = []
-    log.info("{}: building phase3_combos: begin".format(count_permutation))
+    log.info("(1, {}, 1): building phase3_combos: begin".format(phase3_count))
     for phase3_combo in itertools.product(moves_333, repeat=phase3_count):
         if combo_steps_cancel(phase3_combo):
             continue
         phase3_combos.append(phase3_combo)
-    log.info("{}: building phase3_combos: end, found {:,}".format(count_permutation, len(phase3_combos)))
+    log.info("(1, {}, 1): building phase3_combos: end, found {:,}".format(phase3_count, len(phase3_combos)))
 
     for opening_wide_move in wide_moves:
-        log.info("{}: opening_wide_move {}, found {:,} so far".format(count_permutation, opening_wide_move, len(results)))
+        log.info("(1, {}, 1): opening_wide_move {}, found {:,} so far".format(phase3_count, opening_wide_move, len(results)))
 
         for phase3_combo in phase3_combos:
 
@@ -178,38 +150,38 @@ def write_cycles_for_depth(depth):
     log.info("DEPTH %d" % depth)
     log.info("wide moves: %s" % " ".join(wide_moves))
     BATCH_SIZE = 10000000
+    phase3_count = depth - 2 # 1 for opening wide move, 1 for closing wide move
     
     with open("cycles-%d-deep.txt" % depth, "w") as fh:
         cube = RubiksCube555(solved_555, 'URFDLB')
 
-        for permutation in count_permutations(depth):
-            log.info("{}: find cycles".format(permutation))
-            cycles = get_cycles(permutation)
-            log.info("{}: found {:,} cycles".format(permutation, len(cycles)))
-            keepers = []
+        log.info("(1, {}, 1): find cycles".format(phase3_count))
+        cycles = get_cycles(phase3_count)
+        log.info("(1, {}, 1): found {:,} cycles".format(phase3_count, len(cycles)))
+        keepers = []
 
-            for cycle in cycles:
-                cube.re_init()
+        for cycle in cycles:
+            cube.re_init()
 
-                for step in cycle.split():
-                    cube.state = rotate_555(cube.state[:], step)
+            for step in cycle.split():
+                cube.state = rotate_555(cube.state[:], step)
 
-                if cube.centers_solved():
-                    keepers.append(cycle)
-                #    log.info("{}: centers solved {}".format(permutation, cycle))
-                #else:
-                #    log.info("{}: centers broken {}".format(permutation, cycle))
+            if cube.centers_solved():
+                keepers.append(cycle)
+            #    log.info("{}: centers solved {}".format(permutation, cycle))
+            #else:
+            #    log.info("{}: centers broken {}".format(permutation, cycle))
 
-            log.info("{}: found {:,} keepers".format(permutation, len(keepers)))
+        log.info("(1, {}, 1): found {:,} keepers".format(phase3_count, len(keepers)))
 
-            while keepers:
-                if len(keepers) > BATCH_SIZE:
-                    fh.write("\n".join(keepers[0:BATCH_SIZE]) + "\n")
-                    keepers = keepers[BATCH_SIZE:]
-                else:
-                    fh.write("\n".join(keepers) + "\n")
-                    keepers = []
-            log.info("{}: wrote keepers\n\n".format(permutation))
+        while keepers:
+            if len(keepers) > BATCH_SIZE:
+                fh.write("\n".join(keepers[0:BATCH_SIZE]) + "\n")
+                keepers = keepers[BATCH_SIZE:]
+            else:
+                fh.write("\n".join(keepers) + "\n")
+                keepers = []
+        log.info("(1, {}, 1): wrote keepers\n\n".format(phase3_count))
 
 
 # Ran these once to build the cycles*.json files
