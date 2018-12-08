@@ -91,27 +91,31 @@ def save_outer_layer_sequences(depth):
         log.info("depth {}: wrote cycles\n\n".format(depth))
 
 
+UD_other_axis = ("L", "R", "F", "B")
+LR_other_axis = ("U", "D", "F", "B")
+FB_other_axis = ("U", "D", "L", "R")
+
 def combo_move_on_other_axis(wide_move, combo):
 
     if wide_move == "U" or wide_move == "D":
         for step in combo:
             first_letter = step[0]
 
-            if first_letter in ("L", "R", "F", "B"):
+            if first_letter in UD_other_axis:
                 return True
 
     elif wide_move == "L" or wide_move == "R":
         for step in combo:
             first_letter = step[0]
 
-            if first_letter in ("U", "D", "F", "B"):
+            if first_letter in LR_other_axis:
                 return True
 
     elif wide_move == "F" or wide_move == "B":
         for step in combo:
             first_letter = step[0]
 
-            if first_letter in ("U", "D", "L", "R"):
+            if first_letter in FB_other_axis:
                 return True
 
     return False
@@ -154,6 +158,146 @@ def combo_even_turns_on_plane(wide_move, combo):
     return True
 
 
+def combo_centers_will_solve(opening_wide_move, combo, closing_wide_move):
+    U_count = 0
+    L_count = 0
+    F_count = 0
+    R_count = 0
+    B_count = 0
+    D_count = 0
+
+    for step in combo:
+        if step == "U":
+            U_count += 1
+        elif step == "U'":
+            U_count -= 1
+        elif step == "U2":
+            U_count += 2
+
+        elif step == "L":
+            L_count += 1
+        elif step == "L'":
+            L_count -= 1
+        elif step == "L2":
+            L_count += 2
+
+        elif step == "F":
+            F_count += 1
+        elif step == "F'":
+            F_count -= 1
+        elif step == "F2":
+            F_count += 2
+
+        elif step == "R":
+            R_count += 1
+        elif step == "R'":
+            R_count -= 1
+        elif step == "R2":
+            R_count += 2
+
+        elif step == "B":
+            B_count += 1
+        elif step == "B'":
+            B_count -= 1
+        elif step == "B2":
+            B_count += 2
+
+        elif step == "D":
+            D_count += 1
+        elif step == "D'":
+            D_count -= 1
+        elif step == "D2":
+            D_count += 2
+
+    U_count = U_count % 4
+    L_count = L_count % 4
+    F_count = F_count % 4
+    R_count = R_count % 4
+    B_count = B_count % 4
+    D_count = D_count % 4
+
+    if opening_wide_move == "U":
+
+        if closing_wide_move == "U":
+            if L_count == 0 and L_count == F_count and F_count == R_count and R_count == B_count:
+                return True
+
+        elif closing_wide_move == "D":
+            if L_count == 2 and L_count == F_count and F_count == R_count and R_count == B_count:
+                return True
+
+        else:
+            raise Exception("open %s, close %s" % (opening_wide_move, closing_wide_move))
+
+    elif opening_wide_move == "D":
+
+        if closing_wide_move == "D":
+            if L_count == 0 and L_count == F_count and F_count == R_count and R_count == B_count:
+                return True
+
+        elif closing_wide_move == "U":
+
+            if L_count == 2  and L_count == F_count and F_count == R_count and R_count == B_count:
+                return True
+        else:
+            raise Exception("open %s, close %s" % (opening_wide_move, closing_wide_move))
+
+    elif opening_wide_move == "L":
+
+        if closing_wide_move == "L":
+            if U_count == 0 and U_count == F_count and F_count == D_count and D_count == B_count:
+                return True
+
+        elif closing_wide_move == "R":
+
+            if U_count == 2 and U_count == F_count and F_count == D_count and D_count == B_count:
+                return True
+        else:
+            raise Exception("open %s, close %s" % (opening_wide_move, closing_wide_move))
+
+    elif opening_wide_move == "R":
+
+        if closing_wide_move == "R":
+            if U_count == 0 and U_count == F_count and F_count == D_count and D_count == B_count:
+                return True
+
+        elif closing_wide_move == "L":
+
+            if U_count == 2 and U_count == F_count and F_count == D_count and D_count == B_count:
+                return True
+        else:
+            raise Exception("open %s, close %s" % (opening_wide_move, closing_wide_move))
+
+    elif opening_wide_move == "F":
+
+        if closing_wide_move == "F":
+            if L_count == 0 and L_count == U_count and U_count == R_count and R_count == D_count:
+                return True
+
+        elif closing_wide_move == "B":
+
+            if L_count == 2 and L_count == U_count and U_count == R_count and R_count == D_count:
+                return True
+
+        else:
+            raise Exception("open %s, close %s" % (opening_wide_move, closing_wide_move))
+
+    elif opening_wide_move == "B":
+
+        if closing_wide_move == "B":
+            if L_count == 0 and L_count == U_count and U_count == R_count and R_count == D_count:
+                return True
+
+        elif closing_wide_move == "F":
+            if L_count == 2 and L_count == U_count and U_count == R_count and R_count == D_count:
+                return True
+
+        else:
+            raise Exception("open %s, close %s" % (opening_wide_move, closing_wide_move))
+
+
+    return False
+
 def get_cycles(phase3_count):
     results = []
 
@@ -177,6 +321,10 @@ def get_cycles(phase3_count):
                 continue
 
             for closing_wide_move in closing_wide_moves[opening_wide_move]:
+
+                if not combo_centers_will_solve(opening_wide_move[0], phase3_combo, closing_wide_move[0]):
+                    continue
+
                 moves_for_cycle = []
                 moves_for_cycle.append(opening_wide_move)
                 moves_for_cycle.extend(phase3_combo)
@@ -191,13 +339,15 @@ def write_cycles_for_depth(depth):
     log.info("wide moves: %s" % " ".join(wide_moves))
     BATCH_SIZE = 10000000
     phase3_count = depth - 2 # 1 for opening wide move, 1 for closing wide move
-    
+
     with open("cycles-%d-deep.txt" % depth, "w") as fh:
         cube = RubiksCube555(solved_555, 'URFDLB')
 
         log.info("(1, {}, 1): find cycles".format(phase3_count))
         cycles = get_cycles(phase3_count)
         log.info("(1, {}, 1): found {:,} cycles".format(phase3_count, len(cycles)))
+
+        '''
         keepers = []
 
         for cycle in cycles:
@@ -208,9 +358,9 @@ def write_cycles_for_depth(depth):
 
             if cube.centers_solved():
                 keepers.append(cycle)
-            #    log.info("{}: centers solved {}".format(permutation, cycle))
-            #else:
-            #    log.info("{}: centers broken {}".format(permutation, cycle))
+            #    log.info("(1, {}, 1): centers solved {}".format(phase3_count, cycle))
+            else:
+                log.info("(1, {}, 1): centers broken {}".format(phase3_count, cycle))
 
         log.info("(1, {}, 1): found {:,} keepers".format(phase3_count, len(keepers)))
 
@@ -222,6 +372,8 @@ def write_cycles_for_depth(depth):
                 fh.write("\n".join(keepers) + "\n")
                 keepers = []
         log.info("(1, {}, 1): wrote keepers\n\n".format(phase3_count))
+        '''
+        fh.write("\n".join(cycles) + "\n")
 
 
 # Ran these once to build the cycles*.json files
@@ -232,22 +384,22 @@ def write_cycles_for_depth(depth):
 #save_outer_layer_sequences(5)
 #save_outer_layer_sequences(6)
 
-# Took 1.7s
-# INFO: (0, 1, 3, 1, False): found 25,488 cycles
+# Took 0.9s
+# INFO: (0, 1, 3, 1, False): found 2,592 cycles
 # INFO: (0, 1, 3, 1, False): found 1,296 keepers
 #write_cycles_for_depth(5) # (1, 3, 1)
 
-# Took 17s
-# INFO: (0, 1, 4, 1, False): found found 304,560 cycles
+# Took 5s
+# INFO: (0, 1, 4, 1, False): found found 43,632 cycles
 # INFO: (0, 1, 4, 1, False): found 21,816 keepers
 #write_cycles_for_depth(6) # (1, 4, 1)
 
-# Took 3m 58s
-# INFO: (0, 1, 5, 1, False): found 3,761,424 cycles
+# Took 1m 6s
+# INFO: (0, 1, 5, 1, False): found 518,400 cycles
 # INFO: (0, 1, 5, 1, False): found 259,200 keepers
 write_cycles_for_depth(7) # (1, 5, 1)
 
-# Took 8hr 45m but this was before I added combo_even_turns_on_plane which makes a HUGE difference (about 7x)
+# Took 8hr 45m but this was before I added combo_even_turns_on_plane and combo_centers_will_solve which make a HUGE difference (about 20x)
 # INFO: (0, 1, 6, 1, False): found 492,022,512 cycles
 # INFO: (0, 1, 6, 1, False): found 3,163,968 keepers
 #write_cycles_for_depth(8) # (1, 6, 1)
