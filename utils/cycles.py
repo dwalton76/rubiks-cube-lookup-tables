@@ -20,7 +20,6 @@ logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelNam
 
 '''
 and the sequences are always going to be something like:
-phase1 - 0 or more outer layer moves
 phase2 - 1 "w" move, could be quarter or half turn
 phase3 - 2 or more outer layer moves...I say 2 because seems like you need at
     least 2 to get the midges you just paired out of the way.  This
@@ -32,34 +31,6 @@ wide_moves = []
 for x in moves_555:
     if "w" in x:
         wide_moves.append(x)
-
-'''
-log.info("building closing_wide_moves: begin")
-for opening_wide_move in wide_moves:
-    closing_wide_moves[opening_wide_move] = []
-
-    for closing_wide_move in wide_moves:
-
-        if opening_wide_move.startswith("U") or opening_wide_move.startswith("D"):
-            if not (closing_wide_move.startswith("U") or closing_wide_move.startswith("D")):
-                continue
-        elif opening_wide_move.startswith("L") or opening_wide_move.startswith("R"):
-            if not (closing_wide_move.startswith("L") or closing_wide_move.startswith("R")):
-                continue
-        elif opening_wide_move.startswith("F") or opening_wide_move.startswith("B"):
-            if not (closing_wide_move.startswith("F") or closing_wide_move.startswith("B")):
-                continue
-
-        if opening_wide_move.endswith("2"):
-            if not closing_wide_move.endswith("2"):
-                continue
-        else:
-            if closing_wide_move.endswith("2"):
-                continue
-        closing_wide_moves[opening_wide_move].append(closing_wide_move)
-log.info("building closing_wide_moves: end")
-pprint(closing_wide_moves)
-'''
 
 closing_wide_moves = {
     "Bw": ["Bw'", "Fw"],
@@ -108,30 +79,22 @@ def count_permutations(MAX_MOVES):
     PHASE3_MAX_MOVES = 6
     PHASE4_MOVES = 1
     PHASE234_MIN_MOVES = PHASE2_MOVES + PHASE3_MIN_MOVES + PHASE4_MOVES
-    PHASE1_MAX_MOVES = MAX_MOVES - PHASE234_MIN_MOVES
     count_permutations = []
-    double_time = False
 
-    # phase 1 is 0 or more outer layer moves
-    for phase1_move_count in range(PHASE1_MAX_MOVES+1):
+    # phase 3 is 2 or more outer layer moves
+    phase3_max_moves = min(PHASE3_MAX_MOVES, MAX_MOVES - PHASE4_MOVES - PHASE2_MOVES)
 
-        # phase 3 is 2 or more outer layer moves
-        phase3_max_moves = min(PHASE3_MAX_MOVES, MAX_MOVES - PHASE4_MOVES - PHASE2_MOVES - phase1_move_count)
+    '''
+    if (PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES) in count_permutations:
+        continue
 
-        if phase1_move_count >= PHASE3_MIN_MOVES and phase1_move_count != phase3_max_moves:
-            double_time = True
-        else:
-            double_time = False
+    if (phase3_max_moves, PHASE2_MOVES, PHASE4_MOVES, True) in count_permutations:
+        log.info("SKIP: (%d, %d, %d, %d, %s)" % (PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES))
+        continue
+    '''
 
-        if (phase1_move_count, PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES, double_time) in count_permutations:
-            continue
-
-        if (phase3_max_moves, PHASE2_MOVES, phase1_move_count, PHASE4_MOVES, True) in count_permutations:
-            log.info("SKIP: (%d, %d, %d, %d, %s)" % (phase1_move_count, PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES, double_time))
-            continue
-
-        count_permutations.append((phase1_move_count, PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES, double_time))
-        log.info("(%d, %d, %d, %d, %s)" % (phase1_move_count, PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES, double_time))
+    count_permutations.append((PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES))
+    log.info("(%d, %d, %d)" % (PHASE2_MOVES, phase3_max_moves, PHASE4_MOVES))
 
     return count_permutations
 
@@ -151,18 +114,7 @@ def save_outer_layer_sequences(depth):
 
     with open("cycles-outer-layer-%d-deep.json" % depth, "w") as fh:
         log.info("depth {}: found {:,} cycles".format(depth, len(cycles)))
-        #json.dump(cycles, fh, indent=4)
         json.dump(cycles, fh)
-
-        '''
-        while cycles:
-            if len(cycles) > BATCH_SIZE:
-                fh.write("\n".join(cycles[0:BATCH_SIZE]) + "\n")
-                cycles = cycles[BATCH_SIZE:]
-            else:
-                fh.write("\n".join(cycles) + "\n")
-                cycles = []
-        '''
         log.info("depth {}: wrote cycles\n\n".format(depth))
 
 
@@ -191,9 +143,10 @@ def combo_move_on_other_axis(wide_move, combo):
 
     return False
 
+
 def get_cycles(count_permutation):
     results = []
-    (phase1_count, phase2_count, phase3_count, phase4_count, double_time) = count_permutation
+    (phase2_count, phase3_count, phase4_count) = count_permutation
 
     phase3_combos = []
     log.info("{}: building phase3_combos: begin".format(count_permutation))
@@ -203,63 +156,23 @@ def get_cycles(count_permutation):
         phase3_combos.append(phase3_combo)
     log.info("{}: building phase3_combos: end, found {:,}".format(count_permutation, len(phase3_combos)))
 
-    if phase1_count:
+    for opening_wide_move in wide_moves:
+        log.info("{}: opening_wide_move {}, found {:,} so far".format(count_permutation, opening_wide_move, len(results)))
 
-        phase1_combos = []
-        log.info("{}: building phase1_combos: begin".format(count_permutation))
-        for phase1_combo in itertools.product(moves_333, repeat=phase1_count):
-            if combo_steps_cancel(phase1_combo):
+        for phase3_combo in phase3_combos:
+
+            if not combo_move_on_other_axis(opening_wide_move[0], phase3_combo):
                 continue
-            phase1_combos.append(phase1_combo)
-        len_phase1_combos = len(phase1_combos)
-        log.info("{}: building phase1_combos: end, found {:,}".format(count_permutation, len_phase1_combos))
 
-        for (index, phase1_combo) in enumerate(phase1_combos):
-            if len_phase1_combos < 100:
-                log.info("{}: phase1 {}/{}".format(count_permutation, index, len_phase1_combos-1))
-            elif len_phase1_combos < 1000 and index % 10 == 0:
-                log.info("{}: phase1 {}/{}".format(count_permutation, index, len_phase1_combos-1))
-            elif len_phase1_combos < 10000 and index % 100 == 0:
-                log.info("{}: phase1 {}/{}".format(count_permutation, index, len_phase1_combos-1))
-
-            for opening_wide_move in wide_moves:
-
-                for phase3_combo in phase3_combos:
-
-                    for closing_wide_move in closing_wide_moves[opening_wide_move]:
-
-                        moves_for_cycle = list(phase1_combo)
-                        moves_for_cycle.append(opening_wide_move)
-                        moves_for_cycle.extend(phase3_combo)
-                        moves_for_cycle.append(closing_wide_move)
-                        results.append(" ".join(moves_for_cycle))
-
-                        if double_time:
-                            moves_for_cycle = list(phase3_combo)
-                            moves_for_cycle.append(opening_wide_move)
-                            moves_for_cycle.extend(phase1_combo)
-                            moves_for_cycle.append(closing_wide_move)
-                            results.append(" ".join(moves_for_cycle))
-
-    else:
-        phase1_combo = []
-
-        for opening_wide_move in wide_moves:
-            log.info("{}: opening_wide_move {}, found {:,} so far".format(count_permutation, opening_wide_move, len(results)))
-
-            for phase3_combo in phase3_combos:
-
-                if not combo_move_on_other_axis(opening_wide_move[0], phase3_combo):
-                    continue
-
-                for closing_wide_move in closing_wide_moves[opening_wide_move]:
-                    moves_for_cycle = phase1_combo[:]
-                    moves_for_cycle.append(opening_wide_move)
-                    moves_for_cycle.extend(phase3_combo)
-                    moves_for_cycle.append(closing_wide_move)
-                    results.append(" ".join(moves_for_cycle))
+            for closing_wide_move in closing_wide_moves[opening_wide_move]:
+                moves_for_cycle = []
+                moves_for_cycle.append(opening_wide_move)
+                moves_for_cycle.extend(phase3_combo)
+                moves_for_cycle.append(closing_wide_move)
+                results.append(" ".join(moves_for_cycle))
 
     return results
+
 
 def write_cycles_for_depth(depth):
     log.info("DEPTH %d" % depth)
@@ -271,10 +184,6 @@ def write_cycles_for_depth(depth):
 
         for permutation in count_permutations(depth):
             log.info("{}: find cycles".format(permutation))
-
-            if permutation[0] != 0:
-                continue
-
             cycles = get_cycles(permutation)
             log.info("{}: found {:,} cycles".format(permutation, len(cycles)))
             keepers = []
@@ -302,16 +211,6 @@ def write_cycles_for_depth(depth):
                     keepers = []
             log.info("{}: wrote keepers\n\n".format(permutation))
 
-            '''
-            while cycles:
-                if len(cycles) > BATCH_SIZE:
-                    fh.write("\n".join(cycles[0:BATCH_SIZE]) + "\n")
-                    cycles = cycles[BATCH_SIZE:]
-                else:
-                    fh.write("\n".join(cycles) + "\n")
-                    cycles = []
-            log.info("{}: wrote cycles\n\n".format(permutation))
-            '''
 
 # Ran these once to build the cycles*.json files
 #save_outer_layer_sequences(1)
@@ -324,19 +223,19 @@ def write_cycles_for_depth(depth):
 # Took 6s
 # INFO: (0, 1, 3, 1, False): found 143,856 cycles
 # INFO: (0, 1, 3, 1, False): found 1,296 keepers
-#write_cycles_for_depth(5) # (0, 1, 3, 1)
+write_cycles_for_depth(5) # (1, 3, 1)
 
 # Took 1m 43s
 # INFO: (0, 1, 4, 1, False): found found 2,181,168 cycles
 # INFO: (0, 1, 4, 1, False): found 21,816 keepers
-#write_cycles_for_depth(6) # (0, 1, 4, 1)
+#write_cycles_for_depth(6) # (1, 4, 1)
 
 # Took 29m 38s
 # INFO: (0, 1, 5, 1, False): found 32,787,504 cycles
 # INFO: (0, 1, 5, 1, False): found 259,200 keepers
-#write_cycles_for_depth(7) # (0, 1, 5, 1)
+#write_cycles_for_depth(7) # (1, 5, 1)
 
 # Took 8hr 45m
 # INFO: (0, 1, 6, 1, False): found 492,022,512 cycles
 # INFO: (0, 1, 6, 1, False): found 3,163,968 keepers
-write_cycles_for_depth(8) # (0, 1, 6, 1)
+#write_cycles_for_depth(8) # (1, 6, 1)
