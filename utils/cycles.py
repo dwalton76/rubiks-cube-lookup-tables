@@ -376,30 +376,84 @@ def write_cycles_for_depth(depth):
         fh.write("\n".join(cycles) + "\n")
 
 
-# Ran these once to build the cycles*.json files
-#save_outer_layer_sequences(1)
-#save_outer_layer_sequences(2)
-#save_outer_layer_sequences(3)
-#save_outer_layer_sequences(4)
-#save_outer_layer_sequences(5)
-#save_outer_layer_sequences(6)
+def write_foobar():
 
-# Took 0.9s
-# INFO: (0, 1, 3, 1, False): found 2,592 cycles
-# INFO: (0, 1, 3, 1, False): found 1,296 keepers
-#write_cycles_for_depth(5) # (1, 3, 1)
+    BATCH_SIZE = 10000000
+    cube = RubiksCube555(solved_555, 'URFDLB')
+    depth = 5
+    keepers = []
 
-# Took 5s
-# INFO: (0, 1, 4, 1, False): found found 43,632 cycles
-# INFO: (0, 1, 4, 1, False): found 21,816 keepers
-#write_cycles_for_depth(6) # (1, 4, 1)
+    with open("foobar.txt", "w") as fh_write:
 
-# Took 1m 6s
-# INFO: (0, 1, 5, 1, False): found 518,400 cycles
-# INFO: (0, 1, 5, 1, False): found 259,200 keepers
-write_cycles_for_depth(7) # (1, 5, 1)
+        for depth in (5, 6, 7, 8):
+            with open("cycles-%d-deep.txt" % depth, "r") as fh:
 
-# Took 8hr 45m but this was before I added combo_even_turns_on_plane and combo_centers_will_solve which make a HUGE difference (about 20x)
-# INFO: (0, 1, 6, 1, False): found 492,022,512 cycles
-# INFO: (0, 1, 6, 1, False): found 3,163,968 keepers
-#write_cycles_for_depth(8) # (1, 6, 1)
+                for (line_number, steps) in enumerate(fh):
+                    steps = steps.rstrip().split()
+
+                    for opening_wide_move in wide_moves:
+
+                        if steps_on_same_face_and_layer(opening_wide_move, steps[0]):
+                            continue
+
+                        for closing_wide_move in closing_wide_moves[opening_wide_move]:
+                            cube.re_init()
+                            cube.state = rotate_555(cube.state[:], opening_wide_move)
+
+                            for step in steps:
+                                cube.state = rotate_555(cube.state[:], step)
+
+                            cube.state = rotate_555(cube.state[:], closing_wide_move)
+
+                            if cube.centers_solved():
+                                cycle = []
+                                cycle.append(opening_wide_move)
+                                cycle.extend(steps)
+                                cycle.append(closing_wide_move)
+
+                                keepers.append(" ".join(cycle))
+
+                    if line_number and line_number % 10000 == 0:
+                        log.info("line {}, keepers {}".format(line_number, len(keepers)))
+
+            log.info("depth {} found {:,} keepers".format(depth, len(keepers)))
+
+            while keepers:
+                if len(keepers) > BATCH_SIZE:
+                    fh_write.write("\n".join(keepers[0:BATCH_SIZE]) + "\n")
+                    keepers = keepers[BATCH_SIZE:]
+                else:
+                    fh_write.write("\n".join(keepers) + "\n")
+                    keepers = []
+            fh_write.flush()
+        log.info("wrote keepers\n\n")
+
+
+if __name__ == "__main__":
+
+    # Ran these once to build the cycles*.json files
+    #save_outer_layer_sequences(1)
+    #save_outer_layer_sequences(2)
+    #save_outer_layer_sequences(3)
+    #save_outer_layer_sequences(4)
+    #save_outer_layer_sequences(5)
+    #save_outer_layer_sequences(6)
+
+    # Took 0.9s
+    # INFO: (0, 1, 3, 1, False): found 1,296 cycles
+    #write_cycles_for_depth(5) # (1, 3, 1)
+
+    # Took 4s
+    # INFO: (0, 1, 4, 1, False): found 21,816 cycles
+    #write_cycles_for_depth(6) # (1, 4, 1)
+
+    # Took 38s
+    # INFO: (0, 1, 5, 1, False): found 259,200 cycles
+    #write_cycles_for_depth(7) # (1, 5, 1)
+
+    # Took 8hr 45m but this was before I added combo_even_turns_on_plane and combo_centers_will_solve which make a HUGE difference (about 20x)
+    # INFO: (0, 1, 6, 1, False): found 492,022,512 cycles
+    # INFO: (0, 1, 6, 1, False): found 3,163,968 keepers
+    #write_cycles_for_depth(8) # (1, 6, 1)
+
+    write_foobar()
