@@ -38,8 +38,8 @@ def get_outer_layer_steps():
     with open("utils/cycles-outer-layer-1-deep.json", "r") as fh:
         outer_layer_1deep = json.load(fh)
 
-    with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
-        outer_layer_2deep = json.load(fh)
+    #with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
+    #    outer_layer_2deep = json.load(fh)
 
     #with open("utils/cycles-outer-layer-3-deep.json", "r") as fh:
     #    outer_layer_3deep = json.load(fh)
@@ -54,7 +54,7 @@ def get_outer_layer_steps():
     #    outer_layer_6deep = json.load(fh)
 
     outer_layer_steps = []
-    #outer_layer_steps = outer_layer_1deep
+    outer_layer_steps = outer_layer_1deep
     #outer_layer_steps += outer_layer_2deep
     #outer_layer_steps += outer_layer_3deep
     #outer_layer_steps += outer_layer_4deep

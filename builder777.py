@@ -928,5 +928,3 @@ class Build777Step80(BFS):
                 . D D D D D .
                 . . . . . . . """, "ascii"),)
         )
-
-

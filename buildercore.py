@@ -306,6 +306,80 @@ def get_starting_states(filename, class_name, hex_digits):
         return result
 
 
+def find_all_lines_for_state(fh, line_count, line_width, state_to_find):
+    """
+    Given a state, return a list of all of the lines
+    in the file that start with that state.
+
+    99.9% of lookup tables only have one entry per state so this is
+    rarely used.
+    """
+    fh.seek(0)
+    result = []
+
+    first = 0
+    last = line_count - 1
+    state_width = len(state_to_find)
+
+    # Find an entry with state
+    while first <= last:
+        midpoint = int((first + last)/2)
+        fh.seek(midpoint * line_width)
+
+        # Only read the 'state' part of the line (for speed)
+        state = fh.read(state_width)
+
+        if state_to_find < state:
+            last = midpoint - 1
+
+        # If this is the line we are looking for
+        elif state_to_find == state:
+            break
+
+        else:
+            first = midpoint + 1
+    else:
+        log.warning("could not find signature %s" % state)
+        return result
+
+    line_number_midpoint_state = midpoint
+
+    # Go back one line at a time until we are at the first line with state
+    while True:
+        fh.seek(midpoint * line_width)
+
+        line = fh.read(line_width)
+        line = line.rstrip()
+        (state, steps) = line.split(':')
+
+        if state != state_to_find:
+            break
+
+        result.append(line)
+        midpoint -= 1
+
+        if midpoint < 0:
+            break
+
+    # Go forward one line at a time until we have read all the lines
+    # with state
+    midpoint = line_number_midpoint_state + 1
+
+    while midpoint <= line_count - 1:
+        fh.seek(midpoint * line_width)
+        line = fh.read(line_width)
+        line = line.rstrip()
+        (state, steps) = line.split(':')
+
+        if state == state_to_find:
+            result.append(line)
+        else:
+            break
+
+        midpoint += 1
+
+    return result
+
 
 class BackgroundProcess(Thread):
 
@@ -717,15 +791,15 @@ class BFS(object):
 
         if self.name in (
                 "5x5x5-edges-stage-first-four",
-                "5x5x5-step900-edges-centers-unstaged",
-                "5x5x5-step910-edges-centers-staged",
+                #"5x5x5-step900-edges-centers-unstaged",
+                #"5x5x5-step910-edges-centers-staged",
                 "5x5x5-step920-edges-centers-staged-without-LR",
             ) and not self.lt_centers:
             self.lt_centers = {}
 
             if self.name in (
                     "5x5x5-edges-stage-first-four",
-                    "5x5x5-step900-edges-centers-unstaged",
+                    #"5x5x5-step900-edges-centers-unstaged",
                 ):
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
 
@@ -737,9 +811,9 @@ class BFS(object):
                     raise Exception()
 
             # The centers remain staged so we can build it deeper
-            elif self.name == "5x5x5-step910-edges-centers-staged":
-                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt"
-                self.lt_centers_max_depth = 6
+            #elif self.name == "5x5x5-step910-edges-centers-staged":
+            #    lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt"
+            #    self.lt_centers_max_depth = 6
 
             elif self.name == "5x5x5-step920-edges-centers-staged-without-LR":
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-without-LR.txt"

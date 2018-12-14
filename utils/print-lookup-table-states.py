@@ -36,7 +36,7 @@ with open(filename, "r") as fh:
         (state, steps_to_solve) = line.strip().split(":")
         cube.re_init()
         cube.nuke_corners()
-        cube.nuke_edges()
+        #cube.nuke_edges()
         #cube.nuke_centers()
         steps_to_solve = steps_to_solve.split()
         steps_to_scramble = reverse_steps(steps_to_solve)

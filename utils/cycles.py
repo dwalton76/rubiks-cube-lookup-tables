@@ -2,10 +2,11 @@
 
 from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube333 import moves_333
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555
+from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555
 from pprint import pprint, pformat
 import json
 import itertools
+import os
 import sys
 import logging
 
@@ -70,6 +71,28 @@ def combo_steps_cancel(combo):
 
         prev_step = step
     return False
+
+
+def combo_move_counts(combo):
+    UD_wide_count = 0
+    LR_wide_count = 0
+    FB_wide_count = 0
+    outer_count = 0
+
+    for step in combo:
+        if "w" in step:
+
+            if "U" in step or "D" in step:
+                UD_wide_count += 1
+            elif "L" in step or "R" in step:
+                LR_wide_count += 1
+            elif "F" in step or "F" in step:
+                FB_wide_count += 1
+
+        else:
+            outer_count += 1
+
+    return (UD_wide_count, LR_wide_count, FB_wide_count, outer_count)
 
 
 def get_outer_layer_sequences(depth):
@@ -298,6 +321,7 @@ def combo_centers_will_solve(opening_wide_move, combo, closing_wide_move):
 
     return False
 
+
 def get_cycles(phase3_count):
     results = []
 
@@ -376,6 +400,111 @@ def write_cycles_for_depth(depth):
         fh.write("\n".join(cycles) + "\n")
 
 
+def wide_count_sanity(cycle):
+    """
+    The centers will never be solved for something like this
+        Uw U L U2 Fw
+        Uw U L U2 Uw
+        Uw U Uw U Uw
+    """
+
+    Uw_count = 0
+    Lw_count = 0
+    Fw_count = 0
+    Rw_count = 0
+    Bw_count = 0
+    Dw_count = 0
+
+    for step in cycle:
+
+        if step == "Uw":
+            Uw_count += 1
+        elif step == "Uw'":
+            Uw_count -= 1
+        elif step == "Uw2":
+            if Uw_count <= 0:
+                Uw_count += 2
+            else:
+                Uw_count -= 2
+
+        elif step == "Dw":
+            Dw_count += 1
+        elif step == "Dw'":
+            Dw_count -= 1
+        elif step == "Dw2":
+            if Dw_count <= 0:
+                Dw_count += 2
+            else:
+                Dw_count -= 2
+
+        elif step == "Lw":
+            Lw_count += 1
+        elif step == "Lw'":
+            Lw_count -= 1
+        elif step == "Lw2":
+            if Lw_count <= 0:
+                Lw_count += 2
+            else:
+                Lw_count -= 2
+
+        elif step == "Rw":
+            Rw_count += 1
+        elif step == "Rw'":
+            Rw_count -= 1
+        elif step == "Rw2":
+            if Rw_count <= 0:
+                Rw_count += 2
+            else:
+                Rw_count -= 2
+
+        elif step == "Fw":
+            Fw_count += 1
+        elif step == "Fw'":
+            Fw_count -= 1
+        elif step == "Fw2":
+            if Fw_count <= 0:
+                Fw_count += 2
+            else:
+                Fw_count -= 2
+
+        elif step == "Bw":
+            Bw_count += 1
+        elif step == "Bw'":
+            Bw_count -= 1
+        elif step == "Bw2":
+            if Bw_count <= 0:
+                Bw_count += 2
+            else:
+                Bw_count -= 2
+
+    #    Uw U L U2 Fw
+    #    Uw U L U2 Uw
+    #    Uw U Uw U Uw
+    #    Lw2 Bw2 Lw2 U2 Fw
+
+    if Uw_count and not Dw_count:
+        return False
+
+    if Dw_count and not Uw_count:
+        return False
+
+
+    if Lw_count and not Rw_count:
+        return False
+
+    if Rw_count and not Lw_count:
+        return False
+
+
+    if Fw_count and not Bw_count:
+        return False
+
+    if Bw_count and not Fw_count:
+        return False
+
+    return True
+
+
 def write_foobar():
 
     BATCH_SIZE = 10000000
@@ -429,6 +558,93 @@ def write_foobar():
         log.info("wrote keepers\n\n")
 
 
+
+lt_centers = {}
+lt_centers_max_depth = None
+#BATCH_SIZE = 10000000
+BATCH_SIZE = 100
+
+def find_cycles_recursive(steps_to_here, max_depth, results, results_count, cube):
+
+    depth = len(steps_to_here)
+
+    if depth == max_depth:
+        results.append(" ".join(steps_to_here))
+        results_count += 1
+
+
+        if results_count == BATCH_SIZE:
+            with open("combos-%d-deep-new.txt" % max_depth, "a") as fh:
+                fh.write("\n".join(results) + "\n")
+                fh.flush()
+                log.info(results_count)
+            results = []
+            results_count = 0
+        #cube.re_init()
+        #for step in steps_to_here:
+        #    cube.state = rotate_555(cube.state[:], step)
+        return
+    else:
+
+        # dwalton are the centers too scrambled to be solveable in the number of steps remaining?
+        cube.re_init()
+        for step in steps_to_here:
+            cube.state = rotate_555(cube.state[:], step)
+
+        centers = ''.join([cube.state[x] for x in centers_555])
+        centers_cost = lt_centers.get(centers, lt_centers_max_depth+1)
+
+        if centers_cost > (max_depth - depth) + 1:
+            return
+
+        for move in moves_555:
+            if depth and combo_steps_cancel([steps_to_here[-1], move]):
+                continue
+
+            tmp_steps_to_here = steps_to_here[:]
+            tmp_steps_to_here.append(move)
+            find_cycles_recursive(tmp_steps_to_here, max_depth, results, results_count, cube)
+    
+
+def write_cycles_for_depth_new(depth):
+    log.info("DEPTH %d" % depth)
+    log.info("wide moves: %s" % " ".join(wide_moves))
+
+    global lt_centers
+    global lt_centers_max_depth
+    lt_centers_filename = "../lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
+
+    if lt_centers_filename.endswith("5-deep"):
+        lt_centers_max_depth = 5
+    elif lt_centers_filename.endswith("4-deep"):
+        lt_centers_max_depth = 4
+    else:
+        raise Exception()
+
+    log.info("begin loading %s" % lt_centers_filename)
+    with open(lt_centers_filename, "r") as fh:
+        for line in fh:
+            (state, steps) = line.strip().split(':')
+            lt_centers[state] = len(steps.split())
+    log.info("end loading %s" % lt_centers_filename)
+
+    results = []
+    results_count = 0
+    cube = RubiksCube555(solved_555, 'URFDLB')
+
+    filename = "combos-%d-deep-new.txt" % depth
+    if os.path.exists(filename):
+        os.unlink(filename)
+
+    find_cycles_recursive([], depth, results, results_count, cube)
+
+    if results:
+        with open("combos-%d-deep-new.txt" % depth, "a") as fh:
+            fh.write("\n".join(results) + "\n")
+            fh.flush()
+
+
+
 if __name__ == "__main__":
 
     # Ran these once to build the cycles*.json files
@@ -456,4 +672,23 @@ if __name__ == "__main__":
     # INFO: (0, 1, 6, 1, False): found 3,163,968 keepers
     #write_cycles_for_depth(8) # (1, 6, 1)
 
-    write_foobar()
+    #write_foobar()
+
+    #write_cycles_for_depth_new(1)
+    #write_cycles_for_depth_new(2)
+    #write_cycles_for_depth_new(3)
+
+    # Took 4.5s, found 825k
+    #write_cycles_for_depth_new(4)
+
+    # Took 1m 17s, found 14 million, 17x slower than depth 4
+    #write_cycles_for_depth_new(5)
+
+    # Took 29m, 22x slower than depth 5
+    #write_cycles_for_depth_new(6)
+
+    # depth 7 will take 638m or 10.6 hours
+
+    # depth 8 will take 14036m or 9.7 days
+
+    # depth 9 will take 213 days

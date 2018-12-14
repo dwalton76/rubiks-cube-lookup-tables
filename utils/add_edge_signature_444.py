@@ -21,7 +21,7 @@ with open(filename_new, 'w') as fh_new:
             signature = get_edges_paired_binary_signature(state)
             fh_new.write("%s_%s:%s\n" % (signature, state, steps))
 
-subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output=%s %s" %
+subprocess.check_output("LC_ALL=C sort --temporary-directory=./tmp/ --output=%s %s" %
     (filename_new, filename_new), shell=True)
 
 subprocess.check_output("./utils/pad-lines.py %s" % filename_new, shell=True)

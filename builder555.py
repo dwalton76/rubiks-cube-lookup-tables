@@ -2503,7 +2503,8 @@ class Build555AllEdgesCentersUnstaged(BFS):
             D D D D D
             D D D D D
             . D D D .""", "ascii"),),
-            use_edges_pattern=True,
+            #use_edges_pattern=True,
+            use_centers_then_edges=True,
         )
 
 
@@ -2543,7 +2544,8 @@ class Build555AllEdgesCentersStaged(BFS):
             D D D D D
             D D D D D
             . D D D .""", "ascii"),),
-            use_edges_pattern=True,
+            #use_edges_pattern=True,
+            use_centers_then_edges=True,
         )
 
 
