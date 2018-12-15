@@ -2365,6 +2365,36 @@ class Build555EdgesStageSecondFour(BFS):
         )
 
 
+class Build555EdgesStageFirstAndSecondFour(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-stage-first-and-second-four',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step102-stage-first-and-second-four-edges.txt',
+            False, # store_as_hex
+            (("""
+            . U U U .
+            - U U U -
+            - U U U -
+            - U U U -
+            . U U U .
+
+ . - - - .  . U U U .  . - - - .  . U U U .
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ . - - - .  . U U U .  . - - - .  . U U U .
+
+            . U U U .
+            - D D D -
+            - D D D -
+            - D D D -
+            . U U U .""", "ascii"),)
+        )
+
+
 class Build555EdgesXPlaneEdgesOnly(BFS):
 
     def __init__(self):
