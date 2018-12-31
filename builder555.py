@@ -2579,7 +2579,7 @@ class Build555AllEdgesCentersStaged(BFS):
         )
 
 
-class Build555CentersStagedWithoutLFRB(BFS):
+class Build555SixEdgesWithoutLFRBCentersOnly(BFS):
 
     def __init__(self):
         BFS.__init__(self,
@@ -2623,7 +2623,114 @@ class Build555CentersStagedWithoutLFRB(BFS):
         )
 
 
-class Build555AllEdgesCentersStagedWithoutLFRB(BFS):
+class Build555SixEdgesWithoutLFRBEdgesOnly(BFS):
+    """
+    This pairs the L4E edges in the x-plane and two others that can be solved
+    without LFRB. This should be ~126 million states.
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step922-six-edges-without-LFRB-edges-only',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             #"Uw", "Uw'",
+             #"Dw", "Dw'",
+             "L", "L'",
+             "F", "F'",
+             "R", "R'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step922-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ . L L L .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            D . . . D
+            D . . . D
+            D . . . D
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ . - - - .  . F F F .  . - - - .  . B B B .
+
+            . D D D .
+            - . . . -
+            - . . . -
+            - . . . -
+            . D D D .""", "ascii"),
+
+            ("""
+            . - - - .
+            U . . . U
+            U . . . U
+            U . . . U
+            . - - - .
+
+ . L L L .  . - - - .  . R R R .  . - - - .
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),
+
+            ("""
+            . U U U .
+            - . . . -
+            - . . . -
+            - . . . -
+            . U U U .
+
+ . - - - .  . F F F .  . - - - .  . B B B .
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),
+            ),
+            use_edges_pattern=True,
+        )
+
+
+class Build555SixEdgesWithoutLFRB(BFS):
     """
     This pairs the L4E edges in the x-plane and two others that can be solved
     without LFRB. This should be ~126 million states.
