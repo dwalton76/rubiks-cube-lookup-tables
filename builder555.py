@@ -2579,20 +2579,70 @@ class Build555AllEdgesCentersStaged(BFS):
         )
 
 
-class Build555AllEdgesCentersStagedWithoutLR(BFS):
+class Build555CentersStagedWithoutLFRB(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-step920-edges-centers-staged-without-LR',
+            '5x5x5-step921-centers-staged-without-LFRB',
 
             ("Fw", "Fw'",
              "Bw", "Bw'",
              "Lw", "Lw'",
              "Rw", "Rw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
+             #"Uw", "Uw'",
+             #"Dw", "Dw'",
              "L", "L'",
+             "F", "F'",
              "R", "R'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step921-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555AllEdgesCentersStagedWithoutLFRB(BFS):
+    """
+    This pairs the L4E edges in the x-plane and two others that can be solved
+    without LFRB. This should be ~126 million states.
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-step920-edges-centers-staged-without-LFRB',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             #"Uw", "Uw'",
+             #"Dw", "Dw'",
+             "L", "L'",
+             "F", "F'",
+             "R", "R'",
+             "B", "B'",
             ),
 
             '5x5x5',
@@ -2601,27 +2651,83 @@ class Build555AllEdgesCentersStagedWithoutLR(BFS):
 
             # starting cubes
             (("""
-            . U U U .
-            U U U U U
-            U U U U U
-            U U U U U
-            . U U U .
+            . - - - .
+            - U U U -
+            - U U U -
+            - U U U -
+            . - - - .
 
- . L L L .  . F F F .  . R R R .  . B B B .
+ . - - - .  . - - - .  . - - - .  . - - - .
  L L L L L  F F F F F  R R R R R  B B B B B
  L L L L L  F F F F F  R R R R R  B B B B B
  L L L L L  F F F F F  R R R R R  B B B B B
- . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . - - - .  . R R R .  . - - - .
+
+            . - - - .
+            D D D D D
+            D D D D D
+            D D D D D
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            - U U U -
+            - U U U -
+            - U U U -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . - - - .  . F F F .  . - - - .  . B B B .
 
             . D D D .
-            D D D D D
-            D D D D D
-            D D D D D
-            . D D D .""", "ascii"),),
+            - D D D -
+            - D D D -
+            - D D D -
+            . D D D .""", "ascii"),
+
+            ("""
+            . - - - .
+            U U U U U
+            U U U U U
+            U U U U U
+            . - - - .
+
+ . L L L .  . - - - .  . R R R .  . - - - .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - D D D -
+            - D D D -
+            - D D D -
+            . - - - .""", "ascii"),
+
+            ("""
+            . U U U .
+            - U U U -
+            - U U U -
+            - U U U -
+            . U U U .
+
+ . - - - .  . F F F .  . - - - .  . B B B .
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ L L L L L  F F F F F  R R R R R  B B B B B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - D D D -
+            - D D D -
+            - D D D -
+            . - - - .""", "ascii"),
+            ),
             use_edges_pattern=True,
         )
-
-
 
 
 # =========================================
