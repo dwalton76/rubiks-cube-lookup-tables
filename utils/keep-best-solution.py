@@ -2,40 +2,43 @@
 
 import logging
 import sys
+import shutil
 
 log = logging.getLogger(__name__)
 
 
 def keep_best_solutions(filename):
     """
-    filename will contain multiple entries for a given edges_state, keep
-    the line for each edges_state that has the shortest solution
+    filename will contain multiple entries for a given state, keep
+    the line for each state that has the shortest solution
     """
     filename_final = filename + ".final"
-    edges_state_min_solution_len = None
-    edges_state_min_solution = None
-    prev_edges_state = None
+    state_min_solution_len = None
+    state_min_solution = None
+    prev_state = None
 
     with open(filename_final, "w") as fh_final:
         with open(filename, "r") as fh:
             for (line_number, line) in enumerate(fh):
-                (edges_state, steps_to_solve) = line.strip().split(":")
+                (state, steps_to_solve) = line.strip().split(":")
                 solution_len = len(steps_to_solve.split())
 
-                if prev_edges_state is not None and edges_state != prev_edges_state:
-                    fh_final.write("%s:%s\n" % (prev_edges_state, edges_state_min_solution))
-                    edges_state_min_solution_len = None
-                    edges_state_min_solution = None
+                if prev_state is not None and state != prev_state:
+                    fh_final.write("%s:%s\n" % (prev_state, state_min_solution))
+                    state_min_solution_len = None
+                    state_min_solution = None
 
-                if edges_state_min_solution_len is None or solution_len < edges_state_min_solution_len:
-                    edges_state_min_solution_len = solution_len
-                    edges_state_min_solution = steps_to_solve
+                if state_min_solution_len is None or solution_len < state_min_solution_len:
+                    state_min_solution_len = solution_len
+                    state_min_solution = steps_to_solve
 
-                prev_edges_state = edges_state
+                prev_state = state
 
                 if line_number % 1000000 == 0:
-                    log.info(line_number)
-            fh_final.write("%s:%s\n" % (prev_edges_state, edges_state_min_solution))
+                    log.info("{:,}".format(line_number))
+            fh_final.write("%s:%s\n" % (prev_state, state_min_solution))
+
+    shutil.move(filename_final, filename)
 
 
 if __name__ == "__main__":

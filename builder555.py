@@ -2237,6 +2237,296 @@ class Build555PairLastEightEdges(BFS):
 # ==========================
 # L4E last-four-edges tables
 # ==========================
+class Build555EdgesSolveFirstSix(BFS):
+    """
+    12! = 479,001,600 states
+    """
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-stage-first-six',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step100-solve-first-six-edges.txt',
+            False, # store_as_hex
+            (("""
+            - U U U -
+            U U U U U
+            U U U U U
+            U U U U U
+            - U U U -
+
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - - - - -  - F F F -  - - - - -  - B B B -
+
+            - D D D -
+            - D D D -
+            - D D D -
+            - D D D -
+            - D D D -""", "ascii"),),
+            use_edges_pattern=True,
+            # dwalton
+            legal_moves = (
+                "U", "U'", "U2",
+                "F2", "B2", "D2",
+                "2L", "2L'", "2L2",
+                "2R", "2R'", "2R2",
+            )
+        )
+
+
+class Build555EdgesStageFirstSix(BFS):
+    """
+    (24!/(12!*12!)) * (12!/(6!*6!)) = 2,498,640,144 states
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-stage-first-six',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step100-stage-first-six-edges.txt',
+            False, # store_as_hex
+            (
+            # Horseshoes where 4-edges are on top, 2-edges are on bottom
+            ("""
+            - L L L -
+            L U U U L
+            L U U U L
+            L U U U L
+            - L L L -
+
+ - L L L -  - L L L -  - L L L -  - L L L -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - - - - -  - L L L -  - - - - -  - L L L -
+
+            - L L L -
+            - D D D -
+            - D D D -
+            - D D D -
+            - L L L -""", "ascii"),
+
+            ("""
+            - L L L -
+            L U U U L
+            L U U U L
+            L U U U L
+            - L L L -
+
+ - L L L -  - L L L -  - L L L -  - L L L -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - - - - -  - L L L -  - - - - -
+
+            - - - - -
+            L D D D L
+            L D D D L
+            L D D D L
+            - - - - -""", "ascii"),
+
+            # Horseshoes where 4-edges are on bottom, 2-edges are on top
+            ("""
+            - L L L -
+            - U U U -
+            - U U U -
+            - U U U -
+            - L L L -
+
+ - - - - -  - L L L -  - - - - -  - L L L -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - L L L -  - L L L -  - L L L -
+
+            - L L L -
+            L D D D L
+            L D D D L
+            L D D D L
+            - L L L -""", "ascii"),
+
+            ("""
+            - - - - -
+            L U U U L
+            L U U U L
+            L U U U L
+            - - - - -
+
+ - L L L -  - - - - -  - L L L -  - - - - -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - L L L -  - L L L -  - L L L -
+
+            - L L L -
+            L D D D L
+            L D D D L
+            L D D D L
+            - L L L -""", "ascii"),
+
+            # Horseshoes where 4-edges are on left, 2-edges are on right
+            ("""
+            - - - - -
+            L U U U -
+            L U U U -
+            L U U U -
+            - - - - -
+
+ - L L L -  - - - - -  - - - - -  - - - - -
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ - L L L -  - - - - -  - - - - -  - - - - -
+
+            - - - - -
+            L D D D -
+            L D D D -
+            L D D D -
+            - - - - -""", "ascii"),
+
+            ("""
+            - - - - -
+            L U U U L
+            L U U U L
+            L U U U L
+            - - - - -
+
+ - L L L -  - - - - -  - L L L -  - - - - -
+ L L L L L  L F F F -  - R R R -  - B B B L
+ L L L L L  L F F F -  - R R R -  - B B B L
+ L L L L L  L F F F -  - R R R -  - B B B L
+ - L L L -  - - - - -  - L L L -  - - - - -
+
+            - - - - -
+            L D D D L
+            L D D D L
+            L D D D L
+            - - - - -""", "ascii"),
+
+            # Horseshoes where 4-edges are on right, 2-edges are on left
+            ("""
+            - - - - -
+            - U U U L
+            - U U U L
+            - U U U L
+            - - - - -
+
+ - - - - -  - - - - -  - L L L -  - - - - -
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ - - - - -  - - - - -  - L L L -  - - - - -
+
+            - - - - -
+            - D D D L
+            - D D D L
+            - D D D L
+            - - - - -""", "ascii"),
+
+            ("""
+            - - - - -
+            L U U U L
+            L U U U L
+            L U U U L
+            - - - - -
+
+ - L L L -  - - - - -  - L L L -  - - - - -
+ - L L L -  - F F F L  L R R R L  L B B B -
+ - L L L -  - F F F L  L R R R L  L B B B -
+ - L L L -  - F F F L  L R R R L  L B B B -
+ - L L L -  - - - - -  - L L L -  - - - - -
+
+            - - - - -
+            L D D D L
+            L D D D L
+            L D D D L
+            - - - - -""", "ascii"),
+
+            # Horseshoes where 4-edges are on front, 2-edges are on back
+            ("""
+            - - - - -
+            - U U U -
+            - U U U -
+            - U U U -
+            - L L L -
+
+ - - - - -  - L L L -  - - - - -  - - - - -
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ - - - - -  - L L L -  - - - - -  - - - - -
+
+            - L L L -
+            - D D D -
+            - D D D -
+            - D D D -
+            - - - - -""", "ascii"),
+
+            ("""
+            - - - - -
+            - U U U L
+            - U U U L
+            - U U U L
+            - L L L -
+
+ - - - - -  - L L L -  - - - - -  - L L L -
+ - L L L L  L F F F L  L R R R -  - B B B -
+ - L L L L  L F F F L  L R R R -  - B B B -
+ - L L L L  L F F F L  L R R R -  - B B B -
+ - - - - -  - L L L -  - - - - -  - L L L -
+
+            - L L L -
+            - D D D L
+            - D D D L
+            - D D D L
+            - - - - -""", "ascii"),
+
+            # Horseshoes where 4-edges are on back, 2-edges are on front
+            ("""
+            - - - - -
+            - U U U L
+            - U U U L
+            - U U U L
+            - - - - -
+
+ - - - - -  - - - - -  - - - - -  - L L L -
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ L L L L L  L F F F L  L R R R L  L B B B L
+ - - - - -  - - - - -  - - - - -  - L L L -
+
+            - - - - -
+            - D D D L
+            - D D D L
+            - D D D L
+            - - - - -""", "ascii"),
+
+            ("""
+            - - - - -
+            - U U U L
+            - U U U L
+            - U U U L
+            - L L L -
+
+ - - - - -  - L L L -  - - - - -  - L L L -
+ L L L L -  - F F F -  - R R R L  L B B B L
+ L L L L -  - F F F -  - R R R L  L B B B L
+ L L L L -  - F F F -  - R R R L  L B B B L
+ - - - - -  - L L L -  - - - - -  - L L L -
+
+            - L L L -
+            - D D D L
+            - D D D L
+            - D D D L
+            - - - - -""", "ascii"),
+            )
+        )
+
+
 class Build555EdgesStageFirstFour(BFS):
 
     def __init__(self):
@@ -2365,36 +2655,6 @@ class Build555EdgesStageSecondFour(BFS):
         )
 
 
-class Build555EdgesStageFirstAndSecondFour(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-stage-first-and-second-four',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step102-stage-first-and-second-four-edges.txt',
-            False, # store_as_hex
-            (("""
-            . U U U .
-            - U U U -
-            - U U U -
-            - U U U -
-            . U U U .
-
- . - - - .  . U U U .  . - - - .  . U U U .
- L L L L L  L F F F L  L R R R L  L B B B L
- L L L L L  L F F F L  L R R R L  L B B B L
- L L L L L  L F F F L  L R R R L  L B B B L
- . - - - .  . U U U .  . - - - .  . U U U .
-
-            . U U U .
-            - D D D -
-            - D D D -
-            - D D D -
-            . U U U .""", "ascii"),)
-        )
-
-
 class Build555EdgesXPlaneEdgesOnly(BFS):
 
     def __init__(self):
@@ -2504,339 +2764,6 @@ class Build555EdgesXPlane(BFS):
         )
 
 
-class Build555AllEdgesCentersUnstaged(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-step900-edges-centers-unstaged',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step900-edges.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . U U U .
-            U U U U U
-            U U U U U
-            U U U U U
-            . U U U .
-
- . L L L .  . F F F .  . R R R .  . B B B .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . L L L .  . F F F .  . R R R .  . B B B .
-
-            . D D D .
-            D D D D D
-            D D D D D
-            D D D D D
-            . D D D .""", "ascii"),),
-            #use_edges_pattern=True,
-            use_centers_then_edges=True,
-        )
-
-
-class Build555AllEdgesCentersStaged(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-step910-edges-centers-staged',
-
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'"),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step910-edges.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . U U U .
-            U U U U U
-            U U U U U
-            U U U U U
-            . U U U .
-
- . L L L .  . F F F .  . R R R .  . B B B .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . L L L .  . F F F .  . R R R .  . B B B .
-
-            . D D D .
-            D D D D D
-            D D D D D
-            D D D D D
-            . D D D .""", "ascii"),),
-            #use_edges_pattern=True,
-            use_centers_then_edges=True,
-        )
-
-
-class Build555SixEdgesWithoutLFRBCentersOnly(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-step921-centers-staged-without-LFRB',
-
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             #"Uw", "Uw'",
-             #"Dw", "Dw'",
-             "L", "L'",
-             "F", "F'",
-             "R", "R'",
-             "B", "B'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step921-centers.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . D D D .
-            . D D D .
-            . D D D .
-            . . . . .""", "ascii"),),
-        )
-
-
-class Build555SixEdgesWithoutLFRBEdgesOnly(BFS):
-    """
-    This pairs the L4E edges in the x-plane and two others that can be solved
-    without LFRB. This should be ~126 million states.
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-step922-six-edges-without-LFRB-edges-only',
-
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             #"Uw", "Uw'",
-             #"Dw", "Dw'",
-             "L", "L'",
-             "F", "F'",
-             "R", "R'",
-             "B", "B'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step922-edges.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- . L L L .  . - - - .  . R R R .  . - - - .
-
-            . - - - .
-            D . . . D
-            D . . . D
-            D . . . D
-            . - - - .""", "ascii"),
-
-            ("""
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- . - - - .  . F F F .  . - - - .  . B B B .
-
-            . D D D .
-            - . . . -
-            - . . . -
-            - . . . -
-            . D D D .""", "ascii"),
-
-            ("""
-            . - - - .
-            U . . . U
-            U . . . U
-            U . . . U
-            . - - - .
-
- . L L L .  . - - - .  . R R R .  . - - - .
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""", "ascii"),
-
-            ("""
-            . U U U .
-            - . . . -
-            - . . . -
-            - . . . -
-            . U U U .
-
- . - - - .  . F F F .  . - - - .  . B B B .
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""", "ascii"),
-            ),
-            use_edges_pattern=True,
-        )
-
-
-class Build555SixEdgesWithoutLFRB(BFS):
-    """
-    This pairs the L4E edges in the x-plane and two others that can be solved
-    without LFRB. This should be ~126 million states.
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-step920-edges-centers-staged-without-LFRB',
-
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             #"Uw", "Uw'",
-             #"Dw", "Dw'",
-             "L", "L'",
-             "F", "F'",
-             "R", "R'",
-             "B", "B'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step920-edges.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . - - - .
-            - U U U -
-            - U U U -
-            - U U U -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . L L L .  . - - - .  . R R R .  . - - - .
-
-            . - - - .
-            D D D D D
-            D D D D D
-            D D D D D
-            . - - - .""", "ascii"),
-
-            ("""
-            . - - - .
-            - U U U -
-            - U U U -
-            - U U U -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . - - - .  . F F F .  . - - - .  . B B B .
-
-            . D D D .
-            - D D D -
-            - D D D -
-            - D D D -
-            . D D D .""", "ascii"),
-
-            ("""
-            . - - - .
-            U U U U U
-            U U U U U
-            U U U U U
-            . - - - .
-
- . L L L .  . - - - .  . R R R .  . - - - .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - D D D -
-            - D D D -
-            - D D D -
-            . - - - .""", "ascii"),
-
-            ("""
-            . U U U .
-            - U U U -
-            - U U U -
-            - U U U -
-            . U U U .
-
- . - - - .  . F F F .  . - - - .  . B B B .
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- L L L L L  F F F F F  R R R R R  B B B B B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - D D D -
-            - D D D -
-            - D D D -
-            . - - - .""", "ascii"),
-            ),
-            use_edges_pattern=True,
-        )
-
-
 # =========================================
 # solving edges when centers are NOT paired
 # =========================================
@@ -2851,19 +2778,17 @@ phase 2 - stage LR to 432 but with 4-edges EO
 phase 3 - LR to horizontal bars and pair 4-edges in z-plane
 
     - A 2-edge prune table is
-        ((12*11)^2/2) is how many states the wings can be in.  The wings are in high/low groups
-            of 12 but there is a parity constraint thus the /2
-        ((12!/(10!*2!)) * 2) is how many states the midges can be in
-        ((12*11)^2/2) * ((12!/(10!*2!)) * 2) = 1,149,984
+        (12*11)^2 is how many states the wings can be in
+        12!/(10!*2!) is how many states the midges can be in
+        (12*11)^2 * 12!/(10!*2!) = 1,149,984
 
     - A 3-edge prune table is
-        ((12*11*10)^2/2) is how many states the wings can be in.  The wings are in high/low groups
-            of 12 but there is a parity constraint thus the /2
-        ((12!/(9!*3!)) * 2) is how many states the midges can be in
-        ((12*11*10)^2/2) * ((12!/(9!*3!)) * 2) = 383,328,000
+        (12*11*10)^2 is how many states the wings can be in
+        12!/(9!*3!) is how many states the midges can be in
+        (12*11*10)^2 * 12!/(9!*3!) = 383,328,000
 
     - A 4-edge prune table is
-        ((12*11*10*9)^2/2) * ((12!/(8!*4!)) * 2) = 69,861,528,000
+        (12*11*10*9)^2 * 12!/(8!*4!) = 69,861,528,000
 
     - 69,861,528,000 * 432 = 30,180,180,096,000 states
 
@@ -2873,7 +2798,7 @@ phase 3 - LR to horizontal bars and pair 4-edges in z-plane
     ~14 moves??? Educated guess based on xyzzy solves here:
     http://cubesolvingprograms.freeforums.net/thread/37/results-5x5x5-fewest-moves-challenge
 
-phase 4 - partialy EO the remaingin 8-edges
+phase 4 - partialy EO the remaining 8-edges
     There are 900,900 EO states but phase 5 can only get to 343,000 of them so put the
     edges into one of those 343,000 states by using slices.  Keep the UD and FB centers
     staged.
@@ -2920,18 +2845,35 @@ phase 5 - solve 3rd L4E group
 This normally takes ~52 steps
 '''
 
-# today we do the following
-'''
-phase 1 - stage 1st L4E group but look for a solution that also allows 4-edges to be paired without L L' R R' F F' B B'
-phase 2 - solve 1st L4E group in x-plane
-phase 3 - solve 4-edges that are EOed...this will be similar to our step500 table today where we pair 8-edges but will be smaller
-    The key is we can pair another 4-edges without staging them first.
-phase 4 - solve 3rd L4E group
-
-This ended up being in the 47-48 range which is a small improvement
-'''
-
 # brainstorm 1
-# DavidG has this working via static algorithms tables...I have tried that in the
-# past but got crappy results so I must have done something wrong.  revisit this
-# idea.
+'''
+phase 1 - EO all 12 edges
+    24!/(12!*12!) = 2,704,156 wing states
+    2^11 = 2,048 midge states
+    2048 * 2704156 = 5,538,111,488 total states
+    7 moves???
+
+phase 2 - pair 4-edges
+    (12*11*10*9)^2 * 12!/(8!*4!) = 69,861,528,000 states
+    13 moves
+
+phase 3 - pair 8-edges
+    (8!^2)/2 = 812,851,200
+    17 moves
+
+That would be 37 moves which is a huge improvement over the 53 moves we average today.
+It would take about 5TB to store those tables though :(
+'''
+
+# brainstorm 2
+'''
+phase 1 - stage 6 edges to a horseshoe
+    (24!/(12!*12!)) * (12!/(6!*6!)) = 2,498,640,144 states
+    We do not need to build ALL of these though...10% might be enoug
+
+phase 2 - solve first 6 edges
+    12! = 479,001,600 states
+
+phase 3 - solve last6 edges
+    12! = 479,001,600 states
+'''

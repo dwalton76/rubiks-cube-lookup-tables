@@ -664,13 +664,6 @@ class BFS(object):
                 for cube in self.starting_cubes:
                     for move in self.legal_moves:
 
-                        # Do not start with outer layer moves those are a waste of cycles
-                        if (self.name == "5x5x5-step900-edges-centers-unstaged" or
-                            self.name == "5x5x5-step910-edges-centers-staged" or
-                            self.name == "5x5x5-step920-edges-centers-staged-without-LFRB"):
-                            if move in moves_333:
-                                continue
-
                         if self.use_edges_pattern:
                             workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), move)
                         else:
@@ -791,15 +784,11 @@ class BFS(object):
 
         if self.name in (
                 "5x5x5-edges-stage-first-four",
-                #"5x5x5-step900-edges-centers-unstaged",
-                #"5x5x5-step910-edges-centers-staged",
-                "5x5x5-step920-edges-centers-staged-without-LFRB",
             ) and not self.lt_centers:
             self.lt_centers = {}
 
             if self.name in (
                     "5x5x5-edges-stage-first-four",
-                    #"5x5x5-step900-edges-centers-unstaged",
                 ):
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
 
@@ -809,15 +798,6 @@ class BFS(object):
                     self.lt_centers_max_depth = 4
                 else:
                     raise Exception()
-
-            # The centers remain staged so we can build it deeper
-            #elif self.name == "5x5x5-step910-edges-centers-staged":
-            #    lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve.txt"
-            #    self.lt_centers_max_depth = 6
-
-            elif self.name == "5x5x5-step920-edges-centers-staged-without-LFRB":
-                lt_centers_filename = "lookup-table-5x5x5-step921-centers.txt"
-                self.lt_centers_max_depth = 7
 
             else:
                 raise Exception("Implement this %s" % self.name)
@@ -1082,7 +1062,6 @@ class BFS(object):
                 for line in fh_read:
                     (cube_state_string, steps) = line.rstrip().split(':')
 
-                    #if self.name == "5x5x5-edges-stage-first-four":
                     if self.lt_centers_max_depth:
                         self.cube.state = list(cube_state_string)
                         edges = ''.join([self.cube.state[x] for x in edges_555])
