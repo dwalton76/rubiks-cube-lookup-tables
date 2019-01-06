@@ -40,6 +40,35 @@ class Build444Ultimate(BFS):
         )
 
 
+class Build444CentersSolveUnstaged(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-ultimate',
+            (),
+            '4x4x4',
+            'lookup-table-4x4x4-step200-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . U U .
+          . U U .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . F F .  . R R .  . B B .
+ . L L .  . F F .  . R R .  . B B .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . D D .
+          . D D .
+          . . . .  """, 'ascii'),),
+        )
+
+
 
 
 # ===============================
