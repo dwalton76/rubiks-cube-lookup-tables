@@ -22,6 +22,7 @@ parser.add_argument('--start', type=int, default=0, help='starting line number')
 parser.add_argument('--end', type=int, default=0, help='starting line number')
 parser.add_argument('--centers-filename', type=str)
 parser.add_argument('--lookup-table-filename', type=str)
+parser.add_argument('--specific-depth', type=int, default=0)
 args = parser.parse_args()
 start = args.start
 end = args.end
@@ -74,6 +75,8 @@ else:
     lines_to_process = int(subprocess.check_output("wc -l %s" % lookup_table_filename, shell=True).strip().split()[0])
 
 line_number_processed = 0
+state_cache = {}
+SPECIFIC_DEPTH = args.specific_depth
 
 with open(lookup_table_filename_new, "w") as fh_new:
     with open(lookup_table_filename, "r") as fh:
@@ -107,6 +110,9 @@ with open(lookup_table_filename_new, "w") as fh_new:
                 cube.solution = tmp_solution[:]
                 centers_solution = centers_solution.split()
 
+                if SPECIFIC_DEPTH and (len(steps_to_scramble) + len(centers_solution)) != SPECIFIC_DEPTH:
+                    continue
+
                 for step in centers_solution:
                     cube.state = rotate_555(cube.state[:], step)
 
@@ -118,8 +124,12 @@ with open(lookup_table_filename_new, "w") as fh_new:
                 else:
                     raise Exception("Implement this")
 
-                to_write.append("{}:{}".format(state_to_write, " ".join(reverse_steps(steps_to_scramble + centers_solution))))
-                to_write_count += 1
+                steps_to_write = steps_to_scramble + centers_solution
+
+                if state_to_write not in state_cache or len(steps_to_write) < state_cache[state_to_write]:
+                    to_write.append("{}:{}".format(state_to_write, " ".join(reverse_steps(steps_to_write))))
+                    to_write_count += 1
+                    state_cache[state_to_write] = len(steps_to_write)
 
             line_number_processed += 1
 
@@ -134,13 +144,14 @@ with open(lookup_table_filename_new, "w") as fh_new:
                 fh_new.flush()
                 to_write = []
                 to_write_count = 0
+                state_cache = {}
 
     if to_write_count:
         fh_new.write("\n".join(to_write) + "\n")
         fh_new.flush()
         to_write = []
         to_write_count = 0
-
+        state_cache = {}
 
 if end:
     log.info("{:,} -> {:,}: FINISHED".format(start, end))
