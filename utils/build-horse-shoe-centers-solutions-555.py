@@ -127,7 +127,6 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                                 to_write = []
                                 to_write_count = 0
 
-                            '''
                             # took 8min, found 4,877,862
                             for move7 in legal_moves:
 
@@ -147,27 +146,47 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
 
                                 # took 71 min, found 46,670,208 states
                                 for move8 in legal_moves:
-    
+
                                     if steps_on_same_face_and_layer(move7, move8):
                                         continue
-    
+
                                     cube.state = move7_cube_state[:]
                                     cube.solution = move7_cube_solution[:]
                                     cube.rotate(move8)
                                     move8_cube_state = cube.state[:]
                                     move8_cube_solution = cube.solution[:]
-    
+
                                     steps_to_solve = reverse_steps(cube.solution)
                                     centers_state = ''.join([cube.state[x] for x in centers_555])
                                     to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                                     to_write_count += 1
 
-                                    if to_write_count >= BATCH_SIZE:
-                                        fh.write("\n".join(to_write) + "\n")
-                                        fh.flush()
-                                        to_write = []
-                                        to_write_count = 0
-                            '''
+
+                                    # 9-deep
+                                    # finished overnight...probably took 10 or 12 hours
+                                    # found 446,529,606 states
+                                    for move9 in legal_moves:
+
+                                        if steps_on_same_face_and_layer(move8, move9):
+                                            continue
+
+                                        cube.state = move8_cube_state[:]
+                                        cube.solution = move8_cube_solution[:]
+                                        cube.rotate(move9)
+                                        move9_cube_state = cube.state[:]
+                                        move9_cube_solution = cube.solution[:]
+
+                                        steps_to_solve = reverse_steps(cube.solution)
+                                        centers_state = ''.join([cube.state[x] for x in centers_555])
+                                        to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
+                                        to_write_count += 1
+
+
+                                        if to_write_count >= BATCH_SIZE:
+                                            fh.write("\n".join(to_write) + "\n")
+                                            fh.flush()
+                                            to_write = []
+                                            to_write_count = 0
 
     if to_write_count:
         fh.write("\n".join(to_write) + "\n")
