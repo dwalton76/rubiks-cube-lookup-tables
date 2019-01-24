@@ -6,7 +6,7 @@ from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444, edges_recolor_pattern_444, wings_for_edges_recolor_pattern_444
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555, edges_555, edges_recolor_pattern_555, wings_for_edges_pattern_555
+from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555, edges_555, edges_recolor_pattern_555, wings_for_edges_pattern_555, edges_partner_555
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
 from threading import Thread, Event
@@ -482,6 +482,30 @@ class BFS(object):
                     state = parse_ascii_555(state)
                     order = 'ULFRBD'
                 self.starting_cubes.append(RubiksCube555(state, order))
+
+            # tmp sanity checks for Build555EdgesStageFirstSix
+            '''
+            for cube in self.starting_cubes:
+                cube.print_cube()
+                l_count = 0
+                dash_count = 0
+                for square_index in edges_555:
+                    partner_index = edges_partner_555[square_index]
+                    square_value = cube.state[square_index]
+                    partner_value = cube.state[partner_index]
+
+                    if square_value == "L":
+                        l_count += 1
+                    elif square_value == "-":
+                        dash_count += 1
+                    else:
+                        assert False
+
+                    assert square_value == partner_value, "%s(%d) != %s(%d)" % (square_value, square_index, partner_value, partner_index)
+
+                assert l_count == 36
+                assert dash_count == 36
+            '''
 
         elif size == '6x6x6':
             self.all_moves = moves_666

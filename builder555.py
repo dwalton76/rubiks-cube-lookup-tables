@@ -18,7 +18,7 @@ class Build555Ultimate(BFS):
             (),
             '5x5x5',
             'lookup-table-5x5x5-step00-ultimate.txt',
-            True, # store_as_hex
+            False, # store_as_hex
 
             # starting cubes
             (("""
@@ -39,6 +39,71 @@ class Build555Ultimate(BFS):
             D D D D D
             D D D D D
             D D D D D""", "ascii"),),
+        )
+
+class Build555UltimateCenters(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-ultimate',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step00-ultimate-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),),
+
+            legal_moves = (
+                # OBTM 36 moves
+                #"U", "U'", "U2", "Uw", "Uw'", "Uw2",
+                #"L", "L'", "L2", "Lw", "Lw'", "Lw2",
+                #"F" , "F'", "F2", "Fw", "Fw'", "Fw2",
+                #"R" , "R'", "R2", "Rw", "Rw'", "Rw2",
+                #"B" , "B'", "B2", "Bw", "Bw'", "Bw2",
+                #"D" , "D'", "D2", "Dw", "Dw'", "Dw2",
+
+                # SSTM 36 moves
+                #"U", "U'", "U2",
+                #"L", "L'", "L2",
+                #"F" , "F'", "F2",
+                #"R" , "R'", "R2",
+                #"B" , "B'", "B2",
+                #"D" , "D'", "D2",
+                #"2U", "2U'", "2U2", "2D", "2D'", "2D2",
+                #"2L", "2L'", "2L2", "2R", "2R'", "2R2",
+                #"2F", "2F'", "2F2", "2B", "2B'", "2B2"
+
+                # BTM is both, 54 moves
+                "U", "U'", "U2", "Uw", "Uw'", "Uw2",
+                "L", "L'", "L2", "Lw", "Lw'", "Lw2",
+                "F" , "F'", "F2", "Fw", "Fw'", "Fw2",
+                "R" , "R'", "R2", "Rw", "Rw'", "Rw2",
+                "B" , "B'", "B2", "Bw", "Bw'", "Bw2",
+                "D" , "D'", "D2", "Dw", "Dw'", "Dw2",
+                "2U", "2U'", "2U2", "2D", "2D'", "2D2",
+                "2L", "2L'", "2L2", "2R", "2R'", "2R2",
+                "2F", "2F'", "2F2", "2B", "2B'", "2B2"
+            )
         )
 
 
@@ -2267,7 +2332,6 @@ class Build555EdgesSolveFirstSix(BFS):
             - D D D -
             - D D D -""", "ascii"),),
             use_edges_pattern=True,
-            # dwalton
             legal_moves = (
                 "U", "U'", "U2",
                 "F2", "B2", "D2",
@@ -2467,10 +2531,10 @@ class Build555EdgesStageFirstSix(BFS):
             - - - - -""", "ascii"),
 
             ("""
-            - - - - -
-            - U U U L
-            - U U U L
-            - U U U L
+            - L L L -
+            - U U U -
+            - U U U -
+            - U U U -
             - L L L -
 
  - - - - -  - L L L -  - - - - -  - L L L -
@@ -2480,17 +2544,17 @@ class Build555EdgesStageFirstSix(BFS):
  - - - - -  - L L L -  - - - - -  - L L L -
 
             - L L L -
-            - D D D L
-            - D D D L
-            - D D D L
-            - - - - -""", "ascii"),
+            - D D D -
+            - D D D -
+            - D D D -
+            - L L L -""", "ascii"),
 
             # Horseshoes where 4-edges are on back, 2-edges are on front
             ("""
-            - - - - -
-            - U U U L
-            - U U U L
-            - U U U L
+            - L L L -
+            - U U U -
+            - U U U -
+            - U U U -
             - - - - -
 
  - - - - -  - - - - -  - - - - -  - L L L -
@@ -2500,16 +2564,16 @@ class Build555EdgesStageFirstSix(BFS):
  - - - - -  - - - - -  - - - - -  - L L L -
 
             - - - - -
-            - D D D L
-            - D D D L
-            - D D D L
-            - - - - -""", "ascii"),
+            - D D D -
+            - D D D -
+            - D D D -
+            - L L L -""", "ascii"),
 
             ("""
-            - - - - -
-            - U U U L
-            - U U U L
-            - U U U L
+            - L L L -
+            - U U U -
+            - U U U -
+            - U U U -
             - L L L -
 
  - - - - -  - L L L -  - - - - -  - L L L -
@@ -2519,10 +2583,10 @@ class Build555EdgesStageFirstSix(BFS):
  - - - - -  - L L L -  - - - - -  - L L L -
 
             - L L L -
-            - D D D L
-            - D D D L
-            - D D D L
-            - - - - -""", "ascii"),
+            - D D D -
+            - D D D -
+            - D D D -
+            - L L L -""", "ascii"),
             )
         )
 
