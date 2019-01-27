@@ -1,9 +1,9 @@
 #!/bin/bash
 
-./utils/expand-state-with-centers-solved.py --centers-filename centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-stage-first-six-edges.txt --start 0 --end 50000 &
-./utils/expand-state-with-centers-solved.py --centers-filename centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-stage-first-six-edges.txt --start 50001 --end 100000 &
-./utils/expand-state-with-centers-solved.py --centers-filename centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-stage-first-six-edges.txt --start 100001 --end 150000 &
-./utils/expand-state-with-centers-solved.py --centers-filename centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-stage-first-six-edges.txt --start 150001 --end 200000 &
+./utils/expand-state-with-centers-solved.py --centers-filename centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-stage-first-six-edges.txt --start 0 --end 35000000 --specific-depth 10 &
+./utils/expand-state-with-centers-solved.py --centers-filename centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-stage-first-six-edges.txt --start 35000001 --end 70000000 --specific-depth 10 &
+./utils/expand-state-with-centers-solved.py --centers-filename centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-stage-first-six-edges.txt --start 70000001 --end 105000000 --specific-depth 10 &
+./utils/expand-state-with-centers-solved.py --centers-filename centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-stage-first-six-edges.txt --start 105000001 --end 135000000 --specific-depth 10 &
 
 #./utils/expand-state-with-centers-solved.py --centers-filename horse_shoe_centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-solve-first-six-edges.txt --start 0 --end 2300000 --specific-depth 17 &
 #./utils/expand-state-with-centers-solved.py --centers-filename horse_shoe_centers_solutions_555.txt --lookup-table-filename lookup-table-5x5x5-step100-solve-first-six-edges.txt --start 2300001 --end 4600000 --specific-depth 17 &

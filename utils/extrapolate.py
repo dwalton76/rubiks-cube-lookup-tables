@@ -56,21 +56,19 @@ count_total_target = 10540869576538135887152100000000 # (24!/(4!^6))^2
 
 
 
-'''
 # 5x5x5 horseshoe stage
-depth = 9
-prev_count_at_depth = 87411594
-count_total = 97565447
-rate = float(9.68)
+depth = 10
+prev_count_at_depth = 21975176
+count_total = 28905188
+rate = float(3.99)
 count_total_target = 2498640144 # (24!/(12!*12!)) * (12!/(6!*6!)) states
-'''
 
 
 move_total = 0
 
 while count_total < count_total_target:
     depth += 1
-    rate -= 0.8
+    #rate -= 0.8
     count_at_depth = int(prev_count_at_depth * rate)
 
     if (count_total + count_at_depth) > count_total_target:
