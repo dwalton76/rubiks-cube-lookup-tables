@@ -21,6 +21,8 @@ def get_class( kls ):
         m = __import__('builder666')
     elif '777' in kls:
         m = __import__('builder777')
+    elif '222' in kls:
+        m = __import__('builder222')
     else:
         raise Exception("we should not be here")
 
