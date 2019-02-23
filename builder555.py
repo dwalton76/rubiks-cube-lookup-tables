@@ -2308,7 +2308,7 @@ class Build555EdgesSolveFirstSix(BFS):
     """
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-edges-stage-first-six',
+            '5x5x5-edges-solve-first-six',
             (),
             '5x5x5',
             'lookup-table-5x5x5-step100-solve-first-six-edges.txt',
