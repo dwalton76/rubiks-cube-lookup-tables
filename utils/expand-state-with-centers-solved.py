@@ -109,35 +109,36 @@ with open(lookup_table_filename_new, "w") as fh_new:
             centers_state = ''.join([cube.state[index] for index in centers_555])
             #log.info("{} centers solutions".format(len(centers_solutions[centers_state])))
 
-            for centers_solution in centers_solutions[centers_state]:
-                cube.state = tmp_state[:]
-                cube.solution = tmp_solution[:]
-                centers_solution = centers_solution.split()
+            if centers_state in centers_solutions:
+                for centers_solution in centers_solutions[centers_state]:
+                    cube.state = tmp_state[:]
+                    cube.solution = tmp_solution[:]
+                    centers_solution = centers_solution.split()
 
-                if SPECIFIC_DEPTH and (len(steps_to_scramble) + len(centers_solution)) != SPECIFIC_DEPTH:
-                    continue
+                    if SPECIFIC_DEPTH and (len(steps_to_scramble) + len(centers_solution)) != SPECIFIC_DEPTH:
+                        continue
 
-                for step in centers_solution:
-                    cube.state = rotate_555(cube.state[:], step)
+                    for step in centers_solution:
+                        cube.state = rotate_555(cube.state[:], step)
 
-                if lookup_table_filename == "lookup-table-5x5x5-step100-stage-first-six-edges.txt":
-                    state_to_write = "".join(cube.state[index] for index in edges_555)
-                elif lookup_table_filename == "lookup-table-5x5x5-step100-solve-first-six-edges.txt":
-                    state = edges_recolor_pattern_555(cube.state[:])
-                    state_to_write = ''.join([state[index] for index in wings_for_edges_pattern_555])
-                else:
-                    raise Exception("Implement this")
+                    if lookup_table_filename == "lookup-table-5x5x5-step100-stage-first-six-edges.txt":
+                        state_to_write = "".join(cube.state[index] for index in edges_555)
+                    elif lookup_table_filename == "lookup-table-5x5x5-step100-solve-first-six-edges.txt":
+                        state = edges_recolor_pattern_555(cube.state[:])
+                        state_to_write = ''.join([state[index] for index in wings_for_edges_pattern_555])
+                    else:
+                        raise Exception("Implement this")
 
-                steps_to_write = steps_to_scramble + centers_solution
+                    steps_to_write = steps_to_scramble + centers_solution
 
-                if state_to_write not in state_cache or len(steps_to_write) < state_cache[state_to_write]:
-                    to_write.append("{}:{}".format(state_to_write, " ".join(reverse_steps(steps_to_write))))
-                    to_write_count += 1
-                    state_cache[state_to_write] = len(steps_to_write)
+                    if state_to_write not in state_cache or len(steps_to_write) < state_cache[state_to_write]:
+                        to_write.append("{}:{}".format(state_to_write, " ".join(reverse_steps(steps_to_write))))
+                        to_write_count += 1
+                        state_cache[state_to_write] = len(steps_to_write)
 
             line_number_processed += 1
 
-            if line_number_processed % 1000 == 0:
+            if line_number_processed % 10000 == 0:
                 if end:
                     log.info("{:,} -> {:,}: {:,}/{:,}".format(start, end, line_number_processed, lines_to_process))
                 else:
