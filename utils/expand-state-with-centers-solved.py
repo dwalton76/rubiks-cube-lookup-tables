@@ -53,11 +53,15 @@ else:
     log.info("%s: begin load" % centers_filename)
     centers_solutions = {}
     with open(centers_filename, "r") as fh:
-        for line in fh:
+        for (line_number, line) in enumerate(fh):
             (state, steps) = line.rstrip().split(":")
             if state not in centers_solutions:
                 centers_solutions[state] = []
             centers_solutions[state].append(steps)
+
+            if line_number % 1000000 == 0:
+                log.info(line_number)
+
     log.info("%s: end load" % centers_filename)
 
     log.info("%s: begin pickle dump" % centers_filename)
