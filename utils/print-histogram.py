@@ -159,7 +159,8 @@ with open(filename, 'r') as fh:
 
         if not len_steps:
             print("ERROR: %s" % line)
-            sys.exit(0)
+            continue
+            #sys.exit(0)
 
         if len_steps == 1 and steps[0] == 'Na':
             len_steps = 0

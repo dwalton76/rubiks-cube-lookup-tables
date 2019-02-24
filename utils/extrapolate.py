@@ -57,12 +57,20 @@ count_total_target = 10540869576538135887152100000000 # (24!/(4!^6))^2
 
 
 # 5x5x5 horseshoe stage
-depth = 10
-prev_count_at_depth = 21975176
-count_total = 28905188
-rate = float(3.99)
+depth = 11
+prev_count_at_depth = 80163256
+count_total = 109442672
+rate = float(3.76)
 count_total_target = 2498640144 # (24!/(12!*12!)) * (12!/(6!*6!)) states
 
+'''
+# 5x5x5 horseshoe stage with centers solved
+depth = 6
+prev_count_at_depth = 17036649
+count_total = 18635362
+rate = float(11.57)
+count_total_target = 2498640144 # (24!/(12!*12!)) * (12!/(6!*6!)) states
+'''
 
 move_total = 0
 

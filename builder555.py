@@ -2302,45 +2302,6 @@ class Build555PairLastEightEdges(BFS):
 # ==========================
 # L4E last-four-edges tables
 # ==========================
-class Build555EdgesSolveFirstSix(BFS):
-    """
-    12! = 479,001,600 states
-    """
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-stage-first-six',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step100-solve-first-six-edges.txt',
-            False, # store_as_hex
-            (("""
-            - U U U -
-            U U U U U
-            U U U U U
-            U U U U U
-            - U U U -
-
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - L L L -  - F F F -  - R R R -  - B B B -
- - - - - -  - F F F -  - - - - -  - B B B -
-
-            - D D D -
-            - D D D -
-            - D D D -
-            - D D D -
-            - D D D -""", "ascii"),),
-            use_edges_pattern=True,
-            legal_moves = (
-                "U", "U'", "U2",
-                "F2", "B2", "D2",
-                "2L", "2L'", "2L2",
-                "2R", "2R'", "2R2",
-            )
-        )
-
-
 class Build555EdgesStageFirstSix(BFS):
     """
     (24!/(12!*12!)) * (12!/(6!*6!)) = 2,498,640,144 states
@@ -2589,6 +2550,46 @@ class Build555EdgesStageFirstSix(BFS):
             - L L L -""", "ascii"),
             )
         )
+
+
+class Build555EdgesSolveFirstSix(BFS):
+    """
+    12! = 479,001,600 states
+    """
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-edges-solve-first-six',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step100-solve-first-six-edges.txt',
+            False, # store_as_hex
+            (("""
+            - U U U -
+            U U U U U
+            U U U U U
+            U U U U U
+            - U U U -
+
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - - - - -  - F F F -  - - - - -  - B B B -
+
+            - D D D -
+            - D D D -
+            - D D D -
+            - D D D -
+            - D D D -""", "ascii"),),
+            use_edges_pattern=True,
+            legal_moves = (
+                "U", "U'", "U2",
+                "F2", "B2", "D2",
+                "2L", "2L'", "2L2",
+                "2R", "2R'", "2R2",
+            )
+        )
+
 
 
 class Build555EdgesStageFirstFour(BFS):
