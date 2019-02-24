@@ -119,7 +119,7 @@ def convert_state_to_hex(state):
     >>> convert_state_to_hex("UUxUx")
     '1a'
     """
-    state = state.replace('x', '0').replace('U', '1').replace('L', '1').replace('F', '1').replace('R', '1').replace('B', '1').replace('D', '1')
+    state = state.replace('x', '0').replace('-', '0').replace('U', '1').replace('L', '1').replace('F', '1').replace('R', '1').replace('B', '1').replace('D', '1')
     hex_width = int(math.ceil(len(state)/4.0))
     hex_state = hex(int(state, 2))[2:]
 

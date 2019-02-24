@@ -2297,9 +2297,9 @@ class Build555PairLastEightEdges(BFS):
         )
 
 
-# ==========================
+# ================================
 # six-edges (aka horseshoe) tables
-# ==========================
+# ================================
 class Build555EdgesStageFirstSix(BFS):
     """
     (24!/(12!*12!)) * (12!/(6!*6!)) = 2,498,640,144 states
