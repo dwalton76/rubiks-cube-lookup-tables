@@ -75,12 +75,12 @@ class Build555UltimateCenters(BFS):
 
             legal_moves = (
                 # OBTM 36 moves
-                #"U", "U'", "U2", "Uw", "Uw'", "Uw2",
-                #"L", "L'", "L2", "Lw", "Lw'", "Lw2",
-                #"F" , "F'", "F2", "Fw", "Fw'", "Fw2",
-                #"R" , "R'", "R2", "Rw", "Rw'", "Rw2",
-                #"B" , "B'", "B2", "Bw", "Bw'", "Bw2",
-                #"D" , "D'", "D2", "Dw", "Dw'", "Dw2",
+                "U", "U'", "U2", "Uw", "Uw'", "Uw2",
+                "L", "L'", "L2", "Lw", "Lw'", "Lw2",
+                "F" , "F'", "F2", "Fw", "Fw'", "Fw2",
+                "R" , "R'", "R2", "Rw", "Rw'", "Rw2",
+                "B" , "B'", "B2", "Bw", "Bw'", "Bw2",
+                "D" , "D'", "D2", "Dw", "Dw'", "Dw2",
 
                 # SSTM 36 moves
                 #"U", "U'", "U2",
@@ -94,15 +94,15 @@ class Build555UltimateCenters(BFS):
                 #"2F", "2F'", "2F2", "2B", "2B'", "2B2"
 
                 # BTM is both, 54 moves
-                "U", "U'", "U2", "Uw", "Uw'", "Uw2",
-                "L", "L'", "L2", "Lw", "Lw'", "Lw2",
-                "F" , "F'", "F2", "Fw", "Fw'", "Fw2",
-                "R" , "R'", "R2", "Rw", "Rw'", "Rw2",
-                "B" , "B'", "B2", "Bw", "Bw'", "Bw2",
-                "D" , "D'", "D2", "Dw", "Dw'", "Dw2",
-                "2U", "2U'", "2U2", "2D", "2D'", "2D2",
-                "2L", "2L'", "2L2", "2R", "2R'", "2R2",
-                "2F", "2F'", "2F2", "2B", "2B'", "2B2"
+                #"U", "U'", "U2", "Uw", "Uw'", "Uw2",
+                #"L", "L'", "L2", "Lw", "Lw'", "Lw2",
+                #"F" , "F'", "F2", "Fw", "Fw'", "Fw2",
+                #"R" , "R'", "R2", "Rw", "Rw'", "Rw2",
+                #"B" , "B'", "B2", "Bw", "Bw'", "Bw2",
+                #"D" , "D'", "D2", "Dw", "Dw'", "Dw2",
+                #"2U", "2U'", "2U2", "2D", "2D'", "2D2",
+                #"2L", "2L'", "2L2", "2R", "2R'", "2R2",
+                #"2F", "2F'", "2F2", "2B", "2B'", "2B2"
             )
         )
 
@@ -2942,3 +2942,106 @@ phase 2 - solve first 6 edges
 phase 3 - solve last6 edges
     12! = 479,001,600 states
 '''
+
+
+# dwalton
+class Build555UDCenterSolveUnstaged(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-centers-solve-unstaged',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step800-UD-centers-solve-unstaged.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555UDCenterSolveUnstageTCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-t-centers-solve-unstaged',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step801-UD-centers-solve-unstaged-t-center-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . x . .  . . x . .  . . x . .  . . x . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . x . .  . . x . .  . . x . .  . . x . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . D . .
+            . D . D .
+            . . D . .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555UDCenterSolveUnstageXCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-x-centers-solve-unstaged',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step802-UD-centers-solve-unstaged-x-center-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D . D .
+            . . . . .
+            . D . D .
+            . . . . .""", "ascii"),),
+        )
