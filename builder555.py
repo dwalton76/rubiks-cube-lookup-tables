@@ -2297,10 +2297,8 @@ class Build555PairLastEightEdges(BFS):
         )
 
 
-
-
 # ==========================
-# L4E last-four-edges tables
+# six-edges (aka horseshoe) tables
 # ==========================
 class Build555EdgesStageFirstSix(BFS):
     """
@@ -2591,7 +2589,9 @@ class Build555EdgesSolveFirstSix(BFS):
         )
 
 
-
+# ==========================
+# L4E last-four-edges tables
+# ==========================
 class Build555EdgesStageFirstFour(BFS):
 
     def __init__(self):

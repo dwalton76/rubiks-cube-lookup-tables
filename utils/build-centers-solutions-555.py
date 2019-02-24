@@ -99,11 +99,27 @@ with open("foo.txt", "w") as fh:
                         to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                         to_write_count += 1
 
-                        if to_write_count >= BATCH_SIZE:
-                            fh.write("\n".join(to_write) + "\n")
-                            fh.flush()
-                            to_write = []
-                            to_write_count = 0
+                        for move6 in moves_555:
+
+                            if steps_on_same_face_and_layer(move5, move6):
+                                continue
+
+                            cube.state = move5_cube_state[:]
+                            cube.solution = move5_cube_solution[:]
+                            cube.rotate(move6)
+                            move6_cube_state = cube.state[:]
+                            move6_cube_solution = cube.solution[:]
+
+                            steps_to_solve = reverse_steps(cube.solution)
+                            centers_state = ''.join([cube.state[x] for x in centers_555])
+                            to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
+                            to_write_count += 1
+
+                            if to_write_count >= BATCH_SIZE:
+                                fh.write("\n".join(to_write) + "\n")
+                                fh.flush()
+                                to_write = []
+                                to_write_count = 0
 
     if to_write_count:
         fh.write("\n".join(to_write) + "\n")
