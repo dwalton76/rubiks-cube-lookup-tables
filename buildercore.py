@@ -1348,11 +1348,10 @@ class %s(LookupTableIDA):
     def code_gen(self):
         assert self.filename.startswith('lookup-table-'), "--code-gen only applies to BuildXYZ classes"
 
-        # dwalton
         if '0.txt' in self.filename:
             first_prune_table_filename = self.filename.replace('0.txt', '1.txt').replace('lookup-table', 'starting-states-lookup-table')
 
-            if True or os.path.exists(first_prune_table_filename):
+            if os.path.exists(first_prune_table_filename):
                 log.info("prune table %s does exist" % first_prune_table_filename)
                 self._code_gen_lookup_table_ida()
             else:

@@ -2944,7 +2944,6 @@ phase 3 - solve last6 edges
 '''
 
 
-# dwalton
 class Build555UDCenterSolveUnstaged(BFS):
     """
     """
@@ -2976,6 +2975,38 @@ class Build555UDCenterSolveUnstaged(BFS):
             . D D D .
             . D D D .
             . . . . .""", "ascii"),),
+
+            legal_moves = (
+                # OBTM 36 moves
+                "U", "U'", "U2", "Uw", "Uw'", "Uw2",
+                "L", "L'", "L2", "Lw", "Lw'", "Lw2",
+                "F" , "F'", "F2", "Fw", "Fw'", "Fw2",
+                "R" , "R'", "R2", "Rw", "Rw'", "Rw2",
+                "B" , "B'", "B2", "Bw", "Bw'", "Bw2",
+                "D" , "D'", "D2", "Dw", "Dw'", "Dw2",
+
+                # SSTM 36 moves
+                #"U", "U'", "U2",
+                #"L", "L'", "L2",
+                #"F" , "F'", "F2",
+                #"R" , "R'", "R2",
+                #"B" , "B'", "B2",
+                #"D" , "D'", "D2",
+                #"2U", "2U'", "2U2", "2D", "2D'", "2D2",
+                #"2L", "2L'", "2L2", "2R", "2R'", "2R2",
+                #"2F", "2F'", "2F2", "2B", "2B'", "2B2"
+
+                # BTM is both, 54 moves
+                #"U", "U'", "U2", "Uw", "Uw'", "Uw2",
+                #"L", "L'", "L2", "Lw", "Lw'", "Lw2",
+                #"F" , "F'", "F2", "Fw", "Fw'", "Fw2",
+                #"R" , "R'", "R2", "Rw", "Rw'", "Rw2",
+                #"B" , "B'", "B2", "Bw", "Bw'", "Bw2",
+                #"D" , "D'", "D2", "Dw", "Dw'", "Dw2",
+                #"2U", "2U'", "2U2", "2D", "2D'", "2D2",
+                #"2L", "2L'", "2L2", "2R", "2R'", "2R2",
+                #"2F", "2F'", "2F2", "2B", "2B'", "2B2"
+            )
         )
 
 

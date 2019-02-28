@@ -62,15 +62,16 @@ def convert_to_cost_only(filename, bucketcount, filename_statetargets):
                 else:
                     collisions += 1
 
+                    # Never under estimate the cost
+                    #if steps_len > bucket[hash_index]:
+                    #    bucket[hash_index] = steps_len
+
+                    # Never over estimate the cost
                     if bucket[hash_index] > steps_len:
                         bucket[hash_index] = steps_len
 
             if line_number % 1000000 == 0:
                 log.info(line_number)
-            #if line_number >= 1000:
-            #    break
-            #if state in state_targets:
-            #    break
 
     log.info("%d collisions" % collisions)
     log.info("begin writing %s" % filename_new)

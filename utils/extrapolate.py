@@ -72,11 +72,36 @@ rate = float(11.57)
 count_total_target = 2498640144 # (24!/(12!*12!)) * (12!/(6!*6!)) states
 '''
 
+# 5x5x5 UD centers solve without staging
+# OBTM
+depth = 6
+prev_count_at_depth = 52950453
+count_total = 55532432
+rate = float(21.50)
+count_total_target = 2650496200020900 # (24!/(4!*4!*16!))^2
+
+# SSTM
+depth = 5
+prev_count_at_depth = 1943490
+count_total = 2048891
+rate = float(19.42)
+count_total_target = 2650496200020900 # (24!/(4!*4!*16!))^2
+
+# BTM
+depth = 5
+prev_count_at_depth = 10332666
+count_total = 10671963
+rate = float(31.46)
+count_total_target = 2650496200020900 # (24!/(4!*4!*16!))^2
+
+
+
+
 move_total = 0
 
 while count_total < count_total_target:
     depth += 1
-    #rate -= 0.8
+    rate -= 0.8
     count_at_depth = int(prev_count_at_depth * rate)
 
     if (count_total + count_at_depth) > count_total_target:
