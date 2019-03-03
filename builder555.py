@@ -2561,7 +2561,8 @@ class Build555EdgesSolveFirstSix(BFS):
             '5x5x5',
             'lookup-table-5x5x5-step100-solve-first-six-edges.txt',
             False, # store_as_hex
-            (("""
+            (
+            ("""
             - U U U -
             U U U U U
             U U U U U
@@ -2578,13 +2579,74 @@ class Build555EdgesSolveFirstSix(BFS):
             - D D D -
             - D D D -
             - D D D -
-            - D D D -""", "ascii"),),
+            - D D D -""", "ascii"),
+
+            ("""
+            - U U U -
+            U F F F U
+            U F F F U
+            U F F F U
+            - U U U -
+
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - D D D -  - R R R -  - U U U -
+ - L L L -  - D D D -  - R R R -  - U U U -
+ - L L L -  - D D D -  - R R R -  - U U U -
+ - - - - -  - F F F -  - - - - -  - B B B -
+
+            - D D D -
+            - B B B -
+            - B B B -
+            - B B B -
+            - D D D -""", "ascii"),
+
+            ("""
+            - U U U -
+            U D D D U
+            U D D D U
+            U D D D U
+            - U U U -
+
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - B B B -  - R R R -  - F F F -
+ - L L L -  - B B B -  - R R R -  - F F F -
+ - L L L -  - B B B -  - R R R -  - F F F -
+ - - - - -  - F F F -  - - - - -  - B B B -
+
+            - D D D -
+            - U U U -
+            - U U U -
+            - U U U -
+            - D D D -""", "ascii"),
+
+            ("""
+            - U U U -
+            U B B B U
+            U B B B U
+            U B B B U
+            - U U U -
+
+ - L L L -  - F F F -  - R R R -  - B B B -
+ - L L L -  - U U U -  - R R R -  - D D D -
+ - L L L -  - U U U -  - R R R -  - D D D -
+ - L L L -  - U U U -  - R R R -  - D D D -
+ - - - - -  - F F F -  - - - - -  - B B B -
+
+            - D D D -
+            - F F F -
+            - F F F -
+            - F F F -
+            - D D D -""", "ascii")),
             use_edges_pattern=True,
             legal_moves = (
                 "U", "U'", "U2",
                 "F2", "B2", "D2",
                 "2L", "2L'", "2L2",
                 "2R", "2R'", "2R2",
+
+                # dwalton
+                # middle layer slices
+                "3L", "3L'", "3L2",
             )
         )
 

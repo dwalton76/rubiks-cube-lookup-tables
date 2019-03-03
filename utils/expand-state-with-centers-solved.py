@@ -138,7 +138,7 @@ with open(lookup_table_filename_new, "w") as fh_new:
 
             line_number_processed += 1
 
-            if line_number_processed % 10000 == 0:
+            if line_number_processed % 1000 == 0:
                 if end:
                     log.info("{:,} -> {:,}: {:,}/{:,}".format(start, end, line_number_processed, lines_to_process))
                 else:

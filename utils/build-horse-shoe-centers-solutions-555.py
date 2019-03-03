@@ -14,6 +14,9 @@ legal_moves = (
     "F2", "B2", "D2",
     "2L", "2L'", "2L2",
     "2R", "2R'", "2R2",
+
+    # middle layer slice
+    "3L", "3L'", "3L2",
 )
 
 
@@ -24,10 +27,24 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
 
     for move1 in legal_moves:
 
-        if "L" not in move1 and "R" not in move1:
+        # Do not bother starting out with an outer layer move
+        if move1 in ("U", "U'", "U2", "F2", "B2", "D2"):
             continue
 
         cube.re_init()
+
+        # Put F on top
+        #cube.rotate("x")
+
+        # Put D on top
+        #cube.rotate("x")
+        #cube.rotate("x")
+
+        # Put B on top
+        cube.rotate("x")
+        cube.rotate("x")
+        cube.rotate("x")
+
         cube.rotate(move1)
         move1_cube_state = cube.state[:]
         move1_cube_solution = cube.solution[:]
@@ -104,6 +121,12 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                         to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                         to_write_count += 1
 
+                        #if to_write_count >= BATCH_SIZE:
+                        #    fh.write("\n".join(to_write) + "\n")
+                        #    fh.flush()
+                        #    to_write = []
+                        #    to_write_count = 0
+
                         # took 52s, found 509,820
                         for move6 in legal_moves:
 
@@ -121,12 +144,13 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                             to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                             to_write_count += 1
 
-                            if to_write_count >= BATCH_SIZE:
-                                fh.write("\n".join(to_write) + "\n")
-                                fh.flush()
-                                to_write = []
-                                to_write_count = 0
+                            #if to_write_count >= BATCH_SIZE:
+                            #    fh.write("\n".join(to_write) + "\n")
+                            #    fh.flush()
+                            #    to_write = []
+                            #    to_write_count = 0
 
+                            '''
                             # took 8min, found 4,877,862
                             for move7 in legal_moves:
 
@@ -143,6 +167,12 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                                 centers_state = ''.join([cube.state[x] for x in centers_555])
                                 to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                                 to_write_count += 1
+
+                                if to_write_count >= BATCH_SIZE:
+                                    fh.write("\n".join(to_write) + "\n")
+                                    fh.flush()
+                                    to_write = []
+                                    to_write_count = 0
 
                                 # took 71 min, found 46,670,208 states
                                 for move8 in legal_moves:
@@ -161,6 +191,11 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                                     to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                                     to_write_count += 1
 
+                                    if to_write_count >= BATCH_SIZE:
+                                        fh.write("\n".join(to_write) + "\n")
+                                        fh.flush()
+                                        to_write = []
+                                        to_write_count = 0
 
                                     # 9-deep
                                     # finished overnight...probably took 10 or 12 hours
@@ -187,6 +222,7 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                                             fh.flush()
                                             to_write = []
                                             to_write_count = 0
+                            '''
 
     if to_write_count:
         fh.write("\n".join(to_write) + "\n")
