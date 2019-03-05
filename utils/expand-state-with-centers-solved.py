@@ -71,7 +71,7 @@ else:
 cube = RubiksCube555(solved_555, order='URFDLB')
 to_write = []
 to_write_count = 0
-BATCH_SIZE = 20000
+BATCH_SIZE = 10000
 
 if end:
     lines_to_process = end - start + 1
@@ -138,7 +138,7 @@ with open(lookup_table_filename_new, "w") as fh_new:
 
             line_number_processed += 1
 
-            if line_number_processed % 1000 == 0:
+            if line_number_processed % BATCH_SIZE == 0:
                 if end:
                     log.info("{:,} -> {:,}: {:,}/{:,}".format(start, end, line_number_processed, lines_to_process))
                 else:
