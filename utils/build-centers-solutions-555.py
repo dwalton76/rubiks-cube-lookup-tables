@@ -16,7 +16,14 @@ with open("foo.txt", "w") as fh:
 
     for move1 in moves_555:
 
-        if "w" not in move1:
+        # Do not bother starting with an outer layer move
+        if move1 in (
+            "U", "U'", "U2",
+            "L", "L'", "L2",
+            "F" , "F'", "F2",
+            "R" , "R'", "R2",
+            "B" , "B'", "B2",
+            "D" , "D'", "D2"):
             continue
 
         cube.re_init()
@@ -48,6 +55,7 @@ with open("foo.txt", "w") as fh:
 
 
             # took 1.6s, found 20214
+            # with slices took 6s and found 95,508
             for move3 in moves_555:
 
                 if steps_on_same_face_and_layer(move2, move3):
@@ -64,8 +72,14 @@ with open("foo.txt", "w") as fh:
                 to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                 to_write_count += 1
 
+                if to_write_count >= BATCH_SIZE:
+                    fh.write("\n".join(to_write) + "\n")
+                    fh.flush()
+                    to_write = []
+                    to_write_count = 0
 
                 # took 32s (20x move3), found 667,080
+                # with slices took 7m (70x move3) and found 4,870,944 (51x move3)
                 for move4 in moves_555:
 
                     if steps_on_same_face_and_layer(move3, move4):
@@ -82,6 +96,13 @@ with open("foo.txt", "w") as fh:
                     to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                     to_write_count += 1
 
+                    if to_write_count >= BATCH_SIZE:
+                        fh.write("\n".join(to_write) + "\n")
+                        fh.flush()
+                        to_write = []
+                        to_write_count = 0
+
+                    '''
                     # took 17m 16s (32x move4), found 22,013,658
                     for move5 in moves_555:
 
@@ -98,6 +119,12 @@ with open("foo.txt", "w") as fh:
                         centers_state = ''.join([cube.state[x] for x in centers_555])
                         to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                         to_write_count += 1
+
+                        if to_write_count >= BATCH_SIZE:
+                            fh.write("\n".join(to_write) + "\n")
+                            fh.flush()
+                            to_write = []
+                            to_write_count = 0
 
                         for move6 in moves_555:
 
@@ -120,6 +147,7 @@ with open("foo.txt", "w") as fh:
                                 fh.flush()
                                 to_write = []
                                 to_write_count = 0
+                    '''
 
     if to_write_count:
         fh.write("\n".join(to_write) + "\n")
