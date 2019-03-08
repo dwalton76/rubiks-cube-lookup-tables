@@ -17,10 +17,15 @@ legal_moves = (
 
     # middle layer slice
     "3L", "3L'", "3L2",
+
+    # BTM slices
+    #"2-3Lw", "2-3Lw'", "2-3Lw2",
+    #"2-3Rw", "2-3Rw'", "2-3Rw2",
+    #"2-4Lw", "2-4Lw'", "2-4Lw2",
 )
 
 
-with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
+with open("horse_shoe_centers_solutions_555.txt.D-on-top", "w") as fh:
     to_write = []
     to_write_count = 0
     BATCH_SIZE = 100000
@@ -37,13 +42,13 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
         #cube.rotate("x")
 
         # Put D on top
-        #cube.rotate("x")
-        #cube.rotate("x")
+        cube.rotate("x")
+        cube.rotate("x")
 
         # Put B on top
-        cube.rotate("x")
-        cube.rotate("x")
-        cube.rotate("x")
+        #cube.rotate("x")
+        #cube.rotate("x")
+        #cube.rotate("x")
 
         cube.rotate(move1)
         move1_cube_state = cube.state[:]
@@ -104,6 +109,12 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                     to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                     to_write_count += 1
 
+                    if to_write_count >= BATCH_SIZE:
+                        fh.write("\n".join(to_write) + "\n")
+                        fh.flush()
+                        to_write = []
+                        to_write_count = 0
+
                     # took 6s, found 53,286
                     for move5 in legal_moves:
 
@@ -121,12 +132,13 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                         to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                         to_write_count += 1
 
-                        #if to_write_count >= BATCH_SIZE:
-                        #    fh.write("\n".join(to_write) + "\n")
-                        #    fh.flush()
-                        #    to_write = []
-                        #    to_write_count = 0
+                        if to_write_count >= BATCH_SIZE:
+                            fh.write("\n".join(to_write) + "\n")
+                            fh.flush()
+                            to_write = []
+                            to_write_count = 0
 
+                        '''
                         # took 52s, found 509,820
                         for move6 in legal_moves:
 
@@ -144,13 +156,12 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                             to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                             to_write_count += 1
 
-                            #if to_write_count >= BATCH_SIZE:
-                            #    fh.write("\n".join(to_write) + "\n")
-                            #    fh.flush()
-                            #    to_write = []
-                            #    to_write_count = 0
+                            if to_write_count >= BATCH_SIZE:
+                                fh.write("\n".join(to_write) + "\n")
+                                fh.flush()
+                                to_write = []
+                                to_write_count = 0
 
-                            '''
                             # took 8min, found 4,877,862
                             for move7 in legal_moves:
 
@@ -222,7 +233,7 @@ with open("horse_shoe_centers_solutions_555.txt", "w") as fh:
                                             fh.flush()
                                             to_write = []
                                             to_write_count = 0
-                            '''
+                        '''
 
     if to_write_count:
         fh.write("\n".join(to_write) + "\n")

@@ -63,37 +63,21 @@ count_total = 109442672
 rate = float(3.76)
 count_total_target = 2498640144 # (24!/(12!*12!)) * (12!/(6!*6!)) states
 
-'''
-# 5x5x5 horseshoe stage with centers solved
-depth = 6
-prev_count_at_depth = 17036649
-count_total = 18635362
-rate = float(11.57)
-count_total_target = 2498640144 # (24!/(12!*12!)) * (12!/(6!*6!)) states
-'''
 
-# 5x5x5 UD centers solve without staging
-# OBTM
-depth = 6
-prev_count_at_depth = 52950453
-count_total = 55532432
-rate = float(21.50)
-count_total_target = 2650496200020900 # (24!/(4!*4!*16!))^2
+# 5x5x5 horseshoe solve
+depth = 10
+prev_count_at_depth = 312556
+count_total = 399143
+rate = float(4.38)
+count_total_target = 479001600 # 12!
 
-# SSTM
-depth = 5
-prev_count_at_depth = 1943490
-count_total = 2048891
-rate = float(19.42)
-count_total_target = 2650496200020900 # (24!/(4!*4!*16!))^2
 
-# BTM
-depth = 5
-prev_count_at_depth = 10332666
-count_total = 10671963
-rate = float(31.46)
-count_total_target = 2650496200020900 # (24!/(4!*4!*16!))^2
-
+# 5x5x5 solve LFRB centers without staging
+depth = 7
+prev_count_at_depth = 6079038
+count_total = 6815759
+rate = float(9.24)
+count_total_target = 3976941969000000 # (16!/(4!*4!*4!*4!))^2
 
 
 
@@ -101,7 +85,7 @@ move_total = 0
 
 while count_total < count_total_target:
     depth += 1
-    rate -= 0.8
+    rate -= 0.2
     count_at_depth = int(prev_count_at_depth * rate)
 
     if (count_total + count_at_depth) > count_total_target:

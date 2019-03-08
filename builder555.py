@@ -3138,3 +3138,62 @@ class Build555UDCenterSolveUnstageXCenterOnly(BFS):
             . D . D .
             . . . . .""", "ascii"),),
         )
+
+
+
+'''
+Edge pairing brainstorm session #345
+
+For 6x6x6 and larger that are using 5x5x5 to pair edges the horseshoe method is
+as good as I can come up with. The horseshoe solving table is currently building
+depth-14-only on LJs machine, it is doing so using middle slices.  I think I will
+need to also build this to depth 15.
+
+Pure 5x5x5...not sure yet if this would be for --normal or --fast it is just an
+idea for now
+
+
+phase1
+- stage UD centers
+10 moves
+
+phase2
+- stage LR centers
+10 moves
+
+phase3
+- LR centers to one of 432 states
+- split wings into high/low groups...there are 2.7 million states here
+7 moves...based on xyzzys counts in their similar phase
+
+
+phase4
+- UD centers to one of 432 states
+- split wings again? To be sure we can move them to some subset that is solveable
+  withouth U U' D D'
+7 moves...guessing here
+
+phase5
+- solve centers and pair outside wings
+10 to 12 moves???
+
+phase6
+- use slices to pair midges to paired wings for all 12 edges
+15 moves?
+
+That would be ~60 moves to get reduced to 333 so would be ~80 total
+
+
+phase6...I built it 6-deep and extrapolated the rest
+
+    1 steps has 12 entries (0 percent, 0.00x previous step)
+    2 steps has 136 entries (0 percent, 11.33x previous step)
+    3 steps has 1,987 entries (0 percent, 14.61x previous step)
+    4 steps has 30,162 entries (0 percent, 15.18x previous step)
+    5 steps has 471,957 entries (5 percent, 15.65x previous step)
+    6 steps has 7,543,578 entries (93 percent, 15.98x previous step)
+    7 steps has 114,511,514 entries (15.18x previous step)
+    8 steps has 356,442,254 entries (3.11x previous step)
+
+    Total  : 479,001,600
+'''
