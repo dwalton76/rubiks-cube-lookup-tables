@@ -78,15 +78,14 @@ prev_count_at_depth = 312556
 count_total = 399143
 rate = float(4.38)
 count_total_target = 479001600 # 12!
-
-
-# 5x5x5 solve LFRB centers without staging
-depth = 7
-prev_count_at_depth = 6079038
-count_total = 6815759
-rate = float(9.24)
-count_total_target = 3976941969000000 # (16!/(4!*4!*4!*4!))^2
 '''
+
+# 5x5x5 solve centers with staging
+depth = 6
+prev_count_at_depth = 1291295
+count_total = 1433448
+rate = float(10)
+count_total_target = 117649000000 # ((8!/(4!*4!))^2)^3
 
 
 
@@ -94,7 +93,7 @@ move_total = 0
 
 while count_total < count_total_target:
     depth += 1
-    rate -= 0.2
+    rate -= 0.8
     count_at_depth = int(prev_count_at_depth * rate)
 
     if (count_total + count_at_depth) > count_total_target:
