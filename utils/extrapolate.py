@@ -33,6 +33,14 @@ rate = float(19)
 count_total_target = 3246670537110000 # 24!/(4!^6)
 '''
 
+# 4x4x4 centers stage
+depth = 7
+prev_count_at_depth = 112158744
+count_total = 121951614
+rate = float(12.41)
+count_total_target = 9465511770 # 24!/(8!*8!*8!)
+
+'''
 # 5x5x5 centers OBTM
 depth = 5
 prev_count_at_depth = 6089454
@@ -78,6 +86,7 @@ prev_count_at_depth = 6079038
 count_total = 6815759
 rate = float(9.24)
 count_total_target = 3976941969000000 # (16!/(4!*4!*4!*4!))^2
+'''
 
 
 
