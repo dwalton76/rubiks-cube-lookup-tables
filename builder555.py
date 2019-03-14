@@ -272,7 +272,7 @@ class Build555LRTCenterStage(BFS):
 
  . . . . .  . . . . .  . . . . .  . . . . .
  . . L . .  . . x . .  . . L . .  . . x . .
- . L . L .  . x . x .  . L . L .  . x . x .
+ . L L L .  . x x x .  . L L L .  . x x x .
  . . L . .  . . x . .  . . L . .  . . x . .
  . . . . .  . . . . .  . . . . .  . . . . .
 
@@ -311,7 +311,7 @@ class Build555LRXCenterStage(BFS):
 
  . . . . .  . . . . .  . . . . .  . . . . .
  . L . L .  . x . x .  . L . L .  . x . x .
- . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . x . .  . . L . .  . . x . .
  . L . L .  . x . x .  . L . L .  . x . x .
  . . . . .  . . . . .  . . . . .  . . . . .
 
@@ -3005,194 +3005,116 @@ phase 3 - solve last6 edges
 '''
 
 
-class Build555UDCenterSolveUnstaged(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-UD-centers-solve-unstaged',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step800-UD-centers-solve-unstaged.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . x x x .  . x x x .  . x x x .  . x x x .
- . x x x .  . x x x .  . x x x .  . x x x .
- . x x x .  . x x x .  . x x x .  . x x x .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . D D D .
-            . D D D .
-            . D D D .
-            . . . . .""", "ascii"),),
-
-            legal_moves = (
-                # OBTM 36 moves
-                "U", "U'", "U2", "Uw", "Uw'", "Uw2",
-                "L", "L'", "L2", "Lw", "Lw'", "Lw2",
-                "F" , "F'", "F2", "Fw", "Fw'", "Fw2",
-                "R" , "R'", "R2", "Rw", "Rw'", "Rw2",
-                "B" , "B'", "B2", "Bw", "Bw'", "Bw2",
-                "D" , "D'", "D2", "Dw", "Dw'", "Dw2",
-
-                # SSTM 36 moves
-                #"U", "U'", "U2",
-                #"L", "L'", "L2",
-                #"F" , "F'", "F2",
-                #"R" , "R'", "R2",
-                #"B" , "B'", "B2",
-                #"D" , "D'", "D2",
-                #"2U", "2U'", "2U2", "2D", "2D'", "2D2",
-                #"2L", "2L'", "2L2", "2R", "2R'", "2R2",
-                #"2F", "2F'", "2F2", "2B", "2B'", "2B2"
-
-                # BTM is both, 54 moves
-                #"U", "U'", "U2", "Uw", "Uw'", "Uw2",
-                #"L", "L'", "L2", "Lw", "Lw'", "Lw2",
-                #"F" , "F'", "F2", "Fw", "Fw'", "Fw2",
-                #"R" , "R'", "R2", "Rw", "Rw'", "Rw2",
-                #"B" , "B'", "B2", "Bw", "Bw'", "Bw2",
-                #"D" , "D'", "D2", "Dw", "Dw'", "Dw2",
-                #"2U", "2U'", "2U2", "2D", "2D'", "2D2",
-                #"2L", "2L'", "2L2", "2R", "2R'", "2R2",
-                #"2F", "2F'", "2F2", "2B", "2B'", "2B2"
-            )
-        )
-
-
-class Build555UDCenterSolveUnstageTCenterOnly(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-UD-t-centers-solve-unstaged',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step801-UD-centers-solve-unstaged-t-center-only.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . . U . .
-            . U . U .
-            . . U . .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . . x . .  . . x . .  . . x . .  . . x . .
- . x . x .  . x . x .  . x . x .  . x . x .
- . . x . .  . . x . .  . . x . .  . . x . .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . . D . .
-            . D . D .
-            . . D . .
-            . . . . .""", "ascii"),),
-        )
-
-
-class Build555UDCenterSolveUnstageXCenterOnly(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-UD-x-centers-solve-unstaged',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step802-UD-centers-solve-unstaged-x-center-only.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . U . U .
-            . . . . .
-            . U . U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . x . x .  . x . x .  . x . x .  . x . x .
- . . . . .  . . . . .  . . . . .  . . . . .
- . x . x .  . x . x .  . x . x .  . x . x .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . D . D .
-            . . . . .
-            . D . D .
-            . . . . .""", "ascii"),),
-        )
-
-
 
 '''
-Edge pairing brainstorm session #345
-
-For 6x6x6 and larger that are using 5x5x5 to pair edges the horseshoe method is
-as good as I can come up with. The horseshoe solving table is currently building
-depth-14-only on LJs machine, it is doing so using middle slices.  I think I will
-need to also build this to depth 15.
-
-Pure 5x5x5...not sure yet if this would be for --normal or --fast it is just an
-idea for now
-
+David's method of only doing one IDA at the start and do everything else via lookup tables?
 
 phase1
-- stage UD centers
-10 moves
+- IDA to stage UD centers
 
 phase2
-- stage LR centers
-10 moves
+- IDA to stage LR centers, this is very fast so we should
+  be able to plow through a lot of solutions
 
 phase3
-- LR centers to one of 432 states
-- split wings into high/low groups...there are 2.7 million states here
-7 moves...based on xyzzys counts in their similar phase
-
+- solve UD centers
+- (8!/(4!*4!))^2 or 4900 entries
 
 phase4
-- UD centers to one of 432 states
-- split wings again? To be sure we can move them to some subset that is solveable
-  withouth U U' D D'
-7 moves...guessing here
+- solve LR and FB centers
+- (8!/(4!*4!))^4 or 24,010,000 entries
 
 phase5
-- solve centers and pair outside wings
-10 to 12 moves???
+- stage 6-edges to horseshoe
 
 phase6
-- use slices to pair midges to paired wings for all 12 edges
-15 moves?
+- solve 1st 6-edges horseshoe
 
-That would be ~60 moves to get reduced to 333 so would be ~80 total
-
-
-phase6...I built it 6-deep and extrapolated the rest
-
-    1 steps has 12 entries (0 percent, 0.00x previous step)
-    2 steps has 136 entries (0 percent, 11.33x previous step)
-    3 steps has 1,987 entries (0 percent, 14.61x previous step)
-    4 steps has 30,162 entries (0 percent, 15.18x previous step)
-    5 steps has 471,957 entries (5 percent, 15.65x previous step)
-    6 steps has 7,543,578 entries (93 percent, 15.98x previous step)
-    7 steps has 114,511,514 entries (15.18x previous step)
-    8 steps has 356,442,254 entries (3.11x previous step)
-
-    Total  : 479,001,600
+phase7
+- solve 2nd 6-edges horseshoe
 '''
+
+class Build555UDLRCenterSolveStaged(BFS):
+    """
+    """
+
+    # dwalton
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UDLR-centers-solve-staged',
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+            ),
+            '5x5x5',
+            'lookup-table-5x5x5-step800-UDLR-centers-solve-staged.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555FBCenterSolveStaged(BFS):
+    """
+    """
+
+    # dwalton
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-FB-centers-solve-staged',
+            ("Fw", "Fw'", "Fw2",
+             "Bw", "Bw'", "Bw2",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "U", "U'", "U2",
+             "D", "D'", "D2",
+             "L", "L'", "L2",
+             "R", "R'", "R2",
+            ),
+            '5x5x5',
+            'lookup-table-5x5x5-step810-FB-centers-solve-staged.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),),
+        )
