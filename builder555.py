@@ -2644,9 +2644,8 @@ class Build555EdgesSolveFirstSix(BFS):
                 "2L", "2L'", "2L2",
                 "2R", "2R'", "2R2",
 
-                # dwalton
                 # middle layer slices
-                "3L", "3L'", "3L2",
+                #"3L", "3L'", "3L2",
             )
         )
 
