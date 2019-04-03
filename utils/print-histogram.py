@@ -157,16 +157,12 @@ with open(filename, 'r') as fh:
             steps = steps.split()
             len_steps = len(steps)
 
-        if not len_steps:
-            print("ERROR: %s" % line)
-            continue
-            #sys.exit(0)
-
         if len_steps == 1 and steps[0] == 'Na':
             len_steps = 0
 
         if len_steps not in stats:
             stats[len_steps] = 0
+
         stats[len_steps] += 1
         total_steps += len_steps
 

@@ -9,6 +9,7 @@ from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_4
 from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555, edges_555, edges_recolor_pattern_555, wings_for_edges_pattern_555, edges_partner_555
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
+from pprint import pformat
 from threading import Thread, Event
 import argparse
 import datetime as dt
@@ -64,18 +65,28 @@ def get_line_number_splits(lines, cores):
     results = []
     log.debug("lines %d, cores %d, lines_per_core %d" % (lines, cores, lines_per_core))
 
-    for core in range(cores):
+    if lines_per_core == 0:
+        for core in range(cores):
+            if core == 0:
+                start = 0
+                end = lines - 1
+            else:
+                start = None
+                end = None
+            results.append((start, end))
 
-        # The last core ends at linecount
-        if core == cores - 1:
-            end = lines - 1
-        else:
-            end = start + lines_per_core - 1
+    else:
+        for core in range(cores):
 
-        log.debug("core %d, start %d, end %d" % (core, start, end))
-        results.append((start, end))
-        start = end + 1
+            # The last core ends at linecount
+            if core == cores - 1:
+                end = lines - 1
+            else:
+                end = start + lines_per_core - 1
 
+            log.debug("core %d, start %d, end %d" % (core, start, end))
+            results.append((start, end))
+            start = end + 1
 
     log.debug("\n")
     return tuple(results)
@@ -153,7 +164,7 @@ def convert_to_cost_only(filename):
                     fh_new.write(zeroes_between_prev_and_now)
 
                 # Write the steps_len
-                if steps[0].isdigit():
+                if steps and steps[0].isdigit():
                     steps_len = int(steps[0])
                 else:
                     steps_len = len(steps)
@@ -483,30 +494,6 @@ class BFS(object):
                     order = 'ULFRBD'
                 self.starting_cubes.append(RubiksCube555(state, order))
 
-            # tmp sanity checks for Build555EdgesStageFirstSix
-            '''
-            for cube in self.starting_cubes:
-                cube.print_cube()
-                l_count = 0
-                dash_count = 0
-                for square_index in edges_555:
-                    partner_index = edges_partner_555[square_index]
-                    square_value = cube.state[square_index]
-                    partner_value = cube.state[partner_index]
-
-                    if square_value == "L":
-                        l_count += 1
-                    elif square_value == "-":
-                        dash_count += 1
-                    else:
-                        assert False
-
-                    assert square_value == partner_value, "%s(%d) != %s(%d)" % (square_value, square_index, partner_value, partner_index)
-
-                assert l_count == 36
-                assert dash_count == 36
-            '''
-
         elif size == '6x6x6':
             self.all_moves = moves_666
             self.rotate_xxx = rotate_666
@@ -579,7 +566,7 @@ class BFS(object):
         CHARS_PER_STEP = 5
         MAX_STEPS = 20
 
-        if True or self.name.startswith("5x5x5-edges"):
+        if self.name.startswith("5x5x5-edges"):
             return 512
         else:
             return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
@@ -625,76 +612,38 @@ class BFS(object):
         self.workq_filename = os.path.join(tmp_dirname, "%s.workq.txt" % self)
         self.workq_filename_next = self.workq_filename + ".next"
         self.workq_size = 0
-
-        # If we crashed while building the next workq file we need to delete that file
-        if os.path.isfile(self.workq_filename_next):
-            os.remove(self.workq_filename_next)
-
-        # We are picking up where we left off, we must populate stats
-        if os.path.isfile(self.workq_filename) and os.path.isfile(self.filename):
-
-            log.info("setup: picking up where we left off")
-            filename_linecount = int(subprocess.check_output("wc -l %s" % self.filename, shell=True).strip().split()[0])
-            self.depth = 0
-
-            with open(self.filename, 'r') as fh:
-                for (line_number, line) in enumerate(fh):
-                    (state, steps) = line.rstrip().split(':')
-
-                    steps_len = len(steps.split())
-
-                    if steps_len > self.depth:
-                        self.depth = steps_len
-
-                    if steps_len not in self.stats:
-                        self.stats[steps_len] = 0
-
-                    self.stats[steps_len] += 1
-
-                    if line_number % LOG_BATCH_SIZE == 0:
-                        log.info("setup: loaded %d/%d" % (line_number, filename_linecount))
-            self.depth += 1
-            self.log_table_stats()
-
-            log.info("setup: get workq_size")
-            self.workq_size = int(subprocess.check_output("wc -l %s" % self.workq_filename, shell=True).strip().split()[0])
-            log.info("setup: workq_size %d" % self.workq_size)
-            self.rm_per_core_workq_results_files()
+        self.depth = 1
 
         # We are starting from scratch so for each starting_cube loop over all legal moves
         # and add that tuple to the workq
-        else:
-            log.info("setup: starting from scratch")
-            self.depth = 1
-            self.rm_per_core_workq_results_files()
+        log.info("setup: starting from scratch")
 
-            if os.path.isfile(self.workq_filename):
-                os.remove(self.workq_filename)
+        # If we crashed delete all of the files we had created
+        for filename in (self.workq_filename_next, self.workq_filename, self.filename):
+            if os.path.isfile(filename):
+                os.remove(filename)
 
-            if os.path.isfile(self.filename):
-                os.remove(self.filename)
+        self.rm_per_core_workq_results_files()
 
-            if self.use_edges_pattern:
-                if self.size == '4x4x4':
-                    pattern = '10425376a8b9ecfdhgkiljnm'
-                elif self.size == '5x5x5':
-                    pattern = 'TBD'
-                else:
-                    raise Exception("implement edges-pattern for %s" % self.size)
+        if self.use_edges_pattern:
+            if self.size == '4x4x4':
+                pattern = '10425376a8b9ecfdhgkiljnm'
+            elif self.size == '5x5x5':
+                pattern = 'TBD'
             else:
-                pattern = ''
+                raise Exception("implement edges-pattern for %s" % self.size)
+        else:
+            pattern = ''
 
-            with open(self.workq_filename, 'w') as fh:
-                for cube in self.starting_cubes:
-                    for move in self.legal_moves:
+        with open(self.workq_filename, 'w') as fh:
+            for cube in self.starting_cubes:
+                if self.use_edges_pattern:
+                    workq_line = "%s:%s:" % (pattern, ''.join(cube.state))
+                else:
+                    workq_line = "%s:" % (''.join(cube.state))
 
-                        if self.use_edges_pattern:
-                            workq_line = "%s:%s:%s" % (pattern, ''.join(cube.state), move)
-                        else:
-                            workq_line = "%s:%s" % (''.join(cube.state), move)
-
-                        fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
-                        self.workq_size += 1
+                fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
+                self.workq_size += 1
 
         self.starting_cubes = []
         gc.collect()
@@ -707,6 +656,7 @@ class BFS(object):
         threads = []
         line_numbers_for_cores = get_line_number_splits(self.workq_size, self.cores)
         start_time = dt.datetime.now()
+        log.info("line_numbers_for_cores\n%s" % pformat(line_numbers_for_cores))
 
         # Launch one builder-crunch-workq process per core
         # - each one will process a subsection of workq_filename_next
@@ -722,6 +672,9 @@ class BFS(object):
             # If we are out of memory and swapping this will fail due to "OSError: Cannot allocate memory"
             (start, end) = line_numbers_for_cores[core]
 
+            if start is None:
+                continue
+
             cmd = [
                 'nice',
                 './builder-crunch-workq.py',
@@ -730,7 +683,8 @@ class BFS(object):
                 str(self.workq_line_length),
                 str(start),
                 str(end),
-                self.get_workq_filename_for_core(core)
+                self.get_workq_filename_for_core(core),
+                '%s' % " ".join(self.legal_moves),
             ]
 
             if self.use_edges_pattern:
@@ -883,20 +837,14 @@ class BFS(object):
                     else:
                         prev_step = None
 
-                    for next_move in self.legal_moves:
+                    if self.use_edges_pattern:
+                        workq_line = "%s:%s:%s" % (pattern, state, steps_to_scramble)
+                    else:
+                        workq_line = "%s:%s" % (state, steps_to_scramble)
 
-                        if prev_step and next_move and steps_on_same_face_and_layer(prev_step, next_move):
-                            continue
-
-                        if self.use_edges_pattern:
-                            workq_line = "%s:%s:%s %s" % (pattern, state, steps_to_scramble, next_move)
-                        else:
-                            workq_line = "%s:%s %s" % (state, steps_to_scramble, next_move)
-
-                        to_write.append(workq_line + " " * (workq_line_length - len(workq_line)) + "\n")
-
-                        to_write_count += 1
-                        self.workq_size += 1
+                    to_write.append(workq_line + " " * (workq_line_length - len(workq_line)) + "\n")
+                    to_write_count += 1
+                    self.workq_size += 1
 
                     if to_write_count >= 10000:
                         fh_workq_next.write(''.join(to_write))
@@ -921,6 +869,7 @@ class BFS(object):
         log.info("end building next workq file")
 
         log.info("sort --merge our current lookup-table.txt file with the .20-new-states file")
+
         # Now merge the lookup-table.txt we build in the previous levels with the .new file
         # Both are sorted so we can use the --merge option
         if os.path.exists(self.filename):
@@ -954,9 +903,6 @@ class BFS(object):
         while True:
             self._search_launch_builder_crunch_workq_per_core()
             self._search_process_builder_crunch_workq_results(max_depth)
-
-            #log.info("end of %d: PAUSED" % self.depth)
-            #input("end of %d: PAUSED" % self.depth)
 
             self.depth += 1
             self.log_table_stats()
@@ -1348,13 +1294,11 @@ class %s(LookupTableIDA):
     def code_gen(self):
         assert self.filename.startswith('lookup-table-'), "--code-gen only applies to BuildXYZ classes"
 
-        # dwalton
-        #if True or '0.txt' in self.filename:
-        if '0.txt' in self.filename:
+        if True or '0.txt' in self.filename:
             first_prune_table_filename = self.filename.replace('0.txt', '1.txt').replace('lookup-table', 'starting-states-lookup-table')
 
-            #if True or os.path.exists(first_prune_table_filename):
-            if os.path.exists(first_prune_table_filename):
+            #if os.path.exists(first_prune_table_filename):
+            if True or os.path.exists(first_prune_table_filename):
                 log.info("prune table %s does exist" % first_prune_table_filename)
                 self._code_gen_lookup_table_ida()
             else:

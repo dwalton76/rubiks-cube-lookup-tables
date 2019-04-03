@@ -613,7 +613,6 @@ class Build444Reduce333(BFS):
         )
 
 
-# dwalton
 # =============
 # --fast tables
 # =============

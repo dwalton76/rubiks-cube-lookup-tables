@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from buildercore import supported_sizes, WRITE_BATCH_SIZE, reverse_steps
+from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, edges_recolor_pattern_444, wings_444, centers_444
@@ -55,7 +56,7 @@ def get_odd_even(steps, layer):
         return "odd"
 
 
-def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern):
+def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern, legal_moves):
     assert isinstance(size, str)
     assert size in supported_sizes
     assert isinstance(inputfile, str)
@@ -83,12 +84,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     to_write = []
     to_write_count = 0
     outputfile_index = 0
-
-    #if "5x5x5-edges-last-twelve" in inputfile:
-    #    exec_all_steps = True
-    #else:
-    #    exec_all_steps = False
-    exec_all_steps = False
+    legal_moves.append(None)
 
     with open(inputfile, 'r') as fh_input:
 
@@ -111,69 +107,74 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     log.warning("ERROR on %d: %s" % (linenumber, line))
                     raise
 
-            moves_to_scramble = moves_to_scramble.split()
+            moves_to_scramble_original = moves_to_scramble.split()
+            cube_state_original = cube_state
 
-            if exec_all_steps:
-                cube_state = list(cube_state)
-
-                for step in moves_to_scramble:
-                    cube_state = rotate_xxx(cube_state[:], step)
-
+            if moves_to_scramble_original:
+                prev_step = moves_to_scramble_original[-1]
             else:
-                if moves_to_scramble:
-                    if moves_to_scramble[-1] == "x2":
+                prev_step = None
+
+            # dwalton
+            for next_move in legal_moves:
+                if prev_step is not None and next_move is not None and steps_on_same_face_and_layer(prev_step, next_move):
+                    continue
+
+                moves_to_scramble = moves_to_scramble_original[:]
+                moves_to_scramble.append(next_move)
+                cube_state = cube_state_original[:]
+
+                if next_move:
+                    if next_move == "x2":
                         cube_state = rotate_xxx(list(cube_state), "x")
                         cube_state = rotate_xxx(list(cube_state), "x")
-                    elif moves_to_scramble[-1] == "y2":
+                    elif next_move == "y2":
                         cube_state = rotate_xxx(list(cube_state), "y")
                         cube_state = rotate_xxx(list(cube_state), "y")
-                    elif moves_to_scramble[-1] == "z2":
+                    elif next_move == "z2":
                         cube_state = rotate_xxx(list(cube_state), "z")
                         cube_state = rotate_xxx(list(cube_state), "z")
                     else:
-                        cube_state = rotate_xxx(list(cube_state), moves_to_scramble[-1])
+                        cube_state = rotate_xxx(list(cube_state), next_move)
                 else:
                     cube_state = list(cube_state)
 
-            if use_edges_pattern:
+                if use_edges_pattern:
+                    cube_state_string = ''.join(cube_state)
 
-                cube_state_string = ''.join(cube_state)
+                    if size == '4x4x4':
+                        state_for_edges = edges_recolor_pattern_444(cube_state[:])
+                        edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
+                        centers = ''.join([cube_state[x] for x in centers_444])
+                    elif size == '5x5x5':
+                        state_for_edges = edges_recolor_pattern_555(cube_state[:])
+                        edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
+                        centers = ''.join([cube_state[x] for x in centers_555])
+                    else:
+                        raise Exception("Implement this")
 
-                if size == '4x4x4':
-                    state_for_edges = edges_recolor_pattern_444(cube_state[:])
-                    edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
-                    centers = ''.join([cube_state[x] for x in centers_444])
-                elif size == '5x5x5':
-                    state_for_edges = edges_recolor_pattern_555(cube_state[:])
-                    edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
-                    centers = ''.join([cube_state[x] for x in centers_555])
-                else:
-                    raise Exception("Implement this")
-
-                to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
-                to_write_count += 1
-
-            else:
-                cube_state_string = ''.join(cube_state)
-
-                if "6x6x6-LR-inner-x-center-stage" in inputfile or "6x6x6-UD-inner-x-centers-stage" in inputfile:
-                    odd_even = get_odd_even(moves_to_scramble, "3")
-                    to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
-
-                #elif "5x5x5-lr-t-center-stage" in inputfile:
-                #    odd_even = get_odd_even(moves_to_scramble, "2")
-                #    to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
-
-                elif "4x4x4-LRFB-centers-stage" in inputfile:
-                    odd_even = get_odd_even(moves_to_scramble, "2")
-                    to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
+                    to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
+                    to_write_count += 1
 
                 else:
-                    to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
+                    cube_state_string = ''.join(cube_state)
 
-                to_write_count += 1
+                    if "6x6x6-LR-inner-x-center-stage" in inputfile or "6x6x6-UD-inner-x-centers-stage" in inputfile:
+                        odd_even = get_odd_even(moves_to_scramble, "3")
+                        to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
 
-            #if to_write_count >= WRITE_BATCH_SIZE or linenumber == end:
+                    elif "4x4x4-LRFB-centers-stage" in inputfile:
+                        odd_even = get_odd_even(moves_to_scramble, "2")
+                        to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
+
+                    else:
+                        if next_move is None:
+                            to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble[0:-1])))
+                        else:
+                            to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
+
+                    to_write_count += 1
+
             if to_write_count >= WRITE_BATCH_SIZE:
                 to_write.sort()
                 outputfile = outputfilebase + ".%04d" % outputfile_index
@@ -213,6 +214,7 @@ if __name__ == '__main__':
     parser.add_argument('start', type=int, help='The starting linenumber to crunch in inputfile')
     parser.add_argument('end', type=int, help='The final linenumber to crunch in inputfile')
     parser.add_argument('outputfile', type=str, help='The file to write results')
+    parser.add_argument('legalmoves', type=str, help='List of legal moves')
     parser.add_argument('--use-edges-pattern', default=False, action='store_true', help='use edges patterns')
     args = parser.parse_args()
 
@@ -220,4 +222,5 @@ if __name__ == '__main__':
         args.start, args.end,
         args.outputfile,
         args.use_edges_pattern,
+        args.legalmoves.split(),
     )

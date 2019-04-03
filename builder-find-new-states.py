@@ -56,13 +56,13 @@ def diff_states(filenameA, filenameB, outputfile):
         lineA = advance_filehandle(fhA)
         lineB = advance_filehandle(fhB)
 
-        # filenameB is emtpy
+        # filenameB is empty
         if lineB:
             (stateB, steps_to_scrambleB) = lineB.split(':')
         else:
             return
 
-        # filenameA is emtpy
+        # filenameA is empty
         if lineA:
             (stateA, steps_to_scrambleA) = lineA.split(':')
         else:
