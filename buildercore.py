@@ -975,89 +975,116 @@ class BFS(object):
     def save(self):
         start_time = dt.datetime.now()
 
+        to_write = []
+        to_write_count = 0
+
         # Convert the states in our lookup-table to their smaller format...basically
         # remove all of the '.'s and if convert to hex (if requested).
         log.info("%s: convert state to smaller format, file %s" % (self, self.filename))
-        with open(self.filename, 'r') as fh_read, open("%s.small" % self.filename, 'w') as fh_final:
-            odd_even = ""
+        with open("%s.small" % self.filename, 'w') as fh_final:
+            with open(self.filename, 'r') as fh_read:
+                odd_even = ""
 
-            if self.use_edges_pattern:
-                for line in fh_read:
-                    (pattern, cube_state_string, steps) = line.rstrip().split(':')
-                    pattern = pattern.replace('.', '')
-                    self.cube.state = list(cube_state_string)
-
-                    if self.lt_centers_max_depth:
-                        centers = ''.join([self.cube.state[x] for x in centers_555])
-
-                        # Only keep the entries where centers are solved
-                        if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-                            continue
-
-                        pattern = pattern.replace("UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD", "")
-
-                    fh_final.write("%s:%s\n" % (pattern, steps))
-
-            elif self.use_centers_then_edges:
-                for line in fh_read:
-                    (cube_state_string, steps) = line.rstrip().split(':')
-                    self.cube.state = list(cube_state_string)
-
-                    if self.size == '4x4x4':
-                        centers = ''.join([self.cube.state[x] for x in centers_444])
-                        edges = ''.join([self.cube.state[x] for x in edges_444])
-                        centers = centers.replace('.', '')
-                        edges = edges.replace('.', '')
-
-                        if self.store_as_hex:
-                            centers = convert_state_to_hex(centers)
-                            edges = convert_state_to_hex(edges)
-
-                    elif self.size == '5x5x5':
-                        centers = ''.join([self.cube.state[x] for x in centers_555])
-                        edges = ''.join([self.cube.state[x] for x in edges_555])
-                        centers = centers.replace('.', '')
-                        edges = edges.replace('.', '')
-
-                        if self.store_as_hex:
-                            centers = convert_state_to_hex(centers)
-                            edges = convert_state_to_hex(edges)
-
-                    else:
-                        raise Exception("Add support for %s" % self.size)
-
-                    fh_final.write("%s%s:%s\n" % (centers, edges, steps))
-
-            else:
-                for line in fh_read:
-                    (cube_state_string, steps) = line.rstrip().split(':')
-
-                    if self.lt_centers_max_depth:
+                if self.use_edges_pattern:
+                    for line in fh_read:
+                        (pattern, cube_state_string, steps) = line.rstrip().split(':')
+                        pattern = pattern.replace('.', '')
                         self.cube.state = list(cube_state_string)
-                        edges = ''.join([self.cube.state[x] for x in edges_555])
-                        edges = edges.replace('-', 'x')
-                        centers = ''.join([self.cube.state[x] for x in centers_555])
 
-                        if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-                            continue
+                        if self.lt_centers_max_depth:
+                            centers = ''.join([self.cube.state[x] for x in centers_555])
 
-                        cube_state_string_small = edges
-                    else:
-                        cube_state_string_small = cube_state_string[1:].replace('.', '')
+                            # Only keep the entries where centers are solved
+                            if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
+                                continue
 
-                    if "_odd" in cube_state_string_small:
-                        odd_even = "_odd"
-                        cube_state_string_small = cube_state_string_small.replace("_odd", "")
-                    elif "_even" in cube_state_string_small:
-                        odd_even = "_even"
-                        cube_state_string_small = cube_state_string_small.replace("_even", "")
-                    else:
-                        odd_even = ""
+                            pattern = pattern.replace("UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD", "")
 
-                    if self.store_as_hex:
-                        cube_state_string_small = convert_state_to_hex(cube_state_string_small)
+                        to_write.append("%s:%s" % (pattern, steps))
+                        to_write_count += 1
 
-                    fh_final.write("%s%s:%s\n" % (cube_state_string_small, odd_even, steps))
+                        if to_write_count >= WRITE_BATCH_SIZE:
+                            fh_final.write("\n".join(to_write) + "\n")
+                            to_write = []
+                            to_write_count = 0
+
+                elif self.use_centers_then_edges:
+                    for line in fh_read:
+                        (cube_state_string, steps) = line.rstrip().split(':')
+                        self.cube.state = list(cube_state_string)
+
+                        if self.size == '4x4x4':
+                            centers = ''.join([self.cube.state[x] for x in centers_444])
+                            edges = ''.join([self.cube.state[x] for x in edges_444])
+                            centers = centers.replace('.', '')
+                            edges = edges.replace('.', '')
+
+                            if self.store_as_hex:
+                                centers = convert_state_to_hex(centers)
+                                edges = convert_state_to_hex(edges)
+
+                        elif self.size == '5x5x5':
+                            centers = ''.join([self.cube.state[x] for x in centers_555])
+                            edges = ''.join([self.cube.state[x] for x in edges_555])
+                            centers = centers.replace('.', '')
+                            edges = edges.replace('.', '')
+
+                            if self.store_as_hex:
+                                centers = convert_state_to_hex(centers)
+                                edges = convert_state_to_hex(edges)
+
+                        else:
+                            raise Exception("Add support for %s" % self.size)
+
+                        to_write.append("%s%s:%s" % (centers, edges, steps))
+                        to_write_count += 1
+
+                        if to_write_count >= WRITE_BATCH_SIZE:
+                            fh_final.write("\n".join(to_write) + "\n")
+                            to_write = []
+                            to_write_count = 0
+
+                else:
+                    for line in fh_read:
+                        (cube_state_string, steps) = line.rstrip().split(':')
+
+                        if self.lt_centers_max_depth:
+                            self.cube.state = list(cube_state_string)
+                            edges = ''.join([self.cube.state[x] for x in edges_555])
+                            edges = edges.replace('-', 'x')
+                            centers = ''.join([self.cube.state[x] for x in centers_555])
+
+                            if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
+                                continue
+
+                            cube_state_string_small = edges
+                        else:
+                            cube_state_string_small = cube_state_string[1:].replace('.', '')
+
+                        if "_odd" in cube_state_string_small:
+                            odd_even = "_odd"
+                            cube_state_string_small = cube_state_string_small.replace("_odd", "")
+                        elif "_even" in cube_state_string_small:
+                            odd_even = "_even"
+                            cube_state_string_small = cube_state_string_small.replace("_even", "")
+                        else:
+                            odd_even = ""
+
+                        if self.store_as_hex:
+                            cube_state_string_small = convert_state_to_hex(cube_state_string_small)
+
+                        to_write.append("%s%s:%s" % (cube_state_string_small, odd_even, steps))
+                        to_write_count += 1
+
+                        if to_write_count >= WRITE_BATCH_SIZE:
+                            fh_final.write("\n".join(to_write) + "\n")
+                            to_write = []
+                            to_write_count = 0
+
+            if to_write_count:
+                fh_final.write("\n".join(to_write) + "\n")
+                to_write = []
+                to_write_count = 0
 
         shutil.move("%s.small" % self.filename, self.filename)
 
