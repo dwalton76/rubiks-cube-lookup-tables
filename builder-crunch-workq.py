@@ -84,7 +84,23 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     to_write = []
     to_write_count = 0
     outputfile_index = 0
+
+    legal_moves_per_move = {}
+    for move1 in legal_moves:
+        legal_moves_per_move[move1] = []
+        for move2 in legal_moves:
+            if not steps_on_same_face_and_layer(move1, move2):
+                legal_moves_per_move[move1].append(move2)
+
+    legal_moves_per_move[None] = legal_moves
     legal_moves.append(None)
+
+    if "6x6x6-LR-inner-x-center-stage" in inputfile or "6x6x6-UD-inner-x-centers-stage" in inputfile:
+        odd_even_layer = "3"
+    elif "4x4x4-LRFB-centers-stage" in inputfile:
+        odd_even_layer = "2"
+    else:
+        odd_even_layer = None
 
     with open(inputfile, 'r') as fh_input:
 
@@ -115,11 +131,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
             else:
                 prev_step = None
 
-            # dwalton
-            for next_move in legal_moves:
-                if prev_step is not None and next_move is not None and steps_on_same_face_and_layer(prev_step, next_move):
-                    continue
-
+            for next_move in legal_moves_per_move[prev_step]:
                 moves_to_scramble = moves_to_scramble_original[:]
                 moves_to_scramble.append(next_move)
                 cube_state = cube_state_original[:]
@@ -159,12 +171,8 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 else:
                     cube_state_string = ''.join(cube_state)
 
-                    if "6x6x6-LR-inner-x-center-stage" in inputfile or "6x6x6-UD-inner-x-centers-stage" in inputfile:
-                        odd_even = get_odd_even(moves_to_scramble, "3")
-                        to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
-
-                    elif "4x4x4-LRFB-centers-stage" in inputfile:
-                        odd_even = get_odd_even(moves_to_scramble, "2")
+                    if odd_even_layer is not None:
+                        odd_even = get_odd_even(moves_to_scramble, odd_even_layer)
                         to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
 
                     else:
