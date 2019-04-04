@@ -5,7 +5,7 @@ Given two lookup-table files (A & B), find all of the new cube states in B that
 are not in A and write them to an output file.
 """
 
-from buildercore import reverse_steps
+from buildercore import reverse_steps, WRITE_BATCH_SIZE
 import argparse
 import logging
 import os
@@ -50,21 +50,24 @@ def diff_states(filenameA, filenameB, outputfile):
     if not os.path.isfile(filenameB):
         raise Exception("%s does not exists" % filenameB)
 
+    to_write = []
+    to_write_count = 0
+
     with open(filenameA, 'r') as fhA,\
          open(filenameB, 'r') as fhB,\
          open(outputfile, 'w') as fh:
         lineA = advance_filehandle(fhA)
         lineB = advance_filehandle(fhB)
 
-        # filenameB is empty
         if lineB:
             (stateB, steps_to_scrambleB) = lineB.split(':')
+        # filenameB is empty
         else:
             return
 
-        # filenameA is empty
         if lineA:
             (stateA, steps_to_scrambleA) = lineA.split(':')
+        # filenameA is empty
         else:
             stateA = None
 
@@ -72,7 +75,14 @@ def diff_states(filenameA, filenameB, outputfile):
 
             # We have hit the end of filenameA so everything left in filenameB is missing from filenameA
             if lineA is None:
-                fh.write("%s:%s\n" % (stateB, ' '.join(reverse_steps(steps_to_scrambleB.split()))))
+                to_write.append("%s:%s" % (stateB, ' '.join(reverse_steps(steps_to_scrambleB.split()))))
+                to_write_count += 1
+
+                if to_write_count >= WRITE_BATCH_SIZE:
+                    fh.write("\n".join(to_write) + "\n")
+                    to_write = []
+                    to_write_count = 0
+
                 lineB = advance_filehandle_to_state_change(stateB, fhB)
 
                 if lineB:
@@ -105,7 +115,14 @@ def diff_states(filenameA, filenameB, outputfile):
 
             else:
                 while stateB < stateA:
-                    fh.write("%s:%s\n" % (stateB, ' '.join(reverse_steps(steps_to_scrambleB.split()))))
+                    to_write.append("%s:%s" % (stateB, ' '.join(reverse_steps(steps_to_scrambleB.split()))))
+                    to_write_count += 1
+
+                    if to_write_count >= WRITE_BATCH_SIZE:
+                        fh.write("\n".join(to_write) + "\n")
+                        to_write = []
+                        to_write_count = 0
+
                     #log.info("stateB < stateA writing %s" % lineB)
                     lineB = advance_filehandle_to_state_change(stateB, fhB)
 
@@ -114,6 +131,11 @@ def diff_states(filenameA, filenameB, outputfile):
                     else:
                         stateB = None
                         break
+
+        if to_write_count:
+            fh.write("\n".join(to_write) + "\n")
+            to_write = []
+            to_write_count = 0
 
 
 if __name__ == '__main__':
