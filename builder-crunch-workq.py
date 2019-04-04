@@ -83,6 +83,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
     to_write = []
     to_write_count = 0
+    states_written = set()
     outputfile_index = 0
 
     legal_moves_per_move = {}
@@ -93,7 +94,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 legal_moves_per_move[move1].append(move2)
 
     legal_moves_per_move[None] = legal_moves
-    legal_moves.append(None)
+    legal_moves.insert(0, None)
 
     if "6x6x6-LR-inner-x-center-stage" in inputfile or "6x6x6-UD-inner-x-centers-stage" in inputfile:
         odd_even_layer = "3"
@@ -174,14 +175,16 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     if odd_even_layer is not None:
                         odd_even = get_odd_even(moves_to_scramble, odd_even_layer)
                         to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
+                        to_write_count += 1
 
                     else:
-                        if next_move is None:
-                            to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble[0:-1])))
-                        else:
-                            to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
-
-                    to_write_count += 1
+                        if cube_state_string not in states_written:
+                            if next_move is None:
+                                to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble[0:-1])))
+                            else:
+                                to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
+                            states_written.add(cube_state_string)
+                            to_write_count += 1
 
             if to_write_count >= WRITE_BATCH_SIZE:
                 to_write.sort()
@@ -193,6 +196,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
                 to_write = []
                 to_write_count = 0
+                states_written = set()
 
         if to_write:
             to_write.sort()
@@ -204,6 +208,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
             to_write = []
             to_write_count = 0
+            states_written = set()
 
 
 if __name__ == '__main__':
