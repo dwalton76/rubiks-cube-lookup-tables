@@ -980,6 +980,7 @@ class BFS(object):
 
         # Convert the states in our lookup-table to their smaller format...basically
         # remove all of the '.'s and if convert to hex (if requested).
+        log.info("%s: save() begin" % self)
         log.info("%s: convert state to smaller format, file %s" % (self, self.filename))
         with open("%s.small" % self.filename, 'w') as fh_final:
             with open(self.filename, 'r') as fh_read:
@@ -1045,10 +1046,13 @@ class BFS(object):
                             to_write_count = 0
 
                 else:
+                    lt_centers_max_depth = self.lt_centers_max_depth
+                    store_as_hex = self.store_as_hex
+
                     for line in fh_read:
                         (cube_state_string, steps) = line.rstrip().split(':')
 
-                        if self.lt_centers_max_depth:
+                        if lt_centers_max_depth:
                             self.cube.state = list(cube_state_string)
                             edges = ''.join([self.cube.state[x] for x in edges_555])
                             edges = edges.replace('-', 'x')
@@ -1070,7 +1074,7 @@ class BFS(object):
                         else:
                             odd_even = ""
 
-                        if self.store_as_hex:
+                        if store_as_hex:
                             cube_state_string_small = convert_state_to_hex(cube_state_string_small)
 
                         to_write.append("%s%s:%s" % (cube_state_string_small, odd_even, steps))
@@ -1128,6 +1132,8 @@ class BFS(object):
             elif self.use_hash_cost_only:
                 log.info("%s: build hash-cost-only copy of file" % self)
                 convert_to_hash_cost_only(filename, self.bucketcount)
+
+            log.info("%s: save() end" % self)
 
         self.time_in_save = (dt.datetime.now() - start_time).total_seconds()
 
