@@ -207,11 +207,11 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 # huge tables.
                 if lines_since_last_merge >= 100000000:
                     #log.info("sort --merge all of the files created so far")
-                    subprocess.check_output("LC_ALL=C sort --merge --temporary-directory=./tmp/ --output %s.all %s.*" %
+                    subprocess.check_output("LC_ALL=C nice sort --merge --temporary-directory=./tmp/ --output %s.all %s.*" %
                         (outputfilebase, outputfilebase), shell=True)
                     #log.info("rm %s.0*" % outputfilebase)
                     subprocess.check_output("rm %s.0*" % outputfilebase, shell=True)
-                    subprocess.check_output("./utils/keep-best-solution.py %s.all" % outputfilebase, shell=True)
+                    subprocess.check_output("nice ./utils/keep-best-solution.py %s.all" % outputfilebase, shell=True)
                     lines_since_last_merge = 0
 
         if to_write:

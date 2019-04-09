@@ -734,7 +734,7 @@ class BFS(object):
         log.info("sort --merge all of the files created by builder-crunch-workq processes")
 
         # Use --merge again once the cruncher sorts its writes
-        subprocess.check_output("LC_ALL=C sort --merge --temporary-directory=./tmp/ --output %s.10-results %s.core*" %
+        subprocess.check_output("LC_ALL=C nice sort --merge --temporary-directory=./tmp/ --output %s.10-results %s.core*" %
             (self.workq_filename, self.workq_filename), shell=True)
         self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
 
@@ -743,7 +743,7 @@ class BFS(object):
 
 
         log.info("keep-best-solution.py begin")
-        subprocess.check_output("./utils/keep-best-solution.py %s.10-results" % self.workq_filename, shell=True)
+        subprocess.check_output("nice ./utils/keep-best-solution.py %s.10-results" % self.workq_filename, shell=True)
         log.info("keep-best-solution.py end")
 
         # Use "builder-find-new-states.py" to find the entries in the .results file that are not
@@ -751,11 +751,11 @@ class BFS(object):
         start_time = dt.datetime.now()
         if self.use_edges_pattern:
             log.info("builder-find-new-edges-pattern-states.py begin")
-            subprocess.check_output("./builder-find-new-edges-pattern-states.py %s %s.10-results %s.20-new-states" % (self.filename, self.workq_filename, self.workq_filename) , shell=True)
+            subprocess.check_output("nice ./builder-find-new-edges-pattern-states.py %s %s.10-results %s.20-new-states" % (self.filename, self.workq_filename, self.workq_filename) , shell=True)
             log.info("builder-find-new-edges-pattern-states.py end")
         else:
             log.info("builder-find-new-states.py begin")
-            subprocess.check_output("./builder-find-new-states.py %s %s.10-results %s.20-new-states" % (self.filename, self.workq_filename, self.workq_filename) , shell=True)
+            subprocess.check_output("nice ./builder-find-new-states.py %s %s.10-results %s.20-new-states" % (self.filename, self.workq_filename, self.workq_filename) , shell=True)
             log.info("builder-find-new-states.py end")
         self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
 
@@ -880,7 +880,7 @@ class BFS(object):
         # Both are sorted so we can use the --merge option
         if os.path.exists(self.filename):
             start_time = dt.datetime.now()
-            subprocess.check_output("LC_ALL=C sort --merge --temporary-directory=./tmp/ --output %s.30-final %s %s.20-new-states" % (self.workq_filename, self.filename, self.workq_filename), shell=True)
+            subprocess.check_output("LC_ALL=C nice sort --merge --temporary-directory=./tmp/ --output %s.30-final %s %s.20-new-states" % (self.workq_filename, self.filename, self.workq_filename), shell=True)
             self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
         else:
             subprocess.check_output("cp %s.20-new-states %s.30-final" % (self.workq_filename, self.workq_filename) , shell=True)
@@ -1122,14 +1122,14 @@ class BFS(object):
 
         for filename in files_to_pad:
             log.info("%s: pad the file" % self)
-            subprocess.check_output("./utils/pad-lines.py %s" % filename, shell=True)
+            subprocess.check_output("nice ./utils/pad-lines.py %s" % filename, shell=True)
 
             log.info("%s: sort the file" % self)
-            subprocess.check_output("LC_ALL=C sort --temporary-directory=./tmp/ --output=%s %s" %
+            subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output=%s %s" %
                 (filename, filename), shell=True)
 
             log.info("%s: build histogram" % self)
-            subprocess.check_output("./utils/print-histogram.py %s >> histogram.txt" % filename, shell=True)
+            subprocess.check_output("nice ./utils/print-histogram.py %s >> histogram.txt" % filename, shell=True)
 
             if self.use_cost_only:
                 log.info("%s: build cost-only copy of file" % self)
