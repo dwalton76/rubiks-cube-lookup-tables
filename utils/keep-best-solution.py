@@ -34,8 +34,8 @@ def keep_best_solutions(filename):
 
                 prev_state = state
 
-                if line_number % 1000000 == 0:
-                    log.info("{:,}".format(line_number))
+                #if line_number % 1000000 == 0:
+                #    log.info("{:,}".format(line_number))
             fh_final.write("%s:%s\n" % (prev_state, state_min_solution))
 
     shutil.move(filename_final, filename)

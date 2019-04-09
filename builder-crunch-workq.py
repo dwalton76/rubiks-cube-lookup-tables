@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from buildercore import supported_sizes, WRITE_BATCH_SIZE, reverse_steps
+#from buildercore import supported_sizes, reverse_steps
 from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
@@ -22,6 +23,7 @@ from pprint import pformat
 import argparse
 import json
 import logging
+import subprocess
 import sys
 
 log = logging.getLogger(__name__)
@@ -85,6 +87,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     to_write_count = 0
     states_written = set()
     outputfile_index = 0
+    lines_since_last_merge = 0
 
     legal_moves_per_move = {}
     for move1 in legal_moves:
@@ -188,8 +191,9 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
             if to_write_count >= WRITE_BATCH_SIZE:
                 to_write.sort()
-                outputfile = outputfilebase + ".%04d" % outputfile_index
+                outputfile = outputfilebase + ".%05d" % outputfile_index
                 outputfile_index += 1
+                lines_since_last_merge += to_write_count
 
                 with open(outputfile, 'w') as fh_output:
                     fh_output.write("\n".join(to_write) + "\n")
@@ -198,9 +202,21 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 to_write_count = 0
                 states_written = set()
 
+                # Every 100 million lines sort what we've writen and run keep-best-solution against
+                # it.  We do this to keep the amount of disk spaced used reasonable when building
+                # huge tables.
+                if lines_since_last_merge >= 100000000:
+                    #log.info("sort --merge all of the files created so far")
+                    subprocess.check_output("LC_ALL=C sort --merge --temporary-directory=./tmp/ --output %s.all %s.*" %
+                        (outputfilebase, outputfilebase), shell=True)
+                    #log.info("rm %s.0*" % outputfilebase)
+                    subprocess.check_output("rm %s.0*" % outputfilebase, shell=True)
+                    subprocess.check_output("./utils/keep-best-solution.py %s.all" % outputfilebase, shell=True)
+                    lines_since_last_merge = 0
+
         if to_write:
             to_write.sort()
-            outputfile = outputfilebase + ".%04d" % outputfile_index
+            outputfile = outputfilebase + ".%05d" % outputfile_index
             outputfile_index += 1
 
             with open(outputfile, 'w') as fh_output:

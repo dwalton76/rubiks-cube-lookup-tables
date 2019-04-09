@@ -733,12 +733,18 @@ class BFS(object):
         start_time = dt.datetime.now()
         log.info("sort --merge all of the files created by builder-crunch-workq processes")
 
-        # Use --merge again once the C cruncher sorts its writes
-        subprocess.check_output("LC_ALL=C sort --merge --temporary-directory=./tmp/ --output %s.10-results %s.core* " % (self.workq_filename, self.workq_filename), shell=True)
+        # Use --merge again once the cruncher sorts its writes
+        subprocess.check_output("LC_ALL=C sort --merge --temporary-directory=./tmp/ --output %s.10-results %s.core*" %
+            (self.workq_filename, self.workq_filename), shell=True)
         self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
 
-        log.info("rm %s.core*" % self.workq_filename)
+        #log.info("rm %s.core*" % self.workq_filename)
         subprocess.check_output("rm %s.core* " % self.workq_filename, shell=True)
+
+
+        log.info("keep-best-solution.py begin")
+        subprocess.check_output("./utils/keep-best-solution.py %s.10-results" % self.workq_filename, shell=True)
+        log.info("keep-best-solution.py end")
 
         # Use "builder-find-new-states.py" to find the entries in the .results file that are not
         # in our current lookup-table.txt file. Save these in a .new_states file.
@@ -1119,7 +1125,7 @@ class BFS(object):
             subprocess.check_output("./utils/pad-lines.py %s" % filename, shell=True)
 
             log.info("%s: sort the file" % self)
-            subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output=%s %s" %
+            subprocess.check_output("LC_ALL=C sort --temporary-directory=./tmp/ --output=%s %s" %
                 (filename, filename), shell=True)
 
             log.info("%s: build histogram" % self)
