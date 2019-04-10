@@ -35,8 +35,7 @@ from sklearn.svm import SVC
 columns = ['centers-one-color', 'centers-horizontal-bars', 'centers-vertical-bars', 'centers-l-pattern', 'centers-single-horizontal-bar', 'centers-single-vertical-bar', 'move-count']
 COLUMNS_LEN = len(columns)
 
-#with open('lookup-table-4x4x4-step10-ULFRBD-centers-stage.txt.6-deep.nn', 'r') as fh:
-with open('lookup-table-4x4x4-step10-ULFRBD-centers-stage.txt.nn.depth-5-and-6.first-697806', 'r') as fh:
+with open('lookup-table-4x4x4-step10-ULFRBD-centers-stage.txt.nn', 'r') as fh:
     dataset = pandas.read_csv(fh, names=columns)
 
 print(type(dataset))
@@ -56,8 +55,6 @@ print("\nMean AFTER:")
 print(dataset_scaled.mean(axis=0))
 print("\nStandard Deviation AFTER:")
 print(dataset_scaled.std(axis=0))
-
-sys.exit(0)
 
 print('shape\n=====')
 print(dataset.shape)
