@@ -19,7 +19,6 @@ if __name__ == "__main__":
     logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
     logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
 
-
     filename = "lookup-table-4x4x4-step10-ULFRBD-centers-stage.txt"
     filename_nn = filename + ".nn"
     cube = RubiksCube444(solved_444, 'URFDLB')
