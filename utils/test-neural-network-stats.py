@@ -32,7 +32,7 @@ from sklearn.svm import SVC
 
 
 # Load dataset
-columns = ['centers-one-color', 'centers-horizontal-bars', 'centers-vertical-bars', 'centers-l-pattern', 'centers-single-horizontal-bar', 'centers-single-vertical-bar', 'move-count']
+columns = ['centers-one-color', 'centers-horizontal-bars', 'centers-vertical-bars', 'centers-l-pattern', 'centers-single-horizontal-bar', 'centers-single-vertical-bar', 'UD-cost', 'LR-cost', 'FB-cost', 'move-count']
 COLUMNS_LEN = len(columns)
 
 with open('lookup-table-4x4x4-step10-ULFRBD-centers-stage.txt.nn', 'r') as fh:
