@@ -41,14 +41,14 @@ class Build333Ultimate(BFS):
 
 
 
-# Implements your own two-phase 3x3x3 solver someday...
+# Implement your own kociemba two-phase 3x3x3 solver someday...
 # http://kociemba.org/math/twophase.htm
 # https://ruwix.com/the-rubiks-cube/herbert-kociemba-optimal-cube-solver-cube-explorer/
 
 # phase1
 # - the orientations of all corners and all edges are 0.
 # - the four edges in the UD-slice (between the U-face and D-face) stay isolated in that slice
-class Build333Phase1EdgesOnly(BFS):
+class Build333KociembaPhase1EdgesOnly(BFS):
     """
     TODO when we build this table we need to change a UU edge to DD when the orientation flips.
     EO for an edge would flip if
@@ -84,7 +84,7 @@ class Build333Phase1EdgesOnly(BFS):
 
 
 
-class StartingStates333Phase1XPlaneEdgesOnly(BFS):
+class StartingStates333KociembaPhase1XPlaneEdgesOnly(BFS):
     """
     We need the x-plane edges to be in the x-plane and EOed
     """
@@ -116,7 +116,7 @@ class StartingStates333Phase1XPlaneEdgesOnly(BFS):
         )
 
 
-class Build333Phase1XPlaneEdgesOnly(BFS):
+class Build333KociembaPhase1XPlaneEdgesOnly(BFS):
     """
     lookup-table-3x3x3-step12-phase1-x-plane-edges-only.txt
     =======================================================
@@ -171,7 +171,7 @@ class Build333Phase1XPlaneEdgesOnly(BFS):
         )
 
 
-class Build333Phase1CornersOnly(BFS):
+class Build333KociembaPhase1CornersOnly(BFS):
     """
     TODO: A corner can be at orientation 0, 1 or 2...we need to be able to cycle
     between them as we are building this table.
@@ -204,7 +204,7 @@ class Build333Phase1CornersOnly(BFS):
         )
 
 
-class Build333Phase2EdgesOnly(BFS):
+class Build333KociembaPhase2EdgesOnly(BFS):
     """
     lookup-table-3x3x3-step21-phase2-edges-only.txt
     ===============================================
@@ -252,7 +252,7 @@ class Build333Phase2EdgesOnly(BFS):
         )
 
 
-class Build333Phase2CornersOnly(BFS):
+class Build333KociembaPhase2CornersOnly(BFS):
     """
     lookup-table-3x3x3-step22-phase2-corners-only.txt
     =================================================
@@ -301,7 +301,7 @@ class Build333Phase2CornersOnly(BFS):
         )
 
 
-class Build333Phase2(BFS):
+class Build333KociembaPhase2(BFS):
     """
     lookup-table-3x3x3-step20-phase2.txt
     ====================================
