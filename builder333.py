@@ -38,6 +38,44 @@ class Build333Ultimate(BFS):
         )
 
 
+'''
+4-phase solver overview
+
+phase 1 - EO the edges and corners
+    - make the edges and corners solveable without L L' R R'
+    - (2^12)/2 or 2048 states
+    - (2^8)/2 or 128 states
+    - 2048 * 128 is 262,144 states
+    - averages 6.37 moves
+
+phase 2 - Remove F F' B B'
+    - LB LF RB RF edges must be staged to x-plane
+        12!/(8!*4!) is 495
+    - EO the corners again
+        - (2^8)/2 or 128 states
+    - 128 * 495 is 63,360
+    - averages 6.42 moves
+
+phase 3 - Remove U U' D D'
+    move 4 edges to y-plane, this in turn moves the other 4-edges to z-plane
+    There must also be some corner manipulation done here
+    - 8!/(4!*4!) is 70 for the edges
+    - 8!/(4!*4!) is 70 for the corners (I think)
+    - 70 * 70 is 4900
+    - averages 6.70 moves
+
+phase 4 - solve cube
+    - all quarter turns have been removed by this point
+    - (4!^3)/2 is 6912 for the edges
+    - 4!^2 is 576 for the corners
+        it is actually 96 though (I got 96 by building the corners table)
+        576/6 is 96 not sure if that means anything
+
+    - 6912 * 96 is 663,552
+    - averages 10.13 moves
+
+This should averge 29 moves
+'''
 class Build333Phase1(BFS):
 
     def __init__(self):
