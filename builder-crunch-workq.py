@@ -28,6 +28,42 @@ import sys
 
 log = logging.getLogger(__name__)
 
+l_edges = [4, 11, 42, 13, 15, 22, 17, 49]
+r_edges = [6, 29, 24, 31, 33, 40, 35, 51]
+l_corners = [1, 10, 39, 7, 12, 19, 16, 45, 52, 18, 25, 46]
+r_corners = [9, 21, 28, 30, 3, 37, 27, 34, 48, 36, 43, 54]
+
+l_edges_and_corners = l_edges + l_corners
+r_edges_and_corners = r_edges + r_corners
+
+f_edges = [8, 20, 15, 22, 24, 31, 26, 47]
+b_edges = [2, 38, 33, 40, 42, 13, 44, 53]
+f_corners = [7, 12, 19, 9, 21, 28, 18, 25, 46, 27, 34, 48]
+b_corners = [37, 30, 3, 39, 1, 10, 36, 43, 54, 45, 16, 52]
+
+f_edges_and_corners = f_edges + f_corners
+b_edges_and_corners = b_edges + b_corners
+
+
+u_edges = [2, 38, 4, 11, 6, 29, 8, 20]
+d_edges = [26, 47, 17, 49, 35, 51, 53, 44]
+u_corners = [1, 10, 39, 3, 30, 37, 7, 12, 19, 9, 21, 28]
+d_corners = [18, 25, 46, 27, 34, 48, 52, 16, 45, 54, 36, 43]
+u_edges_and_corners = u_edges + u_corners
+d_edges_and_corners = d_edges + d_corners
+
+
+def apply_333_phase_binary(cube_state, positions):
+
+    for x in positions:
+        if cube_state[x] == '1':
+            cube_state[x] = '0';
+        elif cube_state[x] == '0':
+            cube_state[x] = '1';
+
+    return cube_state
+
+
 def get_odd_even(steps, layer):
     assert isinstance(steps, list)
     quarter_wide_turns = 0
@@ -110,6 +146,9 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
         # We add 1 here to account for the newline character
         fh_input.seek(start * (linewidth+1))
+        is_333_phase1 = "3x3x3-phase1" in inputfile
+        is_333_phase2 = "3x3x3-phase2" in inputfile
+        is_333_phase3 = "3x3x3-phase3" in inputfile
 
         for linenumber in range(start, end+1):
             line = next(fh_input)
@@ -152,6 +191,25 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                         cube_state = rotate_xxx(list(cube_state), "z")
                     else:
                         cube_state = rotate_xxx(list(cube_state), next_move)
+
+                    if is_333_phase1:
+                        if next_move == "L" or next_move == "L'":
+                            cube_state = apply_333_phase_binary(cube_state, l_edges_and_corners)
+                        elif next_move == "R" or next_move == "R'":
+                            cube_state = apply_333_phase_binary(cube_state, r_edges_and_corners)
+
+                    elif is_333_phase2:
+                        if next_move == "F" or next_move == "F'":
+                            cube_state = apply_333_phase_binary(cube_state, f_edges_and_corners)
+                        elif next_move == "B" or next_move == "B'":
+                            cube_state = apply_333_phase_binary(cube_state, b_edges_and_corners)
+
+                    elif is_333_phase3:
+                        if next_move == "U" or next_move == "U'":
+                            cube_state = apply_333_phase_binary(cube_state, u_edges_and_corners)
+                        elif next_move == "D" or next_move == "D'":
+                            cube_state = apply_333_phase_binary(cube_state, d_edges_and_corners)
+
                 else:
                     cube_state = list(cube_state)
 
