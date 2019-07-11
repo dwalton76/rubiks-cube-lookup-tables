@@ -38,7 +38,7 @@ class Build333Ultimate(BFS):
         )
 
 
-class Build333Phase1All(BFS):
+class Build333Phase1(BFS):
 
     def __init__(self):
         BFS.__init__(self,
@@ -67,7 +67,7 @@ class Build333Phase1All(BFS):
         )
 
 
-class Build333Phase2All(BFS):
+class Build333Phase2(BFS):
 
     def __init__(self):
         BFS.__init__(self,
@@ -96,7 +96,7 @@ class Build333Phase2All(BFS):
         )
 
 
-class Build333Phase3All(BFS):
+class Build333Phase3(BFS):
 
     def __init__(self):
         BFS.__init__(self,
@@ -151,61 +151,4 @@ class Build333Phase4(BFS):
         D D D
         D D D
         D D D""", 'ascii'),),
-        )
-
-
-class Build333Phase4Edges(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '3x3x3-phase4-edges',
-
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
-
-            '3x3x3',
-            'lookup-table-3x3x3-step141-edges.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-        x U x
-        U U U
-        x U x
-
- x L x  x F x  x R x  x B x
- L L L  F F F  R R R  B B B
- x L x  x F x  x R x  x B x
-
-        x D x
-        D D D
-        x D x""", 'ascii'),),
-        )
-
-class Build333Phase4Corners(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '3x3x3-phase4-corners',
-
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
-
-            '3x3x3',
-            'lookup-table-3x3x3-step142-corners.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-        U x U
-        x U x
-        U x U
-
- L x L  F x F  R x R  B x B
- x L x  x F x  x R x  x B x
- L x L  F x F  R x R  B x B
-
-        D x D
-        x D x
-        D x D""", 'ascii'),),
         )
