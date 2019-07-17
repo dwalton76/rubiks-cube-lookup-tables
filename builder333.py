@@ -41,10 +41,9 @@ class Build333Ultimate(BFS):
 '''
 4-phase solver overview
 
-phase 1 - EO the edges and corners
-    - make the edges and corners solveable without L L' R R'
+phase 1 - EO the edges
+    - make the edges solveable without L L' R R'
     - (2^12)/2 or 2048 states
-    - (2^8)/2 or 128 states
     - 2048 * 128 is 262,144 states
     - averages 6.37 moves
 
@@ -91,17 +90,17 @@ class Build333Phase1(BFS):
 
             # starting cubes
             (("""
-        1 1 1
+        x 1 x
         1 U 1
-        1 1 1
+        x 1 x
 
- 1 1 1  1 1 1  1 1 1  1 1 1
+ x 1 x  x 1 x  x 1 x  x 1 x
  1 L 1  1 F 1  1 R 1  1 B 1
- 1 1 1  1 1 1  1 1 1  1 1 1
+ x 1 x  x 1 x  x 1 x  x 1 x
 
-        1 1 1
+        x 1 x
         1 D 1
-        1 1 1""", 'ascii'),),
+        x 1 x""", 'ascii'),),
         )
 
 
@@ -120,17 +119,17 @@ class Build333Phase2(BFS):
 
             # starting cubes
             (("""
-        1 x 1
+        U x U
         x U x
-        1 x 1
+        U x U
 
- 1 x 1  1 x 1  1 x 1  1 x 1
- L L L  L F L  L R L  L B L
- 1 x 1  1 x 1  1 x 1  1 x 1
+ x x x  x x x  x x x  x x x
+ 1 L 1  1 F 1  1 R 1  1 B 1
+ x x x  x x x  x x x  x x x
 
-        1 x 1
+        U x U
         x D x
-        1 x 1""", 'ascii'),),
+        U x U""", 'ascii'),),
         )
 
 
@@ -148,18 +147,132 @@ class Build333Phase3(BFS):
             False, # store_as_hex
 
             # starting cubes
+            (('DFDxUxDFDLxLxLxLxLBFBxFxBFBRxRxRxRxRFFFxBxFFFUFUxDxUFU', 'ULFRBD'),
+             ('DFDxUxDFDLxLxLxRxRBFBxFxFFFRxRxRxLxLFFFxBxBFBUFUxDxUFU', 'ULFRBD'),
+             ('DFDxUxDFDLxRxLxLxRFFBxFxFFBRxLxRxRxLBFFxBxBFFUFUxDxUFU', 'ULFRBD'),
+             ('DFDxUxDFDLxRxLxRxLFFBxFxBFFRxLxRxLxRBFFxBxFFBUFUxDxUFU', 'ULFRBD'),
+             ('DFDxUxDFDRxLxLxLxRBFFxFxFFBLxRxRxRxLFFBxBxBFFUFUxDxUFU', 'ULFRBD'),
+             ('DFDxUxDFDRxLxLxRxLBFFxFxBFFLxRxRxLxRFFBxBxFFBUFUxDxUFU', 'ULFRBD'),
+             ('DFDxUxDFDRxRxLxLxLFFFxFxBFBLxLxRxRxRBFBxBxFFFUFUxDxUFU', 'ULFRBD'),
+             ('DFDxUxDFDRxRxLxRxRFFFxFxFFFLxLxRxLxLBFBxBxBFBUFUxDxUFU', 'ULFRBD'),
+             ('DFDxUxUFULxLxLxLxLFFFxFxBFBRxRxRxRxRFFFxBxBFBUFUxDxDFD', 'ULFRBD'),
+             ('DFDxUxUFULxLxLxRxRFFBxFxBFFLxLxRxRxRBFFxBxFFBDFDxDxUFU', 'ULFRBD'),
+             ('DFDxUxUFULxLxLxRxRFFBxFxFFBLxLxRxRxRBFFxBxBFFUFUxDxDFD', 'ULFRBD'),
+             ('DFDxUxUFULxLxLxRxRFFFxFxBFBRxRxRxLxLFFFxBxBFBDFDxDxUFU', 'ULFRBD'),
+             ('DFDxUxUFULxRxLxLxRBFBxFxBFBLxRxRxLxRFFFxBxFFFDFDxDxUFU', 'ULFRBD'),
+             ('DFDxUxUFULxRxLxLxRBFBxFxFFFLxRxRxLxRFFFxBxBFBUFUxDxDFD', 'ULFRBD'),
+             ('DFDxUxUFULxRxLxLxRBFFxFxBFFRxLxRxRxLBFFxBxBFFDFDxDxUFU', 'ULFRBD'),
+             ('DFDxUxUFULxRxLxRxLBFFxFxBFFRxLxRxLxRBFFxBxBFFUFUxDxDFD', 'ULFRBD'),
+             ('DFDxUxUFURxLxLxLxRFFBxFxFFBLxRxRxRxLFFBxBxFFBUFUxDxDFD', 'ULFRBD'),
+             ('DFDxUxUFURxLxLxRxLFFBxFxFFBLxRxRxLxRFFBxBxFFBDFDxDxUFU', 'ULFRBD'),
+             ('DFDxUxUFURxLxLxRxLFFFxFxBFBRxLxRxRxLBFBxBxFFFUFUxDxDFD', 'ULFRBD'),
+             ('DFDxUxUFURxLxLxRxLFFFxFxFFFRxLxRxRxLBFBxBxBFBDFDxDxUFU', 'ULFRBD'),
+             ('DFDxUxUFURxRxLxLxLBFBxFxFFFLxLxRxRxRBFBxBxFFFDFDxDxUFU', 'ULFRBD'),
+             ('DFDxUxUFURxRxLxLxLBFFxFxBFFRxRxRxLxLFFBxBxFFBUFUxDxDFD', 'ULFRBD'),
+             ('DFDxUxUFURxRxLxLxLBFFxFxFFBRxRxRxLxLFFBxBxBFFDFDxDxUFU', 'ULFRBD'),
+             ('DFDxUxUFURxRxLxRxRBFBxFxFFFLxLxRxLxLBFBxBxFFFUFUxDxDFD', 'ULFRBD'),
+             ('DFUxUxDFULxLxLxLxLBFFxFxBFFRxRxRxRxRBFFxBxBFFUFDxDxUFD', 'ULFRBD'),
+             ('DFUxUxDFULxLxLxRxRBFBxFxBFBLxLxRxRxRFFFxBxFFFDFUxDxDFU', 'ULFRBD'),
+             ('DFUxUxDFULxLxLxRxRBFBxFxFFFLxLxRxRxRFFFxBxBFBUFDxDxUFD', 'ULFRBD'),
+             ('DFUxUxDFULxLxLxRxRBFFxFxBFFRxRxRxLxLBFFxBxBFFDFUxDxDFU', 'ULFRBD'),
+             ('DFUxUxDFULxRxLxLxRFFBxFxBFFLxRxRxLxRBFFxBxFFBDFUxDxDFU', 'ULFRBD'),
+             ('DFUxUxDFULxRxLxLxRFFBxFxFFBLxRxRxLxRBFFxBxBFFUFDxDxUFD', 'ULFRBD'),
+             ('DFUxUxDFULxRxLxLxRFFFxFxBFBRxLxRxRxLFFFxBxBFBDFUxDxDFU', 'ULFRBD'),
+             ('DFUxUxDFULxRxLxRxLFFFxFxBFBRxLxRxLxRFFFxBxBFBUFDxDxUFD', 'ULFRBD'),
+             ('DFUxUxDFURxLxLxLxRBFBxFxFFFLxRxRxRxLBFBxBxFFFUFDxDxUFD', 'ULFRBD'),
+             ('DFUxUxDFURxLxLxRxLBFBxFxFFFLxRxRxLxRBFBxBxFFFDFUxDxDFU', 'ULFRBD'),
+             ('DFUxUxDFURxLxLxRxLBFFxFxBFFRxLxRxRxLFFBxBxFFBUFDxDxUFD', 'ULFRBD'),
+             ('DFUxUxDFURxLxLxRxLBFFxFxFFBRxLxRxRxLFFBxBxBFFDFUxDxDFU', 'ULFRBD'),
+             ('DFUxUxDFURxRxLxLxLFFBxFxFFBLxLxRxRxRFFBxBxFFBDFUxDxDFU', 'ULFRBD'),
+             ('DFUxUxDFURxRxLxLxLFFFxFxBFBRxRxRxLxLBFBxBxFFFUFDxDxUFD', 'ULFRBD'),
+             ('DFUxUxDFURxRxLxLxLFFFxFxFFFRxRxRxLxLBFBxBxBFBDFUxDxDFU', 'ULFRBD'),
+             ('DFUxUxDFURxRxLxRxRFFBxFxFFBLxLxRxLxLFFBxBxFFBUFDxDxUFD', 'ULFRBD'),
+             ('DFUxUxUFDLxLxLxLxLFFBxFxBFFRxRxRxRxRBFFxBxFFBUFDxDxDFU', 'ULFRBD'),
+             ('DFUxUxUFDLxLxLxRxRFFBxFxFFBRxRxRxLxLBFFxBxBFFUFDxDxDFU', 'ULFRBD'),
+             ('DFUxUxUFDLxRxLxLxRBFBxFxFFFRxLxRxRxLFFFxBxBFBUFDxDxDFU', 'ULFRBD'),
+             ('DFUxUxUFDLxRxLxRxLBFBxFxBFBRxLxRxLxRFFFxBxFFFUFDxDxDFU', 'ULFRBD'),
+             ('DFUxUxUFDRxLxLxLxRFFFxFxFFFLxRxRxRxLBFBxBxBFBUFDxDxDFU', 'ULFRBD'),
+             ('DFUxUxUFDRxLxLxRxLFFFxFxBFBLxRxRxLxRBFBxBxFFFUFDxDxDFU', 'ULFRBD'),
+             ('DFUxUxUFDRxRxLxLxLBFFxFxBFFLxLxRxRxRFFBxBxFFBUFDxDxDFU', 'ULFRBD'),
+             ('DFUxUxUFDRxRxLxRxRBFFxFxFFBLxLxRxLxLFFBxBxBFFUFDxDxDFU', 'ULFRBD'),
+             ('UFDxUxDFULxLxLxLxLBFFxFxFFBRxRxRxRxRFFBxBxBFFDFUxDxUFD', 'ULFRBD'),
+             ('UFDxUxDFULxLxLxRxRBFFxFxBFFRxRxRxLxLFFBxBxFFBDFUxDxUFD', 'ULFRBD'),
+             ('UFDxUxDFULxRxLxLxRFFFxFxBFBRxLxRxRxLBFBxBxFFFDFUxDxUFD', 'ULFRBD'),
+             ('UFDxUxDFULxRxLxRxLFFFxFxFFFRxLxRxLxRBFBxBxBFBDFUxDxUFD', 'ULFRBD'),
+             ('UFDxUxDFURxLxLxLxRBFBxFxBFBLxRxRxRxLFFFxBxFFFDFUxDxUFD', 'ULFRBD'),
+             ('UFDxUxDFURxLxLxRxLBFBxFxFFFLxRxRxLxRFFFxBxBFBDFUxDxUFD', 'ULFRBD'),
+             ('UFDxUxDFURxRxLxLxLFFBxFxFFBLxLxRxRxRBFFxBxBFFDFUxDxUFD', 'ULFRBD'),
+             ('UFDxUxDFURxRxLxRxRFFBxFxBFFLxLxRxLxLBFFxBxFFBDFUxDxUFD', 'ULFRBD'),
+             ('UFDxUxUFDLxLxLxLxLFFBxFxFFBRxRxRxRxRFFBxBxFFBDFUxDxDFU', 'ULFRBD'),
+             ('UFDxUxUFDLxLxLxRxRFFBxFxFFBRxRxRxLxLFFBxBxFFBUFDxDxUFD', 'ULFRBD'),
+             ('UFDxUxUFDLxLxLxRxRFFFxFxBFBLxLxRxRxRBFBxBxFFFDFUxDxDFU', 'ULFRBD'),
+             ('UFDxUxUFDLxLxLxRxRFFFxFxFFFLxLxRxRxRBFBxBxBFBUFDxDxUFD', 'ULFRBD'),
+             ('UFDxUxUFDLxRxLxLxRBFBxFxFFFRxLxRxRxLBFBxBxFFFUFDxDxUFD', 'ULFRBD'),
+             ('UFDxUxUFDLxRxLxLxRBFFxFxBFFLxRxRxLxRFFBxBxFFBDFUxDxDFU', 'ULFRBD'),
+             ('UFDxUxUFDLxRxLxLxRBFFxFxFFBLxRxRxLxRFFBxBxBFFUFDxDxUFD', 'ULFRBD'),
+             ('UFDxUxUFDLxRxLxRxLBFBxFxFFFRxLxRxLxRBFBxBxFFFDFUxDxDFU', 'ULFRBD'),
+             ('UFDxUxUFDRxLxLxLxRFFFxFxBFBLxRxRxRxLFFFxBxBFBDFUxDxDFU', 'ULFRBD'),
+             ('UFDxUxUFDRxLxLxRxLFFBxFxBFFRxLxRxRxLBFFxBxFFBUFDxDxUFD', 'ULFRBD'),
+             ('UFDxUxUFDRxLxLxRxLFFBxFxFFBRxLxRxRxLBFFxBxBFFDFUxDxDFU', 'ULFRBD'),
+             ('UFDxUxUFDRxLxLxRxLFFFxFxBFBLxRxRxLxRFFFxBxBFBUFDxDxUFD', 'ULFRBD'),
+             ('UFDxUxUFDRxRxLxLxLBFBxFxBFBRxRxRxLxLFFFxBxFFFUFDxDxUFD', 'ULFRBD'),
+             ('UFDxUxUFDRxRxLxLxLBFBxFxFFFRxRxRxLxLFFFxBxBFBDFUxDxDFU', 'ULFRBD'),
+             ('UFDxUxUFDRxRxLxLxLBFFxFxBFFLxLxRxRxRBFFxBxBFFUFDxDxUFD', 'ULFRBD'),
+             ('UFDxUxUFDRxRxLxRxRBFFxFxBFFLxLxRxLxLBFFxBxBFFDFUxDxDFU', 'ULFRBD'),
+             ('UFUxUxDFDLxLxLxLxLBFBxFxFFFRxRxRxRxRBFBxBxFFFDFDxDxUFU', 'ULFRBD'),
+             ('UFUxUxDFDLxLxLxRxRBFBxFxFFFRxRxRxLxLBFBxBxFFFUFUxDxDFD', 'ULFRBD'),
+             ('UFUxUxDFDLxLxLxRxRBFFxFxBFFLxLxRxRxRFFBxBxFFBDFDxDxUFU', 'ULFRBD'),
+             ('UFUxUxDFDLxLxLxRxRBFFxFxFFBLxLxRxRxRFFBxBxBFFUFUxDxDFD', 'ULFRBD'),
+             ('UFUxUxDFDLxRxLxLxRFFBxFxFFBRxLxRxRxLFFBxBxFFBUFUxDxDFD', 'ULFRBD'),
+             ('UFUxUxDFDLxRxLxLxRFFFxFxBFBLxRxRxLxRBFBxBxFFFDFDxDxUFU', 'ULFRBD'),
+             ('UFUxUxDFDLxRxLxLxRFFFxFxFFFLxRxRxLxRBFBxBxBFBUFUxDxDFD', 'ULFRBD'),
+             ('UFUxUxDFDLxRxLxRxLFFBxFxFFBRxLxRxLxRFFBxBxFFBDFDxDxUFU', 'ULFRBD'),
+             ('UFUxUxDFDRxLxLxLxRBFFxFxBFFLxRxRxRxLBFFxBxBFFDFDxDxUFU', 'ULFRBD'),
+             ('UFUxUxDFDRxLxLxRxLBFBxFxBFBRxLxRxRxLFFFxBxFFFUFUxDxDFD', 'ULFRBD'),
+             ('UFUxUxDFDRxLxLxRxLBFBxFxFFFRxLxRxRxLFFFxBxBFBDFDxDxUFU', 'ULFRBD'),
+             ('UFUxUxDFDRxLxLxRxLBFFxFxBFFLxRxRxLxRBFFxBxBFFUFUxDxDFD', 'ULFRBD'),
+             ('UFUxUxDFDRxRxLxLxLFFBxFxBFFRxRxRxLxLBFFxBxFFBUFUxDxDFD', 'ULFRBD'),
+             ('UFUxUxDFDRxRxLxLxLFFBxFxFFBRxRxRxLxLBFFxBxBFFDFDxDxUFU', 'ULFRBD'),
+             ('UFUxUxDFDRxRxLxLxLFFFxFxBFBLxLxRxRxRFFFxBxBFBUFUxDxDFD', 'ULFRBD'),
+             ('UFUxUxDFDRxRxLxRxRFFFxFxBFBLxLxRxLxLFFFxBxBFBDFDxDxUFU', 'ULFRBD'),
+             ('UFUxUxUFULxLxLxLxLFFFxFxFFFRxRxRxRxRBFBxBxBFBDFDxDxDFD', 'ULFRBD'),
+             ('UFUxUxUFULxLxLxRxRFFFxFxBFBRxRxRxLxLBFBxBxFFFDFDxDxDFD', 'ULFRBD'),
+             ('UFUxUxUFULxRxLxLxRBFFxFxBFFRxLxRxRxLFFBxBxFFBDFDxDxDFD', 'ULFRBD'),
+             ('UFUxUxUFULxRxLxRxLBFFxFxFFBRxLxRxLxRFFBxBxBFFDFDxDxDFD', 'ULFRBD'),
+             ('UFUxUxUFURxLxLxLxRFFBxFxBFFLxRxRxRxLBFFxBxFFBDFDxDxDFD', 'ULFRBD'),
+             ('UFUxUxUFURxLxLxRxLFFBxFxFFBLxRxRxLxRBFFxBxBFFDFDxDxDFD', 'ULFRBD'),
+             ('UFUxUxUFURxRxLxLxLBFBxFxFFFLxLxRxRxRFFFxBxBFBDFDxDxDFD', 'ULFRBD'),
+             ('UFUxUxUFURxRxLxRxRBFBxFxBFBLxLxRxLxLFFFxBxFFFDFDxDxDFD', 'ULFRBD'),
+            )
+        )
+
+
+class Build333Phase3Corners(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '3x3x3-phase3Corners',
+
+            # illegal moves
+            ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
+
+            '3x3x3',
+            'lookup-table-3x3x3-step131-corners.txt',
+            False, # store_as_hex
+
+            # starting cubes
             (("""
-        1 F 1
+        U x U
         x U x
-        1 F 1
+        U x U
 
- 1 x 1  1 F 1  1 x 1  1 F 1
+ L x L  F x F  R x R  B x B
  x L x  x F x  x R x  x B x
- 1 x 1  1 F 1  1 x 1  1 F 1
+ L x L  F x F  R x R  B x B
 
-        1 F 1
+        D x D
         x D x
-        1 F 1""", 'ascii'),),
+        D x D""", 'ascii'),),
         )
 
 
@@ -190,3 +303,120 @@ class Build333Phase4(BFS):
         D D D
         D D D""", 'ascii'),),
         )
+
+
+class Build333Phase4Edges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '3x3x3-phase4-edges',
+
+            # illegal moves
+            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+
+            '3x3x3',
+            'lookup-table-3x3x3-step141-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+        . U .
+        U . U
+        . U .
+
+ . L .  . F .  . R .  . B .
+ L . L  F . F  R . R  B . B
+ . L .  . F .  . R .  . B .
+
+        . D .
+        D . D
+        . D .""", 'ascii'),),
+        )
+
+
+class Build333Phase4Corners(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '3x3x3-phase4-corners',
+
+            # illegal moves
+            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+
+            '3x3x3',
+            'lookup-table-3x3x3-step142-corners.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+        U . U
+        . . .
+        U . U
+
+ L . L  F . F  R . R  B . B
+ . . .  . . .  . . .  . . .
+ L . L  F . F  R . R  B . B
+
+        D . D
+        . . .
+        D . D""", 'ascii'),),
+        )
+
+
+class Build333Phase4CornersFoo(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '3x3x3-phase4-corners',
+
+            # illegal moves
+            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+
+            '3x3x3',
+            'lookup-table-3x3x3-step142-corners-foo.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+        x . U
+        . . .
+        U . x
+
+ x . L  F . x  x . R  B . x
+ . . .  . . .  . . .  . . .
+ L . x  x . F  R . x  x . B
+
+        x . D
+        . . .
+        D . x""", 'ascii'),),
+        )
+
+
+class Build333Phase4CornersBar(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '3x3x3-phase4-corners',
+
+            # illegal moves
+            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+
+            '3x3x3',
+            'lookup-table-3x3x3-step142-corners-bar.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+        U . x
+        . . .
+        x . U
+
+ L . x  x . F  R . x  x . B
+ . . .  . . .  . . .  . . .
+ x . L  F . x  x . R  B . x
+
+        D . x
+        . . .
+        x . D""", 'ascii'),),
+        )
+
