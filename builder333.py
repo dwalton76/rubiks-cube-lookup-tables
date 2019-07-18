@@ -257,7 +257,7 @@ class Build333Phase3Corners(BFS):
             ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
 
             '3x3x3',
-            'lookup-table-3x3x3-step131-corners.txt',
+            'lookup-table-3x3x3-step132-corners.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -361,62 +361,3 @@ class Build333Phase4Corners(BFS):
         . . .
         D . D""", 'ascii'),),
         )
-
-
-class Build333Phase4CornersFoo(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '3x3x3-phase4-corners',
-
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
-
-            '3x3x3',
-            'lookup-table-3x3x3-step142-corners-foo.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-        x . U
-        . . .
-        U . x
-
- x . L  F . x  x . R  B . x
- . . .  . . .  . . .  . . .
- L . x  x . F  R . x  x . B
-
-        x . D
-        . . .
-        D . x""", 'ascii'),),
-        )
-
-
-class Build333Phase4CornersBar(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '3x3x3-phase4-corners',
-
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
-
-            '3x3x3',
-            'lookup-table-3x3x3-step142-corners-bar.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-        U . x
-        . . .
-        x . U
-
- L . x  x . F  R . x  x . B
- . . .  . . .  . . .  . . .
- x . L  F . x  x . R  B . x
-
-        D . x
-        . . .
-        x . D""", 'ascii'),),
-        )
-
