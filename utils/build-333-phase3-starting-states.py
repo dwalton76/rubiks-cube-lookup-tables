@@ -29,6 +29,7 @@ CORNERS = (
 )
 
 starting_state = list("xFxxUxxFxxxxxLxxxxxFxxFxxFxxxxxRxxxxxFxxBxxFxxFxxDxxFx")
+starting_state = list("......................................................")
 print(len(starting_state))
 
 with open("lookup-table-3x3x3-step142-corners.txt", "r") as fh:
