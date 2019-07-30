@@ -22,16 +22,13 @@ prev_count_at_depth = 754156
 count_total = 783364
 rate = float(26.79)
 count_total_target = 7401196841564901869874093974498574336000000000 # 444
-'''
 
 # 4x4x4 centers
-'''
 depth = 6
 prev_count_at_depth = 83113883
 count_total = 87727430
 rate = float(19)
 count_total_target = 3246670537110000 # 24!/(4!^6)
-'''
 
 # 4x4x4 centers stage
 depth = 7
@@ -39,6 +36,16 @@ prev_count_at_depth = 112158744
 count_total = 121951614
 rate = float(12.41)
 count_total_target = 9465511770 # 24!/(8!*8!*8!)
+'''
+
+# dwalton
+# 4x4x4 phase5
+depth = 7
+prev_count_at_depth = 2061576
+count_total = 2458855
+rate = float(6.11)
+count_total_target = 146767085568
+
 
 '''
 # 5x5x5 centers OBTM
@@ -78,7 +85,6 @@ prev_count_at_depth = 312556
 count_total = 399143
 rate = float(4.38)
 count_total_target = 479001600 # 12!
-'''
 
 # 5x5x5 solve centers with staging
 depth = 6
@@ -86,14 +92,13 @@ prev_count_at_depth = 1291295
 count_total = 1433448
 rate = float(10)
 count_total_target = 117649000000 # ((8!/(4!*4!))^2)^3
-
-
+'''
 
 move_total = 0
 
 while count_total < count_total_target:
     depth += 1
-    rate -= 0.8
+    rate -= 0.4
     count_at_depth = int(prev_count_at_depth * rate)
 
     if (count_total + count_at_depth) > count_total_target:
