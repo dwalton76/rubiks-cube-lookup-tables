@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
+import re
 import sys
 import shutil
 
@@ -16,11 +17,16 @@ def keep_best_solutions(filename):
     state_min_solution_len = None
     state_min_solution = None
     prev_state = None
+    use_edges_pattern = None
+
+    re_line = re.compile("^(.*):(.*?)\s*$")
 
     with open(filename_final, "w") as fh_final:
         with open(filename, "r") as fh:
             for (line_number, line) in enumerate(fh):
-                (state, steps_to_solve) = line.strip().split(":")
+                match = re_line.match(line)
+                state = match.group(1)
+                steps_to_solve = match.group(2)
                 solution_len = len(steps_to_solve.split())
 
                 if prev_state is not None and state != prev_state:
