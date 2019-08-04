@@ -107,218 +107,218 @@ class Build555UltimateCenters(BFS):
         )
 
 
-class Build555UDCenterStage(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-UD-center-stage',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step10-UD-centers-stage.txt',
-            True, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . x x x .  . x x x .  . x x x .  . x x x .
- . x x x .  . x x x .  . x x x .  . x x x .
- . x x x .  . x x x .  . x x x .  . x x x .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .""", "ascii"),),
-        )
-
-
-class Build555UDCenterStageTCenterOnly(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-UD-t-center-stage',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step11-UD-centers-stage-t-center-only.txt',
-            True, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . . U . .
-            . U . U .
-            . . U . .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . . x . .  . . x . .  . . x . .  . . x . .
- . x . x .  . x . x .  . x . x .  . x . x .
- . . x . .  . . x . .  . . x . .  . . x . .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . . U . .
-            . U . U .
-            . . U . .
-            . . . . .""", "ascii"),),
-        )
-
-
-class Build555UDCenterStageXCenterOnly(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-UD-x-center-stage',
-            (),
-            '5x5x5',
-            'lookup-table-5x5x5-step12-UD-centers-stage-x-center-only.txt',
-            True, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . U . U .
-            . . . . .
-            . U . U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . x . x .  . x . x .  . x . x .  . x . x .
- . . . . .  . . . . .  . . . . .  . . . . .
- . x . x .  . x . x .  . x . x .  . x . x .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . U . U .
-            . . . . .
-            . U . U .
-            . . . . .""", "ascii"),),
-        )
-
-
-
 class Build555LRCenterStage(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-lr-center-stage',
-
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'"),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step20-LR-centers-stage.txt',
-            True, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . x x x .  . L L L .  . x x x .
- . L L L .  . x x x .  . L L L .  . x x x .
- . L L L .  . x x x .  . L L L .  . x x x .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .""", "ascii"),)
-        )
-
-
-class Build555LRTCenterStage(BFS):
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-lr-t-center-stage',
-
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'"),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step21-LR-t-centers-stage.txt',
-            True, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . . L . .  . . x . .  . . L . .  . . x . .
- . L L L .  . x x x .  . L L L .  . x x x .
- . . L . .  . . x . .  . . L . .  . . x . .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .""", "ascii"),)
-        )
-
-
-class Build555LRXCenterStage(BFS):
     """
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-lr-x-center-stage',
-
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'"),
-
+            '5x5x5-LR-center-stage',
+            (),
             '5x5x5',
-            'lookup-table-5x5x5-step22-LR-x-centers-stage.txt',
+            'lookup-table-5x5x5-step10-LR-centers-stage.txt',
             True, # store_as_hex
 
             # starting cubes
             (("""
             . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . L . L .  . x . x .  . L . L .  . x . x .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555LRCenterStageTCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LR-t-center-stage',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . x . .
+            . x . x .
+            . . x . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
  . . L . .  . . x . .  . . L . .  . . x . .
  . L . L .  . x . x .  . L . L .  . x . x .
+ . . L . .  . . x . .  . . L . .  . . x . .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
+            . . x . .
+            . x . x .
+            . . x . .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555LRCenterStageXCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LR-x-center-stage',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
             . . . . .
+            . x . x .
             . . . . .
+            . x . x .
             . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . x . x .  . L . L .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . x . x .  . L . L .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x . x .
+            . . . . .
+            . x . x .
+            . . . . .""", "ascii"),),
+        )
+
+
+
+class Build555FBCenterStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-FB-center-stage',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step20-FB-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F F .  . . . . .  . F F F .
+ . . . . .  . F F F .  . . . . .  . F F F .
+ . . . . .  . F F F .  . . . . .  . F F F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x x x .
+            . x x x .
+            . x x x .
+            . . . . .""", "ascii"),)
+        )
+
+
+class Build555FBTCenterStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-FB-t-center-stage',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step21-FB-t-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . x . .
+            . x . x .
+            . . x . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . . F . .  . . . . .  . . F . .
+ . . . . .  . F . F .  . . . . .  . F . F .
+ . . . . .  . . F . .  . . . . .  . . F . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . x . .
+            . x . x .
+            . . x . .
+            . . . . .""", "ascii"),)
+        )
+
+
+class Build555FBXCenterStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-FB-x-center-stage',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step22-FB-x-centers-stage.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . x . x .
+            . . . . .
+            . x . x .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F . F .  . . . . .  . F . F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F . F .  . . . . .  . F . F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x . x .
+            . . . . .
+            . x . x .
             . . . . .""", "ascii"),)
         )
 
@@ -2960,7 +2960,6 @@ phase 6 - solve all centers and pair all edges
 # =====================================
 # solving edges when centers are paired
 # =====================================
-# we used to do
 '''
 phase 1 - stage 1st L4E group
 phase 2 - solve 1st L4E group
@@ -2969,4 +2968,45 @@ phase 4 - solve 2nd L4E group
 phase 5 - solve 3rd L4E group
 
 This normally takes ~52 steps
+'''
+
+
+# brainstorm #1
+'''
+phase 1 - EO the midges
+    -3 moves
+
+phase 2 - EO the wings, there should be 2.7 million of these, this is a
+    pretty brutal IDA search though so we would want to pre-solve all of
+    these.
+
+    2048 midge states
+    2.7 million wing states
+    432 LR center stats
+    2700000/(2048*432*2700000) = 0.000 000 986
+    That would be really slow for 2.7 million solves :(
+
+    432 * 2700000 = 1,166,400,000
+    (432 * 2700000)/(2048*432*2700000) = 0.000 488
+    ok so a 1.1 billion entry prune table is huge but feasible
+
+    This does not technically need to resolve the LR/FB centers but if it
+    did that would make phase3 much easier.
+
+    ~10 moves?
+
+phase 3 - LR and FB centers to vertical bars, pair x-plane edges
+    432 LR centers * 4900 FB centers
+    (12*11*10*9)^2 = 141,134,400 edge states
+
+    141134400/(141134400*432*4900) = 0.000 000 412
+    -14 moves
+
+phase 4 - pair last 8 edges, solve all centers
+
+    8!^2/2 = 812,851,200
+    This lookup table would be huge. This is IDAable though.
+    -16 moves
+
+that would be ~43 moves
 '''
