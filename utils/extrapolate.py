@@ -31,7 +31,6 @@ prev_count_at_depth = 83113883
 count_total = 87727430
 rate = float(19)
 count_total_target = 3246670537110000 # 24!/(4!^6)
-'''
 
 # 4x4x4 centers stage
 depth = 7
@@ -40,7 +39,6 @@ count_total = 121951614
 rate = float(12.41)
 count_total_target = 9465511770 # 24!/(8!*8!*8!)
 
-'''
 # 5x5x5 centers OBTM
 depth = 5
 prev_count_at_depth = 6089454
@@ -78,7 +76,6 @@ prev_count_at_depth = 312556
 count_total = 399143
 rate = float(4.38)
 count_total_target = 479001600 # 12!
-'''
 
 # 5x5x5 solve centers with staging
 depth = 6
@@ -86,14 +83,21 @@ prev_count_at_depth = 1291295
 count_total = 1433448
 rate = float(10)
 count_total_target = 117649000000 # ((8!/(4!*4!))^2)^3
+'''
 
+# 555 LR stage 432 and EO both orbits
+depth = 4
+prev_count_at_depth = 1948920
+count_total = 2136760
+rate = float(11.31)
+count_total_target = 27136746291200
 
 
 move_total = 0
 
 while count_total < count_total_target:
     depth += 1
-    rate -= 0.8
+    rate -= 0.5
     count_at_depth = int(prev_count_at_depth * rate)
 
     if (count_total + count_at_depth) > count_total_target:

@@ -49,6 +49,9 @@ d_corners = [18, 25, 46, 27, 34, 48, 52, 16, 45, 54, 36, 43]
 u_edges_and_corners = u_edges + u_corners
 d_edges_and_corners = d_edges + d_corners
 
+l_midges_555 = [11, 28, 36, 115, 40, 61, 48, 136]
+r_midges_555 = [15, 78, 65, 86, 90, 111, 98, 140]
+
 
 def apply_333_phase_binary(cube_state, positions):
 
@@ -57,6 +60,17 @@ def apply_333_phase_binary(cube_state, positions):
             cube_state[x] = '0';
         elif cube_state[x] == '0':
             cube_state[x] = '1';
+
+    return cube_state
+
+
+def apply_555_phase_binary(cube_state, positions):
+
+    for x in positions:
+        if cube_state[x] == 'U':
+            cube_state[x] = 'D';
+        elif cube_state[x] == 'D':
+            cube_state[x] = 'U';
 
     return cube_state
 
@@ -147,6 +161,8 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
         is_333_phase2 = "3x3x3-phase2" in inputfile
         is_333_phase3 = "3x3x3-phase3" in inputfile
 
+        is_555_EO = "5x5x5-LR-center-stage-EO-inner-orbit" in inputfile or "5x5x5-LR-center-stage-EO-both-orbits" in inputfile or "5x5x5-EO-inner-orbit" in inputfile
+
         for linenumber in range(start, end+1):
             line = next(fh_input)
 
@@ -207,6 +223,12 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                             cube_state = apply_333_phase_binary(cube_state, f_edges)
                         elif next_move == "B" or next_move == "B'":
                             cube_state = apply_333_phase_binary(cube_state, b_edges)
+
+                    elif is_555_EO:
+                        if next_move == "L" or next_move == "L'":
+                            cube_state = apply_555_phase_binary(cube_state, l_midges_555)
+                        elif next_move == "R" or next_move == "R'":
+                            cube_state = apply_555_phase_binary(cube_state, r_midges_555)
 
                 else:
                     cube_state = list(cube_state)
