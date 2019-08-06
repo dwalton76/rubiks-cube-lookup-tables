@@ -2973,42 +2973,84 @@ This normally takes ~52 steps
 
 # brainstorm #1
 '''
-phase 1 - EO the midges
-    -3 moves
+phase 1
+    stage LR centers
+    10 moves
 
-phase 2 - EO the wings, there should be 2.7 million of these, this is a
-    pretty brutal IDA search though so we would want to pre-solve all of
-    these.
+phase 2
+    stage FB centers
+    10 moves
 
-    2048 midge states
-    2.7 million wing states
-    432 LR center stats
-    2700000/(2048*432*2700000) = 0.000 000 986
-    That would be really slow for 2.7 million solves :(
+phase 3 - 
+    EO the wings, 2,704,156 states
+    EO the midges, 2048 states
+    LR centers to 1/432, 4900 states
 
-    432 * 2700000 = 1,166,400,000
-    (432 * 2700000)/(2048*432*2700000) = 0.000 488
-    ok so a 1.1 billion entry prune table is huge but feasible
+    (4900 * 2048) / (4900 * 2048 * 2,704,156) = 0.000 000 369
+    10.8 moves
 
-    This does not technically need to resolve the LR/FB centers but if it
-    did that would make phase3 much easier.
+phase 4
+    LR and FB centers to vertical bars
+    pair x-plane edges
 
-    ~10 moves?
-
-phase 3 - LR and FB centers to vertical bars, pair x-plane edges
     432 LR centers * 4900 FB centers
-    (12*11*10*9)^2 = 141,134,400 edge states
 
-    141134400/(141134400*432*4900) = 0.000 000 412
-    -14 moves
+    x-plane edges
+        (12*11*10*9)^2 is how many states the wings can be in
+        12!/(8!*4!) is how many states the midges can be in
+        (12*11*10*9)^2 * 12!/(8!*4!) = 69,861,528,000
 
-phase 4 - pair last 8 edges, solve all centers
+    - A 3-edge prune table is
+        (12*11*10)^2 is how many states the wings can be in
+        12!/(9!*3!) is how many states the midges can be in
+        (12*11*10)^2 * 12!/(9!*3!) = 383,328,000
 
-    8!^2/2 = 812,851,200
-    This lookup table would be huge. This is IDAable though.
+    383,328,000 / (432 * 4900 * 69,861,528,000) = 0.000 000 002
+    That is just brutal
+
+phase 5
+    pair last 8 edges
+    solve all centers
+
+    8!^2/2 = 812,851,200 edge states
+    6 * 6 * 4900 = 176,400 center states
+
     -16 moves
 
-that would be ~43 moves
+that would be ~61 moves
+'''
+
+# brainstorm #2
+'''
+If phase2 were to also solve the LR centers (should be cheap) that makes phase3
+doable. We would just need to IDA all 2.7million outer orbit EO solutions. That
+might take 6 months though.
+
+phase4 is just insane...this IDA would take hours...maybe xyzzy did just that.
+What if we L4Eed all 3 planes here?
+    FB and UD centers would need to go to one of 432 states
+    4900 FB centers * 4900 UD centers = 24,010,000
+
+    (12!(4!*4!*4!)) ^3 = 41,601,569,625,000
+    not feasible
+
+
+What if we L4Eed x-plane here?
+    FB centers to one of 432 states
+
+    4900 FB center states
+    (12!/(4!*8!))^3 = 121,287,375 edge states
+
+phase4b
+    LR and FB centers to vertical bars
+    432 * 432 states
+
+    pair x-plane edges
+    4!^3 = 13824 edge states
+
+    432 * 432 * 13824 = 2579890176
+
+    (432*432)/2579890176 = 0.000 072
 '''
 
 class StartingState555EdgeOrientOuterOrbitLRCenterStage(BFS):
@@ -3064,22 +3106,20 @@ class Build555LRCenterStageEOBothOrbits(BFS):
     0 steps has 78 entries (0 percent, 0.00x previous step)
     1 steps has 1,218 entries (0 percent, 15.62x previous step)
     2 steps has 14,256 entries (0 percent, 11.70x previous step)
-    3 steps has 172,288 entries (8 percent, 12.09x previous step)
-    4 steps has 1,948,920 entries (91 percent, 11.31x previous step)
+    3 steps has 172,288 entries (0 percent, 12.09x previous step)
+    4 steps has 1,948,920 entries (7 percent, 11.31x previous step)
+    5 steps has 24,348,560 entries (91 percent, 12.49x previous step)
     extrapolate from here
-    5 steps has 21,067,825 entries (10.81x previous step)
-    6 steps has 217,209,275 entries (10.31x previous step)
-    7 steps has 2,130,822,987 entries (9.81x previous step)
-    8 steps has 19,837,962,008 entries (9.31x previous step)
-    9 steps has 174,772,445,290 entries (8.81x previous step)
-    10 steps has 1,452,359,020,359 entries (8.31x previous step)
-    11 steps has 11,342,923,949,003 entries (7.81x previous step)
-    12 steps has 14,144,481,677,693 entries (1.25x previous step)
+    6 steps has 291,939,234 entries (11.99x previous step)
+    7 steps has 3,354,381,798 entries (11.49x previous step)
+    8 steps has 36,864,655,960 entries (10.99x previous step)
+    9 steps has 386,710,241,020 entries (10.49x previous step)
+    10 steps has 3,863,235,307,789 entries (9.99x previous step)
+    11 steps has 22,846,263,280,079 entries (5.91x previous step)
 
-    Average: 11.452276205090845
+    Average: 10.824502972151256
     Total  : 27,136,746,291,200
 
-    # dwalton
     phase1+2 ~20 moves
     phase3 11.5 moves
     phase4 ~14 moves
