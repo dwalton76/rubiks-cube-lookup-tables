@@ -163,7 +163,11 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     log.warning("ERROR on %d: %s" % (linenumber, line))
                     raise
 
-            moves_to_scramble_original = moves_to_scramble.split()
+            if moves_to_scramble:
+                moves_to_scramble_original = moves_to_scramble.split()
+            else:
+                moves_to_scramble_original = []
+
             cube_state_original = cube_state
 
             if moves_to_scramble_original:
@@ -173,7 +177,10 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
             for next_move in legal_moves_per_move[prev_step]:
                 moves_to_scramble = moves_to_scramble_original[:]
-                moves_to_scramble.append(next_move)
+
+                if next_move is not None:
+                    moves_to_scramble.append(next_move)
+
                 cube_state = cube_state_original[:]
 
                 if next_move:
