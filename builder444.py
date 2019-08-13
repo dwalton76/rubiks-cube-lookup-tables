@@ -1669,3 +1669,225 @@ class Build444NewPhase3Corners(BFS):
           . . . .
           U . . U""", 'ascii'),)
         )
+
+
+# dwalton
+class Build444Phase0HighLowEdgesEdges(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-phase0-highlow-edges',
+            (), # illegaal moves
+            '4x4x4',
+            'lookup-table-4x4x4-step901-highlow-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+          . U D .
+          D . . U
+          U . . D
+          . D U .
+
+ . D U .  . D U .  . D U .  . D U .
+ D . . U  U . . D  D . . U  U . . D
+ U . . D  D . . U  U . . D  D . . U
+ . U D .  . U D .  . U D .  . U D .
+
+          . U D .
+          D . . U
+          U . . D
+          . D U .""", 'ascii'),)
+        )
+
+
+class Build444Phase0UDCenters(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-phase0-ud-centers',
+            (), # illegaal moves
+            '4x4x4',
+            'lookup-table-4x4x4-step902-UD-centers.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . U U .
+          . U U .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . x x .  . x x .  . x x .  . x x .
+ . x x .  . x x .  . x x .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . U U .
+          . U U .
+          . . . .""", 'ascii'),)
+        )
+
+
+class Build444Phase0FBCenters(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-phase0-fb-centers',
+            (), # illegaal moves
+            '4x4x4',
+            'lookup-table-4x4x4-step903-FB-centers.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+          . . . .
+          . x x .
+          . x x .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . x x .  . F F .  . x x .  . F F .
+ . x x .  . F F .  . x x .  . F F .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . x x .
+          . x x .
+          . . . .""", 'ascii'),)
+        )
+
+
+
+class StartingStates444Phase0LCenters(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-phase0-l-centers',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+            "L", "L'",
+            "R", "R'"),
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step904-l-centers.txt',
+            False, # store_as_hex
+            # starting cubes
+            (("""
+          . . . .
+          . x x .
+          . x x .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . x x .  . x x .  . x x .
+ . L L .  . x x .  . x x .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . x x .
+          . x x .
+          . . . .""", 'ascii'),)
+        )
+
+
+class StartingStates444Phase0RCenters(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-phase0-l-centers',
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+            "L", "L'",
+            "R", "R'"),
+            '4x4x4',
+            'starting-states-lookup-table-4x4x4-step904-r-centers.txt',
+            False, # store_as_hex
+            # starting cubes
+            (("""
+          . . . .
+          . x x .
+          . x x .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . x x .  . x x .  . R R .  . x x .
+ . x x .  . x x .  . R R .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . x x .
+          . x x .
+          . . . .""", 'ascii'),)
+        )
+
+
+class Build444Phase0LCenters(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-phase0-l-centers',
+            (), # illegaal moves
+            '4x4x4',
+            'lookup-table-4x4x4-step904-L-centers.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (
+             ('.....xx..xx..........LL..LL..........xx..xx..........xx..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........LL..xx..........xx..xx..........LL..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........LL..xx..........xx..xx..........xx..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........Lx..Lx..........xx..xx..........Lx..Lx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........Lx..Lx..........xx..xx..........xL..xL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........Lx..xL..........xx..xx..........xL..Lx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xL..Lx..........xx..xx..........Lx..xL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xL..xL..........xx..xx..........Lx..Lx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xL..xL..........xx..xx..........xL..xL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xx..LL..........xx..xx..........LL..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xx..LL..........xx..xx..........xx..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xx..xx..........xx..xx..........LL..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+            )
+        )
+
+
+class Build444Phase0RCenters(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '444-phase0-r-centers',
+            (), # illegaal moves
+            '4x4x4',
+            'lookup-table-4x4x4-step905-R-centers.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (
+             ('.....xx..xx..........RR..RR..........xx..xx..........xx..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........RR..xx..........xx..xx..........RR..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........RR..xx..........xx..xx..........xx..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........Rx..Rx..........xx..xx..........Rx..Rx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........Rx..Rx..........xx..xx..........xR..xR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........Rx..xR..........xx..xx..........xR..Rx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xR..Rx..........xx..xx..........Rx..xR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xR..xR..........xx..xx..........Rx..Rx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xR..xR..........xx..xx..........xR..xR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xx..RR..........xx..xx..........RR..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xx..RR..........xx..xx..........xx..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+             ('.....xx..xx..........xx..xx..........xx..xx..........RR..RR..........xx..xx..........xx..xx.....', 'ULFRBD'),
+            )
+        )
+
+
+
