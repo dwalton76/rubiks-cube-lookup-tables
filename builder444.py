@@ -1055,7 +1055,7 @@ class Build444LastEightEdges(BFS):
         )
 
 
-class Build444Phase0HighLowEdgesEdges(BFS):
+class Build444Phase0HighLowEdges(BFS):
 
     def __init__(self):
         BFS.__init__(self,
