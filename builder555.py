@@ -2374,7 +2374,6 @@ class StartingStates555LRCenterStage(BFS):
     There should be 432 of them
     """
 
-    # dwalton
     def __init__(self):
         BFS.__init__(self,
             '5x5x5-LR-center-stage',
@@ -2949,59 +2948,62 @@ class Build555EdgeOrientInnerOrbit(BFS):
 
 
 # dwalton
-class StartingStatesBuild555Phase4Centers(BFS):
+class StartingStatesBuild555Phase4(BFS):
     """
     """
 
     def __init__(self):
         BFS.__init__(self,
-            '5x5x5-phase4-centers',
+            '5x5x5-phase4',
 
             ("Uw", "Uw'",
              "Dw", "Dw'",
-             "Fw", "Fw'", "Fw2",
-             "Bw", "Bw'", "Bw2",
-             "Lw", "Lw'", "Lw2",
-             "Rw", "Rw'", "Rw2",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
              "L", "L'",
              "R", "R'",
-             "F", "F'",
-             "B", "B'",
+             "U", "U'",
+             "D", "D'",
             ),
 
             '5x5x5',
-            'starting-states-lookup-table-5x5x5-step41-phase4-centers.txt',
+            'starting-states-lookup-table-5x5x5-step40-phase4.txt',
             False, # store_as_hex
 
             # starting cubes
             (("""
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .
 
- . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . . . . .  . . . . .  . . . . .  . . . . .
+ . x x x .  . x x x .  . x x x .  . x x x .
+ L . . . L  L . . . L  L . . . L  L . . . L
+ L . . . L  L . . . L  L . . . L  L . . . L
+ L . . . L  L . . . L  L . . . L  L . . . L
+ . x x x .  . x x x .  . x x x .  . x x x .
 
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .""", "ascii"),),
+            . x x x .
+            x . . . x
+            x . . . x
+            x . . . x
+            . x x x .""", "ascii"),),
         )
 
 
-class Build555Phase4Centers(BFS):
+class Build555Phase4(BFS):
     """
+    Move one group of 4-edges out of the z-plane
     """
 
     def __init__(self):
+
+        from builder555ss import starting_states_phase4 
         BFS.__init__(self,
-            '5x5x5-phase4-centers',
+            '5x5x5-phase4',
 
             ("Uw", "Uw'",
              "Dw", "Dw'",
@@ -3014,134 +3016,7 @@ class Build555Phase4Centers(BFS):
             ),
 
             '5x5x5',
-            'lookup-table-5x5x5-step41-phase4-centers.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (
-             ('...............................LLL..LLL..LLL............BBB..FFF..BBB............RRR..RRR..RRR............FFF..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..LLL............BBB..FFF..FFF............RRR..RRR..RRR............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..LLL............BBB..FFF..FFF............RRR..RRR..RRR............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..LLL............FFF..FFF..BBB............RRR..RRR..RRR............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..LLL............FFF..FFF..BBB............RRR..RRR..RRR............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............BBB..FFF..BBB............LLL..RRR..RRR............FFF..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............BBB..FFF..BBB............RRR..RRR..LLL............FFF..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............BBB..FFF..FFF............LLL..RRR..RRR............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............BBB..FFF..FFF............LLL..RRR..RRR............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............BBB..FFF..FFF............RRR..RRR..LLL............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............BBB..FFF..FFF............RRR..RRR..LLL............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............FFF..FFF..BBB............LLL..RRR..RRR............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............FFF..FFF..BBB............LLL..RRR..RRR............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............FFF..FFF..BBB............RRR..RRR..LLL............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............FFF..FFF..BBB............RRR..RRR..LLL............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............FFF..FFF..FFF............LLL..RRR..RRR............BBB..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR............FFF..FFF..FFF............RRR..RRR..LLL............BBB..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............BBB..FFF..BBB............LLL..RRR..RRR............FFF..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............BBB..FFF..BBB............RRR..RRR..LLL............FFF..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............BBB..FFF..FFF............LLL..RRR..RRR............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............BBB..FFF..FFF............LLL..RRR..RRR............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............BBB..FFF..FFF............RRR..RRR..LLL............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............BBB..FFF..FFF............RRR..RRR..LLL............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............FFF..FFF..BBB............LLL..RRR..RRR............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............FFF..FFF..BBB............LLL..RRR..RRR............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............FFF..FFF..BBB............RRR..RRR..LLL............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............FFF..FFF..BBB............RRR..RRR..LLL............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............FFF..FFF..FFF............LLL..RRR..RRR............BBB..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL............FFF..FFF..FFF............RRR..RRR..LLL............BBB..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..RRR............BBB..FFF..BBB............LLL..RRR..LLL............FFF..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..RRR............BBB..FFF..FFF............LLL..RRR..LLL............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..RRR............BBB..FFF..FFF............LLL..RRR..LLL............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..RRR............FFF..FFF..BBB............LLL..RRR..LLL............BBB..BBB..FFF...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..RRR............FFF..FFF..BBB............LLL..RRR..LLL............FFF..BBB..BBB...............................', 'ULFRBD'),
-             ('...............................RRR..LLL..RRR............FFF..FFF..FFF............LLL..RRR..LLL............BBB..BBB..BBB...............................', 'ULFRBD'),
-            )
-        )
-
-
-class Build555Phase4Wings(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-phase4-wings',
-
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "L", "L'",
-             "R", "R'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step42-phase4-wings.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . x . x .
-            x . . . x
-            . . . . .
-            x . . . x
-            . x . x .
-
- . x . x .  . x . x .  . x . x .  . x . x .
- L . . . L  L . . . L  L . . . L  L . . . L
- . . . . .  . . . . .  . . . . .  . . . . .
- L . . . L  L . . . L  L . . . L  L . . . L
- . x . x .  . x . x .  . x . x .  . x . x .
-
-            . x . x .
-            x . . . x
-            . . . . .
-            x . . . x
-            . x . x .""", "ascii"),),
-        )
-
-
-class Build555Phase4Midges(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-phase4-midges',
-
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "L", "L'",
-             "R", "R'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step42-phase4-midges.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . . x . .
-            . . . . .
-            x . . . x
-            . . . . .
-            . . x . .
-
- . . x . .  . . x . .  . . x . .  . . x . .
- . . . . .  . . . . .  . . . . .  . . . . .
- L . . . L  L . . . L  L . . . L  L . . . L
- . . . . .  . . . . .  . . . . .  . . . . .
- . . x . .  . . x . .  . . x . .  . . x . .
-
-            . . x . .
-            . . . . .
-            x . . . x
-            . . . . .
-            . . x . .  """, "ascii"),),
+            'lookup-table-5x5x5-step40-phase4.txt',
+            True, # store_as_hex
+            starting_states_phase4,
         )
