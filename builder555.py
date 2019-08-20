@@ -2947,7 +2947,6 @@ class Build555EdgeOrientInnerOrbit(BFS):
         )
 
 
-# dwalton
 class StartingStatesBuild555Phase4(BFS):
     """
     """
@@ -3022,6 +3021,121 @@ class Build555Phase4(BFS):
         )
 
 
+class StartingStatesBuild555Phase5Centers(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase5-centers',
+
+            ("Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "U", "U'",
+             "D", "D'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'starting-states-lookup-table-5x5x5-step51-phase5-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555Phase5Centers(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase5-centers',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "U", "U'",
+             "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step51-phase5-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (
+             ('...............................LLL..LLL..LLL............BFB..BFB..BFB............RRR..RRR..RRR............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............BFF..BFF..BFF............RRR..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............FFB..FFB..FFB............RRR..RRR..RRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLL..LLL..LLL............FFF..FFF..FFF............RRR..RRR..RRR............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............BFB..BFB..BFB............LRR..LRR..LRR............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............BFB..BFB..BFB............RRL..RRL..RRL............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............BFF..BFF..BFF............LRR..LRR..LRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............BFF..BFF..BFF............LRR..LRR..LRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............BFF..BFF..BFF............RRL..RRL..RRL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............BFF..BFF..BFF............RRL..RRL..RRL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............FFB..FFB..FFB............LRR..LRR..LRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............FFB..FFB..FFB............LRR..LRR..LRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............FFB..FFB..FFB............RRL..RRL..RRL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............FFB..FFB..FFB............RRL..RRL..RRL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................LLR..LLR..LLR............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............BFB..BFB..BFB............LRR..LRR..LRR............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............BFB..BFB..BFB............RRL..RRL..RRL............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............BFF..BFF..BFF............LRR..LRR..LRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............BFF..BFF..BFF............LRR..LRR..LRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............BFF..BFF..BFF............RRL..RRL..RRL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............BFF..BFF..BFF............RRL..RRL..RRL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............FFB..FFB..FFB............LRR..LRR..LRR............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............FFB..FFB..FFB............LRR..LRR..LRR............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............FFB..FFB..FFB............RRL..RRL..RRL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............FFB..FFB..FFB............RRL..RRL..RRL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............FFF..FFF..FFF............LRR..LRR..LRR............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................RLL..RLL..RLL............FFF..FFF..FFF............RRL..RRL..RRL............BBB..BBB..BBB...............................', 'ULFRBD'),
+             ('...............................RLR..RLR..RLR............BFB..BFB..BFB............LRL..LRL..LRL............FBF..FBF..FBF...............................', 'ULFRBD'),
+             ('...............................RLR..RLR..RLR............BFF..BFF..BFF............LRL..LRL..LRL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RLR..RLR..RLR............BFF..BFF..BFF............LRL..LRL..LRL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RLR..RLR..RLR............FFB..FFB..FFB............LRL..LRL..LRL............BBF..BBF..BBF...............................', 'ULFRBD'),
+             ('...............................RLR..RLR..RLR............FFB..FFB..FFB............LRL..LRL..LRL............FBB..FBB..FBB...............................', 'ULFRBD'),
+             ('...............................RLR..RLR..RLR............FFF..FFF..FFF............LRL..LRL..LRL............BBB..BBB..BBB...............................', 'ULFRBD'),
+            )
+        )
+
+
+
 class Build555Phase5Edges(BFS):
     """
     """
@@ -3043,7 +3157,7 @@ class Build555Phase5Edges(BFS):
             ),
 
             '5x5x5',
-            'starting-states-lookup-table-5x5x5-step50-phase5-edges.txt',
+            'lookup-table-5x5x5-step52-phase5-edges.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -3058,6 +3172,100 @@ class Build555Phase5Edges(BFS):
  L . . . L  F . . . F  R . . . R  B . . . B
  L . . . L  F . . . F  R . . . R  B . . . B
  L . . . L  F . . . F  R . . . R  B . . . B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Phase5EdgesFirstGroup(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase5-edges-first-group',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "U", "U'",
+             "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step53-phase5-edges-first-group.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F . . . F  R . . . -  - . . . -
+ - . . . L  F . . . F  R . . . -  - . . . -
+ - . . . L  F . . . F  R . . . -  - . . . -
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Phase5EdgesSecondGroup(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase5-edges-second-group',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "U", "U'",
+             "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step53-phase5-edges-second-group.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L . . . -  - . . . -  - . . . R  B . . . B
+ L . . . -  - . . . -  - . . . R  B . . . B
+ L . . . -  - . . . -  - . . . R  B . . . B
  . - - - .  . - - - .  . - - - .  . - - - .
 
             . - - - .
