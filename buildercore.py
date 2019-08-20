@@ -562,14 +562,15 @@ class BFS(object):
         """
         LEADING_X = 1
         SIDES_PER_CUBE = 6
-        SEPERATORS = 1
+        SEPERATORS = 2
         CHARS_PER_STEP = 5
         MAX_STEPS = 20
+        EDGES_STATE = 36
 
         if self.name.startswith("5x5x5-edges"):
             return 512
         else:
-            return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
+            return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS) + EDGES_STATE
 
     def get_workq_filename_for_core(self, core):
         return "%s.core-%d" % (self.workq_filename, core)
