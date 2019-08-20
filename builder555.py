@@ -3071,6 +3071,7 @@ class StartingStatesBuild555Phase5Centers(BFS):
 
 class Build555Phase5Centers(BFS):
     """
+    432 * 4900 = 2,116,800 states
     """
 
     def __init__(self):
@@ -3138,6 +3139,9 @@ class Build555Phase5Centers(BFS):
 
 class Build555Phase5Edges(BFS):
     """
+    (8*7*6*5)^2 = 2822400 is how many states the wings can be in
+    8!/(4!*4!) = 70 is how many states the midges can be in
+    2,822,400 * 70 = 197,568,000
     """
 
     def __init__(self):
@@ -3266,6 +3270,102 @@ class Build555Phase5EdgesSecondGroup(BFS):
  L . . . -  - . . . -  - . . . R  B . . . B
  L . . . -  - . . . -  - . . . R  B . . . B
  L . . . -  - . . . -  - . . . R  B . . . B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Phase5HighEdgeMidge(BFS):
+    """
+    (8*7*6*5)*70 = 117,600 states
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase5-high-edge-and-midge',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "U", "U'",
+             "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step54-phase5-high-edge-and-midge.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F . . . -  - . . . R  B . . . -
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . -  - . . . F  R . . . -  - . . . B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Phase5LowEdgeMidge(BFS):
+    """
+    (8*7*6*5)*70 = 117,600 states
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase5-low-edge-and-midge',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "U", "U'",
+             "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step55-phase5-low-edge-and-midge.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L . . . -  - . . . F  R . . . -  - . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ - . . . L  F . . . -  - . . . R  B . . . -
  . - - - .  . - - - .  . - - - .  . - - - .
 
             . - - - .
