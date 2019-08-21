@@ -3408,6 +3408,70 @@ class Build555EdgeOrientInnerOrbit(BFS):
         )
 
 
+class Build555EdgeOrientBothOrbits(BFS):
+    """
+    2,704,156 * 2048 = 5,538,111,488 states
+
+    lookup-table-5x5x5-step904-EO-both-orbits.txt
+    =============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 33 entries (0 percent, 16.50x previous step)
+    3 steps has 382 entries (0 percent, 11.58x previous step)
+    4 steps has 4,040 entries (0 percent, 10.58x previous step)
+    5 steps has 47,502 entries (0 percent, 11.76x previous step)
+    6 steps has 541,439 entries (9 percent, 11.40x previous step)
+    7 steps has 5,353,259 entries (90 percent, 9.89x previous step)
+
+    extrapolate from here
+
+    8 steps has 48,661,124 entries (9.09x previous step)
+    9 steps has 403,400,717 entries (8.29x previous step)
+    10 steps has 3,021,471,370 entries (7.49x previous step)
+    11 steps has 2,058,631,619 entries (0.68x previous step)
+
+    Average: 10.270569142070691
+    Total  : 5,538,111,488
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-EO-both-orbits',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step904-EO-both-orbits.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . U U D .
+            D . . . U
+            U . . . U
+            U . . . D
+            . D U U .
+
+ . D U U .  . D U U .  . D U U .  . D U U .
+ D . . . U  U . . . D  D . . . U  U . . . D
+ U . . . U  U . . . U  U . . . U  U . . . U
+ U . . . D  D . . . U  U . . . D  D . . . U
+ . U U D .  . U U D .  . U U D .  . U U D .
+
+            . U U D .
+            D . . . U
+            U . . . U
+            U . . . D
+            . D U U .""", "ascii"),)
+        )
+
+
+
 class StartingStatesBuild555Phase4(BFS):
     """
     """

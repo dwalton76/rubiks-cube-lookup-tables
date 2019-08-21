@@ -161,7 +161,12 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
         is_333_phase2 = "3x3x3-phase2" in inputfile
         is_333_phase3 = "3x3x3-phase3" in inputfile
 
-        is_555_EO = "5x5x5-LR-center-stage-EO-inner-orbit" in inputfile or "5x5x5-LR-center-stage-EO-both-orbits" in inputfile or "5x5x5-EO-inner-orbit" in inputfile
+        is_555_EO = (
+            "5x5x5-LR-center-stage-EO-inner-orbit" in inputfile or
+            "5x5x5-LR-center-stage-EO-both-orbits" in inputfile or
+            "5x5x5-EO-inner-orbit" in inputfile or
+            "5x5x5-EO-both-orbits" in inputfile
+        )
 
         for linenumber in range(start, end+1):
             line = next(fh_input)
