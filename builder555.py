@@ -3281,3 +3281,144 @@ class Build555Phase5LowEdgeMidge(BFS):
             . - - - .""", "ascii"),),
             use_edges_pattern=True,
         )
+
+
+class Build555Phase6Centers(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase6-centers',
+
+            ("Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step61-phase6-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . L L L .  . F F F .  . R R R .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555Phase6HighEdgeMidge(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase6-high-edge-midge',
+
+            ("Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step62-phase6-high-edge-midge.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . U U - .
+            - . . . U
+            U . . . U
+            U . . . -
+            . - U U .
+
+ . - L L .  . - F F .  . - R R .  . - B B .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . L L - .  . F F - .  . R R - .  . B B - .
+
+            . D D - .
+            - . . . D
+            D . . . D
+            D . . . -
+            . - D D .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Phase6LowEdgeMidge(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase6-low-edge-midge',
+
+            ("Uw", "Uw'", "Uw2",
+             "Dw", "Dw'", "Dw2",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "F", "F'",
+             "B", "B'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step63-phase6-low-edge-midge.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - U U .
+            U . . . -
+            U . . . U
+            - . . . U
+            . U U - .
+
+ . L L - .  . F F - .  . R R - .  . B B - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . - L L .  . - F F .  . - R R .  . - B B .
+
+            . - D D .
+            D . . . -
+            D . . . D
+            - . . . D
+            . D D - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
