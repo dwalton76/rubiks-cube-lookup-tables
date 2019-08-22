@@ -38,7 +38,6 @@ prev_count_at_depth = 112158744
 count_total = 121951614
 rate = float(12.41)
 count_total_target = 9465511770 # 24!/(8!*8!*8!)
-'''
 
 # 4x4x4 centers stage
 depth = 4
@@ -48,7 +47,6 @@ rate = float(11.31)
 count_total_target = 27136746291200
 
 
-'''
 # 5x5x5 centers OBTM
 depth = 5
 prev_count_at_depth = 6089454
@@ -102,12 +100,21 @@ rate = float(12.49)
 count_total_target = 27136746291200
 '''
 
+# 555 EO both orbits
+depth = 7
+prev_count_at_depth = 5353259
+count_total = 5946658
+rate = float(9.89)
+count_total_target = 5538111488
 
 move_total = 0
 
 while count_total < count_total_target:
     depth += 1
-    rate -= 0.5
+
+    if rate > 2.8:
+        rate -= 0.8
+
     count_at_depth = int(prev_count_at_depth * rate)
 
     if (count_total + count_at_depth) > count_total_target:
