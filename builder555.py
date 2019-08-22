@@ -1054,6 +1054,125 @@ class Build555LFCenterSolve(BFS):
         )
 
 
+class Build555UDCenterSolve(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-centers-solve',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step34-UD-centers-solve.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . D D D .
+            . D D D .
+            . D D D .
+            . . . . .""", "ascii"),)
+        )
+
+
+class Build555LRCenterSolve(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-LR-centers-solve',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step35-LR-centers-solve.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . L L L .  . . . . .  . R R R .  . . . . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),)
+        )
+
+
+class Build555FBCenterSolve(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-FB-centers-solve',
+
+            ("Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "Uw", "Uw'",
+             "Dw", "Dw'"),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step36-FB-centers-solve.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F F .  . . . . .  . B B B . 
+ . . . . .  . F F F .  . . . . .  . B B B . 
+ . . . . .  . F F F .  . . . . .  . B B B . 
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),)
+        )
+
+
+
+
 class Build555ULFRBDTCenterSolve(BFS):
 
     def __init__(self):
