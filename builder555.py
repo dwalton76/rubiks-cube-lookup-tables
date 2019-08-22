@@ -3187,100 +3187,6 @@ class Build555Phase5Edges(BFS):
         )
 
 
-class Build555Phase5EdgesFirstGroup(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-phase5-edges-first-group',
-
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "L", "L'",
-             "R", "R'",
-             "U", "U'",
-             "D", "D'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step53-phase5-edges-first-group.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- - . . . L  F . . . F  R . . . -  - . . . -
- - . . . L  F . . . F  R . . . -  - . . . -
- - . . . L  F . . . F  R . . . -  - . . . -
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""", "ascii"),),
-            use_edges_pattern=True,
-        )
-
-
-class Build555Phase5EdgesSecondGroup(BFS):
-    """
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-phase5-edges-second-group',
-
-            ("Uw", "Uw'",
-             "Dw", "Dw'",
-             "Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "L", "L'",
-             "R", "R'",
-             "U", "U'",
-             "D", "D'",
-            ),
-
-            '5x5x5',
-            'lookup-table-5x5x5-step53-phase5-edges-second-group.txt',
-            False, # store_as_hex
-
-            # starting cubes
-            (("""
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L . . . -  - . . . -  - . . . R  B . . . B
- L . . . -  - . . . -  - . . . R  B . . . B
- L . . . -  - . . . -  - . . . R  B . . . B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""", "ascii"),),
-            use_edges_pattern=True,
-        )
-
-
 class Build555Phase5HighEdgeMidge(BFS):
     """
     (8*7*6*5)*70 = 117,600 states
@@ -3303,7 +3209,7 @@ class Build555Phase5HighEdgeMidge(BFS):
             ),
 
             '5x5x5',
-            'lookup-table-5x5x5-step54-phase5-high-edge-and-midge.txt',
+            'lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt',
             False, # store_as_hex
 
             # starting cubes
@@ -3351,7 +3257,7 @@ class Build555Phase5LowEdgeMidge(BFS):
             ),
 
             '5x5x5',
-            'lookup-table-5x5x5-step55-phase5-low-edge-and-midge.txt',
+            'lookup-table-5x5x5-step54-phase5-low-edge-and-midge.txt',
             False, # store_as_hex
 
             # starting cubes
