@@ -1158,9 +1158,9 @@ class Build555FBCenterSolve(BFS):
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . . . . .  . F F F .  . . . . .  . B B B . 
- . . . . .  . F F F .  . . . . .  . B B B . 
- . . . . .  . F F F .  . . . . .  . B B B . 
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
@@ -1860,7 +1860,7 @@ phase 2
     stage FB centers
     10 moves
 
-phase 3 - 
+phase 3 -
     EO the wings, 2,704,156 states
     EO the midges, 2048 states
     LR centers to 1/432, 4900 states
@@ -3644,7 +3644,7 @@ class Build555Phase4(BFS):
 
     def __init__(self):
 
-        from builder555ss import starting_states_phase4 
+        from builder555ss import starting_states_phase4
         BFS.__init__(self,
             '5x5x5-phase4',
 

@@ -11,6 +11,153 @@ import sys
 log = logging.getLogger(__name__)
 
 
+class Build666UDLeftObliqueStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-UD-left-oblique-stage',
+
+            ("3Uw", "3Uw'",
+             "3Lw", "3Lw'",
+             "3Fw", "3Fw'",
+             "3Rw", "3Rw'",
+             "3Bw", "3Bw'",
+             "3Dw", "3Dw'",
+
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+            ),
+
+            '6x6x6',
+            'lookup-table-6x6x6-step11-UD-left-oblique-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . . U . . .
+              . . . . U .
+              . U . . . .
+              . . . U . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . x . . .  . . . . . .  . . x . . .
+ . . . . . .  . . . . x .  . . . . . .  . . . . x .
+ . . . . . .  . x . . . .  . . . . . .  . x . . . .
+ . . . . . .  . . . x . .  . . . . . .  . . . x . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . U . . .
+              . . . . U .
+              . U . . . .
+              . . . U . .
+              . . . . . .""", 'ascii'),)
+        )
+
+
+class Build666UDRightObliqueStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-UD-right-oblique-stage',
+
+            ("3Uw", "3Uw'",
+             "3Lw", "3Lw'",
+             "3Fw", "3Fw'",
+             "3Rw", "3Rw'",
+             "3Bw", "3Bw'",
+             "3Dw", "3Dw'",
+
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+            ),
+
+            '6x6x6',
+            'lookup-table-6x6x6-step12-UD-right-oblique-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . . . U . .
+              . U . . . .
+              . . . . U .
+              . . U . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . x . .  . . . . . .  . . . x . .
+ . . . . . .  . x . . . .  . . . . . .  . x . . . .
+ . . . . . .  . . . . x .  . . . . . .  . . . . x .
+ . . . . . .  . . x . . .  . . . . . .  . . x . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . U . .
+              . U . . . .
+              . . . . U .
+              . . U . . .
+              . . . . . .""", 'ascii'),)
+        )
+
+
+class Build666UDOuterXCenterStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-UD-outer-x-centers-stage',
+
+            ("3Uw", "3Uw'",
+             "3Lw", "3Lw'",
+             "3Fw", "3Fw'",
+             "3Rw", "3Rw'",
+             "3Bw", "3Bw'",
+             "3Dw", "3Dw'",
+
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+            ),
+
+            '6x6x6',
+            'lookup-table-6x6x6-step13-UD-outer-x-centers-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . U . . U .
+              . . . . . .
+              . . . . . .
+              . U . . U .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . U . . U .
+              . . . . . .
+              . . . . . .
+              . U . . U .
+              . . . . . .""", 'ascii'),)
+        )
+
+
+
 class StartingStates666Step50(BFS):
 
     def __init__(self):

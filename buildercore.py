@@ -1210,7 +1210,6 @@ class BFS(object):
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
 
         print('''
-#class %s(LookupTableHashCostOnly):
 class %s(LookupTable):
     """
 %s
@@ -1228,22 +1227,21 @@ class %s(LookupTable):
             self.state_targets,
             linecount=%d,
             max_depth=%d,
-            filesize=%d)
-        ''\'
-        LookupTableHashCostOnly.__init__(
-            self,
-            parent,
-            '%s',
-            self.state_targets,
-            linecount=1,
-            max_depth=%d,
-            bucketcount=%d,
-            filesize=%d)
-        ''\'
+            filesize=%d,
+            all_moves=moves_%s,
+            illegal_moves=(
+                "%s"
+            ),
+        )
+
+    def state(self):
+        raise Exception("implement this")
+
+    def populate_cube_from_state(self, state, cube, steps_to_solve):
+        raise Exception("implement this")
 
     def ida_heuristic(self):
         parent_state = self.parent.state''' % (
-    class_name,
     class_name,
     histogram,
     starting_states,
@@ -1251,11 +1249,11 @@ class %s(LookupTable):
     linecount,
     max_depth,
     os.path.getsize(self.filename),
-    self.filename.replace('.txt', '.hash-cost-only.txt'),
-    max_depth,
-    next_prime.get(linecount, 0),
-    next_prime.get(linecount, 0)+1, # +1 for the newline
+    self.size.replace("x", ""),
+    '",\n                "'.join(self.illegal_moves),
+
     ))
+        # dwalton
 
         if self.store_as_hex:
             print("        state = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
