@@ -98,7 +98,6 @@ prev_count_at_depth = 24348560
 count_total = 26485320
 rate = float(12.49)
 count_total_target = 27136746291200
-'''
 
 # 555 EO both orbits
 depth = 7
@@ -106,6 +105,15 @@ prev_count_at_depth = 5353259
 count_total = 5946658
 rate = float(9.89)
 count_total_target = 5538111488
+'''
+
+# 666 stage UD centers
+depth = 6
+prev_count_at_depth = 633025
+count_total = 690675
+rate = float(11.97)
+count_total_target = 2131746903000
+
 
 move_total = 0
 

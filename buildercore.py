@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from collections import Counter
+from collections import deque
+from rubikscubennnsolver import reverse_steps
 from rubikscubennnsolver.misc import parse_ascii_222, parse_ascii_333, parse_ascii_444, parse_ascii_555, parse_ascii_666, parse_ascii_777
 from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
@@ -1253,7 +1254,6 @@ class %s(LookupTable):
     '",\n                "'.join(self.illegal_moves),
 
     ))
-        # dwalton
 
         if self.store_as_hex:
             print("        state = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
@@ -1344,6 +1344,77 @@ class %s(LookupTableIDA):
                 self._code_gen_lookup_table()
         else:
             self._code_gen_lookup_table()
+
+    def search_new(self, max_depth=99, cores=4):
+        workq = deque()
+        table = {}
+
+        # seed the workq
+        for cube in self.starting_cubes:
+            cube_state_minus_x = "".join(cube.state[1:])
+            table[cube_state_minus_x] = []
+
+            for step in self.legal_moves:
+                workq.append((cube_state_minus_x, [step,]))
+
+        # dwalton
+        index = 0
+        max_depth = 5
+        log.info(f"max_depth {max_depth}")
+
+        while workq:
+            (state, steps_to_scramble) = workq.popleft()
+            #log.info(f"{index}: {state}, {steps_to_scramble}")
+
+            debug = False
+            '''
+            if len(steps_to_scramble) >= 3 and steps_to_scramble[0] == "Lw" and steps_to_scramble[1] == "U'" and steps_to_scramble[2] == "3Bw2":
+                log.info(f"{index}: {steps_to_scramble}")
+                debug = True
+
+            if debug:
+                log.info(state)
+            '''
+
+            cube.state = ["x"]
+            cube.state.extend(list(state))
+
+            if debug:
+                cube.print_cube()
+
+            cube.rotate(steps_to_scramble[-1])
+            cube_state_minus_x = "".join(cube.state[1:])
+
+            add_to_table = False
+
+            if cube_state_minus_x not in table:
+                add_to_table = True
+            else:
+                #if len(steps_to_scramble) <= len(table[cube_state_minus_x]):
+                if len(steps_to_scramble) < len(table[cube_state_minus_x]):
+                    add_to_table = True
+
+            if add_to_table:
+                table[cube_state_minus_x] = steps_to_scramble[:]
+
+                if len(steps_to_scramble) < max_depth:
+                    for step in self.legal_moves:
+                        workq.append((cube_state_minus_x, steps_to_scramble + [step,]))
+
+            if debug:
+                cube.print_cube()
+                log.info(f"cube_state_minus_x {cube_state_minus_x}, cube state pretty {cube_state_minus_x.replace('.', '')}, add_to_table {add_to_table}")
+
+            index += 1
+
+            if index % 10000 == 0:
+                log.info(f"{index:,}: depth {len(steps_to_scramble)}, {len(workq):,} items on workq, {len(table):,} items in table")
+
+        with open(self.filename, "w") as fh:
+            for cube_state_minus_x in sorted(table.keys()):
+                steps_to_scramble = table[cube_state_minus_x]
+                steps_to_solve = reverse_steps(steps_to_scramble)
+                fh.write("%s:%s\n" % (cube_state_minus_x, " ".join(steps_to_solve)))
 
 
 if __name__ == '__main__':

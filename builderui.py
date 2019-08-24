@@ -41,7 +41,7 @@ logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelNam
 
 parser = argparse.ArgumentParser()
 parser.add_argument('type', type=str, help='The type of lookup table to build')
-parser.add_argument('--depth', type=int, default=None, help='The number of moves deep to explore')
+parser.add_argument('--depth', type=int, default=99, help='The number of moves deep to explore')
 parser.add_argument('--cores', type=int, default=4, help='The number of cores to use')
 parser.add_argument('--code-gen', default=False, action='store_true', help='Print python classes for IDA')
 args = parser.parse_args()
@@ -59,6 +59,7 @@ if args.code_gen:
     builder.code_gen()
 else:
     builder.search(args.depth, args.cores)
+    #builder.search_new(args.depth, args.cores)
 
     if args.type.startswith('Starting'):
         builder.save_starting_states()

@@ -30,6 +30,14 @@ class Build666UDLeftObliqueStage(BFS):
              "Dw", "Dw'",
              "Fw", "Fw'",
              "Bw", "Bw'",
+
+             # we are not manipulating anything on sides L or R
+             "L", "L'", "L2",
+             "R", "R'", "R2",
+
+             # restricting these has minimal impact on move count
+             # but having few moves to explore means a faster IDA
+             "U2", "D2", "F2", "B2",
             ),
 
             '6x6x6',
@@ -78,6 +86,14 @@ class Build666UDRightObliqueStage(BFS):
              "Dw", "Dw'",
              "Fw", "Fw'",
              "Bw", "Bw'",
+
+             # we are not manipulating anything on sides L or R
+             "L", "L'", "L2",
+             "R", "R'", "R2",
+
+             # restricting these has minimal impact on move count
+             # but having few moves to explore means a faster IDA
+             "U2", "D2", "F2", "B2",
             ),
 
             '6x6x6',
@@ -109,6 +125,62 @@ class Build666UDRightObliqueStage(BFS):
         )
 
 
+class Build666UDObliqueStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-UD-oblique-stage',
+
+            ("3Uw", "3Uw'",
+             "3Lw", "3Lw'",
+             "3Fw", "3Fw'",
+             "3Rw", "3Rw'",
+             "3Bw", "3Bw'",
+             "3Dw", "3Dw'",
+
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+
+             # we are not manipulating anything on sides L or R
+             "L", "L'", "L2",
+             "R", "R'", "R2",
+
+             # restricting these has minimal impact on move count
+             # but having few moves to explore means a faster IDA
+             "U2", "D2", "F2", "B2",
+            ),
+
+            '6x6x6',
+            'lookup-table-6x6x6-step14-UD-oblique-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . . U U . .
+              . U . . U .
+              . U . . U .
+              . . U U . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . x x . .  . . . . . .  . . x x . .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . . x x . .  . . . . . .  . . x x . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . U U . .
+              . U . . U .
+              . U . . U .
+              . . U U . .
+              . . . . . .""", 'ascii'),)
+        )
+
+
 class Build666UDOuterXCenterStage(BFS):
 
     def __init__(self):
@@ -126,6 +198,14 @@ class Build666UDOuterXCenterStage(BFS):
              "Dw", "Dw'",
              "Fw", "Fw'",
              "Bw", "Bw'",
+
+             # we are not manipulating anything on sides L or R
+             "L", "L'", "L2",
+             "R", "R'", "R2",
+
+             # restricting these has minimal impact on move count
+             # but having few moves to explore means a faster IDA
+             "U2", "D2", "F2", "B2",
             ),
 
             '6x6x6',
@@ -155,6 +235,150 @@ class Build666UDOuterXCenterStage(BFS):
               . U . . U .
               . . . . . .""", 'ascii'),)
         )
+
+
+class Build666UDCentersStage(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-UD-centers-stage',
+
+            ("3Uw", "3Uw'",
+             "3Lw", "3Lw'",
+             "3Fw", "3Fw'",
+             "3Rw", "3Rw'",
+             "3Bw", "3Bw'",
+             "3Dw", "3Dw'",
+
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+
+             # we are not manipulating anything on sides L or R
+             "L", "L'", "L2",
+             "R", "R'", "R2",
+
+             # restricting these has minimal impact on move count
+             # but having few moves to explore means a faster IDA
+             "U2", "D2", "F2", "B2",
+            ),
+
+            '6x6x6',
+            'lookup-table-6x6x6-step10-UD-centers-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . U U U U .
+              . U . . U .
+              . U . . U .
+              . U U U U .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . x x x x .  . . . . . .  . x x x x .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . x x x x .  . . . . . .  . x x x x .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . U U U U .
+              . U . . U .
+              . U . . U .
+              . U U U U .
+              . . . . . .""", 'ascii'),)
+        )
+
+
+class StartingStates666LRcenter20736(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-LR-centers-20736',
+            # dwalton
+
+            ("3Uw", "3Uw'",
+             "3Lw", "3Lw'",
+             "3Fw", "3Fw'",
+             "3Rw", "3Rw'",
+             "3Bw", "3Bw'",
+             "3Dw", "3Dw'",
+
+             "Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+             "L", "L'",
+             "R", "R'",
+            ),
+
+            '6x6x6',
+            'starting-states-lookup-table-6x6x6-LR-centers-20736.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . L L L L .  . . . . . .  . R R R R .  . . . . . .
+ . L L L L .  . . . . . .  . R R R R .  . . . . . .
+ . L L L L .  . . . . . .  . R R R R .  . . . . . .
+ . L L L L .  . . . . . .  . R R R R .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .""", 'ascii'),)
+        )
+
+
+class Build666LRcenter20736(BFS):
+
+    def __init__(self):
+        from builder666ss import starting_states_LR_centers_20736
+
+        BFS.__init__(self,
+            '6x6x6-LR-centers-20736',
+
+            ("3Uw", "3Uw'",
+             "3Lw", "3Lw'",
+             "3Fw", "3Fw'",
+             "3Rw", "3Rw'",
+             "3Bw", "3Bw'",
+             "3Dw", "3Dw'",
+
+             "Uw", "Uw'",
+             "Lw", "Lw'",
+             "Fw", "Fw'",
+             "Rw", "Rw'",
+             "Bw", "Bw'",
+             "Dw", "Dw'",
+            ),
+
+            '6x6x6',
+            'lookup-table-6x6x6-LR-centers-20736.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            starting_states_LR_centers_20736,
+        )
+
 
 
 
