@@ -295,12 +295,11 @@ class Build666UDCentersStage(BFS):
         )
 
 
-class StartingStates666LRcenter20736(BFS):
+class StartingStates666LRcenter1728(BFS):
 
     def __init__(self):
         BFS.__init__(self,
-            '6x6x6-LR-centers-20736',
-            # dwalton
+            '6x6x6-LR-centers-1728',
 
             ("3Uw", "3Uw'",
              "3Lw", "3Lw'",
@@ -320,11 +319,12 @@ class StartingStates666LRcenter20736(BFS):
             ),
 
             '6x6x6',
-            'starting-states-lookup-table-6x6x6-LR-centers-20736.txt',
+            'starting-states-lookup-table-6x6x6-LR-centers-1728.txt',
             False, # store_as_hex
 
             # starting cubes
-            (("""
+            (
+            ("""
               . . . . . .
               . . . . . .
               . . . . . .
@@ -333,10 +333,32 @@ class StartingStates666LRcenter20736(BFS):
               . . . . . .
 
  . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . L L . .  . . . . . .  . . R R . .  . . . . . .
  . L L L L .  . . . . . .  . R R R R .  . . . . . .
  . L L L L .  . . . . . .  . R R R R .  . . . . . .
- . L L L L .  . . . . . .  . R R R R .  . . . . . .
- . L L L L .  . . . . . .  . R R R R .  . . . . . .
+ . . L L . .  . . . . . .  . . R R . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .""", 'ascii'),
+
+            ("""
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . R R . .  . . . . . .  . . L L . .  . . . . . .
+ . R L L R .  . . . . . .  . L R R L .  . . . . . .
+ . R L L R .  . . . . . .  . L R R L .  . . . . . .
+ . . R R . .  . . . . . .  . . L L . .  . . . . . .
  . . . . . .  . . . . . .  . . . . . .  . . . . . .
 
               . . . . . .
@@ -348,13 +370,13 @@ class StartingStates666LRcenter20736(BFS):
         )
 
 
-class Build666LRcenter20736(BFS):
+class Build666LRcenter1728(BFS):
 
     def __init__(self):
-        from builder666ss import starting_states_LR_centers_20736
+        from builder666ss import starting_states_LR_centers_1728
 
         BFS.__init__(self,
-            '6x6x6-LR-centers-20736',
+            '6x6x6-LR-centers-1728',
 
             ("3Uw", "3Uw'",
              "3Lw", "3Lw'",
@@ -372,11 +394,11 @@ class Build666LRcenter20736(BFS):
             ),
 
             '6x6x6',
-            'lookup-table-6x6x6-LR-centers-20736.txt',
+            'lookup-table-6x6x6-LR-centers-1728.txt',
             False, # store_as_hex
 
             # starting cubes
-            starting_states_LR_centers_20736,
+            starting_states_LR_centers_1728,
         )
 
 
