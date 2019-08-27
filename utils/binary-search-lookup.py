@@ -240,6 +240,6 @@ if __name__ == '__main__':
 
         else:
             value = binary_search(fh, width, state_width, linecount, key)
-            print("key %s value is %s (took %d seeks)" % (key, value, seek_count))
+            print("key %s value is \"%s\" (took %d seeks)" % (key, value, seek_count))
 
         log.info("search end")
