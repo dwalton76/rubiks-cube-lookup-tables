@@ -1236,13 +1236,15 @@ class %s(LookupTable):
         )
 
     def state(self):
-        raise Exception("implement this")
+        parent_state = self.parent.state
+        return "".join([parent_state[x] for x in CUBE_POSITION_LIST])
 
     def populate_cube_from_state(self, state, cube, steps_to_solve):
-        raise Exception("implement this")
+        state = list(state)
 
-    def ida_heuristic(self):
-        parent_state = self.parent.state''' % (
+        for (pos, pos_state) in zip(CUBE_POSITION_LIST, state):
+            cube[pos] = pos_state
+''' % (
     class_name,
     histogram,
     starting_states,
@@ -1254,24 +1256,6 @@ class %s(LookupTable):
     '",\n                "'.join(self.illegal_moves),
 
     ))
-
-        if self.store_as_hex:
-            print("        state = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
-            print("        state = self.hex_format % int(state, 2)")
-
-        elif self.use_edges_pattern:
-            print("        state = edges_recolor_pattern_%s(parent_state[:])" % self.size.replace('x', ''))
-            print("        state = ''.join([state[index] for index in wings_for_edges_pattern_%s])" % self.size.replace('x', ''))
-
-        else:
-            print("        state = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace('x', ''))
-
-        print("        cost_to_goal = self.heuristic(state)")
-        print("        return (state, cost_to_goal)\n\n")
-
-        #print("\n\n\n\n")
-        #print("        self.lt_foo = %s(self)" % class_name)
-        #print("\n\n\n\n")
 
     def _code_gen_lookup_table_ida(self):
         class_name = type(self).__name__.replace('Build', 'LookupTableIDA')
