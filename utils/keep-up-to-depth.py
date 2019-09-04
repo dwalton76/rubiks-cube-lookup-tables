@@ -14,7 +14,12 @@ with open(filename_new, 'w') as fh_new:
         for line in fh:
             (state, steps) = line.strip().split(':')
 
-            if len(steps.split()) <= step_limit:
+            if steps.isdigit():
+                steps_len = int(steps)
+            else:
+                steps_len = len(steps.split())
+
+            if steps_len <= step_limit:
                 fh_new.write("%s:%s\n" % (state, steps))
 
             line_number += 1

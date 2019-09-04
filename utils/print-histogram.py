@@ -157,6 +157,9 @@ with open(filename, 'r') as fh:
             steps = steps.split()
             len_steps = len(steps)
 
+        if len_steps == 0 or len_steps == 1:
+            print(line)
+
         if len_steps == 1 and steps[0] == 'Na':
             len_steps = 0
 

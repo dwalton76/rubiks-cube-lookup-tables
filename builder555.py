@@ -3780,6 +3780,56 @@ class Build555Phase5Centers(BFS):
         )
 
 
+class Build555Phase5ThreeEdges(BFS):
+    """
+    (8*7*6)^2 = 112,896 is how many states the wings can be in
+    8!/(3!*5!) = 56 is how many states the midges can be in
+    112,896 * 70 = 6,322,176
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase5-three-edges',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "U", "U'",
+             "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step55-phase5-three-edges.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F . . . F  R . . . R  B . . . -
+ - . . . L  F . . . F  R . . . R  B . . . -
+ - . . . L  F . . . F  R . . . R  B . . . -
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),),
+            use_edges_pattern=True,
+        )
+
+
 
 class Build555Phase5Edges(BFS):
     """
