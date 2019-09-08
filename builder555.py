@@ -3977,6 +3977,152 @@ class Build555Phase5LowEdgeMidge(BFS):
         )
 
 
+class Build555Phase5FBCentersHighEdgeMidge(BFS):
+    """
+    (8*7*6*5)*70 = 117,600 states
+    4,900 FB centers
+    117,600 * 4,900 = 576,240,000
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase5-fb-centers-high-edge-and-midge',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "U", "U'",
+             "D", "D'",
+            ),
+
+            '5x5x5',
+            'lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (
+            ("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F B F B -  - . . . R  B F B F -
+ L . . . L  F B F B F  R . . . R  B F B F B
+ L . . . -  - B F B F  R . . . -  - F B F B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F B F F -  - . . . R  B B B F -
+ L . . . L  F B F F F  R . . . R  B B B F B
+ L . . . -  - B F F F  R . . . -  - B B F B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F B F F -  - . . . R  B F B B -
+ L . . . L  F B F F F  R . . . R  B F B B B
+ L . . . -  - B F F F  R . . . -  - F B B B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F F F B -  - . . . R  B B B F -
+ L . . . L  F F F B F  R . . . R  B B B F B
+ L . . . -  - F F B F  R . . . -  - B B F B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F F F B -  - . . . R  B F B B -
+ L . . . L  F F F B F  R . . . R  B F B B B
+ L . . . -  - F F B F  R . . . -  - F B B B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii"),
+
+            ("""
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F F F F -  - . . . R  B B B B -
+ L . . . L  F F F F F  R . . . R  B B B B B
+ L . . . -  - F F F F  R . . . -  - B B B B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""", "ascii")),
+            use_edges_pattern=True,
+        )
+
+
 class Build555Phase6Centers(BFS):
     """
     """
