@@ -11,6 +11,118 @@ import sys
 log = logging.getLogger(__name__)
 
 
+class Build666UDLeftObliqueStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-UD-left-oblique-stage',
+
+            ("3Uw", "3Uw'",
+             "3Lw", "3Lw'",
+             "3Fw", "3Fw'",
+             "3Rw", "3Rw'",
+             "3Bw", "3Bw'",
+             "3Dw", "3Dw'",
+
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+
+             # we are not manipulating anything on sides L or R
+             "L", "L'", "L2",
+             "R", "R'", "R2",
+
+             # restricting these has minimal impact on move count
+             # but having few moves to explore means a faster IDA
+             "U2", "D2", "F2", "B2",
+            ),
+
+            '6x6x6',
+            'lookup-table-6x6x6-step11-UD-left-oblique-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . . U . . .
+              . . . . U .
+              . U . . . .
+              . . . U . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . x . . .  . . . . . .  . . x . . .
+ . . . . . .  . . . . x .  . . . . . .  . . . . x .
+ . . . . . .  . x . . . .  . . . . . .  . x . . . .
+ . . . . . .  . . . x . .  . . . . . .  . . . x . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . U . . .
+              . . . . U .
+              . U . . . .
+              . . . U . .
+              . . . . . .""", 'ascii'),)
+        )
+
+
+class Build666UDRightObliqueStage(BFS):
+
+    def __init__(self):
+        BFS.__init__(self,
+            '6x6x6-UD-right-oblique-stage',
+
+            ("3Uw", "3Uw'",
+             "3Lw", "3Lw'",
+             "3Fw", "3Fw'",
+             "3Rw", "3Rw'",
+             "3Bw", "3Bw'",
+             "3Dw", "3Dw'",
+
+             "Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+
+             # we are not manipulating anything on sides L or R
+             "L", "L'", "L2",
+             "R", "R'", "R2",
+
+             # restricting these has minimal impact on move count
+             # but having few moves to explore means a faster IDA
+             "U2", "D2", "F2", "B2",
+            ),
+
+            '6x6x6',
+            'lookup-table-6x6x6-step12-UD-right-oblique-stage.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+              . . . . . .
+              . . . U . .
+              . U . . . .
+              . . . . U .
+              . . U . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . x . .  . . . . . .  . . . x . .
+ . . . . . .  . x . . . .  . . . . . .  . x . . . .
+ . . . . . .  . . . . x .  . . . . . .  . . . . x .
+ . . . . . .  . . x . . .  . . . . . .  . . x . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . U . .
+              . U . . . .
+              . . . . U .
+              . . U . . .
+              . . . . . .""", 'ascii'),)
+        )
+
+
 class Build666UDObliqueStage(BFS):
 
     def __init__(self):

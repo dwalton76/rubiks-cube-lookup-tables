@@ -1213,256 +1213,6 @@ class Build555ULFRBDTCenterSolve(BFS):
 
 
 
-# =============================
-# Pair first 4-edges in z-plane
-# LR centers to horizontal bars
-# =============================
-class Build555EdgesZPlaneEdgesOnly(BFS):
-    """
-    Pair 3-edges in z-plane
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-z-plane-edges-only',
-
-            # illegal moves
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'",
-            ),
-            '5x5x5',
-            'lookup-table-5x5x5-step341-edges-z-plane-edges-only.txt',
-            False, # store_as_hex
-
-            (("""
-            . - - - .
-            U . . . U
-            U . . . U
-            U . . . U
-            . - - - .
-
- . L L L .  . - - - .  . R R R .  . - - - .
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- . L L L .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            D . . . -
-            D . . . -
-            D . . . -
-            . - - - .""", "ascii"),
-
-            ("""
-            . - - - .
-            U . . . U
-            U . . . U
-            U . . . U
-            . - - - .
-
- . L L L .  . - - - .  . R R R .  . - - - .
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- . - - - .  . - - - .  . R R R .  . - - - .
-
-            . - - - .
-            - . . . D
-            - . . . D
-            - . . . D
-            . - - - .""", "ascii"),
-
-            ("""
-            . - - - .
-            - . . . U
-            - . . . U
-            - . . . U
-            . - - - .
-
- . - - - .  . - - - .  . R R R .  . - - - .
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- . L L L .  . - - - .  . R R R .  . - - - .
-
-            . - - - .
-            D . . . D
-            D . . . D
-            D . . . D
-            . - - - .""", "ascii"),
-
-            ("""
-            . - - - .
-            U . . . -
-            U . . . -
-            U . . . -
-            . - - - .
-
- . L L L .  . - - - .  . - - - .  . - - - .
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- . L L L .  . - - - .  . R R R .  . - - - .
-
-            . - - - .
-            D . . . D
-            D . . . D
-            D . . . D
-            . - - - .""", "ascii")),
-            use_edges_pattern=True,
-        )
-
-
-class StartingStates555EdgesZPlaneCentersOnly(BFS):
-    """
-    LR centers to horizontal bars
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-z-plane-centers-only',
-
-            # illegal moves
-            (),
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step342-edges-z-plane-centers-only.txt',
-            False, # store_as_hex
-
-            (("""
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . . . . .  . R R R .  . . . . .
- . L L L .  . . . . .  . R R R .  . . . . .
- . L L L .  . . . . .  . R R R .  . . . . .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .
-            . . . . .""", "ascii"),),
-            legal_moves=(
-                "L2", "R2", "2U2", "2D2",
-            )
-        )
-
-
-class Build555EdgesZPlaneCentersOnly(BFS):
-    """
-    LR centers to horizontal bars
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-z-plane-centers-only',
-
-            # illegal moves
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'",
-            ),
-            '5x5x5',
-            'lookup-table-5x5x5-step342-edges-z-plane-centers-only.txt',
-            False, # store_as_hex
-            (('...............................LLL..LLL..LLL.....................................RRR..RRR..RRR........................................................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR.....................................LLL..RRR..RRR........................................................', 'ULFRBD'),
-             ('...............................LLL..LLL..RRR.....................................RRR..RRR..LLL........................................................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL.....................................LLL..RRR..RRR........................................................', 'ULFRBD'),
-             ('...............................RRR..LLL..LLL.....................................RRR..RRR..LLL........................................................', 'ULFRBD'),
-             ('...............................RRR..LLL..RRR.....................................LLL..RRR..LLL........................................................', 'ULFRBD')),
-        )
-
-
-class StartingStates555EdgesZPlane(BFS):
-    """
-    LR centers to horizontal bars
-    Pair 4-edges in z-plane
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-z-plane',
-
-            # illegal moves
-            (),
-            '5x5x5',
-            'starting-states-lookup-table-5x5x5-step340-edges-z-plane.txt',
-            False, # store_as_hex
-
-            (("""
-            . - - - .
-            U . . . U
-            U . . . U
-            U . . . U
-            . - - - .
-
- . L L L .  . - - - .  . R R R .  . - - - .
- - L L L -  - . . . -  - R R R -  - . . . -
- - L L L -  - . . . -  - R R R -  - . . . -
- - L L L -  - . . . -  - R R R -  - . . . -
- . L L L .  . - - - .  . R R R .  . - - - .
-
-            . - - - .
-            D . . . D
-            D . . . D
-            D . . . D
-            . - - - .""", "ascii"),),
-            use_edges_pattern=True,
-            legal_moves=(
-                "L2", "R2", "2U2", "2D2",
-            )
-        )
-
-
-class Build555EdgesZPlane(BFS):
-    """
-    LR centers to horizontal bars
-    Pair 4-edges in z-plane
-    """
-
-    def __init__(self):
-        BFS.__init__(self,
-            '5x5x5-edges-z-plane',
-
-            # illegal moves
-            ("Fw", "Fw'",
-             "Bw", "Bw'",
-             "Lw", "Lw'",
-             "Rw", "Rw'",
-             "Uw", "Uw'",
-             "Dw", "Dw'",
-             "L", "L'",
-             "R", "R'",
-            ),
-            '5x5x5',
-            'lookup-table-5x5x5-step340-edges-z-plane.txt',
-            False, # store_as_hex
-            (('.---.D...UD...UD...U.---..LLL.-LLL--LLL--LLL-.LLL..---.-...--...--...-.---..RRR.-RRR--RRR--RRR-.RRR..---.-...--...--...-.---..---.U...DU...DU...D.---.', 'ULFRBD'),
-             ('.---.D...UD...UD...U.---..LLL.-LLL--LLL--RRR-.LLL..---.-...--...--...-.---..RRR.-LLL--RRR--RRR-.RRR..---.-...--...--...-.---..---.U...DU...DU...D.---.', 'ULFRBD'),
-             ('.---.D...UD...UD...U.---..LLL.-RRR--LLL--LLL-.LLL..---.-...--...--...-.---..RRR.-RRR--RRR--LLL-.RRR..---.-...--...--...-.---..---.U...DU...DU...D.---.', 'ULFRBD'),
-             ('.---.U...UU...UU...U.---..LLL.-LLL--LLL--RRR-.LLL..---.-...--...--...-.---..RRR.-RRR--RRR--LLL-.RRR..---.-...--...--...-.---..---.D...DD...DD...D.---.', 'ULFRBD'),
-             ('.---.U...UU...UU...U.---..LLL.-RRR--LLL--LLL-.LLL..---.-...--...--...-.---..RRR.-LLL--RRR--RRR-.RRR..---.-...--...--...-.---..---.D...DD...DD...D.---.', 'ULFRBD'),
-             ('.---.U...UU...UU...U.---..LLL.-RRR--LLL--RRR-.LLL..---.-...--...--...-.---..RRR.-LLL--RRR--LLL-.RRR..---.-...--...--...-.---..---.D...DD...DD...D.---.', 'ULFRBD')),
-            use_edges_pattern=True
-        )
-
-
 # ==============================================
 # Pair last 8-edges in y-plane and z-plane
 # Solve center (LR and FB will be vertical bars)
@@ -4120,6 +3870,150 @@ class Build555Phase5FBCentersHighEdgeMidge(BFS):
             - . . . -
             . - - - .""", "ascii")),
             use_edges_pattern=True,
+        )
+
+
+class Build555Phase5FBCenters(BFS):
+    """
+    4,900 FB centers
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-phase5-fb-centers',
+
+            ("Uw", "Uw'",
+             "Dw", "Dw'",
+             "Fw", "Fw'",
+             "Bw", "Bw'",
+             "Lw", "Lw'",
+             "Rw", "Rw'",
+             "L", "L'",
+             "R", "R'",
+             "U", "U'",
+             "D", "D'",
+            ),
+
+            # dwalton
+            '5x5x5',
+            'lookup-table-5x5x5-step56-phase5-fb-centers.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (
+            ("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . B F B .  . . . . .  . F B F .
+ . . . . .  . B F B .  . . . . .  . F B F .
+ . . . . .  . B F B .  . . . . .  . F B F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),
+
+            ("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . B F F .  . . . . .  . B B F .
+ . . . . .  . B F F .  . . . . .  . B B F .
+ . . . . .  . B F F .  . . . . .  . B B F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),
+
+            ("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . B F F .  . . . . .  . F B B .
+ . . . . .  . B F F .  . . . . .  . F B B .
+ . . . . .  . B F F .  . . . . .  . F B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),
+
+            ("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F B .  . . . . .  . B B F .
+ . . . . .  . F F B .  . . . . .  . B B F .
+ . . . . .  . F F B .  . . . . .  . B B F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),
+
+            ("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F B .  . . . . .  . F B B .
+ . . . . .  . F F B .  . . . . .  . F B B .
+ . . . . .  . F F B .  . . . . .  . F B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii"),
+
+            ("""
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . F F F .  . . . . .  . B B B .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .
+            . . . . .""", "ascii")),
         )
 
 
