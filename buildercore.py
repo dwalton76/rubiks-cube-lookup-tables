@@ -640,6 +640,7 @@ class BFS(object):
 
         with open(self.workq_filename, 'w') as fh:
             for cube in self.starting_cubes:
+                log.info("starting cube %s" % "".join(cube.state).replace(".", "")[1:])
                 if self.use_edges_pattern:
                     workq_line = "%s:%s:" % (pattern, ''.join(cube.state))
                 else:

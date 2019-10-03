@@ -4039,7 +4039,6 @@ class Build555Phase5FBCenters(BFS):
              "D", "D'",
             ),
 
-            # dwalton
             '5x5x5',
             'lookup-table-5x5x5-step56-phase5-fb-centers.txt',
             False, # store_as_hex
