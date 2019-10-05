@@ -83,10 +83,13 @@ def convert_to_cost_only(filename, use_permutation_rank, state_targets):
                     steps_len = 0
                     log.info("found state_target %s" % state)
                 else:
-                    if steps[0].isdigit():
-                        steps_len = int(steps[0])
+                    if steps:
+                        if steps[0].isdigit():
+                            steps_len = int(steps[0])
+                        else:
+                            steps_len = len(steps)
                     else:
-                        steps_len = len(steps)
+                        steps_len = 0
 
                 # We save the steps_len as a single hex character so cap it at 15
                 if steps_len > 15:

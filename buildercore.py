@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from collections import Counter
+from collections import deque
+from rubikscubennnsolver import reverse_steps
 from rubikscubennnsolver.misc import parse_ascii_222, parse_ascii_333, parse_ascii_444, parse_ascii_555, parse_ascii_666, parse_ascii_777
 from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
@@ -562,14 +563,16 @@ class BFS(object):
         """
         LEADING_X = 1
         SIDES_PER_CUBE = 6
-        SEPERATORS = 1
+        SEPERATORS = 2
         CHARS_PER_STEP = 5
         MAX_STEPS = 20
+        EDGES_STATE = 36
+        WIGGLE_ROOM = 50
 
         if self.name.startswith("5x5x5-edges"):
             return 512
         else:
-            return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS)
+            return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS) + EDGES_STATE + WIGGLE_ROOM
 
     def get_workq_filename_for_core(self, core):
         return "%s.core-%d" % (self.workq_filename, core)
@@ -637,6 +640,7 @@ class BFS(object):
 
         with open(self.workq_filename, 'w') as fh:
             for cube in self.starting_cubes:
+                log.info("starting cube %s" % "".join(cube.state).replace(".", "")[1:])
                 if self.use_edges_pattern:
                     workq_line = "%s:%s:" % (pattern, ''.join(cube.state))
                 else:
@@ -1209,7 +1213,6 @@ class BFS(object):
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
 
         print('''
-#class %s(LookupTableHashCostOnly):
 class %s(LookupTable):
     """
 %s
@@ -1227,22 +1230,23 @@ class %s(LookupTable):
             self.state_targets,
             linecount=%d,
             max_depth=%d,
-            filesize=%d)
-        ''\'
-        LookupTableHashCostOnly.__init__(
-            self,
-            parent,
-            '%s',
-            self.state_targets,
-            linecount=1,
-            max_depth=%d,
-            bucketcount=%d,
-            filesize=%d)
-        ''\'
+            filesize=%d,
+            all_moves=moves_%s,
+            illegal_moves=(
+                "%s"
+            ),
+        )
 
-    def ida_heuristic(self):
-        parent_state = self.parent.state''' % (
-    class_name,
+    def state(self):
+        parent_state = self.parent.state
+        return "".join([parent_state[x] for x in CUBE_POSITION_LIST])
+
+    def populate_cube_from_state(self, state, cube, steps_to_solve):
+        state = list(state)
+
+        for (pos, pos_state) in zip(CUBE_POSITION_LIST, state):
+            cube[pos] = pos_state
+''' % (
     class_name,
     histogram,
     starting_states,
@@ -1250,29 +1254,10 @@ class %s(LookupTable):
     linecount,
     max_depth,
     os.path.getsize(self.filename),
-    self.filename.replace('.txt', '.hash-cost-only.txt'),
-    max_depth,
-    next_prime.get(linecount, 0),
-    next_prime.get(linecount, 0)+1, # +1 for the newline
+    self.size.replace("x", ""),
+    '",\n                "'.join(self.illegal_moves),
+
     ))
-
-        if self.store_as_hex:
-            print("        state = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
-            print("        state = self.hex_format % int(state, 2)")
-
-        elif self.use_edges_pattern:
-            print("        state = edges_recolor_pattern_%s(parent_state[:])" % self.size.replace('x', ''))
-            print("        state = ''.join([state[index] for index in wings_for_edges_pattern_%s])" % self.size.replace('x', ''))
-
-        else:
-            print("        state = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace('x', ''))
-
-        print("        cost_to_goal = self.heuristic(state)")
-        print("        return (state, cost_to_goal)\n\n")
-
-        #print("\n\n\n\n")
-        #print("        self.lt_foo = %s(self)" % class_name)
-        #print("\n\n\n\n")
 
     def _code_gen_lookup_table_ida(self):
         class_name = type(self).__name__.replace('Build', 'LookupTableIDA')
@@ -1345,6 +1330,77 @@ class %s(LookupTableIDA):
                 self._code_gen_lookup_table()
         else:
             self._code_gen_lookup_table()
+
+    def search_new(self, max_depth=99, cores=4):
+        workq = deque()
+        table = {}
+
+        # seed the workq
+        for cube in self.starting_cubes:
+            cube_state_minus_x = "".join(cube.state[1:])
+            table[cube_state_minus_x] = []
+
+            for step in self.legal_moves:
+                workq.append((cube_state_minus_x, [step,]))
+
+        # dwalton
+        index = 0
+        max_depth = 5
+        log.info(f"max_depth {max_depth}")
+
+        while workq:
+            (state, steps_to_scramble) = workq.popleft()
+            #log.info(f"{index}: {state}, {steps_to_scramble}")
+
+            debug = False
+            '''
+            if len(steps_to_scramble) >= 3 and steps_to_scramble[0] == "Lw" and steps_to_scramble[1] == "U'" and steps_to_scramble[2] == "3Bw2":
+                log.info(f"{index}: {steps_to_scramble}")
+                debug = True
+
+            if debug:
+                log.info(state)
+            '''
+
+            cube.state = ["x"]
+            cube.state.extend(list(state))
+
+            if debug:
+                cube.print_cube()
+
+            cube.rotate(steps_to_scramble[-1])
+            cube_state_minus_x = "".join(cube.state[1:])
+
+            add_to_table = False
+
+            if cube_state_minus_x not in table:
+                add_to_table = True
+            else:
+                #if len(steps_to_scramble) <= len(table[cube_state_minus_x]):
+                if len(steps_to_scramble) < len(table[cube_state_minus_x]):
+                    add_to_table = True
+
+            if add_to_table:
+                table[cube_state_minus_x] = steps_to_scramble[:]
+
+                if len(steps_to_scramble) < max_depth:
+                    for step in self.legal_moves:
+                        workq.append((cube_state_minus_x, steps_to_scramble + [step,]))
+
+            if debug:
+                cube.print_cube()
+                log.info(f"cube_state_minus_x {cube_state_minus_x}, cube state pretty {cube_state_minus_x.replace('.', '')}, add_to_table {add_to_table}")
+
+            index += 1
+
+            if index % 10000 == 0:
+                log.info(f"{index:,}: depth {len(steps_to_scramble)}, {len(workq):,} items on workq, {len(table):,} items in table")
+
+        with open(self.filename, "w") as fh:
+            for cube_state_minus_x in sorted(table.keys()):
+                steps_to_scramble = table[cube_state_minus_x]
+                steps_to_solve = reverse_steps(steps_to_scramble)
+                fh.write("%s:%s\n" % (cube_state_minus_x, " ".join(steps_to_solve)))
 
 
 if __name__ == '__main__':

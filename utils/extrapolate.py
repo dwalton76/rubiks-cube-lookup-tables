@@ -22,8 +22,10 @@ prev_count_at_depth = 754156
 count_total = 783364
 rate = float(26.79)
 count_total_target = 7401196841564901869874093974498574336000000000 # 444
+'''
 
 # 4x4x4 centers
+'''
 depth = 6
 prev_count_at_depth = 83113883
 count_total = 87727430
@@ -36,18 +38,15 @@ prev_count_at_depth = 112158744
 count_total = 121951614
 rate = float(12.41)
 count_total_target = 9465511770 # 24!/(8!*8!*8!)
-'''
 
-# dwalton
-# 4x4x4 phase5
-depth = 7
-prev_count_at_depth = 2061576
-count_total = 2458855
-rate = float(6.11)
-count_total_target = 146767085568
+# 4x4x4 centers stage
+depth = 4
+prev_count_at_depth = 1948920
+count_total = 2136760
+rate = float(11.31)
+count_total_target = 27136746291200
 
 
-'''
 # 5x5x5 centers OBTM
 depth = 5
 prev_count_at_depth = 6089454
@@ -92,13 +91,38 @@ prev_count_at_depth = 1291295
 count_total = 1433448
 rate = float(10)
 count_total_target = 117649000000 # ((8!/(4!*4!))^2)^3
+
+# 555 LR stage 432 and EO both orbits
+depth = 5
+prev_count_at_depth = 24348560
+count_total = 26485320
+rate = float(12.49)
+count_total_target = 27136746291200
+
+# 555 EO both orbits
+depth = 7
+prev_count_at_depth = 5353259
+count_total = 5946658
+rate = float(9.89)
+count_total_target = 5538111488
 '''
+
+# 666 stage UD centers
+depth = 6
+prev_count_at_depth = 633025
+count_total = 690675
+rate = float(11.97)
+count_total_target = 2131746903000
+
 
 move_total = 0
 
 while count_total < count_total_target:
     depth += 1
-    rate -= 0.4
+
+    if rate > 2.8:
+        rate -= 0.8
+
     count_at_depth = int(prev_count_at_depth * rate)
 
     if (count_total + count_at_depth) > count_total_target:

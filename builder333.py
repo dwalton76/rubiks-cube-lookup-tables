@@ -16,7 +16,7 @@ class Build333Ultimate(BFS):
             '3x3x3-ultimate',
 
             # illegal moves
-            ("L", "L'", "R", "R'"),
+            (),
 
             '3x3x3',
             'lookup-table-3x3x3-step00-ultimate.txt',
