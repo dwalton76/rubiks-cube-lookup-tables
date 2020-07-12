@@ -413,9 +413,9 @@ class BackgroundProcess(Thread):
             if self.result is not None and self.result.isdigit():
                 self.result = int(self.result)
             self.ok = True
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
             self.ok = False
-
+            self.result = e.output.decode("utf-8")
 
 
 class BFS(object):
@@ -727,7 +727,7 @@ class BFS(object):
                 log.info("depth %d %s: finished" % (self.depth, thread))
             else:
                 hit_error = True
-                log.info("depth %d %s: finished but with an error" % (self.depth, thread))
+                log.info("depth %d %s: finished but with an error\n%s\n" % (self.depth, thread, thread.result))
 
         if hit_error:
             log.error("builder-crunch-workq hit an error")
@@ -758,9 +758,9 @@ class BFS(object):
         subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output %s.10-results %s.core*" %
             (self.workq_filename, self.workq_filename), shell=True)
         self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
-        #linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
-        #log.info("sort all of the files created by builder-crunch-workq processes end (%d lines)" % linecount)
-        log.info("sort all of the files created by builder-crunch-workq processes end")
+        linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
+        log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
+        #log.info("sort all of the files created by builder-crunch-workq processes end")
         subprocess.check_output("rm %s.core* " % self.workq_filename, shell=True)
 
         log.info("uniq begin")
@@ -772,11 +772,11 @@ class BFS(object):
             state_width = len(state)
 
         subprocess.check_output("nice uniq --check-chars=%d %s.10-results %s.15-uniq" % (state_width, self.workq_filename, self.workq_filename), shell=True)
-        shutil.move("%s.15-uniq" % self.workq_filename, "%s.10-results" % self.workq_filename)
-        #linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
-        #log.info("uniq end (%d lines)" % linecount)
         self.time_in_uniq += (dt.datetime.now() - start_time).total_seconds()
-        log.info("uniq end")
+        shutil.move("%s.15-uniq" % self.workq_filename, "%s.10-results" % self.workq_filename)
+        linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
+        log.info("uniq end ({:,} lines)".format(linecount))
+        #log.info("uniq end")
 
         # Use "builder-find-new-states.py" to find the entries in the .results file that are not
         # in our current lookup-table.txt file. Save these in a .new_states file.
@@ -841,9 +841,8 @@ class BFS(object):
                 open(self.workq_filename_next, 'w') as fh_workq_next:
 
                 for line in fh_new_states:
-                    centers = None
 
-                    # Find the centers state
+                    # Find the state and steps_to_solve
                     if self.use_edges_pattern:
                         (pattern, state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
@@ -852,12 +851,12 @@ class BFS(object):
                         (state, steps_to_solve) = line.rstrip().split(':')
                         self.cube.state = list(state)
 
-                    if max_depth is None:
-                        move_budget = 999
-                    else:
-                        move_budget = max_depth - self.depth + 1
-
                     if self.lt_centers_max_depth:
+                        if max_depth is None:
+                            move_budget = 999
+                        else:
+                            move_budget = max_depth - self.depth + 1
+
                         centers = ''.join([self.cube.state[x] for x in centers_555])
                         centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth+1)
 
@@ -867,7 +866,7 @@ class BFS(object):
                             pruned += 1
                             continue
 
-                        # Or if the centers are backed to solved we can prune this branch
+                        # Or if the centers are back to solved we can prune this branch
                         elif centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
                             pruned += 1
                             continue
@@ -877,11 +876,6 @@ class BFS(object):
 
                     # Add entries to the next workq file
                     steps_to_scramble = ' '.join(reverse_steps(steps_to_solve.split()))
-
-                    if steps_to_scramble:
-                        prev_step = steps_to_scramble.split()[-1]
-                    else:
-                        prev_step = None
 
                     if self.use_edges_pattern:
                         workq_line = "%s:%s:%s" % (pattern, state, steps_to_scramble)

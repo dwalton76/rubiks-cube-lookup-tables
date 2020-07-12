@@ -29,8 +29,7 @@ strstrip (char *s)
     end = s + size - 1;
     while (end >= s && isspace(*end))
         end--;
-    *(end + 1) = '\n';
-    *(end + 2) = '\0';
+    *(end + 1) = '\0';
 
     // Remove leading whitespaces
     // The lookup table files do not have any leading whitespaces so commenting this out to save a few CPU cycles
@@ -59,14 +58,17 @@ process_workq(
     unsigned int move_str_length = 0;
     unsigned int MAX_LINE_WIDTH = 512;
     unsigned char line[MAX_LINE_WIDTH];
+    unsigned char steps_to_scramble[MAX_MOVE_STR_SIZE * 24];
     unsigned char cube[array_size];
     unsigned char cube_tmp[array_size];
     unsigned int sizeof_array_size = sizeof(char) * array_size;
     unsigned int to_write_count = 0;
+    unsigned int steps_to_scramble_length = 0;
     unsigned int BATCH_SIZE = 100000;
     unsigned char *to_write;
     to_write = malloc(sizeof(char) * BATCH_SIZE * MAX_LINE_WIDTH);
     unsigned char *to_write_ptr = to_write;
+    char space_delim[] = " ";
 
     move_type move;
 
@@ -93,17 +95,50 @@ process_workq(
             line_length = strlen(line);
 
             if (line_length > MAX_LINE_WIDTH) {
-                printf("ERROR: line is %d bytes, max supported is %d bytes\n", line_length, MAX_LINE_WIDTH);
-                printf("%s", line);
+                printf("ERROR: line %d is %d bytes, max supported is %d bytes\n", line_number, line_length, MAX_LINE_WIDTH);
+                printf("%s\n", line);
                 exit(1);
             }
+
             memcpy(cube, line, array_size);
-            // print_cube(cube, cube_size);
+
+            move_type prev_move = MOVE_NONE;
+            steps_to_scramble_length = line_length - array_size - 1;
+
+            if (steps_to_scramble_length > 0) {
+                memset(steps_to_scramble, '\0', sizeof(char) * MAX_MOVE_STR_SIZE * 24);
+                memcpy(steps_to_scramble, &line[array_size+1], steps_to_scramble_length);
+
+                // what was the last move used to get to this state?
+                char *move_ptr = strtok(steps_to_scramble, space_delim);
+
+                // printf("%s\n", line);
+                // printf("line_length %d\n", line_length);
+                // printf("steps_to_scramble %s\n", steps_to_scramble);
+                // printf("steps_to_scramble_length %d\n", steps_to_scramble_length);
+                // printf("move_ptr %s\n", move_ptr);
+                char *prev_move_ptr = move_ptr;
+
+                while (move_ptr != NULL) {
+                    move_ptr = strtok(NULL, space_delim);
+
+                    if (move_ptr != NULL) {
+                        prev_move_ptr = move_ptr;
+                    }
+                }
+
+                prev_move = str2move(prev_move_ptr);
+            }
 
             for (move_index = 0; move_index < moves_count; move_index++) {
-                memcpy(cube_tmp, cube, sizeof_array_size);
                 move = moves[move_index];
+
+                if (steps_on_same_face_and_layer(move, prev_move)) {
+                    continue;
+                }
+
                 // printf("process_workq line %d/%d move %d/%d: %d\n", line_number, end, move_index, moves_count, move);
+                memcpy(cube_tmp, cube, sizeof_array_size);
                 rotate_555(cube_tmp, cube, array_size, move);
 
                 // if nothing changed, do not bother writing this result to the file
@@ -117,15 +152,15 @@ process_workq(
                 memcpy(line, cube_tmp, sizeof_array_size);
                 move_str_length = strlen(move2str[move]);
 
-                if (line[line_length-2] == ':') {
-                    memcpy(&line[line_length-1], move2str[move], move_str_length);
-                    line[line_length-1 + move_str_length] = '\n';
-                    line[line_length-1 + move_str_length + 1] = '\0';
-                } else {
-                    line[line_length-1] = ' ';
+                if (line[line_length-1] == ':') {
                     memcpy(&line[line_length], move2str[move], move_str_length);
                     line[line_length + move_str_length] = '\n';
                     line[line_length + move_str_length + 1] = '\0';
+                } else {
+                    line[line_length] = ' ';
+                    memcpy(&line[line_length + 1], move2str[move], move_str_length);
+                    line[line_length + 1 + move_str_length] = '\n';
+                    line[line_length + 1 + move_str_length + 1] = '\0';
                 }
 
                 memcpy(to_write_ptr, line, strlen(line));
@@ -223,134 +258,14 @@ main (int argc, char *argv[])
 
     // init moves list
     unsigned int moves_index = 0;
+    char delim[] = " ";
+    char *move_ptr = strtok(moves_buffer, delim);
     move_type moves[MOVE_MAX];
     memset(moves, MOVE_MAX, sizeof(move_type) * MOVE_MAX);
 
-    char delim[] = " ";
-    char *move_ptr = strtok(moves_buffer, delim);
-
     while (move_ptr != NULL) {
         // printf("%s\n", move_ptr);
-
-        if (strmatch(move_ptr, "U")) {
-            moves[moves_index] = U;
-        } else if (strmatch(move_ptr, "U'")) {
-            moves[moves_index] = U_PRIME;
-        } else if (strmatch(move_ptr, "U2")) {
-            moves[moves_index] = U2;
-        } else if (strmatch(move_ptr, "Uw")) {
-            moves[moves_index] = Uw;
-        } else if (strmatch(move_ptr, "Uw'")) {
-            moves[moves_index] = Uw_PRIME;
-        } else if (strmatch(move_ptr, "Uw2")) {
-            moves[moves_index] = Uw2;
-        } else if (strmatch(move_ptr, "3Uw")) {
-            moves[moves_index] = threeUw;
-        } else if (strmatch(move_ptr, "3Uw'")) {
-            moves[moves_index] = threeUw_PRIME;
-        } else if (strmatch(move_ptr, "3Uw2")) {
-            moves[moves_index] = threeUw2;
-
-        } else if (strmatch(move_ptr, "L")) {
-            moves[moves_index] = L;
-        } else if (strmatch(move_ptr, "L'")) {
-            moves[moves_index] = L_PRIME;
-        } else if (strmatch(move_ptr, "L2")) {
-            moves[moves_index] = L2;
-        } else if (strmatch(move_ptr, "Lw")) {
-            moves[moves_index] = Lw;
-        } else if (strmatch(move_ptr, "Lw'")) {
-            moves[moves_index] = Lw_PRIME;
-        } else if (strmatch(move_ptr, "Lw2")) {
-            moves[moves_index] = Lw2;
-        } else if (strmatch(move_ptr, "3Lw")) {
-            moves[moves_index] = threeLw;
-        } else if (strmatch(move_ptr, "3Lw'")) {
-            moves[moves_index] = threeLw_PRIME;
-        } else if (strmatch(move_ptr, "3Lw2")) {
-            moves[moves_index] = threeLw2;
-
-        } else if (strmatch(move_ptr, "F")) {
-            moves[moves_index] = F;
-        } else if (strmatch(move_ptr, "F'")) {
-            moves[moves_index] = F_PRIME;
-        } else if (strmatch(move_ptr, "F2")) {
-            moves[moves_index] = F2;
-        } else if (strmatch(move_ptr, "Fw")) {
-            moves[moves_index] = Fw;
-        } else if (strmatch(move_ptr, "Fw'")) {
-            moves[moves_index] = Fw_PRIME;
-        } else if (strmatch(move_ptr, "Fw2")) {
-            moves[moves_index] = Fw2;
-        } else if (strmatch(move_ptr, "3Fw")) {
-            moves[moves_index] = threeFw;
-        } else if (strmatch(move_ptr, "3Fw'")) {
-            moves[moves_index] = threeFw_PRIME;
-        } else if (strmatch(move_ptr, "3Fw2")) {
-            moves[moves_index] = threeFw2;
-
-        } else if (strmatch(move_ptr, "R")) {
-            moves[moves_index] = R;
-        } else if (strmatch(move_ptr, "R'")) {
-            moves[moves_index] = R_PRIME;
-        } else if (strmatch(move_ptr, "R2")) {
-            moves[moves_index] = R2;
-        } else if (strmatch(move_ptr, "Rw")) {
-            moves[moves_index] = Rw;
-        } else if (strmatch(move_ptr, "Rw'")) {
-            moves[moves_index] = Rw_PRIME;
-        } else if (strmatch(move_ptr, "Rw2")) {
-            moves[moves_index] = Rw2;
-        } else if (strmatch(move_ptr, "3Rw")) {
-            moves[moves_index] = threeRw;
-        } else if (strmatch(move_ptr, "3Rw'")) {
-            moves[moves_index] = threeRw_PRIME;
-        } else if (strmatch(move_ptr, "3Rw2")) {
-            moves[moves_index] = threeRw2;
-
-        } else if (strmatch(move_ptr, "B")) {
-            moves[moves_index] = B;
-        } else if (strmatch(move_ptr, "B'")) {
-            moves[moves_index] = B_PRIME;
-        } else if (strmatch(move_ptr, "B2")) {
-            moves[moves_index] = B2;
-        } else if (strmatch(move_ptr, "Bw")) {
-            moves[moves_index] = Bw;
-        } else if (strmatch(move_ptr, "Bw'")) {
-            moves[moves_index] = Bw_PRIME;
-        } else if (strmatch(move_ptr, "Bw2")) {
-            moves[moves_index] = Bw2;
-        } else if (strmatch(move_ptr, "3Bw")) {
-            moves[moves_index] = threeBw;
-        } else if (strmatch(move_ptr, "3Bw'")) {
-            moves[moves_index] = threeBw_PRIME;
-        } else if (strmatch(move_ptr, "3Bw2")) {
-            moves[moves_index] = threeBw2;
-
-        } else if (strmatch(move_ptr, "D")) {
-            moves[moves_index] = D;
-        } else if (strmatch(move_ptr, "D'")) {
-            moves[moves_index] = D_PRIME;
-        } else if (strmatch(move_ptr, "D2")) {
-            moves[moves_index] = D2;
-        } else if (strmatch(move_ptr, "Dw")) {
-            moves[moves_index] = Dw;
-        } else if (strmatch(move_ptr, "Dw'")) {
-            moves[moves_index] = Dw_PRIME;
-        } else if (strmatch(move_ptr, "Dw2")) {
-            moves[moves_index] = Dw2;
-        } else if (strmatch(move_ptr, "3Dw")) {
-            moves[moves_index] = threeDw;
-        } else if (strmatch(move_ptr, "3Dw'")) {
-            moves[moves_index] = threeDw_PRIME;
-        } else if (strmatch(move_ptr, "3Dw2")) {
-            moves[moves_index] = threeDw2;
-
-        } else {
-            printf("ERROR: invalid move %s\n", move_ptr);
-            exit(1);
-        }
-
+        moves[moves_index] = str2move(move_ptr);
         move_ptr = strtok(NULL, delim);
         moves_index++;
     }

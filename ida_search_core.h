@@ -67,6 +67,8 @@ static const char move2str[MOVE_MAX][MAX_MOVE_STR_SIZE] = {
     "Y", "Y'",
     "Z", "Z'",
 };
+move_type str2move(char *str);
+unsigned char steps_on_same_face_and_layer(move_type move, move_type prev_move);
 
 #define MOVE_COUNT_444 36
 static const move_type moves_444[MOVE_COUNT_444] = {
