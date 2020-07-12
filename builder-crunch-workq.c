@@ -52,28 +52,33 @@ process_workq(
 {
     FILE *fh_read = NULL;
     FILE *fh_write = NULL;
-    unsigned int array_size = (cube_size * cube_size * 6) + 1;
-    unsigned int line_length = 0;
-    unsigned int move_index = 0;
-    unsigned int move_str_length = 0;
-    unsigned int MAX_LINE_WIDTH = 512;
-    unsigned char line[MAX_LINE_WIDTH];
-    unsigned char steps_to_scramble[MAX_MOVE_STR_SIZE * 24];
-    unsigned char cube[array_size];
-    unsigned char cube_tmp[array_size];
-    unsigned int sizeof_array_size = sizeof(char) * array_size;
-    unsigned int to_write_count = 0;
-    int steps_to_scramble_length = 0;
-    unsigned int BATCH_SIZE = 100000;
-    unsigned char read_result = 0;
-    unsigned char *to_write;
-    to_write = malloc(sizeof(char) * BATCH_SIZE * MAX_LINE_WIDTH);
-    unsigned char *to_write_ptr = to_write;
-    char space_delim[] = " ";
-    move_type move = MOVE_NONE;
-    move_type prev_move = MOVE_NONE;
     char *move_ptr = NULL;
     char *prev_move_ptr = NULL;
+
+    int steps_to_scramble_length = 0;
+    unsigned int array_size = (cube_size * cube_size * 6) + 1;
+    unsigned int BATCH_SIZE = 100000;
+    unsigned int line_length = 0;
+    unsigned int MAX_LINE_WIDTH = 512;
+    unsigned int sizeof_array_size = sizeof(char) * array_size;
+    unsigned int to_write_count = 0;
+
+    unsigned char cube[array_size];
+    unsigned char cube_tmp[array_size];
+    unsigned char line[MAX_LINE_WIDTH];
+    unsigned char move_index = 0;
+    unsigned char move_str_length = 0;
+    unsigned char read_result = 0;
+    unsigned char steps_to_scramble[MAX_MOVE_STR_SIZE * 24];
+    unsigned char *to_write = NULL;
+    unsigned char *to_write_ptr = NULL;
+
+    char space_delim[] = " ";
+
+    move_type move = MOVE_NONE;
+    move_type prev_move = MOVE_NONE;
+    to_write = malloc(sizeof(char) * BATCH_SIZE * MAX_LINE_WIDTH);
+    to_write_ptr = to_write;
 
     memset(line, '\0', sizeof(char) * MAX_LINE_WIDTH);
     memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
