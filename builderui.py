@@ -76,18 +76,22 @@ else:
 
     accounted_time =\
         builder.time_in_sort +\
+        builder.time_in_uniq +\
         builder.time_in_building_workq +\
         builder.time_in_crunching_workq +\
         builder.time_in_save +\
-        builder.time_in_find_new_states
+        builder.time_in_find_new_states +\
+        builder.time_in_keep_best_solution
     unaccounted_time = total_time - accounted_time
 
     print("")
-    print("Time in crunching workq : %ds (%d%%)" % (builder.time_in_crunching_workq, (builder.time_in_crunching_workq / total_time) * 100))
-    print("Time in sort            : %ds (%d%%)" % (builder.time_in_sort, (builder.time_in_sort / total_time) * 100))
-    print("Time in find-new-states : %ds (%d%%)" % (builder.time_in_find_new_states, (builder.time_in_find_new_states / total_time) * 100))
-    print("Time in building workq  : %ds (%d%%)" % (builder.time_in_building_workq, (builder.time_in_building_workq / total_time) * 100))
-    print("Time in save            : %ds (%d%%)" % (builder.time_in_save, (builder.time_in_save / total_time) * 100))
-    print("Time not accounted for  : %ds (%d%%)" % (unaccounted_time, (unaccounted_time / total_time) * 100))
-    print("Time total              : %ds" % total_time)
+    print("Time in building workq     : %ds (%d%%)" % (builder.time_in_building_workq, (builder.time_in_building_workq / total_time) * 100))
+    print("Time in crunching workq    : %ds (%d%%)" % (builder.time_in_crunching_workq, (builder.time_in_crunching_workq / total_time) * 100))
+    print("Time in sort               : %ds (%d%%)" % (builder.time_in_sort, (builder.time_in_sort / total_time) * 100))
+    print("Time in uniq               : %ds (%d%%)" % (builder.time_in_uniq, (builder.time_in_uniq / total_time) * 100))
+    print("Time in keep-best-solution : %ds (%d%%)" % (builder.time_in_keep_best_solution, (builder.time_in_keep_best_solution/ total_time) * 100))
+    print("Time in find-new-states    : %ds (%d%%)" % (builder.time_in_find_new_states, (builder.time_in_find_new_states / total_time) * 100))
+    print("Time in save               : %ds (%d%%)" % (builder.time_in_save, (builder.time_in_save / total_time) * 100))
+    print("Time not accounted for     : %ds (%d%%)" % (unaccounted_time, (unaccounted_time / total_time) * 100))
+    print("Time total                 : %ds" % total_time)
     print("")

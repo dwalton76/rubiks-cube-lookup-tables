@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.6
 
 """
 Given two lookup-table files (A & B), find all of the new cube states in B that
@@ -21,21 +21,17 @@ def advance_filehandle(fh):
     return line
 
 
-def advance_filehandle_to_state_change(state, fh):
-    prev_state = state
-
+def advance_filehandle_to_state_change(current_state, fh):
     while True:
         line = advance_filehandle(fh)
 
         if line is None:
             break
         else:
-            (state, _) = line.strip().split(':')
+            state = line.split(':')[0]
 
-            if state != prev_state:
+            if state != current_state:
                 break
-
-            prev_state = state
 
     return line
 

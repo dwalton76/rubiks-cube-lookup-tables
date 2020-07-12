@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.6
 
 from buildercore import supported_sizes, WRITE_BATCH_SIZE, reverse_steps
 #from buildercore import supported_sizes, reverse_steps

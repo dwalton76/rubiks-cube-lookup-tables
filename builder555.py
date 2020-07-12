@@ -209,6 +209,73 @@ class Build555LRCenterStageXCenterOnly(BFS):
         )
 
 
+class Build555FooUDCenterStageTCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-t-center-stage',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step13-UD-centers-stage-t-center-only.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . x . .  . . x . .  . . x . .  . . x . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . x . .  . . x . .  . . x . .  . . x . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555FooUDCenterStageXCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-UD-x-center-stage',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step14-UD-centers-stage-x-center-only.txt',
+            True, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .""", "ascii"),),
+        )
+
 
 class Build555FBCenterStage(BFS):
 
