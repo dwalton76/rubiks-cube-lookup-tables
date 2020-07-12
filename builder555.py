@@ -209,7 +209,7 @@ class Build555LRCenterStageXCenterOnly(BFS):
         )
 
 
-class Build555FooUDCenterStageTCenterOnly(BFS):
+class Build555UDCenterStageTCenterOnly(BFS):
     """
     """
 
@@ -243,7 +243,7 @@ class Build555FooUDCenterStageTCenterOnly(BFS):
         )
 
 
-class Build555FooUDCenterStageXCenterOnly(BFS):
+class Build555UDCenterStageXCenterOnly(BFS):
     """
     """
 
@@ -267,6 +267,74 @@ class Build555FooUDCenterStageXCenterOnly(BFS):
  . x . x .  . x . x .  . x . x .  . x . x .
  . . . . .  . . . . .  . . . . .  . . . . .
  . x . x .  . x . x .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555CenterStageTCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-t-center-stage',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step15-centers-stage-t-center-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . F . .  . . L . .  . . F . .
+ . L . L .  . F . F .  . L . L .  . F . F .
+ . . L . .  . . F . .  . . L . .  . . F . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .""", "ascii"),),
+        )
+
+
+class Build555CenterStageXCenterOnly(BFS):
+    """
+    """
+
+    def __init__(self):
+        BFS.__init__(self,
+            '5x5x5-x-center-stage',
+            (),
+            '5x5x5',
+            'lookup-table-5x5x5-step16-centers-stage-x-center-only.txt',
+            False, # store_as_hex
+
+            # starting cubes
+            (("""
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . F . F .  . L . L .  . F . F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . F . F .  . L . L .  . F . F .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
