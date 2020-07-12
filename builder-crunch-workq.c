@@ -22,6 +22,9 @@
 // add 2 to make evenly divisble by 8
 #define MAX_LINE_LENGTH 400
 
+#define BATCH_SIZE 2000000
+
+char to_write[BATCH_SIZE][MAX_LINE_LENGTH];
 
 /* Remove leading and trailing whitespaces */
 char *
@@ -151,9 +154,8 @@ process_workq(
     char *prev_move_ptr = NULL;
 
     int steps_to_scramble_length = 0;
-    unsigned int BATCH_SIZE = 20000;
     unsigned int array_size = (cube_size * cube_size * 6) + 1; // add 1 for the leading "x"
-    unsigned int BUFFER_SIZE = MAX_LINE_LENGTH * BATCH_SIZE;
+    size_t BUFFER_SIZE = MAX_LINE_LENGTH * BATCH_SIZE;
     unsigned int MEGABYTE = 1024 * 1024;
     unsigned int line_length = 0;
     unsigned int sizeof_array_size = sizeof(char) * array_size;
@@ -166,14 +168,13 @@ process_workq(
     unsigned char move_str_length = 0;
     unsigned char read_result = 0;
     unsigned char steps_to_scramble[MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH];
-    char to_write[BATCH_SIZE][MAX_LINE_LENGTH];
     unsigned char *to_write_dedup = NULL;
 
     char space_delim[] = " ";
 
     move_type move = MOVE_NONE;
     move_type prev_move = MOVE_NONE;
-    to_write_dedup = malloc(sizeof(char) * BUFFER_SIZE);
+    to_write_dedup = malloc(BUFFER_SIZE);
 
     memset(line, '\0', sizeof(char) * 512);
     memset(to_write, '\0',  BUFFER_SIZE);

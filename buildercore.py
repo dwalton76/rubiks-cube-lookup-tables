@@ -659,10 +659,11 @@ class BFS(object):
         Launch one builder-crunch-workq process per core. Wait for all of them
         to complete before returning.
         """
+        log.info("builder-crunch-workq begin")
         threads = []
         line_numbers_for_cores = get_line_number_splits(self.workq_size, self.cores)
         start_time = dt.datetime.now()
-        log.info("line_numbers_for_cores\n%s" % pformat(line_numbers_for_cores))
+        # log.info("line_numbers_for_cores\n%s" % pformat(line_numbers_for_cores))
 
         # Launch one builder-crunch-workq process per core
         # - each one will process a subsection of workq_filename_next
@@ -734,6 +735,7 @@ class BFS(object):
             sys.exit(1)
 
         self.time_in_crunching_workq += (dt.datetime.now() - start_time).total_seconds()
+        log.info("builder-crunch-workq end")
 
     def _search_process_builder_crunch_workq_results(self, max_depth):
         """
@@ -763,6 +765,7 @@ class BFS(object):
         #log.info("sort all of the files created by builder-crunch-workq processes end")
         subprocess.check_output("rm %s.core* " % self.workq_filename, shell=True)
 
+        '''
         log.info("uniq begin")
         start_time = dt.datetime.now()
 
@@ -777,6 +780,7 @@ class BFS(object):
         linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
         log.info("uniq end ({:,} lines)".format(linecount))
         #log.info("uniq end")
+        '''
 
         # Use "builder-find-new-states.py" to find the entries in the .results file that are not
         # in our current lookup-table.txt file. Save these in a .new_states file.
@@ -799,7 +803,7 @@ class BFS(object):
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-states.py end")
 
-        log.info("begin building next workq file")
+        log.info("building next workq file begin")
         start_time = dt.datetime.now()
         new_states_count = int(subprocess.check_output("wc -l %s.20-new-states" % self.workq_filename, shell=True).strip().split()[0])
         log.info("there are {:,} new states".format(new_states_count))
@@ -901,22 +905,21 @@ class BFS(object):
             with open(self.workq_filename_next, 'w') as fh_workq_next:
                 pass
 
-        self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
-
         if pruned:
             log.warning("kept {:,}, pruned {:,}".format(kept, pruned))
 
-        log.info("end building next workq file")
-
-        log.info("sort --merge our current lookup-table.txt file with the .20-new-states file")
+        self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
+        log.info("building next workq file end")
 
         # Now merge the lookup-table.txt we build in the previous levels with the .new file
         # Both are sorted so we can use the --merge option
         if os.path.exists(self.filename):
+            log.info("sort --merge our current lookup-table.txt file with the .20-new-states file begin")
             start_time = dt.datetime.now()
             subprocess.check_output("LC_ALL=C nice sort --merge --temporary-directory=./tmp/ --output %s.30-final %s %s.20-new-states" %
                 (self.workq_filename, self.filename, self.workq_filename), shell=True)
             self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
+            log.info("sort --merge our current lookup-table.txt file with the .20-new-states file end")
         else:
             subprocess.check_output("cp %s.20-new-states %s.30-final" % (self.workq_filename, self.workq_filename) , shell=True)
 
