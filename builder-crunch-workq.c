@@ -10,11 +10,7 @@
 #include <sys/resource.h>
 #include <sys/time.h>
 #include "ida_search_core.h"
-/*
-#include "ida_search_444.h"
-#include "ida_search_666.h"
-#include "ida_search_777.h"
-*/
+
 
 
 /* Remove leading and trailing whitespaces */
@@ -44,7 +40,6 @@ strstrip (char *s)
     return s;
 }
 
-
 void
 process_workq(
     char *inputfile,
@@ -59,18 +54,20 @@ process_workq(
     FILE *fh_read = NULL;
     FILE *fh_write = NULL;
     unsigned int array_size = (cube_size * cube_size * 6) + 1;
-    unsigned int MAX_LINE_WIDTH = 512;
-    unsigned int BATCH_SIZE = 10000;
     unsigned int line_length = 0;
     unsigned int move_index = 0;
     unsigned int move_str_length = 0;
+    unsigned int MAX_LINE_WIDTH = 512;
     unsigned char line[MAX_LINE_WIDTH];
     unsigned char cube[array_size];
     unsigned char cube_tmp[array_size];
     unsigned int sizeof_array_size = sizeof(char) * array_size;
-    unsigned char to_write[BATCH_SIZE * MAX_LINE_WIDTH];
-    unsigned char *to_write_ptr = to_write;
     unsigned int to_write_count = 0;
+    unsigned int BATCH_SIZE = 100000;
+    unsigned char *to_write;
+    to_write = malloc(sizeof(char) * BATCH_SIZE * MAX_LINE_WIDTH);
+    unsigned char *to_write_ptr = to_write;
+
     move_type move;
 
     memset(line, '\0', sizeof(char) * MAX_LINE_WIDTH);
