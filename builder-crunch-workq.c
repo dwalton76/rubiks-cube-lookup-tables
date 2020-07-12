@@ -63,14 +63,17 @@ process_workq(
     unsigned char cube_tmp[array_size];
     unsigned int sizeof_array_size = sizeof(char) * array_size;
     unsigned int to_write_count = 0;
-    unsigned int steps_to_scramble_length = 0;
+    int steps_to_scramble_length = 0;
     unsigned int BATCH_SIZE = 100000;
+    unsigned char read_result = 0;
     unsigned char *to_write;
     to_write = malloc(sizeof(char) * BATCH_SIZE * MAX_LINE_WIDTH);
     unsigned char *to_write_ptr = to_write;
     char space_delim[] = " ";
-
-    move_type move;
+    move_type move = MOVE_NONE;
+    move_type prev_move = MOVE_NONE;
+    char *move_ptr = NULL;
+    char *prev_move_ptr = NULL;
 
     memset(line, '\0', sizeof(char) * MAX_LINE_WIDTH);
     memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
@@ -90,100 +93,110 @@ process_workq(
         inputfile, start, end, linewidth, array_size);
 
     for (unsigned int line_number = start; line_number <= end; line_number++) {
-        if (fread(line, linewidth, 1, fh_read)) {
-            strstrip(line);
-            line_length = strlen(line);
+        read_result = fread(line, linewidth, 1, fh_read);
 
-            if (line_length > MAX_LINE_WIDTH) {
-                printf("ERROR: line %d is %d bytes, max supported is %d bytes\n", line_number, line_length, MAX_LINE_WIDTH);
-                printf("%s\n", line);
-                exit(1);
-            }
-
-            memcpy(cube, line, array_size);
-
-            move_type prev_move = MOVE_NONE;
-            steps_to_scramble_length = line_length - array_size - 1;
-
-            if (steps_to_scramble_length > 0) {
-                memset(steps_to_scramble, '\0', sizeof(char) * MAX_MOVE_STR_SIZE * 24);
-                memcpy(steps_to_scramble, &line[array_size+1], steps_to_scramble_length);
-
-                // what was the last move used to get to this state?
-                char *move_ptr = strtok(steps_to_scramble, space_delim);
-
-                // printf("%s\n", line);
-                // printf("line_length %d\n", line_length);
-                // printf("steps_to_scramble %s\n", steps_to_scramble);
-                // printf("steps_to_scramble_length %d\n", steps_to_scramble_length);
-                // printf("move_ptr %s\n", move_ptr);
-                char *prev_move_ptr = move_ptr;
-
-                while (move_ptr != NULL) {
-                    move_ptr = strtok(NULL, space_delim);
-
-                    if (move_ptr != NULL) {
-                        prev_move_ptr = move_ptr;
-                    }
-                }
-
-                prev_move = str2move(prev_move_ptr);
-            }
-
-            for (move_index = 0; move_index < moves_count; move_index++) {
-                move = moves[move_index];
-
-                if (steps_on_same_face_and_layer(move, prev_move)) {
-                    continue;
-                }
-
-                // printf("process_workq line %d/%d move %d/%d: %d\n", line_number, end, move_index, moves_count, move);
-                memcpy(cube_tmp, cube, sizeof_array_size);
-                rotate_555(cube_tmp, cube, array_size, move);
-
-                // if nothing changed, do not bother writing this result to the file
-                if (memcmp(cube_tmp, cube, sizeof_array_size) == 0) {
-                    continue;
-                }
-
-                // printf("%s\n", move2str[move]);
-                // print_cube(cube_tmp, cube_size);
-                // printf("\n\n");
-                memcpy(line, cube_tmp, sizeof_array_size);
-                move_str_length = strlen(move2str[move]);
-
-                if (line[line_length-1] == ':') {
-                    memcpy(&line[line_length], move2str[move], move_str_length);
-                    line[line_length + move_str_length] = '\n';
-                    line[line_length + move_str_length + 1] = '\0';
-                } else {
-                    line[line_length] = ' ';
-                    memcpy(&line[line_length + 1], move2str[move], move_str_length);
-                    line[line_length + 1 + move_str_length] = '\n';
-                    line[line_length + 1 + move_str_length + 1] = '\0';
-                }
-
-                memcpy(to_write_ptr, line, strlen(line));
-                to_write_ptr += strlen(line);
-                to_write_count++;
-
-                if (to_write_count >= BATCH_SIZE) {
-                    fputs(to_write, fh_write);
-                    memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
-                    to_write_count = 0;
-                    to_write_ptr = to_write;
-                }
-                // fputs(line, fh_write);
-            }
-
-        } else {
-            printf("ERROR: process_workq read failed for %s\n", inputfile);
+        if (!read_result) {
+            printf("ERROR: process_workq read for line %d failed for %s\n", line_number, inputfile);
             exit(1);
+        }
+
+        strstrip(line);
+        line_length = strlen(line);
+
+        if (line_length > MAX_LINE_WIDTH) {
+            printf("ERROR: line %d is %d bytes, max supported is %d bytes\n", line_number, line_length, MAX_LINE_WIDTH);
+            printf("%s\n", line);
+            exit(1);
+        }
+
+        memcpy(cube, line, array_size);
+
+        // what was the last move used to get to this state?
+        prev_move = MOVE_NONE;
+        steps_to_scramble_length = line_length - array_size - 1;
+
+        if (steps_to_scramble_length > 0) {
+            memset(steps_to_scramble, '\0', sizeof(char) * MAX_MOVE_STR_SIZE * 24);
+            memcpy(steps_to_scramble, &line[array_size+1], steps_to_scramble_length);
+            move_ptr = strtok(steps_to_scramble, space_delim);
+
+            // printf("%s\n", line);
+            // printf("line_length %d\n", line_length);
+            // printf("steps_to_scramble %s\n", steps_to_scramble);
+            // printf("steps_to_scramble_length %d\n", steps_to_scramble_length);
+            // printf("move_ptr %s\n", move_ptr);
+            prev_move_ptr = move_ptr;
+
+            while (move_ptr != NULL) {
+                move_ptr = strtok(NULL, space_delim);
+
+                if (move_ptr != NULL) {
+                    prev_move_ptr = move_ptr;
+                }
+            }
+
+            prev_move = str2move(prev_move_ptr);
+
+        } else if (steps_to_scramble_length < 0) {
+            printf("ERROR: invalid steps_to_scramble_length %d, line_length %d, array_size %d",
+                steps_to_scramble_length, line_length, array_size);
+            exit(1);
+        }
+
+        // loop over all of the moves we are using to build this lookup table
+        for (move_index = 0; move_index < moves_count; move_index++) {
+            move = moves[move_index];
+
+            // do not perform two moves back-to-back on the same face/layer
+            if (steps_on_same_face_and_layer(move, prev_move)) {
+                continue;
+            }
+
+            // copy cube to cube_tmp and apply "move" to cube_tmp
+            memcpy(cube_tmp, cube, sizeof_array_size);
+            rotate_555(cube_tmp, cube, array_size, move);
+
+            // if nothing changed, do not bother writing this result to the file
+            if (memcmp(cube_tmp, cube, sizeof_array_size) == 0) {
+                continue;
+            }
+
+            // use our "line" buffer to create the output to write to the file
+            // start with copying the cube_tmp state
+            memcpy(line, cube_tmp, sizeof_array_size);
+            move_str_length = strlen(move2str[move]);
+
+            // then add a space (if needed) followed by the move we just performed
+            if (line[line_length-1] == ':') {
+                memcpy(&line[line_length], move2str[move], move_str_length);
+                line[line_length + move_str_length] = '\n';
+                line[line_length + move_str_length + 1] = '\0';
+            } else {
+                line[line_length] = ' ';
+                memcpy(&line[line_length + 1], move2str[move], move_str_length);
+                line[line_length + 1 + move_str_length] = '\n';
+                line[line_length + 1 + move_str_length + 1] = '\0';
+            }
+
+            // copy the "line" we just contructed to our to_write buffer
+            memcpy(to_write_ptr, line, strlen(line));
+            to_write_ptr += strlen(line);
+            to_write_count++;
+
+            if (to_write_count >= BATCH_SIZE) {
+                fputs(to_write, fh_write);
+                memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
+                to_write_count = 0;
+                to_write_ptr = to_write;
+            }
         }
     }
 
     if (to_write_count) {
         fputs(to_write, fh_write);
+        memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
+        to_write_count = 0;
+        to_write_ptr = to_write;
     }
 }
 
@@ -256,17 +269,16 @@ main (int argc, char *argv[])
         exit(1);
     }
 
-    // init moves list
+    // create the moves array
     unsigned int moves_index = 0;
-    char delim[] = " ";
-    char *move_ptr = strtok(moves_buffer, delim);
+    char space_delim[] = " ";
+    char *move_ptr = strtok(moves_buffer, space_delim);
     move_type moves[MOVE_MAX];
     memset(moves, MOVE_MAX, sizeof(move_type) * MOVE_MAX);
 
     while (move_ptr != NULL) {
-        // printf("%s\n", move_ptr);
         moves[moves_index] = str2move(move_ptr);
-        move_ptr = strtok(NULL, delim);
+        move_ptr = strtok(NULL, space_delim);
         moves_index++;
     }
 
