@@ -48,8 +48,8 @@ process_workq(
     unsigned int start,
     unsigned int end,
     unsigned int cube_size,
-    move_type *moves,
-    unsigned int move_count)
+    move_type moves[MOVE_MAX],
+    unsigned int moves_count)
 {
     FILE *fh_read = NULL;
     FILE *fh_write = NULL;
@@ -80,7 +80,7 @@ process_workq(
     if (fh_read == NULL) {
         printf("ERROR: process_workq could not open %s\n", inputfile);
         exit(1);
-    }  
+    }
 
     fseek(fh_read, start * linewidth, SEEK_SET);
     LOG("read %dx%dx%d inputfile %s from %d to %d, linewidth %d, array_size %d\n",
@@ -91,13 +91,19 @@ process_workq(
         if (fread(line, linewidth, 1, fh_read)) {
             strstrip(line);
             line_length = strlen(line);
+
+            if (line_length > MAX_LINE_WIDTH) {
+                printf("ERROR: line is %d bytes, max supported is %d bytes\n", line_length, MAX_LINE_WIDTH);
+                printf("%s", line);
+                exit(1);
+            }
             memcpy(cube, line, array_size);
             // print_cube(cube, cube_size);
 
-            // dwalton
-            for (move_index = 0; move_index < move_count; move_index++) {
+            for (move_index = 0; move_index < moves_count; move_index++) {
                 memcpy(cube_tmp, cube, sizeof_array_size);
                 move = moves[move_index];
+                // printf("process_workq line %d/%d move %d/%d: %d\n", line_number, end, move_index, moves_count, move);
                 rotate_555(cube_tmp, cube, array_size, move);
 
                 // if nothing changed, do not bother writing this result to the file
@@ -217,14 +223,14 @@ main (int argc, char *argv[])
 
     // init moves list
     unsigned int moves_index = 0;
-    move_type moves[64];
-    memset(moves, MOVE_MAX, sizeof(move_type) * 64);
+    move_type moves[MOVE_MAX];
+    memset(moves, MOVE_MAX, sizeof(move_type) * MOVE_MAX);
 
     char delim[] = " ";
     char *move_ptr = strtok(moves_buffer, delim);
 
-	while (move_ptr != NULL) {
-		// printf("%s\n", move_ptr);
+    while (move_ptr != NULL) {
+        // printf("%s\n", move_ptr);
 
         if (strmatch(move_ptr, "U")) {
             moves[moves_index] = U;
@@ -345,9 +351,9 @@ main (int argc, char *argv[])
             exit(1);
         }
 
-		move_ptr = strtok(NULL, delim);
+        move_ptr = strtok(NULL, delim);
         moves_index++;
-	}
+    }
 
     process_workq(inputfile, outputfile, linewidth, start, end, cube_size, moves, moves_index);
 

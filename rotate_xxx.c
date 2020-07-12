@@ -446,7 +446,7 @@ rotate_222(char *cube, char *cube_tmp, int array_size, move_type move)
 
 
     default:
-        printf("ERROR: invalid move %d\n", move);
+        printf("ERROR: rotate_222 invalid move %d\n", move);
         exit(1);
     }
 }
@@ -1204,7 +1204,7 @@ rotate_333(char *cube, char *cube_tmp, int array_size, move_type move)
 
 
     default:
-        printf("ERROR: invalid move %d\n", move);
+        printf("ERROR: rotate_333 invalid move %d\n", move);
         exit(1);
     }
 }
@@ -3360,7 +3360,7 @@ rotate_444(char *cube, char *cube_tmp, int array_size, move_type move)
 
 
     default:
-        printf("ERROR: invalid move %d\n", move);
+        printf("ERROR: rotate_444 invalid move %d\n", move);
         exit(1);
     }
 }
@@ -6332,7 +6332,7 @@ rotate_555(char *cube, char *cube_tmp, int array_size, move_type move)
 
 
     default:
-        printf("ERROR: invalid move %d\n", move);
+        printf("ERROR: rotate_555 invalid move %d\n", move);
         exit(1);
     }
 }
@@ -12358,7 +12358,7 @@ rotate_666(char *cube, char *cube_tmp, int array_size, move_type move)
 
 
     default:
-        printf("ERROR: invalid move %d\n", move);
+        printf("ERROR: rotate_666 invalid move %d\n", move);
         exit(1);
     }
 }
@@ -19920,7 +19920,7 @@ rotate_777(char *cube, char *cube_tmp, int array_size, move_type move)
 
 
     default:
-        printf("ERROR: invalid move %d\n", move);
+        printf("ERROR: rotate_777 invalid move %d\n", move);
         exit(1);
     }
 }
