@@ -188,7 +188,9 @@ process_workq(
         exit(1);
     }
 
-    fseek(fh_read, start * linewidth, SEEK_SET);
+    unsigned long seek_target = (unsigned long) start * (unsigned long) linewidth;
+    fseek(fh_read, seek_target, SEEK_SET);
+
     LOG("read %dx%dx%d inputfile %s from line %d to %d, MAX_LINE_LENGTH %d, BUFFER_SIZE %d MB\n",
         cube_size, cube_size, cube_size,
         inputfile, start, end, MAX_LINE_LENGTH, (BUFFER_SIZE * 2)/ MEGABYTE);
@@ -217,14 +219,17 @@ process_workq(
         steps_to_scramble_length = line_length - array_size - 1;
 
         if (steps_to_scramble_length > 0) {
+
+            // printf("\nBEGIN%sEND\n", line);
+            // printf("line_number %d\n", line_number);
+            // printf("line_length %d\n", line_length);
+            // printf("steps_to_scramble_length %d\n", steps_to_scramble_length);
+
             memset(steps_to_scramble, '\0', sizeof(char) * MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH);
             memcpy(steps_to_scramble, &line[array_size+1], steps_to_scramble_length);
             move_ptr = strtok(steps_to_scramble, space_delim);
 
-            // printf("%s\n", line);
-            // printf("line_length %d\n", line_length);
             // printf("steps_to_scramble %s\n", steps_to_scramble);
-            // printf("steps_to_scramble_length %d\n", steps_to_scramble_length);
             // printf("move_ptr %s\n", move_ptr);
             prev_move_ptr = move_ptr;
 
@@ -298,6 +303,10 @@ process_workq(
         memset(to_write, '\0', BUFFER_SIZE);
         to_write_count = 0;
     }
+
+    fclose(fh_read);
+    fclose(fh_write);
+    free(to_write_dedup);
 }
 
 

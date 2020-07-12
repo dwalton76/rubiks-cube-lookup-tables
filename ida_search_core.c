@@ -1,4 +1,5 @@
 
+#include <signal.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -237,6 +238,7 @@ str2move(char *str)
 
     } else {
         printf("ERROR: str2move invalid move \"%s\"\n", str);
+        raise (SIGABRT);
         exit(1);
     }
 }
