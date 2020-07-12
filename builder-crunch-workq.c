@@ -60,6 +60,7 @@ process_workq(
     FILE *fh_write = NULL;
     unsigned int array_size = (cube_size * cube_size * 6) + 1;
     unsigned int MAX_LINE_WIDTH = 512;
+    unsigned int BATCH_SIZE = 10000;
     unsigned int line_length = 0;
     unsigned int move_index = 0;
     unsigned int move_str_length = 0;
@@ -67,9 +68,13 @@ process_workq(
     unsigned char cube[array_size];
     unsigned char cube_tmp[array_size];
     unsigned int sizeof_array_size = sizeof(char) * array_size;
+    unsigned char to_write[BATCH_SIZE * MAX_LINE_WIDTH];
+    unsigned char *to_write_ptr = to_write;
+    unsigned int to_write_count = 0;
     move_type move;
 
-    memset(line, 0, sizeof(char) * MAX_LINE_WIDTH);
+    memset(line, '\0', sizeof(char) * MAX_LINE_WIDTH);
+    memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
     memset(cube, 0, sizeof_array_size);
     memset(cube_tmp, 0, sizeof_array_size);
     fh_read = fopen(inputfile, "r");
@@ -120,13 +125,27 @@ process_workq(
                     line[line_length + move_str_length + 1] = '\0';
                 }
 
-                fputs(line, fh_write);
+                memcpy(to_write_ptr, line, strlen(line));
+                to_write_ptr += strlen(line);
+                to_write_count++;
+
+                if (to_write_count >= BATCH_SIZE) {
+                    fputs(to_write, fh_write);
+                    memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
+                    to_write_count = 0;
+                    to_write_ptr = to_write;
+                }
+                // fputs(line, fh_write);
             }
 
         } else {
             printf("ERROR: process_workq read failed for %s\n", inputfile);
             exit(1);
         }
+    }
+
+    if (to_write_count) {
+        fputs(to_write, fh_write);
     }
 }
 
