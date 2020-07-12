@@ -6,11 +6,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
-#include <sys/resource.h>
-#include <sys/time.h>
 #include "ida_search_core.h"
 
+// If by some miracle we ever start building lookup-tables deeper than 20 moves
+// then we will need to increase this constant
+#define MAX_MOVE_LENGTH 20
+
+// add 1 for the leading "x"
+// add 294 for a 7x7x7 cube (7 * 7 * 6)
+// add 1 for the ":" delimiter
+// add (MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH) or 100
+// add 1 for the newline
+// add 1 for the '\0'
+// That brings us to 398
+// add 2 to make evenly divisble by 8
+#define MAX_LINE_LENGTH 400
 
 
 /* Remove leading and trailing whitespaces */
@@ -39,6 +49,91 @@ strstrip (char *s)
     return s;
 }
 
+
+// https://github.com/codyryanwright/QuicksortStrings/blob/master/2dStringQuicksort.c
+void
+quicksort(
+    char A[][MAX_LINE_LENGTH],
+    unsigned int len)
+{
+    if (len < 2) {
+        return;
+    }
+
+    char pivot[MAX_LINE_LENGTH]; // pivot is comparator
+    strcpy(pivot, A[len / 2]);
+
+    int i = 0;
+    int j = len - 1;
+    char temp[MAX_LINE_LENGTH];
+
+    while (1) {
+        // find first to the left of pivot that is larger than pivot
+        while (strcmp(A[i], pivot) < 0) {
+            ++i;
+        }
+
+        // find first to the right of pivot that is smaller than pivot
+        while (strcmp(A[j], pivot) > 0) {
+            --j;
+        }
+
+        // Swap if i (larger than pivot) is left of j (smaller than pivot)
+        if (i < j) {
+            strcpy(temp, A[i]);
+            strcpy(A[i], A[j]);
+            strcpy(A[j], temp);
+        } else {
+            break;
+        }
+
+        ++i;
+        --j;
+    }
+
+    quicksort(A, i); // left half
+    quicksort(A + i, len - i); // right half
+}
+
+void
+deduplicate_to_write_buffer(
+    char to_write[][MAX_LINE_LENGTH],
+    char *to_write_dedup,
+    unsigned int BUFFER_SIZE,
+    unsigned int array_size,
+    unsigned int to_write_count)
+{
+    unsigned int line_length = 0;
+    char *to_write_dedup_ptr = to_write_dedup;
+
+    memset(to_write_dedup, '\0', BUFFER_SIZE);
+
+    // quicksort the contents of to_write
+    quicksort(to_write, to_write_count);
+
+    line_length = strlen(to_write[0]);
+    memcpy(to_write_dedup_ptr, to_write[0], line_length);
+    to_write_dedup_ptr += line_length;
+
+    if (to_write_count == 1) {
+        return;
+    }
+
+    // loop over to_write and write all unique states to to_write_dedup
+    for (unsigned int i = 1; i < to_write_count; i++) {
+
+        if (memcmp(to_write[i], to_write[i-1], array_size) != 0) {
+            line_length = strlen(to_write[i]);
+            memcpy(to_write_dedup_ptr, to_write[i], line_length);
+            // printf("KEEP %s", to_write[i]);
+            to_write_dedup_ptr += line_length;
+        // } else {
+        //     printf("SKIP %s", to_write[i]);
+        }
+    }
+}
+
+
 void
 process_workq(
     char *inputfile,
@@ -56,32 +151,32 @@ process_workq(
     char *prev_move_ptr = NULL;
 
     int steps_to_scramble_length = 0;
-    unsigned int array_size = (cube_size * cube_size * 6) + 1;
-    unsigned int BATCH_SIZE = 100000;
+    unsigned int BATCH_SIZE = 20000;
+    unsigned int array_size = (cube_size * cube_size * 6) + 1; // add 1 for the leading "x"
+    unsigned int BUFFER_SIZE = MAX_LINE_LENGTH * BATCH_SIZE;
+    unsigned int MEGABYTE = 1024 * 1024;
     unsigned int line_length = 0;
-    unsigned int MAX_LINE_WIDTH = 512;
     unsigned int sizeof_array_size = sizeof(char) * array_size;
     unsigned int to_write_count = 0;
 
     unsigned char cube[array_size];
     unsigned char cube_tmp[array_size];
-    unsigned char line[MAX_LINE_WIDTH];
+    unsigned char line[512];
     unsigned char move_index = 0;
     unsigned char move_str_length = 0;
     unsigned char read_result = 0;
-    unsigned char steps_to_scramble[MAX_MOVE_STR_SIZE * 24];
-    unsigned char *to_write = NULL;
-    unsigned char *to_write_ptr = NULL;
+    unsigned char steps_to_scramble[MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH];
+    char to_write[BATCH_SIZE][MAX_LINE_LENGTH];
+    unsigned char *to_write_dedup = NULL;
 
     char space_delim[] = " ";
 
     move_type move = MOVE_NONE;
     move_type prev_move = MOVE_NONE;
-    to_write = malloc(sizeof(char) * BATCH_SIZE * MAX_LINE_WIDTH);
-    to_write_ptr = to_write;
+    to_write_dedup = malloc(sizeof(char) * BUFFER_SIZE);
 
-    memset(line, '\0', sizeof(char) * MAX_LINE_WIDTH);
-    memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
+    memset(line, '\0', sizeof(char) * 512);
+    memset(to_write, '\0',  BUFFER_SIZE);
     memset(cube, 0, sizeof_array_size);
     memset(cube_tmp, 0, sizeof_array_size);
     fh_read = fopen(inputfile, "r");
@@ -93,9 +188,9 @@ process_workq(
     }
 
     fseek(fh_read, start * linewidth, SEEK_SET);
-    LOG("read %dx%dx%d inputfile %s from %d to %d, linewidth %d, array_size %d\n",
+    LOG("read %dx%dx%d inputfile %s from line %d to %d, MAX_LINE_LENGTH %d, BUFFER_SIZE %d MB\n",
         cube_size, cube_size, cube_size,
-        inputfile, start, end, linewidth, array_size);
+        inputfile, start, end, MAX_LINE_LENGTH, (BUFFER_SIZE * 2)/ MEGABYTE);
 
     for (unsigned int line_number = start; line_number <= end; line_number++) {
         read_result = fread(line, linewidth, 1, fh_read);
@@ -108,8 +203,8 @@ process_workq(
         strstrip(line);
         line_length = strlen(line);
 
-        if (line_length > MAX_LINE_WIDTH) {
-            printf("ERROR: line %d is %d bytes, max supported is %d bytes\n", line_number, line_length, MAX_LINE_WIDTH);
+        if (line_length > MAX_LINE_LENGTH) {
+            printf("ERROR: line %d is %d bytes, max supported is %d bytes\n", line_number, line_length, MAX_LINE_LENGTH);
             printf("%s\n", line);
             exit(1);
         }
@@ -121,7 +216,7 @@ process_workq(
         steps_to_scramble_length = line_length - array_size - 1;
 
         if (steps_to_scramble_length > 0) {
-            memset(steps_to_scramble, '\0', sizeof(char) * MAX_MOVE_STR_SIZE * 24);
+            memset(steps_to_scramble, '\0', sizeof(char) * MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH);
             memcpy(steps_to_scramble, &line[array_size+1], steps_to_scramble_length);
             move_ptr = strtok(steps_to_scramble, space_delim);
 
@@ -184,24 +279,23 @@ process_workq(
             }
 
             // copy the "line" we just contructed to our to_write buffer
-            memcpy(to_write_ptr, line, strlen(line));
-            to_write_ptr += strlen(line);
+            memcpy(to_write[to_write_count], line, strlen(line));
             to_write_count++;
 
-            if (to_write_count >= BATCH_SIZE) {
-                fputs(to_write, fh_write);
-                memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
+            if (to_write_count == BATCH_SIZE) {
+                deduplicate_to_write_buffer(to_write, to_write_dedup, BUFFER_SIZE, array_size, to_write_count);
+                fputs(to_write_dedup, fh_write);
+                memset(to_write, '\0', BUFFER_SIZE);
                 to_write_count = 0;
-                to_write_ptr = to_write;
             }
         }
     }
 
     if (to_write_count) {
-        fputs(to_write, fh_write);
-        memset(to_write, '\0',  sizeof(char) * MAX_LINE_WIDTH * BATCH_SIZE);
+        deduplicate_to_write_buffer(to_write, to_write_dedup, BUFFER_SIZE, array_size, to_write_count);
+        fputs(to_write_dedup, fh_write);
+        memset(to_write, '\0', BUFFER_SIZE);
         to_write_count = 0;
-        to_write_ptr = to_write;
     }
 }
 
@@ -250,7 +344,7 @@ main (int argc, char *argv[])
             strcpy(moves_buffer, argv[i]);
 
         } else if (strmatch(argv[i], "-h") || strmatch(argv[i], "--help")) {
-            printf("\nida_search --kociemba KOCIEMBA_STRING --type 5x5x5-LR-centers-stage\n\n");
+            printf("\nTODO\n\n");
             exit(0);
 
         } else {
@@ -288,9 +382,4 @@ main (int argc, char *argv[])
     }
 
     process_workq(inputfile, outputfile, linewidth, start, end, cube_size, moves, moves_index);
-
-    // Print the maximum resident set size used (in MB).
-    struct rusage r_usage;
-    getrusage(RUSAGE_SELF, &r_usage);
-    printf("Memory usage: %lu MB\n", (unsigned long) r_usage.ru_maxrss / (1024 * 1024));
 }
