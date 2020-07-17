@@ -682,7 +682,6 @@ class BFS(object):
             if start is None:
                 continue
 
-            # dwalton
             use_c = True
 
             if use_c:
@@ -757,8 +756,8 @@ class BFS(object):
 
         log.info("sort all of the files created by builder-crunch-workq processes begin")
         start_time = dt.datetime.now()
-        subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output %s.10-results %s.core*" %
-            (self.workq_filename, self.workq_filename), shell=True)
+        subprocess.check_output("LC_ALL=C nice sort --parallel=%d --temporary-directory=./tmp/ --output %s.10-results %s.core*" %
+            (self.cores, self.workq_filename, self.workq_filename), shell=True)
         self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
         linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
         log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
@@ -916,8 +915,8 @@ class BFS(object):
         if os.path.exists(self.filename):
             log.info("sort --merge our current lookup-table.txt file with the .20-new-states file begin")
             start_time = dt.datetime.now()
-            subprocess.check_output("LC_ALL=C nice sort --merge --temporary-directory=./tmp/ --output %s.30-final %s %s.20-new-states" %
-                (self.workq_filename, self.filename, self.workq_filename), shell=True)
+            subprocess.check_output("LC_ALL=C nice sort --parallel=%d --merge --temporary-directory=./tmp/ --output %s.30-final %s %s.20-new-states" %
+                (self.cores, self.workq_filename, self.filename, self.workq_filename), shell=True)
             self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
             log.info("sort --merge our current lookup-table.txt file with the .20-new-states file end")
         else:
@@ -1162,9 +1161,14 @@ class BFS(object):
             log.info("%s: pad the file" % self)
             subprocess.check_output("nice ./utils/pad-lines.py %s" % filename, shell=True)
 
-            log.info("%s: sort the file" % self)
-            subprocess.check_output("LC_ALL=C nice sort --temporary-directory=./tmp/ --output=%s %s" %
-                (filename, filename), shell=True)
+            # Check to see if the file is already sorted before we spend the cycles to sort it
+            try:
+                log.info("%s: sort --check" % self)
+                subprocess.check_output("LC_ALL=C nice sort --check %s" % filename, shell=True)
+            except subprocess.CalledProcessError:
+                log.info("%s: sort the file" % self)
+                subprocess.check_output("LC_ALL=C nice sort --parallel=%d --temporary-directory=./tmp/ --output=%s %s" %
+                    (self.cores, filename, filename), shell=True)
 
             log.info("%s: build histogram" % self)
             subprocess.check_output("nice ./utils/print-histogram.py %s >> histogram.txt" % filename, shell=True)
