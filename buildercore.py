@@ -1103,6 +1103,7 @@ class BFS(object):
                 else:
                     lt_centers_max_depth = self.lt_centers_max_depth
                     store_as_hex = self.store_as_hex
+                    use_odd_even = None
 
                     for line in fh_read:
                         (cube_state_string, steps) = line.rstrip().split(':')
@@ -1120,19 +1121,23 @@ class BFS(object):
                         else:
                             cube_state_string_small = cube_state_string[1:].replace('.', '')
 
-                        if "_odd" in cube_state_string_small:
-                            odd_even = "_odd"
-                            cube_state_string_small = cube_state_string_small.replace("_odd", "")
-                        elif "_even" in cube_state_string_small:
-                            odd_even = "_even"
-                            cube_state_string_small = cube_state_string_small.replace("_even", "")
-                        else:
-                            odd_even = ""
+                        if use_odd_even is None:
+                            use_odd_even = bool("_odd" in cube_state_string_small or "_even" in cube_state_string_small)
+
+                        odd_even = ""
+
+                        if use_odd_even:
+                            if "_odd" in cube_state_string_small:
+                                odd_even = "_odd"
+                                cube_state_string_small = cube_state_string_small.replace("_odd", "")
+                            elif "_even" in cube_state_string_small:
+                                odd_even = "_even"
+                                cube_state_string_small = cube_state_string_small.replace("_even", "")
 
                         if store_as_hex:
                             cube_state_string_small = convert_state_to_hex(cube_state_string_small)
 
-                        to_write.append("%s%s:%s" % (cube_state_string_small, odd_even, steps))
+                        to_write.append(f"{cube_state_string_small}{odd_even}:{steps}")
                         to_write_count += 1
 
                         if to_write_count >= WRITE_BATCH_SIZE:

@@ -14,25 +14,23 @@ import sys
 def advance_filehandle(fh):
     try:
         line = next(fh)
-        # line = line.rstrip()
     except StopIteration:
         line = None
 
     return line
 
 
-def advance_filehandle_to_state_change(current_state, fh):
+def advance_filehandle_to_state_change(state_length, current_state, fh):
 
     while True:
-        line = advance_filehandle(fh)
+        try:
+            line = next(fh)
 
-        if line is None:
-            break
-        else:
-            state = line.split(':')[0]
-
-            if state != current_state:
+            if line[0:state_length] != current_state:
                 break
+        except StopIteration:
+            line = None
+            break
 
     return line
 
@@ -68,11 +66,19 @@ def diff_states(filenameA, filenameB, outputfile):
         else:
             stateA = None
 
+        if stateA:
+            state_length = len(stateA)
+        elif stateB:
+            state_length = len(stateB)
+        else:
+            raise Exception("should not be here")
+
         while lineB:
 
             # We have hit the end of filenameA so everything left in filenameB is missing from filenameA
             if lineA is None:
-                to_write.append("%s:%s" % (stateB, ' '.join(reverse_steps(steps_to_scrambleB.split()))))
+                steps_to_solve = ' '.join(reverse_steps(steps_to_scrambleB.split()))
+                to_write.append(f"{stateB}:{steps_to_solve}")
                 to_write_count += 1
 
                 if to_write_count >= WRITE_BATCH_SIZE:
@@ -81,7 +87,7 @@ def diff_states(filenameA, filenameB, outputfile):
                     to_write = []
                     to_write_count = 0
 
-                lineB = advance_filehandle_to_state_change(stateB, fhB)
+                lineB = advance_filehandle_to_state_change(state_length, stateB, fhB)
 
                 if lineB:
                     (stateB, steps_to_scrambleB) = lineB.split(':')
@@ -89,7 +95,12 @@ def diff_states(filenameA, filenameB, outputfile):
                     break
 
             elif stateA < stateB:
-                lineA = advance_filehandle(fhA)
+                # Avoid this function call
+                # lineA = advance_filehandle(fhA)
+                try:
+                    lineA = next(fhA)
+                except StopIteration:
+                    lineA = None
 
                 if lineA:
                     (stateA, steps_to_scrambleA) = lineA.split(':')
@@ -98,8 +109,15 @@ def diff_states(filenameA, filenameB, outputfile):
 
             elif stateA == stateB:
                 #log.info("stateA == stateB, advance both filehandles")
-                lineA = advance_filehandle(fhA)
-                lineB = advance_filehandle_to_state_change(stateB, fhB)
+
+                # Avoid this function call
+                # lineA = advance_filehandle(fhA)
+                try:
+                    lineA = next(fhA)
+                except StopIteration:
+                    lineA = None
+
+                lineB = advance_filehandle_to_state_change(state_length, stateB, fhB)
 
                 if lineA:
                     (stateA, steps_to_scrambleA) = lineA.split(':')
@@ -114,7 +132,8 @@ def diff_states(filenameA, filenameB, outputfile):
             # stateA > stateB
             else:
                 while stateA > stateB:
-                    to_write.append("%s:%s" % (stateB, ' '.join(reverse_steps(steps_to_scrambleB.split()))))
+                    steps_to_solve = ' '.join(reverse_steps(steps_to_scrambleB.split()))
+                    to_write.append(f"{stateB}:{steps_to_solve}")
                     to_write_count += 1
 
                     if to_write_count >= WRITE_BATCH_SIZE:
@@ -124,7 +143,7 @@ def diff_states(filenameA, filenameB, outputfile):
                         to_write_count = 0
 
                     #log.info("stateB < stateA writing %s" % lineB)
-                    lineB = advance_filehandle_to_state_change(stateB, fhB)
+                    lineB = advance_filehandle_to_state_change(state_length, stateB, fhB)
 
                     if lineB:
                         (stateB, steps_to_scrambleB) = lineB.split(':')
