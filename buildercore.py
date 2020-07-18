@@ -760,8 +760,8 @@ class BFS(object):
             os.remove(self.workq_filename)
 
         # find state_width
-        core_files = glob.glob("tmp/*core*")
-        log.info(f"core_files {core_files}")
+        core_files = sorted(glob.glob("tmp/*core*"))
+        # log.info(f"core_files {core_files}")
         first_core_file = core_files[0]
 
         with open(first_core_file, "r") as fh:
