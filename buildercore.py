@@ -760,7 +760,9 @@ class BFS(object):
             os.remove(self.workq_filename)
 
         # find state_width
-        first_core_file = glob.glob("tmp/*core*")[0]
+        core_files = glob.glob("tmp/*core*")
+        log.info(f"core_files {core_files}")
+        first_core_file = core_files[0]
 
         with open(first_core_file, "r") as fh:
             line = next(fh)
@@ -771,12 +773,15 @@ class BFS(object):
             state = line.split(":")[0]
             state_width = len(state)
 
+        with open("tmp/files_to_sort.txt", "w") as fh:
+            fh.write('\0'.join(core_files))
+
         log.info("sort all of the files created by builder-crunch-workq processes begin")
         # log.info(f"state_width {state_width} per {first_core_file}")
         start_time = dt.datetime.now()
-        cmd = "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=./tmp/ --output %s %s.core*" % \
-            (self.cores, state_width, sorted_results_filename, self.workq_filename)
-        # log.info(cmd)
+        cmd = "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=./tmp/ --output %s --files0-from='tmp/files_to_sort.txt'" % \
+            (self.cores, state_width, sorted_results_filename)
+        #log.info(cmd)
         subprocess.check_output(cmd, shell=True)
         self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
         #linecount = int(subprocess.check_output("wc -l %s" % sorted_results_filename, shell=True).decode("ascii").strip().split()[0])
@@ -808,8 +813,6 @@ class BFS(object):
             start_time = dt.datetime.now()
             cmd = "nice ./builder-find-new-states.py %s %s %s.20-new-states" % (self.filename, sorted_results_filename, self.workq_filename)
             log.info(cmd)
-            # dwalton
-            # input("<PRESS ENTER>")
             subprocess.check_output(cmd, shell=True)
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-states.py end")
