@@ -24,6 +24,9 @@
 
 #define BATCH_SIZE 2000000
 
+#define MAX_FILENAME_SIZE 128
+
+
 char to_write[BATCH_SIZE][MAX_LINE_LENGTH];
 
 /* Remove leading and trailing whitespaces */
@@ -160,6 +163,7 @@ process_workq(
     unsigned int line_length = 0;
     unsigned int sizeof_array_size = sizeof(char) * array_size;
     unsigned int to_write_count = 0;
+    unsigned int file_count = 0;
 
     unsigned char cube[array_size];
     unsigned char cube_tmp[array_size];
@@ -169,6 +173,7 @@ process_workq(
     unsigned char read_result = 0;
     unsigned char steps_to_scramble[MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH];
     unsigned char *to_write_dedup = NULL;
+    char tmp_outputfile[MAX_FILENAME_SIZE];
 
     char space_delim[] = " ";
 
@@ -180,8 +185,8 @@ process_workq(
     memset(to_write, '\0',  BUFFER_SIZE);
     memset(cube, 0, sizeof_array_size);
     memset(cube_tmp, 0, sizeof_array_size);
+    memset(tmp_outputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
     fh_read = fopen(inputfile, "r");
-    fh_write = fopen(outputfile, "w");
 
     if (fh_read == NULL) {
         printf("ERROR: process_workq could not open %s\n", inputfile);
@@ -290,22 +295,31 @@ process_workq(
 
             if (to_write_count == BATCH_SIZE) {
                 deduplicate_to_write_buffer(to_write, to_write_dedup, BUFFER_SIZE, array_size, to_write_count);
+                sprintf(tmp_outputfile, "%s-%07d", outputfile, file_count);
+                fh_write = fopen(tmp_outputfile, "w");
                 fputs(to_write_dedup, fh_write);
+                fclose(fh_write);
+                fh_write = NULL;
                 memset(to_write, '\0', BUFFER_SIZE);
                 to_write_count = 0;
+                file_count++;
             }
         }
     }
 
     if (to_write_count) {
         deduplicate_to_write_buffer(to_write, to_write_dedup, BUFFER_SIZE, array_size, to_write_count);
+        sprintf(tmp_outputfile, "%s-%07d", outputfile, file_count);
+        fh_write = fopen(tmp_outputfile, "w");
         fputs(to_write_dedup, fh_write);
+        fclose(fh_write);
+        fh_write = NULL;
         memset(to_write, '\0', BUFFER_SIZE);
         to_write_count = 0;
+        file_count++;
     }
 
     fclose(fh_read);
-    fclose(fh_write);
     free(to_write_dedup);
 }
 
@@ -317,12 +331,11 @@ main (int argc, char *argv[])
     unsigned int start = 0;
     unsigned int end = 0;
     unsigned int cube_size = 0;
-    unsigned int MAX_FILENAME_SIZE = 128;
     char inputfile[MAX_FILENAME_SIZE];
     char outputfile[MAX_FILENAME_SIZE];
     char moves_buffer[512];
-    memset(inputfile, 0, sizeof(char) * MAX_FILENAME_SIZE);
-    memset(outputfile, 0, sizeof(char) * MAX_FILENAME_SIZE);
+    memset(inputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
+    memset(outputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
 
     for (int i = 1; i < argc; i++) {
         if (strmatch(argv[i], "--inputfile")) {

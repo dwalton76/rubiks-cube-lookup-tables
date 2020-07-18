@@ -754,9 +754,10 @@ class BFS(object):
         if os.path.exists(self.workq_filename):
             os.remove(self.workq_filename)
 
+        # dwalton do this per core and use uniq
         log.info("sort all of the files created by builder-crunch-workq processes begin")
         start_time = dt.datetime.now()
-        subprocess.check_output("LC_ALL=C nice sort --parallel=%d --temporary-directory=./tmp/ --output %s.10-results %s.core*" %
+        subprocess.check_output("LC_ALL=C nice sort --parallel=%d --merge --temporary-directory=./tmp/ --output %s.10-results %s.core*" %
             (self.cores, self.workq_filename, self.workq_filename), shell=True)
         self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
         linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
