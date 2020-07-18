@@ -1136,12 +1136,14 @@ class BFS(object):
                         to_write_count += 1
 
                         if to_write_count >= WRITE_BATCH_SIZE:
-                            fh_final.write("\n".join(to_write) + "\n")
+                            fh_final.write("\n".join(to_write))
+                            fh_final.write("\n")
                             to_write = []
                             to_write_count = 0
 
             if to_write_count:
-                fh_final.write("\n".join(to_write) + "\n")
+                fh_final.write("\n".join(to_write))
+                fh_final.write("\n")
                 to_write = []
                 to_write_count = 0
 

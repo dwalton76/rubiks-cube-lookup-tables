@@ -130,7 +130,6 @@ edge_stats= {}
 edge_stats2= {}
 
 linecount = 0
-total_steps = 0
 
 if 'step101-edges' in filename:
     do_edges = True
@@ -138,13 +137,16 @@ else:
     do_edges = False
 do_edges = False
 
+for x in range(1, 30):
+    stats[x] = 0
+
 with open(filename, 'r') as fh:
     for line in fh:
-        line = line.strip()
+        line = line.rstrip()
 
-        if ":" in line:
+        try:
             (state, steps) = line.split(':')
-        else:
+        except Exception:
             state = None
             steps = line
 
@@ -160,14 +162,10 @@ with open(filename, 'r') as fh:
         if len_steps == 0 or len_steps == 1:
             print(line)
 
-        if len_steps == 1 and steps[0] == 'Na':
-            len_steps = 0
-
-        if len_steps not in stats:
-            stats[len_steps] = 0
+            if len_steps == 1 and steps[0] == 'Na':
+                len_steps = 0
 
         stats[len_steps] += 1
-        total_steps += len_steps
 
         # Edge stats
         if do_edges:
@@ -196,7 +194,11 @@ print('\n    ' + filename)
 print("    " + "=" * len(filename))
 
 prev = None
+total_steps = 0
 for key in sorted(stats.keys()):
+
+    if not stats[key]:
+        break
 
     if prev is None:
         delta = float(0)
@@ -204,6 +206,7 @@ for key in sorted(stats.keys()):
         delta = float(stats[key]/prev)
 
     print("    {} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(key, stats[key], int(float(stats[key]/linecount) * 100), delta))
+    total_steps += key * stats[key]
     prev = stats[key]
 
 if do_edges:
