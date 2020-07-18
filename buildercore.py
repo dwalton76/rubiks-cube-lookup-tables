@@ -15,6 +15,7 @@ from threading import Thread, Event
 import argparse
 import datetime as dt
 import gc
+import glob
 import logging
 import math
 import os
@@ -541,7 +542,6 @@ class BFS(object):
         self.workq_line_length = self.get_workq_line_length()
 
         self.time_in_sort = 0
-        self.time_in_uniq = 0
         self.time_in_building_workq = 0
         self.time_in_crunching_workq = 0
         self.time_in_save = 0
@@ -754,33 +754,31 @@ class BFS(object):
         if os.path.exists(self.workq_filename):
             os.remove(self.workq_filename)
 
-        # dwalton do this per core and use uniq
-        log.info("sort all of the files created by builder-crunch-workq processes begin")
-        start_time = dt.datetime.now()
-        subprocess.check_output("LC_ALL=C nice sort --parallel=%d --merge --temporary-directory=./tmp/ --output %s.10-results %s.core*" %
-            (self.cores, self.workq_filename, self.workq_filename), shell=True)
-        self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
-        linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
-        log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
-        #log.info("sort all of the files created by builder-crunch-workq processes end")
-        subprocess.check_output("rm %s.core* " % self.workq_filename, shell=True)
+        # find state_width
+        first_core_file = glob.glob("tmp/*core*")[0]
 
-        '''
-        log.info("uniq begin")
-        start_time = dt.datetime.now()
-
-        with open("%s.10-results" % self.workq_filename, "r") as fh:
+        with open(first_core_file, "r") as fh:
             line = next(fh)
+
+            if line.count(":") != 1:
+                raise Exception("Implement this")
+
             state = line.split(":")[0]
             state_width = len(state)
 
-        subprocess.check_output("nice uniq --check-chars=%d %s.10-results %s.15-uniq" % (state_width, self.workq_filename, self.workq_filename), shell=True)
-        self.time_in_uniq += (dt.datetime.now() - start_time).total_seconds()
-        shutil.move("%s.15-uniq" % self.workq_filename, "%s.10-results" % self.workq_filename)
-        linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
-        log.info("uniq end ({:,} lines)".format(linecount))
-        #log.info("uniq end")
-        '''
+        log.info(f"state_width {state_width} per {first_core_file}")
+
+        log.info("sort all of the files created by builder-crunch-workq processes begin")
+        start_time = dt.datetime.now()
+        cmd = "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=./tmp/ --output %s.10-results %s.core*" % \
+            (self.cores, state_width, self.workq_filename, self.workq_filename)
+        log.info(cmd)
+        subprocess.check_output(cmd, shell=True)
+        self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
+        #linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
+        #log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
+        log.info("sort all of the files created by builder-crunch-workq processes end")
+        subprocess.check_output("rm %s.core* " % self.workq_filename, shell=True)
 
         # Use "builder-find-new-states.py" to find the entries in the .results file that are not
         # in our current lookup-table.txt file. Save these in a .new_states file.
