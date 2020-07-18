@@ -14,7 +14,7 @@ import sys
 def advance_filehandle(fh):
     try:
         line = next(fh)
-        line = line.strip()
+        # line = line.rstrip()
     except StopIteration:
         line = None
 
@@ -22,6 +22,7 @@ def advance_filehandle(fh):
 
 
 def advance_filehandle_to_state_change(current_state, fh):
+
     while True:
         line = advance_filehandle(fh)
 
@@ -75,7 +76,8 @@ def diff_states(filenameA, filenameB, outputfile):
                 to_write_count += 1
 
                 if to_write_count >= WRITE_BATCH_SIZE:
-                    fh.write("\n".join(to_write) + "\n")
+                    fh.write("\n".join(to_write))
+                    fh.write("\n")
                     to_write = []
                     to_write_count = 0
 
@@ -109,13 +111,15 @@ def diff_states(filenameA, filenameB, outputfile):
                 else:
                     stateB = None
 
+            # stateA > stateB
             else:
-                while stateB < stateA:
+                while stateA > stateB:
                     to_write.append("%s:%s" % (stateB, ' '.join(reverse_steps(steps_to_scrambleB.split()))))
                     to_write_count += 1
 
                     if to_write_count >= WRITE_BATCH_SIZE:
-                        fh.write("\n".join(to_write) + "\n")
+                        fh.write("\n".join(to_write))
+                        fh.write("\n")
                         to_write = []
                         to_write_count = 0
 
@@ -129,7 +133,8 @@ def diff_states(filenameA, filenameB, outputfile):
                         break
 
         if to_write_count:
-            fh.write("\n".join(to_write) + "\n")
+            fh.write("\n".join(to_write))
+            fh.write("\n")
             to_write = []
             to_write_count = 0
 

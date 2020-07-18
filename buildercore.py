@@ -105,18 +105,21 @@ def reverse_steps(steps):
     >>> reverse_steps(["U", "R'", "D2"])
     ['D2', 'R', "U'"]
     """
-    assert isinstance(steps, list)
 
+    '''
     results = []
     for step in reversed(steps):
-        if step.endswith("2"):
+        if step[-1] == "2":
             pass
-        elif step.endswith("'"):
+        elif step[-1] == "'":
             step = step[0:-1]
         else:
             step += "'"
+
         results.append(step)
     return results
+    '''
+    return [step if step[-1] == "2" else step[0:-1] if step[-1] == "'" else step + "'" for step in reversed(steps)]
 
 
 def convert_state_to_hex(state):
@@ -542,6 +545,7 @@ class BFS(object):
         self.workq_line_length = self.get_workq_line_length()
 
         self.time_in_sort = 0
+        self.time_in_file_delete = 0
         self.time_in_building_workq = 0
         self.time_in_crunching_workq = 0
         self.time_in_save = 0
@@ -749,6 +753,7 @@ class BFS(object):
         rotate_xxx = self.rotate_xxx
         workq_line_length = self.workq_line_length
         self.workq_size = 0
+        sorted_results_filename = "%s.10-results" % self.workq_filename
 
         # Remove the workq file to save some disk space
         if os.path.exists(self.workq_filename):
@@ -766,38 +771,46 @@ class BFS(object):
             state = line.split(":")[0]
             state_width = len(state)
 
-        log.info(f"state_width {state_width} per {first_core_file}")
-
         log.info("sort all of the files created by builder-crunch-workq processes begin")
+        # log.info(f"state_width {state_width} per {first_core_file}")
         start_time = dt.datetime.now()
-        cmd = "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=./tmp/ --output %s.10-results %s.core*" % \
-            (self.cores, state_width, self.workq_filename, self.workq_filename)
-        log.info(cmd)
+        cmd = "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=./tmp/ --output %s %s.core*" % \
+            (self.cores, state_width, sorted_results_filename, self.workq_filename)
+        # log.info(cmd)
         subprocess.check_output(cmd, shell=True)
         self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
-        #linecount = int(subprocess.check_output("wc -l %s.10-results" % self.workq_filename, shell=True).decode("ascii").strip().split()[0])
+        #linecount = int(subprocess.check_output("wc -l %s" % sorted_results_filename, shell=True).decode("ascii").strip().split()[0])
         #log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
         log.info("sort all of the files created by builder-crunch-workq processes end")
+
+        log.info("rm builder-crunch-workq output files begin")
+        start_time = dt.datetime.now()
         subprocess.check_output("rm %s.core* " % self.workq_filename, shell=True)
+        self.time_in_file_delete += (dt.datetime.now() - start_time).total_seconds()
+        log.info("rm builder-crunch-workq output files end")
 
         # Use "builder-find-new-states.py" to find the entries in the .results file that are not
         # in our current lookup-table.txt file. Save these in a .new_states file.
         if self.use_edges_pattern:
             log.info("keep-best-solution.py begin")
             start_time = dt.datetime.now()
-            subprocess.check_output("nice ./utils/keep-best-solution.py %s.10-results" % self.workq_filename, shell=True)
+            subprocess.check_output("nice ./utils/keep-best-solution.py %s" % sorted_results_filename, shell=True)
             self.time_in_keep_best_solution += (dt.datetime.now() - start_time).total_seconds()
             log.info("keep-best-solution.py end")
 
             log.info("builder-find-new-edges-pattern-states.py begin")
             start_time = dt.datetime.now()
-            subprocess.check_output("nice ./builder-find-new-edges-pattern-states.py %s %s.10-results %s.20-new-states" % (self.filename, self.workq_filename, self.workq_filename) , shell=True)
+            subprocess.check_output("nice ./builder-find-new-edges-pattern-states.py %s %s %s.20-new-states" % (self.filename, sorted_results_filename, self.workq_filename) , shell=True)
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-edges-pattern-states.py end")
         else:
             log.info("builder-find-new-states.py begin")
             start_time = dt.datetime.now()
-            subprocess.check_output("nice ./builder-find-new-states.py %s %s.10-results %s.20-new-states" % (self.filename, self.workq_filename, self.workq_filename) , shell=True)
+            cmd = "nice ./builder-find-new-states.py %s %s %s.20-new-states" % (self.filename, sorted_results_filename, self.workq_filename)
+            log.info(cmd)
+            # dwalton
+            # input("<PRESS ENTER>")
+            subprocess.check_output(cmd, shell=True)
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-states.py end")
 
