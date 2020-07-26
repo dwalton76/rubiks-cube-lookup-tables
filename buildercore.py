@@ -673,12 +673,6 @@ class BFS(object):
         # - each one will process a subsection of workq_filename_next
         # - wait for all of them to finish before we move on
         for core in range(self.cores):
-            per_core_filename = self.get_workq_filename_for_core(core)
-
-            # If _setup() left this file, it means all of the work needed
-            # by this core was already done
-            if os.path.exists(per_core_filename):
-                continue
 
             # If we are out of memory and swapping this will fail due to "OSError: Cannot allocate memory"
             (start, end) = line_numbers_for_cores[core]
@@ -720,6 +714,21 @@ class BFS(object):
             log.info(' '.join(cmd))
 
             thread = BackgroundProcess(cmd, 'builder-crunch-workq core %d' % core)
+            thread.start()
+            threads.append(thread)
+
+        # This is only needed for extreme cases...builder-crunch-workq-housekeeper.py will
+        # do a "sort --merge --uniq" of the tmp/*core* files to reduce the amount of disk
+        # space used.
+        MILLION = 1000000
+        BILLION = 1000 * MILLION
+        if self.workq_size >= BILLION:
+            log.info("running ./builder-crunch-workq-housekeeper.py to keep disk usage in check")
+            cmd = [
+                'nice',
+                './builder-crunch-workq-housekeeper.py',
+            ]
+            thread = BackgroundProcess(cmd, 'builder-crunch-workq-housekeeper')
             thread.start()
             threads.append(thread)
 
