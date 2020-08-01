@@ -32,6 +32,7 @@ class StartingStatesBuild222Ultimate(BFS):
       D D
       D D""", 'ascii'),),
             legal_moves=("x", "x'", "y", "y'", "z", "z'"),
+            use_c=True,
         )
 
 
@@ -73,6 +74,7 @@ class Build222Ultimate(BFS):
              ('UUUUFFFFRRRRBBBBLLLLDDDD', 'ULFRBD'),
              ('UUUULLLLFFFFRRRRBBBBDDDD', 'ULFRBD'),
              ('UUUURRRRBBBBLLLLFFFFDDDD', 'ULFRBD'),
-            )
+            ),
+            use_c=True,
         )
 

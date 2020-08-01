@@ -429,7 +429,7 @@ class BFS(object):
 
     def __init__(self, name, illegal_moves, size, filename, store_as_hex, starting_cube_states,
                  use_cost_only=False, use_hash_cost_only=False, use_edges_pattern=False, legal_moves=None,
-                 rotations=[], use_centers_then_edges=False):
+                 rotations=[], use_centers_then_edges=False, use_c=False):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
@@ -444,6 +444,7 @@ class BFS(object):
         self.use_centers_then_edges = use_centers_then_edges
         self.lt_centers = {}
         self.lt_centers_max_depth = None
+        self.use_c = use_c
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
@@ -680,11 +681,9 @@ class BFS(object):
             if start is None:
                 continue
 
-            use_c = True
-
-            if use_c:
+            if self.use_c:
                 cmd = [
-                    # 'nice',
+                    'nice',
                     './builder-crunch-workq',
                     '--size', self.size[0],
                     '--inputfile', self.workq_filename,

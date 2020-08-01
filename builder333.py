@@ -35,6 +35,7 @@ class Build333Ultimate(BFS):
         D D D
         D D D
         D D D""", 'ascii'),),
+            use_c=True,
         )
 
 
@@ -301,7 +302,8 @@ class Build333Phase3(BFS):
              ('UFUxUxUFURxLxLxRxLFFBxFxFFBLxRxRxLxRBFFxBxBFFDFDxDxDFD', 'ULFRBD'),
              ('UFUxUxUFURxRxLxLxLBFBxFxFFFLxLxRxRxRFFFxBxBFBDFDxDxDFD', 'ULFRBD'),
              ('UFUxUxUFURxRxLxRxRBFBxFxBFBLxLxRxLxLFFFxBxFFFDFDxDxDFD', 'ULFRBD'),
-            )
+            ),
+            use_c=True,
         )
 
 

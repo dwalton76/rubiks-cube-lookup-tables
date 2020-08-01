@@ -9,6 +9,18 @@ gdb:
 clean:
 	rm -rf backup* tmp/.bsdsort* tmp/workq* tmp/* __pycache__  lookup-table.txt lookup-table.txt.diff lookup-table.txt.original *.pyc lookup-table.txt*.gz keepers.txt lookup-table.txt.tmp nohup.out
 
-
 222:
 	./builderui.py Build222Ultimate
+
+333:
+	./builderui.py Build333Phase1
+	./builderui.py Build333Phase2
+	./builderui.py Build333Phase2Edges
+	./builderui.py Build333Phase2Corners
+	./builderui.py Build333Phase3
+	./builderui.py Build333Phase3Edges
+	./builderui.py Build333Phase3Corners
+	./builderui.py Build333Phase4
+	./builderui.py Build333Phase4Edges
+	./builderui.py Build333Phase4Corners
+

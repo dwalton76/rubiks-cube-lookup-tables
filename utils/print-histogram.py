@@ -137,7 +137,7 @@ else:
     do_edges = False
 do_edges = False
 
-for x in range(1, 30):
+for x in range(0, 30):
     stats[x] = 0
 
 with open(filename, 'r') as fh:
