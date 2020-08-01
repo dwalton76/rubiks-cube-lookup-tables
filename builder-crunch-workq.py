@@ -1,30 +1,40 @@
 #!/usr/bin/env python3.6
 
-from buildercore import supported_sizes, WRITE_BATCH_SIZE, reverse_steps
-#from buildercore import supported_sizes, reverse_steps
-from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
-from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
-from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
-from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, edges_recolor_pattern_444, wings_444, centers_444
-from rubikscubennnsolver.RubiksCube555 import (
-    RubiksCube555,
-    solved_555,
-    moves_555,
-    rotate_555,
-    centers_555,
-    edges_recolor_pattern_555,
-    wings_555,
-    midges_recolor_tuples_555,
-)
-
-from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
-from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
-from pprint import pformat
+# standard libraries
 import argparse
 import json
 import logging
 import subprocess
 import sys
+from pprint import pformat
+
+# rubiks cube libraries
+from buildercore import WRITE_BATCH_SIZE, reverse_steps, supported_sizes
+#from buildercore import supported_sizes, reverse_steps
+from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
+from rubikscubennnsolver.RubiksCube222 import RubiksCube222, moves_222, rotate_222, solved_222
+from rubikscubennnsolver.RubiksCube333 import RubiksCube333, moves_333, rotate_333, solved_333
+from rubikscubennnsolver.RubiksCube444 import (
+    RubiksCube444,
+    centers_444,
+    edges_recolor_pattern_444,
+    moves_444,
+    rotate_444,
+    solved_444,
+    wings_444,
+)
+from rubikscubennnsolver.RubiksCube555 import (
+    RubiksCube555,
+    centers_555,
+    edges_recolor_pattern_555,
+    midges_recolor_tuples_555,
+    moves_555,
+    rotate_555,
+    solved_555,
+    wings_555,
+)
+from rubikscubennnsolver.RubiksCube666 import RubiksCube666, moves_666, rotate_666, solved_666
+from rubikscubennnsolver.RubiksCube777 import RubiksCube777, moves_777, rotate_777, solved_777
 
 log = logging.getLogger(__name__)
 

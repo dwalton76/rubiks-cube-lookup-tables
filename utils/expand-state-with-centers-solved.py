@@ -1,13 +1,25 @@
 #!/usr/bin/env python3
 
+# standard libraries
 import argparse
-import subprocess
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555, edges_555, edges_recolor_pattern_555, wings_for_edges_pattern_555
-from rubikscubennnsolver import reverse_steps
+import logging
 import os
 import pickle
-import logging
+import subprocess
 import sys
+
+# rubiks cube libraries
+from rubikscubennnsolver import reverse_steps
+from rubikscubennnsolver.RubiksCube555 import (
+    RubiksCube555,
+    centers_555,
+    edges_555,
+    edges_recolor_pattern_555,
+    moves_555,
+    rotate_555,
+    solved_555,
+    wings_for_edges_pattern_555,
+)
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(filename)24s %(levelname)8s: %(message)s')

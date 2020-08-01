@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-from collections import Counter
+# standard libraries
 import argparse
 import logging
 import os
 import sys
+from collections import Counter
 
 log = logging.getLogger(__name__)
 

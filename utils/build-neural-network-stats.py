@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 
+# standard libraries
+import logging
+
+# rubiks cube libraries
 from rubikscubennnsolver import reverse_steps
 from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
-from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444
-import logging
+from rubikscubennnsolver.RubiksCube444 import RubiksCube444, centers_444, edges_444, moves_444, rotate_444, solved_444
 
 log = logging.getLogger(__name__)
 

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
+# standard libraries
 import logging
 import re
-import sys
 import shutil
+import sys
 
 log = logging.getLogger(__name__)
 

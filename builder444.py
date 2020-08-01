@@ -1,12 +1,15 @@
 #!/usr/bin/e nv python3
 
-from buildercore import BFS
-from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444
+# standard libraries
 import logging
 import math
 import shutil
 import subprocess
 import sys
+
+# rubiks cube libraries
+from buildercore import BFS
+from rubikscubennnsolver.RubiksCube444 import RubiksCube444, moves_444, rotate_444, solved_444
 
 log = logging.getLogger(__name__)
 

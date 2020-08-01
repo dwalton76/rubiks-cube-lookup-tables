@@ -9,10 +9,13 @@ This
 This is used by --fast solves so they do not have to run IDA for step300
 """
 
-from rubikscubennnsolver import reverse_steps, wing_str_map
-from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, edges_partner_444
+# standard libraries
 import logging
 import sys
+
+# rubiks cube libraries
+from rubikscubennnsolver import reverse_steps, wing_str_map
+from rubikscubennnsolver.RubiksCube444 import RubiksCube444, edges_partner_444, solved_444
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(filename)20s %(levelname)8s: %(message)s')

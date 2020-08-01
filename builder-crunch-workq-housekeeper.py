@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
+
+# standard libraries
 import glob
 import logging
 import os
-import psutil
 import subprocess
 import time
 from typing import List
+
+# third party libraries
+import psutil
 
 
 def process_pids(target_name: str) -> List[int]:

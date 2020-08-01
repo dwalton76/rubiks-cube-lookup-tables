@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-from pprint import pformat
+# standard libraries
 import logging
 import os
 import sys
+from pprint import pformat
 
 seek_count = 0
 

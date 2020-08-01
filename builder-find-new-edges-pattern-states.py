@@ -5,11 +5,15 @@ Given two lookup-table files (A & B), find all of the new cube states in B that
 are not in A and write them to an output file.
 """
 
-from buildercore import reverse_steps
+# standard libraries
 import argparse
 import logging
 import os
 import sys
+
+# rubiks cube libraries
+from buildercore import reverse_steps
+
 
 def advance_filehandle(fh):
     try:

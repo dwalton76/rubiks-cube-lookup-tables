@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
-from buildercore import BFS
+# standard libraries
 import logging
 import sys
+
+# rubiks cube libraries
+from buildercore import BFS
 
 log = logging.getLogger(__name__)
 
@@ -1602,4 +1605,3 @@ class Build777Step76(BFS):
                 . . . . . . . """, "ascii"),
             ),
         )
-

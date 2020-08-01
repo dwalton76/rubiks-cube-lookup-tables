@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
+# standard libraries
 import os
-import sys
 import subprocess
+import sys
 
 filename = sys.argv[1]
 

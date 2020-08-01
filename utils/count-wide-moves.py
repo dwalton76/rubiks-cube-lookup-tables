@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
+# standard libraries
 import sys
+
 odd = 0
 even = 0
 
@@ -17,4 +19,3 @@ with open(sys.argv[1], "r") as fh:
 
 print("even : %d" % even)
 print("odd: %d" % odd)
-

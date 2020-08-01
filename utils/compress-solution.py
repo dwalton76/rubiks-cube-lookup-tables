@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+# standard libraries
 import sys
+
+# rubiks cube libraries
 from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555
 
 cube = RubiksCube555(solved_555, "URFDLB")

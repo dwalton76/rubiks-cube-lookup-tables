@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+# standard libraries
 import sys
+
+# rubiks cube libraries
 from buildercore import convert_state_to_hex
 
 filename = sys.argv[1]

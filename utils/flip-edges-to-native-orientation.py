@@ -5,10 +5,19 @@
 # - keep-best
 # - pad-lines
 
-from rubikscubennnsolver import wing_strs_all, reverse_steps
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, edges_partner_555, edges_recolor_pattern_555, wings_for_edges_pattern_555
+# standard libraries
 import logging
 import sys
+
+# rubiks cube libraries
+from rubikscubennnsolver import reverse_steps, wing_strs_all
+from rubikscubennnsolver.RubiksCube555 import (
+    RubiksCube555,
+    edges_partner_555,
+    edges_recolor_pattern_555,
+    solved_555,
+    wings_for_edges_pattern_555,
+)
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s %(filename)20s %(levelname)8s: %(message)s')
@@ -60,4 +69,3 @@ with open(filename_new, "w") as fh_new:
         if to_write_count:
             fh_new.write("\n".join(to_write) + "\n")
             to_write = []
-

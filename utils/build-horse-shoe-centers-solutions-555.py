@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
 
 
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, rotate_555, centers_555, edges_555, edges_recolor_pattern_555, wings_for_edges_pattern_555
-from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
+# rubiks cube libraries
 from rubikscubennnsolver import reverse_steps
+from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
+from rubikscubennnsolver.RubiksCube555 import (
+    RubiksCube555,
+    centers_555,
+    edges_555,
+    edges_recolor_pattern_555,
+    rotate_555,
+    solved_555,
+    wings_for_edges_pattern_555,
+)
 
 cube = RubiksCube555(solved_555, order='URFDLB')
 cube.nuke_corners()

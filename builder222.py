@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 
-from buildercore import BFS
-from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
+# standard libraries
 import logging
 import math
 import shutil
 import subprocess
 import sys
+
+# rubiks cube libraries
+from buildercore import BFS
+from rubikscubennnsolver.RubiksCube222 import RubiksCube222, moves_222, rotate_222, solved_222
 
 log = logging.getLogger(__name__)
 
@@ -77,4 +80,3 @@ class Build222Ultimate(BFS):
             ),
             use_c=True,
         )
-

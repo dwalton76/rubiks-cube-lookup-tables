@@ -1,17 +1,6 @@
 #!/usr/bin/env python3.6
 
-from collections import deque
-from rubikscubennnsolver import reverse_steps
-from rubikscubennnsolver.misc import parse_ascii_222, parse_ascii_333, parse_ascii_444, parse_ascii_555, parse_ascii_666, parse_ascii_777
-from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
-from rubikscubennnsolver.RubiksCube222 import RubiksCube222, solved_222, moves_222, rotate_222
-from rubikscubennnsolver.RubiksCube333 import RubiksCube333, solved_333, moves_333, rotate_333
-from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, moves_444, rotate_444, centers_444, edges_444, edges_recolor_pattern_444, wings_for_edges_recolor_pattern_444
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, solved_555, moves_555, rotate_555, centers_555, edges_555, edges_recolor_pattern_555, wings_for_edges_pattern_555, edges_partner_555
-from rubikscubennnsolver.RubiksCube666 import RubiksCube666, solved_666, moves_666, rotate_666
-from rubikscubennnsolver.RubiksCube777 import RubiksCube777, solved_777, moves_777, rotate_777
-from pprint import pformat
-from threading import Thread, Event
+# standard libraries
 import argparse
 import datetime as dt
 import gc
@@ -22,6 +11,46 @@ import os
 import shutil
 import subprocess
 import sys
+from collections import deque
+from pprint import pformat
+from threading import Event, Thread
+
+# rubiks cube libraries
+from rubikscubennnsolver import reverse_steps
+from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
+from rubikscubennnsolver.misc import (
+    parse_ascii_222,
+    parse_ascii_333,
+    parse_ascii_444,
+    parse_ascii_555,
+    parse_ascii_666,
+    parse_ascii_777,
+)
+from rubikscubennnsolver.RubiksCube222 import RubiksCube222, moves_222, rotate_222, solved_222
+from rubikscubennnsolver.RubiksCube333 import RubiksCube333, moves_333, rotate_333, solved_333
+from rubikscubennnsolver.RubiksCube444 import (
+    RubiksCube444,
+    centers_444,
+    edges_444,
+    edges_recolor_pattern_444,
+    moves_444,
+    rotate_444,
+    solved_444,
+    wings_for_edges_recolor_pattern_444,
+)
+from rubikscubennnsolver.RubiksCube555 import (
+    RubiksCube555,
+    centers_555,
+    edges_555,
+    edges_partner_555,
+    edges_recolor_pattern_555,
+    moves_555,
+    rotate_555,
+    solved_555,
+    wings_for_edges_pattern_555,
+)
+from rubikscubennnsolver.RubiksCube666 import RubiksCube666, moves_666, rotate_666, solved_666
+from rubikscubennnsolver.RubiksCube777 import RubiksCube777, moves_777, rotate_777, solved_777
 
 log = logging.getLogger(__name__)
 supported_sizes = ('2x2x2', '3x3x3', '4x4x4', '5x5x5', '6x6x6', '7x7x7')

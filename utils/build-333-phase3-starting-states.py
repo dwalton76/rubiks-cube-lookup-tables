@@ -42,4 +42,3 @@ with open("lookup-table-3x3x3-step142-corners.txt", "r") as fh:
             state[i-1] = j
 
         print("    ('" + "".join(state) + "', 'ULFRBD'),")
-

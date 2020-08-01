@@ -4,13 +4,18 @@
 https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
 """
 
-from keras.models import Sequential, load_model
-from keras.layers import Dense
-from tabulate import tabulate
+# standard libraries
 import copy
 import logging
-import numpy
 import sys
+
+# third party libraries
+import numpy
+
+# rubiks cube libraries
+from keras.layers import Dense
+from keras.models import Sequential, load_model
+from tabulate import tabulate
 
 numpy.random.seed(7)
 

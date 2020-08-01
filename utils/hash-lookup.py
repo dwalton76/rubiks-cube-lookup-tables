@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 
-from pyhashxx import hashxx
+# standard libraries
 import os
 import sys
+
+# rubiks cube libraries
+from pyhashxx import hashxx
 
 if len(sys.argv) != 4:
     print("ERROR: To use './hash-lookup.py FILENAME KEY BUCKETCOUNT'")

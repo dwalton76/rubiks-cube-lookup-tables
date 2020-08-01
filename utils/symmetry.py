@@ -1,17 +1,28 @@
 #!/usr/bin/env python3
 
+# standard libraries
+import logging
+import math
+import sys
+from pprint import pformat
+
+# rubiks cube libraries
 from rubikscubennnsolver import symmetry_48
+from rubikscubennnsolver.misc import (
+    parse_ascii_222,
+    parse_ascii_333,
+    parse_ascii_444,
+    parse_ascii_555,
+    parse_ascii_666,
+    parse_ascii_777,
+)
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, rotate_222, solved_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, rotate_333, solved_333
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, rotate_444, solved_444
 from rubikscubennnsolver.RubiksCube555 import RubiksCube555, rotate_555, solved_555
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, rotate_666, solved_666
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, rotate_777, solved_777
-from rubikscubennnsolver.misc import parse_ascii_222, parse_ascii_333, parse_ascii_444, parse_ascii_555, parse_ascii_666, parse_ascii_777
-from pprint import pformat
-import logging
-import math
-import sys
+
 
 def build_symmetry_48():
     """

@@ -1,11 +1,26 @@
 #!/usr/bin/env python3
 
+# standard libraries
 import sys
-import scipy
+
+# third party libraries
 import numpy
+
+# rubiks cube libraries
 import matplotlib
+import matplotlib.pyplot as plt
 import pandas
+import scipy
 import sklearn
+from pandas.plotting import scatter_matrix
+from sklearn import model_selection, preprocessing
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
 '''
 print('Python: {}'.format(sys.version))
@@ -17,18 +32,6 @@ print('sklearn: {}'.format(sklearn.__version__))
 '''
 
 # Load libraries
-from pandas.plotting import scatter_matrix
-import matplotlib.pyplot as plt
-from sklearn import model_selection, preprocessing
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix
-from sklearn.metrics import accuracy_score
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.naive_bayes import GaussianNB
-from sklearn.svm import SVC
 
 
 # Load dataset

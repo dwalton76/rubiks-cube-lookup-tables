@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
+# standard libraries
 import argparse
-from pyhashxx import hashxx
 import logging
 import os
 import sys
+
+# rubiks cube libraries
+from pyhashxx import hashxx
 
 log = logging.getLogger(__name__)
 
