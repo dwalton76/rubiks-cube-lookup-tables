@@ -805,7 +805,7 @@ class BFS(object):
             line = next(fh)
 
             if line.count(":") != 1:
-                raise Exception("Implement this")
+                raise Exception(f"Found {line.count(':')} :s in line:\n{line}")
 
             state = line.split(":")[0]
             state_width = len(state)

@@ -248,7 +248,14 @@ process_workq(
 
             prev_move = str2move(prev_move_ptr);
 
-        } else if (steps_to_scramble_length < 0) {
+        // if this is a starting state, write the line as is
+        } else if (steps_to_scramble_length == 0) {
+            line[line_length] = '\n';
+            line[line_length+1] = '\0';
+            memcpy(to_write[to_write_count], line, strlen(line));
+            to_write_count++;
+
+        } else {
             printf("ERROR: invalid steps_to_scramble_length %d, line_length %d, array_size %d",
                 steps_to_scramble_length, line_length, array_size);
             exit(1);
