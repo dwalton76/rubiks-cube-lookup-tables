@@ -37,6 +37,7 @@ class Build444Ultimate(BFS):
           D D D D
           D D D D
           D D D D""", 'ascii'),),
+            use_c=True,
         )
 
 
@@ -176,6 +177,7 @@ class Build444UDCentersStage(BFS):
             (('.....UU..UU..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........UU..UU.....', 'ULFRBD'),
              ('.....xx..xx..........UU..UU..........xx..xx..........UU..UU..........xx..xx..........xx..xx.....', 'ULFRBD'),
              ('.....xx..xx..........xx..xx..........UU..UU..........xx..xx..........UU..UU..........xx..xx.....', 'ULFRBD')),
+            use_c=True,
         )
 
 
@@ -195,6 +197,7 @@ class Build444LRCentersStage(BFS):
             (('.....LL..LL..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........LL..LL.....', 'ULFRBD'),
              ('.....xx..xx..........LL..LL..........xx..xx..........LL..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
              ('.....xx..xx..........xx..xx..........LL..LL..........xx..xx..........LL..LL..........xx..xx.....', 'ULFRBD')),
+            use_c=True,
         )
 
 
@@ -214,6 +217,7 @@ class Build444FBCentersStage(BFS):
             (('.....FF..FF..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........FF..FF.....', 'ULFRBD'),
              ('.....xx..xx..........FF..FF..........xx..xx..........FF..FF..........xx..xx..........xx..xx.....', 'ULFRBD'),
              ('.....xx..xx..........xx..xx..........FF..FF..........xx..xx..........FF..FF..........xx..xx.....', 'ULFRBD'),),
+            use_c=True,
         )
 
 

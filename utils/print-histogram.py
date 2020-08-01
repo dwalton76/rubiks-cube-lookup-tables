@@ -198,7 +198,7 @@ total_steps = 0
 for key in sorted(stats.keys()):
 
     if not stats[key]:
-        break
+        continue
 
     if prev is None:
         delta = float(0)

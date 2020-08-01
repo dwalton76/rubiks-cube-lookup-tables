@@ -24,3 +24,8 @@ clean:
 	./builderui.py Build333Phase4Edges
 	./builderui.py Build333Phase4Corners
 
+444:
+	./builderui.py Build444UDCentersStage
+	./utils/build-ida-graph.py Build444UDCentersStage
+	./builderui.py Build444LRCentersStage
+	./builderui.py Build444FBCentersStage
