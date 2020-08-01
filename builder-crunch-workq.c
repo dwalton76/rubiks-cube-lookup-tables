@@ -147,7 +147,7 @@ process_workq(
     unsigned int linewidth,
     unsigned int start,
     unsigned int end,
-    unsigned int cube_size,
+    unsigned char cube_size,
     move_type moves[MOVE_MAX],
     unsigned int moves_count)
 {
@@ -265,7 +265,30 @@ process_workq(
 
             // copy cube to cube_tmp and apply "move" to cube_tmp
             memcpy(cube_tmp, cube, sizeof_array_size);
-            rotate_555(cube_tmp, cube, array_size, move);
+
+            switch(cube_size) {
+            case 2:
+                rotate_222(cube_tmp, cube, array_size, move);
+                break;
+            case 3:
+                rotate_333(cube_tmp, cube, array_size, move);
+                break;
+            case 4:
+                rotate_444(cube_tmp, cube, array_size, move);
+                break;
+            case 5:
+                rotate_555(cube_tmp, cube, array_size, move);
+                break;
+            case 6:
+                rotate_666(cube_tmp, cube, array_size, move);
+                break;
+            case 7:
+                rotate_777(cube_tmp, cube, array_size, move);
+                break;
+            default:
+                printf("ERROR: add support for %dx%dx%d cubes\n\n", cube_size, cube_size, cube_size);
+                exit(1);
+            }
 
             // if nothing changed, do not bother writing this result to the file
             if (memcmp(cube_tmp, cube, sizeof_array_size) == 0) {
@@ -330,7 +353,7 @@ main (int argc, char *argv[])
     unsigned int linewidth = 0;
     unsigned int start = 0;
     unsigned int end = 0;
-    unsigned int cube_size = 0;
+    unsigned char cube_size = 0;
     char inputfile[MAX_FILENAME_SIZE];
     char outputfile[MAX_FILENAME_SIZE];
     char moves_buffer[512];
@@ -403,6 +426,15 @@ main (int argc, char *argv[])
         move_ptr = strtok(NULL, space_delim);
         moves_index++;
     }
+
+    /*
+    LOG("inputfile %s from %d -> %d, cube size %d, moves_index %d\n", inputfile, start, end, cube_size, moves_index);
+    LOG("outputfile %s\n", outputfile);
+
+    for (unsigned int i = 0; i < moves_index; i++) {
+        LOG("moves[%d] is %s\n", i, move2str[moves[i]]);
+    }
+     */
 
     process_workq(inputfile, outputfile, linewidth, start, end, cube_size, moves, moves_index);
 }

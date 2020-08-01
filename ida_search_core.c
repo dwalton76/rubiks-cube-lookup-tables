@@ -236,6 +236,21 @@ str2move(char *str)
     } else if (strmatch(str, "3Dw2")) {
         return threeDw2;
 
+    } else if (strmatch(str, "x")) {
+        return X;
+    } else if (strmatch(str, "x'")) {
+        return X_PRIME;
+
+    } else if (strmatch(str, "y")) {
+        return Y;
+    } else if (strmatch(str, "y'")) {
+        return Y_PRIME;
+
+    } else if (strmatch(str, "z")) {
+        return Z;
+    } else if (strmatch(str, "z'")) {
+        return Z_PRIME;
+
     } else {
         printf("ERROR: str2move invalid move \"%s\"\n", str);
         raise (SIGABRT);

@@ -2,7 +2,33 @@
 #ifndef _ROTATE_XXX_H
 #define _ROTATE_XXX_H
 
-#define MOVE_COUNT_444 36
+#define MOVE_COUNT_222 24
+static const move_type moves_222[MOVE_COUNT_222] = {
+    U, U_PRIME, U2,
+    L, L_PRIME, L2,
+    F, F_PRIME, F2,
+    R, R_PRIME, R2,
+    B, B_PRIME, B2,
+    D, D_PRIME, D2,
+    X, X_PRIME,
+    Y, Y_PRIME,
+    Z, Z_PRIME,
+};
+
+#define MOVE_COUNT_333 24
+static const move_type moves_333[MOVE_COUNT_333] = {
+    U, U_PRIME, U2,
+    L, L_PRIME, L2,
+    F, F_PRIME, F2,
+    R, R_PRIME, R2,
+    B, B_PRIME, B2,
+    D, D_PRIME, D2,
+    X, X_PRIME,
+    Y, Y_PRIME,
+    Z, Z_PRIME,
+};
+
+#define MOVE_COUNT_444 42
 static const move_type moves_444[MOVE_COUNT_444] = {
     U, U_PRIME, U2, Uw, Uw_PRIME, Uw2,
     L, L_PRIME, L2, Lw, Lw_PRIME, Lw2,
@@ -10,10 +36,12 @@ static const move_type moves_444[MOVE_COUNT_444] = {
     R, R_PRIME, R2, Rw, Rw_PRIME, Rw2,
     B, B_PRIME, B2, Bw, Bw_PRIME, Bw2,
     D, D_PRIME, D2, Dw, Dw_PRIME, Dw2
+    X, X_PRIME,
+    Y, Y_PRIME,
+    Z, Z_PRIME,
 };
 
-
-#define MOVE_COUNT_555 36
+#define MOVE_COUNT_555 42
 static const move_type moves_555[MOVE_COUNT_555] = {
     U, U_PRIME, U2, Uw, Uw_PRIME, Uw2,
     L, L_PRIME, L2, Lw, Lw_PRIME, Lw2,
@@ -21,10 +49,12 @@ static const move_type moves_555[MOVE_COUNT_555] = {
     R, R_PRIME, R2, Rw, Rw_PRIME, Rw2,
     B, B_PRIME, B2, Bw, Bw_PRIME, Bw2,
     D, D_PRIME, D2, Dw, Dw_PRIME, Dw2
+    X, X_PRIME,
+    Y, Y_PRIME,
+    Z, Z_PRIME,
 };
 
-
-#define MOVE_COUNT_666 54
+#define MOVE_COUNT_666 60
 static const move_type moves_666[MOVE_COUNT_666] = {
     U, U_PRIME, U2, Uw, Uw_PRIME, Uw2, threeUw, threeUw_PRIME, threeUw2,
     L, L_PRIME, L2, Lw, Lw_PRIME, Lw2, threeLw, threeLw_PRIME, threeLw2,
@@ -32,9 +62,12 @@ static const move_type moves_666[MOVE_COUNT_666] = {
     R, R_PRIME, R2, Rw, Rw_PRIME, Rw2, threeRw, threeRw_PRIME, threeRw2,
     B, B_PRIME, B2, Bw, Bw_PRIME, Bw2, threeBw, threeBw_PRIME, threeBw2,
     D, D_PRIME, D2, Dw, Dw_PRIME, Dw2, threeDw, threeDw_PRIME, threeDw2
+    X, X_PRIME,
+    Y, Y_PRIME,
+    Z, Z_PRIME,
 };
 
-#define MOVE_COUNT_777 54
+#define MOVE_COUNT_777 60
 static const move_type moves_777[MOVE_COUNT_777] = {
     U, U_PRIME, U2, Uw, Uw_PRIME, Uw2, threeUw, threeUw_PRIME, threeUw2,
     L, L_PRIME, L2, Lw, Lw_PRIME, Lw2, threeLw, threeLw_PRIME, threeLw2,
@@ -42,6 +75,9 @@ static const move_type moves_777[MOVE_COUNT_777] = {
     R, R_PRIME, R2, Rw, Rw_PRIME, Rw2, threeRw, threeRw_PRIME, threeRw2,
     B, B_PRIME, B2, Bw, Bw_PRIME, Bw2, threeBw, threeBw_PRIME, threeBw2,
     D, D_PRIME, D2, Dw, Dw_PRIME, Dw2, threeDw, threeDw_PRIME, threeDw2
+    X, X_PRIME,
+    Y, Y_PRIME,
+    Z, Z_PRIME,
 };
 
 void rotate_222(char *cube, char *cube_tmp, int array_size, move_type move);

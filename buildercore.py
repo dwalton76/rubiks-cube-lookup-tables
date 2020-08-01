@@ -686,7 +686,7 @@ class BFS(object):
                 cmd = [
                     # 'nice',
                     './builder-crunch-workq',
-                    '--size', self.size,
+                    '--size', self.size[0],
                     '--inputfile', self.workq_filename,
                     '--linewidth', str(self.workq_line_length + 1),
                     '--start', str(start),

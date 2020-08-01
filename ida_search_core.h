@@ -63,9 +63,9 @@ static const char move2str[MOVE_MAX][MAX_MOVE_STR_SIZE] = {
     "Dw", "Dw'", "Dw2",
     "3Dw", "3Dw'", "3Dw2",
 
-    "X", "X'",
-    "Y", "Y'",
-    "Z", "Z'",
+    "x", "x'",
+    "y", "y'",
+    "z", "z'",
 };
 move_type str2move(char *str);
 unsigned char steps_on_same_face_and_layer(move_type move, move_type prev_move);
