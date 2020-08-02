@@ -10,18 +10,8 @@ from rubikscubelookuptables.buildercore import WRITE_BATCH_SIZE, supported_sizes
 from rubikscubennnsolver.LookupTable import steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import rotate_222
 from rubikscubennnsolver.RubiksCube333 import rotate_333
-from rubikscubennnsolver.RubiksCube444 import (
-    centers_444,
-    edges_recolor_pattern_444,
-    rotate_444,
-    wings_444,
-)
-from rubikscubennnsolver.RubiksCube555 import (
-    centers_555,
-    edges_recolor_pattern_555,
-    rotate_555,
-    wings_555,
-)
+from rubikscubennnsolver.RubiksCube444 import centers_444, edges_recolor_pattern_444, rotate_444, wings_444
+from rubikscubennnsolver.RubiksCube555 import centers_555, edges_recolor_pattern_555, rotate_555, wings_555
 from rubikscubennnsolver.RubiksCube666 import rotate_666
 from rubikscubennnsolver.RubiksCube777 import rotate_777
 

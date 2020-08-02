@@ -6,9 +6,9 @@ import sys
 
 # rubiks cube libraries
 from rubikscubennnsolver.RubiksCube444 import (
-    LookupTable444UDCentersStage,
-    LookupTable444LRCentersStage,
     LookupTable444FBCentersStage,
+    LookupTable444LRCentersStage,
+    LookupTable444UDCentersStage,
     RubiksCube444,
     solved_444,
 )

@@ -1,12 +1,7 @@
-
 # rubiks cube libraries
 from rubikscubennnsolver import reverse_steps
 from rubikscubennnsolver.LookupTable import steps_on_same_face_and_layer
-from rubikscubennnsolver.RubiksCube555 import (
-    RubiksCube555,
-    centers_555,
-    solved_555,
-)
+from rubikscubennnsolver.RubiksCube555 import RubiksCube555, centers_555, solved_555
 
 cube = RubiksCube555(solved_555, order="URFDLB")
 cube.nuke_corners()

@@ -1,4 +1,3 @@
-
 permutation = (
     "ULFRBD",
     "UFRBLD",
