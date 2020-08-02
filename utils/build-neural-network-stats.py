@@ -14,8 +14,7 @@ log = logging.getLogger(__name__)
 
 if __name__ == "__main__":
 
-    logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)30s %(levelname)8s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)30s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
@@ -24,13 +23,13 @@ if __name__ == "__main__":
 
     filename = "/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/lookup-table-4x4x4-step10-ULFRBD-centers-stage.txt"
     filename_nn = filename + ".nn"
-    cube = RubiksCube444(solved_444, 'URFDLB')
+    cube = RubiksCube444(solved_444, "URFDLB")
     cube.cpu_mode = "normal"
     cube.lt_init()
 
     cube.re_init()
-    #cube.nuke_corners()
-    #cube.nuke_edges()
+    # cube.nuke_corners()
+    # cube.nuke_edges()
 
     for x in centers_444:
         if cube.state[x] == "D":
@@ -40,7 +39,7 @@ if __name__ == "__main__":
         elif cube.state[x] == "B":
             cube.state[x] = "F"
 
-    #BATCH_SIZE = 10000
+    # BATCH_SIZE = 10000
     BATCH_SIZE = 10
     to_write = []
     to_write_count = 0
@@ -66,11 +65,7 @@ if __name__ == "__main__":
 
             log.info("%s has len %d" % (" ".join(cube.solution), steps_to_resolve_len))
 
-            nn_line = [
-                UD_cost,
-                LR_cost,
-                FB_cost,
-            ]
+            nn_line = [UD_cost, LR_cost, FB_cost]
             nn_line.append(steps_to_resolve_len)
 
             to_write.append(",".join(map(str, nn_line)))

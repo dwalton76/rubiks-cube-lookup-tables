@@ -14,22 +14,22 @@ line_number = 0
 #   2R 2R' 2R2
 
 move_to_number = {
-    "U"   : '0',
-    "U'"  : '1',
-    "U2"  : '2',
-    "F2"  : '3',
-    "B2"  : '4',
-    "D2"  : '5',
-    "2L"  : '6',
-    "2L'" : '7',
-    "2L2" : '8',
-    "2R"  : '9',
-    "2R'" : 'a',
-    "2R2" : 'b',
+    "U": "0",
+    "U'": "1",
+    "U2": "2",
+    "F2": "3",
+    "B2": "4",
+    "D2": "5",
+    "2L": "6",
+    "2L'": "7",
+    "2L2": "8",
+    "2R": "9",
+    "2R'": "a",
+    "2R2": "b",
 }
 
-with open(filename, 'r') as fh_read:
-    with open(filename_new, 'w') as fh_new:
+with open(filename, "r") as fh_read:
+    with open(filename_new, "w") as fh_new:
 
         # Paired edges state:
         # OOo pPP QQq rRR sSS TTt uUU VVv WWw xXX YYy zZZ
@@ -46,13 +46,13 @@ with open(filename, 'r') as fh_read:
         wings_for_horseshoe_edges_pattern_555 = (0, 2, 3, 5, 6, 8, 9, 11, 24, 26, 33, 35)
 
         for line in fh_read:
-            (state, steps) = line.strip().split(':')
-            state = ''.join([state[index] for index in wings_for_horseshoe_edges_pattern_555])
+            (state, steps) = line.strip().split(":")
+            state = "".join([state[index] for index in wings_for_horseshoe_edges_pattern_555])
 
             new_steps = []
             for step in steps.split():
                 new_steps.append(move_to_number[step])
-            new_steps = ''.join(new_steps)
+            new_steps = "".join(new_steps)
             fh_new.write("%s:%s\n" % (state, new_steps))
 
             line_number += 1

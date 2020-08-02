@@ -19,10 +19,10 @@ if not os.path.isfile(filename):
     print("ERROR: %s does not exist" % filename)
     sys.exit(1)
 
-hash_raw = hashxx(key.encode('utf-8'))
+hash_raw = hashxx(key.encode("utf-8"))
 hash_index = int(hash_raw % bucketcount)
 
-with open(filename, 'rb') as fh:
+with open(filename, "rb") as fh:
     content = fh.read()
     cost = int(chr(content[hash_index]), 16)
 

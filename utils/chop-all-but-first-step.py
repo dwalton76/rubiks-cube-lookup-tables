@@ -8,12 +8,12 @@ import sys
 count = 0
 
 filename = sys.argv[1]
-filename_small = filename + '.small'
+filename_small = filename + ".small"
 
-with open(filename, 'r') as fh_read:
-    with open(filename_small, 'w') as fh:
+with open(filename, "r") as fh_read:
+    with open(filename_small, "w") as fh:
         for line in fh_read:
-            (state, steps) = line.strip().split(':')
+            (state, steps) = line.strip().split(":")
             steps = steps.split()
 
             if steps:

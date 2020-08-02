@@ -21,8 +21,7 @@ from rubikscubennnsolver.RubiksCube555 import (
     wings_for_edges_pattern_555,
 )
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)24s %(levelname)8s: %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)24s %(levelname)8s: %(message)s")
 log = logging.getLogger(__name__)
 
 # Color the errors and warnings in red
@@ -30,11 +29,11 @@ logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelNam
 logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--start', type=int, default=0, help='starting line number')
-parser.add_argument('--end', type=int, default=0, help='starting line number')
-parser.add_argument('--centers-filename', type=str)
-parser.add_argument('--lookup-table-filename', type=str)
-parser.add_argument('--specific-depth', type=int, default=0)
+parser.add_argument("--start", type=int, default=0, help="starting line number")
+parser.add_argument("--end", type=int, default=0, help="starting line number")
+parser.add_argument("--centers-filename", type=str)
+parser.add_argument("--lookup-table-filename", type=str)
+parser.add_argument("--specific-depth", type=int, default=0)
 args = parser.parse_args()
 start = args.start
 end = args.end
@@ -42,8 +41,8 @@ end = args.end
 if end:
     assert end > start, "--end must be greater than --start"
 
-#centers_filename = "centers_solutions_555.txt"
-#lookup_table_filename = "lookup-table-5x5x5-step100-stage-first-six-edges.txt"
+# centers_filename = "centers_solutions_555.txt"
+# lookup_table_filename = "lookup-table-5x5x5-step100-stage-first-six-edges.txt"
 centers_filename = args.centers_filename
 centers_filename_pkl = centers_filename + ".pkl"
 lookup_table_filename = args.lookup_table_filename
@@ -80,7 +79,7 @@ else:
     pickle.dump(centers_solutions, open(centers_filename_pkl, "wb"))
     log.info("%s: end pickle dump" % centers_filename)
 
-cube = RubiksCube555(solved_555, order='URFDLB')
+cube = RubiksCube555(solved_555, order="URFDLB")
 to_write = []
 to_write_count = 0
 BATCH_SIZE = 10000
@@ -118,8 +117,8 @@ with open(lookup_table_filename_new, "w") as fh_new:
 
             tmp_state = cube.state[:]
             tmp_solution = cube.solution[:]
-            centers_state = ''.join([cube.state[index] for index in centers_555])
-            #log.info("{} centers solutions".format(len(centers_solutions[centers_state])))
+            centers_state = "".join([cube.state[index] for index in centers_555])
+            # log.info("{} centers solutions".format(len(centers_solutions[centers_state])))
 
             if centers_state in centers_solutions:
                 for centers_solution in centers_solutions[centers_state]:
@@ -137,7 +136,7 @@ with open(lookup_table_filename_new, "w") as fh_new:
                         state_to_write = "".join(cube.state[index] for index in edges_555)
                     elif lookup_table_filename == "lookup-table-5x5x5-step100-solve-first-six-edges.txt":
                         state = edges_recolor_pattern_555(cube.state[:])
-                        state_to_write = ''.join([state[index] for index in wings_for_edges_pattern_555])
+                        state_to_write = "".join([state[index] for index in wings_for_edges_pattern_555])
                     else:
                         raise Exception("Implement this")
 
@@ -181,9 +180,10 @@ else:
     # sort the file
     log.info("sorting...")
     subprocess.check_output(
-        "LC_ALL=C sort --temporary-directory=./tmp/ --output %s %s " %
-        (lookup_table_filename_new, lookup_table_filename_new),
-        shell=True)
+        "LC_ALL=C sort --temporary-directory=./tmp/ --output %s %s "
+        % (lookup_table_filename_new, lookup_table_filename_new),
+        shell=True,
+    )
 
     # keep the best entry per state
     log.info("keep-best-solution...")

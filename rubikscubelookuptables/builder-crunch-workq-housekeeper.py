@@ -56,7 +56,7 @@ def sort_merge(index: int):
     # write a list of the files we want to sort to a files_to_sort_filename
     # we will point sort at files_to_sort_filename
     with open(files_to_sort_filename, "w") as fh:
-        fh.write('\0'.join(core_files))
+        fh.write("\0".join(core_files))
 
     size_before = 0
     for filename in core_files:
@@ -64,7 +64,10 @@ def sort_merge(index: int):
 
     logger.info(f"sort {len(core_files)} files created by builder-crunch-workq processes begin")
     logger.info(f"{size_before:,} bytes before")
-    cmd = "LC_ALL=C nice sort --uniq --key=1.1,1.%d --merge --temporary-directory=./tmp/ --output %s --files0-from='tmp/files_to_sort.txt'" % (state_width, output_filename)
+    cmd = (
+        "LC_ALL=C nice sort --uniq --key=1.1,1.%d --merge --temporary-directory=./tmp/ --output %s --files0-from='tmp/files_to_sort.txt'"
+        % (state_width, output_filename)
+    )
     subprocess.check_output(cmd, shell=True)
     os.unlink(files_to_sort_filename)
 
@@ -94,9 +97,8 @@ def main():
         index += 1
 
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)24s %(levelname)8s: %(message)s')
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)24s %(levelname)8s: %(message)s")
     logger = logging.getLogger(__name__)
 
     main()

@@ -23,30 +23,30 @@ def find_prime_in_range(a, b):
 
 
 def find_next_prime(n):
-    return find_prime_in_range(n, 2*n)
+    return find_prime_in_range(n, 2 * n)
 
 
 def convert_to_cost_only(filename, bucketcount, filename_statetargets):
 
     state_targets = set()
-    with open(filename_statetargets, 'r') as fh:
+    with open(filename_statetargets, "r") as fh:
         for line in fh:
             line = line.replace("'", "").replace(",", "").strip()
             state_targets.add(line)
 
-    filename_new = filename.replace('.txt', '.hash-cost-only.txt')
+    filename_new = filename.replace(".txt", ".hash-cost-only.txt")
     prev_state_int = None
     first_permutation_rank = None
 
     bucket = bytearray(bucketcount)
     collisions = 0
 
-    with open(filename, 'r') as fh:
+    with open(filename, "r") as fh:
         for (line_number, line) in enumerate(fh):
-            (state, steps) = line.strip().split(':')
+            (state, steps) = line.strip().split(":")
             steps = steps.split()
 
-            hash_raw = hashxx(state.encode('utf-8'))
+            hash_raw = hashxx(state.encode("utf-8"))
             hash_index = int(hash_raw % bucketcount)
 
             # Write the steps_len
@@ -66,7 +66,7 @@ def convert_to_cost_only(filename, bucketcount, filename_statetargets):
                     collisions += 1
 
                     # Never under estimate the cost
-                    #if steps_len > bucket[hash_index]:
+                    # if steps_len > bucket[hash_index]:
                     #    bucket[hash_index] = steps_len
 
                     # Never over estimate the cost
@@ -78,40 +78,39 @@ def convert_to_cost_only(filename, bucketcount, filename_statetargets):
 
     log.info("%d collisions" % collisions)
     log.info("begin writing %s" % filename_new)
-    with open(filename_new, 'w') as fh_new:
+    with open(filename_new, "w") as fh_new:
         to_write = []
 
         for (index, x) in enumerate(bucket):
 
             if x > 15:
-                to_write.append('f')
+                to_write.append("f")
             else:
                 # Convert steps_len to hex and ignore the 0x part of the string
                 to_write.append(hex(x)[2])
 
             if index % 100000 == 0:
-                fh_new.write(''.join(to_write))
+                fh_new.write("".join(to_write))
                 to_write = []
 
         if to_write:
-            fh_new.write(''.join(to_write))
+            fh_new.write("".join(to_write))
             to_write = []
 
-        fh_new.write('\n')
+        fh_new.write("\n")
     log.info("end writing %s" % filename_new)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # setup logging
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(filename)16s %(levelname)8s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)16s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', type=str, help='lookup-table filename')
-    parser.add_argument('bucketcount', type=int, help='number of buckets to use')
-    parser.add_argument('statetargets', type=str, help='file with state_targets')
+    parser.add_argument("filename", type=str, help="lookup-table filename")
+    parser.add_argument("bucketcount", type=int, help="number of buckets to use")
+    parser.add_argument("statetargets", type=str, help="file with state_targets")
     args = parser.parse_args()
 
     convert_to_cost_only(args.filename, args.bucketcount, args.statetargets)

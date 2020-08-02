@@ -9,15 +9,15 @@ log = logging.getLogger(__name__)
 
 
 def convert_to_dict(filename):
-    filename_new = filename.replace('.txt', '.dict.py')
+    filename_new = filename.replace(".txt", ".dict.py")
 
-    with open(filename_new, 'w') as fh_new:
+    with open(filename_new, "w") as fh_new:
         fh_new.write("{\n")
         first = True
 
-        with open(filename, 'r') as fh:
+        with open(filename, "r") as fh:
             for (line_number, line) in enumerate(fh):
-                (state, steps) = line.strip().split(':')
+                (state, steps) = line.strip().split(":")
 
                 if first:
                     first = False
@@ -29,7 +29,7 @@ def convert_to_dict(filename):
         fh_new.write("\n}\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     if len(sys.argv) != 2:
         print("ERROR: To use './convert-to-dict.py FILENAME'")
@@ -42,8 +42,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # setup logging
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(filename)16s %(levelname)8s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)16s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     convert_to_dict(filename)

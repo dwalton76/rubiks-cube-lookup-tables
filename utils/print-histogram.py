@@ -55,65 +55,65 @@ def edge_count_444(state):
     unpaired_edges_count = 0
 
     # Upper
-    if state[0] == '1':
+    if state[0] == "1":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
-    if state[2] == '4':
+    if state[2] == "4":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
-    if state[3] == '5':
+    if state[3] == "5":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
-    if state[6] == '7':
+    if state[6] == "7":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
     # Left
-    if state[8] == 'a':
+    if state[8] == "a":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
-    if state[9] == 'b':
+    if state[9] == "b":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
     # Right
-    if state[12] == 'e':
+    if state[12] == "e":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
-    if state[13] == 'f':
+    if state[13] == "f":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
     # Down
-    if state[16] == 'h':
+    if state[16] == "h":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
-    if state[18] == 'k':
+    if state[18] == "k":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
-    if state[19] == 'l':
+    if state[19] == "l":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
 
-    if state[22] == 'n':
+    if state[22] == "n":
         paired_edges_count += 1
     else:
         unpaired_edges_count += 1
@@ -128,12 +128,12 @@ def edge_count_555(state):
 
 filename = sys.argv[1]
 stats = {}
-edge_stats= {}
-edge_stats2= {}
+edge_stats = {}
+edge_stats2 = {}
 
 linecount = 0
 
-if 'step101-edges' in filename:
+if "step101-edges" in filename:
     do_edges = True
 else:
     do_edges = False
@@ -142,18 +142,18 @@ do_edges = False
 for x in range(0, 30):
     stats[x] = 0
 
-with open(filename, 'r') as fh:
+with open(filename, "r") as fh:
     for line in fh:
         line = line.rstrip()
 
         try:
-            (state, steps) = line.split(':')
+            (state, steps) = line.split(":")
         except Exception:
             state = None
             steps = line
 
-        if ',' in steps:
-            steps = steps.split(',')[0]
+        if "," in steps:
+            steps = steps.split(",")[0]
 
         if steps.isdigit():
             len_steps = int(steps)
@@ -164,7 +164,7 @@ with open(filename, 'r') as fh:
         if len_steps == 0 or len_steps == 1:
             print(line)
 
-            if len_steps == 1 and steps[0] == 'Na':
+            if len_steps == 1 and steps[0] == "Na":
                 len_steps = 0
 
         stats[len_steps] += 1
@@ -172,9 +172,9 @@ with open(filename, 'r') as fh:
         # Edge stats
         if do_edges:
 
-            if '4x4x4-step101' in filename:
+            if "4x4x4-step101" in filename:
                 (paired_count, unpaired_count) = edge_count_444(state)
-            elif '5x5x5-step101' in filename:
+            elif "5x5x5-step101" in filename:
                 (paired_count, unpaired_count) = edge_count_555(state)
             else:
                 raise Exception("We should not be here")
@@ -192,7 +192,7 @@ with open(filename, 'r') as fh:
 
         linecount += 1
 
-print('\n    ' + filename)
+print("\n    " + filename)
 print("    " + "=" * len(filename))
 
 prev = None
@@ -205,9 +205,13 @@ for key in sorted(stats.keys()):
     if prev is None:
         delta = float(0)
     else:
-        delta = float(stats[key]/prev)
+        delta = float(stats[key] / prev)
 
-    print("    {} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(key, stats[key], int(float(stats[key]/linecount) * 100), delta))
+    print(
+        "    {} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(
+            key, stats[key], int(float(stats[key] / linecount) * 100), delta
+        )
+    )
     total_steps += key * stats[key]
     prev = stats[key]
 
@@ -215,7 +219,10 @@ if do_edges:
 
     print("\n\nEdge Stats")
     for key in sorted(edge_stats.keys()):
-        print("%d unpaired edges, %d entries (%d percent)" % (key, edge_stats[key], int(float(edge_stats[key]/linecount) * 100)))
+        print(
+            "%d unpaired edges, %d entries (%d percent)"
+            % (key, edge_stats[key], int(float(edge_stats[key] / linecount) * 100))
+        )
 
         for len_steps in sorted(edge_stats2[key].keys()):
             len_steps_count = edge_stats2[key][len_steps]
@@ -224,4 +231,4 @@ if do_edges:
 print("\n    Total: {:,} entries".format(linecount))
 
 if linecount:
-    print("    Average: %.2f moves\n\n" % float(total_steps/linecount))
+    print("    Average: %.2f moves\n\n" % float(total_steps / linecount))

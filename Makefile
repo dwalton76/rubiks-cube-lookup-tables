@@ -9,7 +9,7 @@ init: clean
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	python3 -m venv venv
 	@./venv/bin/python3 -m pip install -U pip==20.2
-	@./venv/bin/python3 -m pip install setuptools==49.2.0 pyhashxx==0.1.3
+	@./venv/bin/python3 -m pip install -r requirements.txt
 
 gdb:
 	ulimit -c unlimited
@@ -17,6 +17,8 @@ gdb:
 
 format:
 	isort -rc dead rubikscubelookuptables utils
+	# @./venv/bin/python3 -m black --config=pyproject.toml .
+	# @./venv/bin/python3 -m flake8 --config=.flake8
 
 222: clean
 	./bin/builderui.py Build222Ultimate

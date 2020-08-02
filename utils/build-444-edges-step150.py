@@ -17,8 +17,7 @@ import sys
 from rubikscubennnsolver import reverse_steps, wing_str_map
 from rubikscubennnsolver.RubiksCube444 import RubiksCube444, edges_partner_444, solved_444
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)20s %(levelname)8s: %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")
 log = logging.getLogger(__name__)
 
 # Color the errors and warnings in red
@@ -47,15 +46,15 @@ with open("results.txt", "w") as fh_results:
                 for square_index in side.center_pos:
                     cube.state[square_index] = side.name
 
-            #cube.print_cube()
+            # cube.print_cube()
             scramble_len = len(cube.solution)
 
-            #cube.lt_pair_first_four_edges.only_colors = only_colors
+            # cube.lt_pair_first_four_edges.only_colors = only_colors
             cube.lt_pair_first_four_edges_edges_only.only_colors = only_colors
             cube.lt_pair_first_four_edges.solve()
 
             fh_results.write("%s:%s\n" % (state, " ".join(cube.solution[scramble_len:])))
-            #cube.print_cube()
+            # cube.print_cube()
 
             if line_number and line_number % 1000 == 0:
                 log.warning(line_number)

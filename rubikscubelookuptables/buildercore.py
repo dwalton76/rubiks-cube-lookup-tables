@@ -53,10 +53,11 @@ from rubikscubennnsolver.RubiksCube666 import RubiksCube666, moves_666, rotate_6
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, moves_777, rotate_777, solved_777
 
 log = logging.getLogger(__name__)
-supported_sizes = ('2x2x2', '3x3x3', '4x4x4', '5x5x5', '6x6x6', '7x7x7')
+supported_sizes = ("2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7")
 
 WRITE_BATCH_SIZE = 1000000
 LOG_BATCH_SIZE = 1000000
+
 
 def create_dir(dirname):
 
@@ -135,7 +136,7 @@ def reverse_steps(steps):
     ['D2', 'R', "U'"]
     """
 
-    '''
+    """
     results = []
     for step in reversed(steps):
         if step[-1] == "2":
@@ -147,7 +148,7 @@ def reverse_steps(steps):
 
         results.append(step)
     return results
-    '''
+    """
     return [step if step[-1] == "2" else step[0:-1] if step[-1] == "'" else step + "'" for step in reversed(steps)]
 
 
@@ -164,37 +165,46 @@ def convert_state_to_hex(state):
     >>> convert_state_to_hex("UUxUx")
     '1a'
     """
-    state = state.replace('x', '0').replace('-', '0').replace('U', '1').replace('L', '1').replace('F', '1').replace('R', '1').replace('B', '1').replace('D', '1')
-    hex_width = int(math.ceil(len(state)/4.0))
+    state = (
+        state.replace("x", "0")
+        .replace("-", "0")
+        .replace("U", "1")
+        .replace("L", "1")
+        .replace("F", "1")
+        .replace("R", "1")
+        .replace("B", "1")
+        .replace("D", "1")
+    )
+    hex_width = int(math.ceil(len(state) / 4.0))
     hex_state = hex(int(state, 2))[2:]
 
-    if hex_state.endswith('L'):
+    if hex_state.endswith("L"):
         hex_state = hex_state[:-1]
 
     return hex_state.zfill(hex_width)
 
 
 def convert_to_cost_only(filename):
-    filename_new = filename.replace('.txt', '.cost-only.txt')
+    filename_new = filename.replace(".txt", ".cost-only.txt")
     prev_state_int = None
 
-    with open(filename, 'r') as fh:
-        with open(filename_new, 'w') as fh_new:
+    with open(filename, "r") as fh:
+        with open(filename_new, "w") as fh_new:
             for (line_number, line) in enumerate(fh):
-                (state, steps) = line.strip().split(':')
+                (state, steps) = line.strip().split(":")
                 steps = steps.split()
                 state_int = int(state, 16)
-                #log.info("%s: state_int %d" % (state, state_int))
+                # log.info("%s: state_int %d" % (state, state_int))
 
                 # Add 0s for every state from prev_state_int to state_int
                 if prev_state_int is None:
                     zeroes_between_prev_and_now = state_int
                 else:
-                    zeroes_between_prev_and_now = (state_int - prev_state_int - 1)
+                    zeroes_between_prev_and_now = state_int - prev_state_int - 1
 
                 if zeroes_between_prev_and_now > 0:
-                    #log.info("zeroes_between_prev_and_now %s" % zeroes_between_prev_and_now)
-                    zeroes_between_prev_and_now = zeroes_between_prev_and_now * '0'
+                    # log.info("zeroes_between_prev_and_now %s" % zeroes_between_prev_and_now)
+                    zeroes_between_prev_and_now = zeroes_between_prev_and_now * "0"
                     fh_new.write(zeroes_between_prev_and_now)
 
                 # Write the steps_len
@@ -215,7 +225,7 @@ def convert_to_cost_only(filename):
 
 
 def convert_to_hash_cost_only(filename, bucketcount):
-    filename_new = filename.replace('.txt', '.hash-cost-only.txt')
+    filename_new = filename.replace(".txt", ".hash-cost-only.txt")
     prev_state_int = None
     first_permutation_rank = None
 
@@ -223,12 +233,12 @@ def convert_to_hash_cost_only(filename, bucketcount):
     collisions = 0
     from pyhashxx import hashxx
 
-    with open(filename, 'r') as fh:
+    with open(filename, "r") as fh:
         for (line_number, line) in enumerate(fh):
-            (state, steps) = line.strip().split(':')
+            (state, steps) = line.strip().split(":")
             steps = steps.split()
 
-            hash_raw = hashxx(state.encode('utf-8'))
+            hash_raw = hashxx(state.encode("utf-8"))
             hash_index = int(hash_raw % bucketcount)
 
             # Write the steps_len
@@ -237,7 +247,7 @@ def convert_to_hash_cost_only(filename, bucketcount):
             else:
                 steps_len = len(steps)
 
-            #log.info("state: %s, hash_index %s, steps_len %s" % (state, hash_index, steps_len))
+            # log.info("state: %s, hash_index %s, steps_len %s" % (state, hash_index, steps_len))
 
             if not bucket[hash_index]:
                 bucket[hash_index] = steps_len
@@ -249,39 +259,39 @@ def convert_to_hash_cost_only(filename, bucketcount):
 
             if line_number % 1000000 == 0:
                 log.info(line_number)
-            #if line_number >= 1000:
+            # if line_number >= 1000:
             #    break
 
     log.info("%d collisions" % collisions)
     log.info("begin writing %s" % filename_new)
-    with open(filename_new, 'w') as fh_new:
+    with open(filename_new, "w") as fh_new:
         to_write = []
 
         for (index, x) in enumerate(bucket):
             if x > 15:
-                to_write.append('f')
+                to_write.append("f")
             else:
                 # Convert steps_len to hex and ignore the 0x part of the string
                 to_write.append(hex(x)[2])
 
             if index % 100000 == 0:
-                fh_new.write(''.join(to_write))
+                fh_new.write("".join(to_write))
                 to_write = []
 
         if to_write:
-            fh_new.write(''.join(to_write))
+            fh_new.write("".join(to_write))
 
-        fh_new.write('\n')
+        fh_new.write("\n")
     log.info("end writing %s" % filename_new)
 
 
 def parse_histogram(filename):
 
-    if not os.path.exists('histogram.txt'):
+    if not os.path.exists("histogram.txt"):
         print("\n\nERROR: histogram.txt does not exist")
         sys.exit(1)
 
-    with open('histogram.txt', 'r') as fh:
+    with open("histogram.txt", "r") as fh:
         found_filename = False
         histogram = []
         linecount = 0
@@ -292,39 +302,39 @@ def parse_histogram(filename):
 
             if not found_filename and line == filename:
                 found_filename = True
-                histogram.append('    ' + line)
+                histogram.append("    " + line)
                 log.info(line)
 
             elif found_filename:
-                histogram.append('    ' + line)
+                histogram.append("    " + line)
                 log.info(line)
 
-                if 'steps has' in line:
+                if "steps has" in line:
                     max_depth = int(line.split()[0])
-                elif line.startswith('Total:'):
-                    linecount = int(line.split()[1].replace(',', ''))
-                elif line.startswith('Average'):
+                elif line.startswith("Total:"):
+                    linecount = int(line.split()[1].replace(",", ""))
+                elif line.startswith("Average"):
                     break
 
     if not found_filename:
         print("\n\nERROR: %s is not in histogram.txt" % filename)
         sys.exit(0)
 
-    return ('\n'.join(histogram), linecount, max_depth)
+    return ("\n".join(histogram), linecount, max_depth)
 
 
 def get_starting_states(filename, class_name, hex_digits):
     """
     TODO hex_digits needs to be the number of hex characters in the state
     """
-    ss_filename = 'starting-states-' + filename
+    ss_filename = "starting-states-" + filename
 
     if not os.path.exists(ss_filename):
         print("\n\nERROR: %s does not exist. run:" % ss_filename)
-        print("\n./builderui.py %s\n" % class_name.replace('LookupTable', 'StartingStates'))
+        print("\n./builderui.py %s\n" % class_name.replace("LookupTable", "StartingStates"))
         sys.exit(1)
 
-    with open(ss_filename, 'r') as fh:
+    with open(ss_filename, "r") as fh:
         result = []
         for line in fh:
             line = line.strip()
@@ -334,10 +344,18 @@ def get_starting_states(filename, class_name, hex_digits):
             line = line.replace(",", "")
 
             if hex_digits:
-                line = line.replace('x', '0').replace('U', '1').replace('L', '1').replace('F', '1').replace('R', '1').replace('B', '1').replace('D', '1')
+                line = (
+                    line.replace("x", "0")
+                    .replace("U", "1")
+                    .replace("L", "1")
+                    .replace("F", "1")
+                    .replace("R", "1")
+                    .replace("B", "1")
+                    .replace("D", "1")
+                )
                 line = line.replace("'", "")
                 line = line.replace(",", "")
-                #print("             %0dx," % hex(int(line, 2))[2:])
+                # print("             %0dx," % hex(int(line, 2))[2:])
                 result.append("             '" + hex_format % int(line, 2) + "'")
             else:
                 result.append("%s" % line)
@@ -345,7 +363,7 @@ def get_starting_states(filename, class_name, hex_digits):
         result.sort()
 
         if len(result) < 100:
-            result = '(' + ',\n             '.join(result) + ')'
+            result = "(" + ",\n             ".join(result) + ")"
         else:
             pass
         return result
@@ -368,7 +386,7 @@ def find_all_lines_for_state(fh, line_count, line_width, state_to_find):
 
     # Find an entry with state
     while first <= last:
-        midpoint = int((first + last)/2)
+        midpoint = int((first + last) / 2)
         fh.seek(midpoint * line_width)
 
         # Only read the 'state' part of the line (for speed)
@@ -395,7 +413,7 @@ def find_all_lines_for_state(fh, line_count, line_width, state_to_find):
 
         line = fh.read(line_width)
         line = line.rstrip()
-        (state, steps) = line.split(':')
+        (state, steps) = line.split(":")
 
         if state != state_to_find:
             break
@@ -414,7 +432,7 @@ def find_all_lines_for_state(fh, line_count, line_width, state_to_find):
         fh.seek(midpoint * line_width)
         line = fh.read(line_width)
         line = line.rstrip()
-        (state, steps) = line.split(':')
+        (state, steps) = line.split(":")
 
         if state == state_to_find:
             result.append(line)
@@ -427,7 +445,6 @@ def find_all_lines_for_state(fh, line_count, line_width, state_to_find):
 
 
 class BackgroundProcess(Thread):
-
     def __init__(self, cmd, desc):
         Thread.__init__(self)
         self.cmd = cmd
@@ -439,7 +456,7 @@ class BackgroundProcess(Thread):
         return self.desc
 
     def run(self):
-        log.debug("Running %s" % ' '.join(self.cmd))
+        log.debug("Running %s" % " ".join(self.cmd))
         try:
             self.result = subprocess.check_output(self.cmd)
 
@@ -456,9 +473,22 @@ class BFS(object):
     Base class for all classes that build lookup tables
     """
 
-    def __init__(self, name, illegal_moves, size, filename, store_as_hex, starting_cube_states,
-                 use_cost_only=False, use_hash_cost_only=False, use_edges_pattern=False, legal_moves=None,
-                 rotations=[], use_centers_then_edges=False, use_c=False):
+    def __init__(
+        self,
+        name,
+        illegal_moves,
+        size,
+        filename,
+        store_as_hex,
+        starting_cube_states,
+        use_cost_only=False,
+        use_hash_cost_only=False,
+        use_edges_pattern=False,
+        legal_moves=None,
+        rotations=[],
+        use_centers_then_edges=False,
+        use_c=False,
+    ):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
@@ -485,70 +515,70 @@ class BFS(object):
         assert isinstance(self.use_hash_cost_only, bool)
         assert not (self.use_cost_only and self.use_hash_cost_only), "Both cannot be true"
 
-        if size == '2x2x2':
+        if size == "2x2x2":
             self.all_moves = moves_222
             self.rotate_xxx = rotate_222
-            self.cube = RubiksCube222(solved_222, order='URFDLB')
+            self.cube = RubiksCube222(solved_222, order="URFDLB")
 
             for (state, order) in starting_cube_states:
-                if order == 'ascii':
+                if order == "ascii":
                     state = parse_ascii_222(state)
-                    order = 'ULFRBD'
+                    order = "ULFRBD"
                 self.starting_cubes.append(RubiksCube222(state, order))
 
-        elif size == '3x3x3':
+        elif size == "3x3x3":
             self.all_moves = moves_333
             self.rotate_xxx = rotate_333
-            self.cube = RubiksCube333(solved_333, order='URFDLB')
+            self.cube = RubiksCube333(solved_333, order="URFDLB")
 
             for (state, order) in starting_cube_states:
-                if order == 'ascii':
+                if order == "ascii":
                     state = parse_ascii_333(state)
-                    order = 'ULFRBD'
+                    order = "ULFRBD"
                 self.starting_cubes.append(RubiksCube333(state, order))
 
-        elif size == '4x4x4':
+        elif size == "4x4x4":
             self.all_moves = moves_444
             self.rotate_xxx = rotate_444
-            self.cube = RubiksCube444(solved_444, order='URFDLB')
+            self.cube = RubiksCube444(solved_444, order="URFDLB")
 
             for (state, order) in starting_cube_states:
-                if order == 'ascii':
+                if order == "ascii":
                     state = parse_ascii_444(state)
-                    order = 'ULFRBD'
+                    order = "ULFRBD"
                 self.starting_cubes.append(RubiksCube444(state, order))
 
-        elif size == '5x5x5':
+        elif size == "5x5x5":
             self.all_moves = moves_555
             self.rotate_xxx = rotate_555
-            self.cube = RubiksCube555(solved_555, order='URFDLB')
+            self.cube = RubiksCube555(solved_555, order="URFDLB")
 
             for (state, order) in starting_cube_states:
-                if order == 'ascii':
+                if order == "ascii":
                     state = parse_ascii_555(state)
-                    order = 'ULFRBD'
+                    order = "ULFRBD"
                 self.starting_cubes.append(RubiksCube555(state, order))
 
-        elif size == '6x6x6':
+        elif size == "6x6x6":
             self.all_moves = moves_666
             self.rotate_xxx = rotate_666
-            self.cube = RubiksCube666(solved_666, order='URFDLB')
+            self.cube = RubiksCube666(solved_666, order="URFDLB")
 
             for (state, order) in starting_cube_states:
-                if order == 'ascii':
+                if order == "ascii":
                     state = parse_ascii_666(state)
-                    order = 'ULFRBD'
+                    order = "ULFRBD"
                 self.starting_cubes.append(RubiksCube666(state, order))
 
-        elif size == '7x7x7':
+        elif size == "7x7x7":
             self.all_moves = moves_777
             self.rotate_xxx = rotate_777
-            self.cube = RubiksCube777(solved_777, order='URFDLB')
+            self.cube = RubiksCube777(solved_777, order="URFDLB")
 
             for (state, order) in starting_cube_states:
-                if order == 'ascii':
+                if order == "ascii":
                     state = parse_ascii_777(state)
-                    order = 'ULFRBD'
+                    order = "ULFRBD"
                 self.starting_cubes.append(RubiksCube777(state, order))
 
         # Print all starting cubes
@@ -566,10 +596,10 @@ class BFS(object):
                 if move not in self.illegal_moves:
                     self.legal_moves.append(move)
 
-        #self.legal_moves = sorted(self.legal_moves)
-        log.info("all moves     : %s" % ' '.join(self.all_moves))
-        log.info("illegal moves : %s" % ' '.join(self.illegal_moves))
-        log.info("legal moves   : %s" % ' '.join(self.legal_moves))
+        # self.legal_moves = sorted(self.legal_moves)
+        log.info("all moves     : %s" % " ".join(self.all_moves))
+        log.info("illegal moves : %s" % " ".join(self.illegal_moves))
+        log.info("legal moves   : %s" % " ".join(self.legal_moves))
         self.bucketcount = 0
         self.size_number = int(self.size[0])
         self.workq_line_length = self.get_workq_line_length()
@@ -608,7 +638,14 @@ class BFS(object):
         if self.name.startswith("5x5x5-edges"):
             return 512
         else:
-            return LEADING_X + (SIDES_PER_CUBE * self.size_number * self.size_number) + SEPERATORS + (CHARS_PER_STEP * MAX_STEPS) + EDGES_STATE + WIGGLE_ROOM
+            return (
+                LEADING_X
+                + (SIDES_PER_CUBE * self.size_number * self.size_number)
+                + SEPERATORS
+                + (CHARS_PER_STEP * MAX_STEPS)
+                + EDGES_STATE
+                + WIGGLE_ROOM
+            )
 
     def get_workq_filename_for_core(self, core):
         return "%s.core-%d" % (self.workq_filename, core)
@@ -630,13 +667,15 @@ class BFS(object):
             total += self.stats[i]
 
         for i in sorted(self.stats)[1:]:
-            if self.stats[i-1]:
-                delta = float(self.stats[i]/self.stats[i-1])
+            if self.stats[i - 1]:
+                delta = float(self.stats[i] / self.stats[i - 1])
             else:
                 delta = float(0)
 
             if self.stats[i]:
-                states_per_depth += "    {} steps has {:,} entries ({} percent, {:.2f}x previous step)\n".format(i, self.stats[i], int(float(self.stats[i]/total) * 100), delta)
+                states_per_depth += "    {} steps has {:,} entries ({} percent, {:.2f}x previous step)\n".format(
+                    i, self.stats[i], int(float(self.stats[i] / total) * 100), delta
+                )
 
         states_per_depth += "    Total: {:,} entries".format(total)
         log.info("\n\n" + states_per_depth + "\n\n")
@@ -646,7 +685,7 @@ class BFS(object):
         Prep work needed before we start our BFS
         """
         # We will write the workq to a file in a local tmp directory
-        tmp_dirname = 'tmp'
+        tmp_dirname = "tmp"
         create_dir(tmp_dirname)
         self.workq_filename = os.path.join(tmp_dirname, "%s.workq.txt" % self)
         self.workq_filename_next = self.workq_filename + ".next"
@@ -665,22 +704,22 @@ class BFS(object):
         self.rm_per_core_workq_results_files()
 
         if self.use_edges_pattern:
-            if self.size == '4x4x4':
-                pattern = '10425376a8b9ecfdhgkiljnm'
-            elif self.size == '5x5x5':
-                pattern = 'TBD'
+            if self.size == "4x4x4":
+                pattern = "10425376a8b9ecfdhgkiljnm"
+            elif self.size == "5x5x5":
+                pattern = "TBD"
             else:
                 raise Exception("implement edges-pattern for %s" % self.size)
         else:
-            pattern = ''
+            pattern = ""
 
-        with open(self.workq_filename, 'w') as fh:
+        with open(self.workq_filename, "w") as fh:
             for cube in self.starting_cubes:
                 log.info("starting cube %s" % "".join(cube.state).replace(".", "")[1:])
                 if self.use_edges_pattern:
-                    workq_line = "%s:%s:" % (pattern, ''.join(cube.state))
+                    workq_line = "%s:%s:" % (pattern, "".join(cube.state))
                 else:
-                    workq_line = "%s:" % (''.join(cube.state))
+                    workq_line = "%s:" % ("".join(cube.state))
 
                 fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
                 self.workq_size += 1
@@ -712,36 +751,43 @@ class BFS(object):
 
             if self.use_c:
                 cmd = [
-                    'nice',
-                    './rubikscubelookuptables/builder-crunch-workq',
-                    '--size', self.size[0],
-                    '--inputfile', self.workq_filename,
-                    '--linewidth', str(self.workq_line_length + 1),
-                    '--start', str(start),
-                    '--end', str(end),
-                    '--outputfile', self.get_workq_filename_for_core(core),
-                    '--moves', '%s' % " ".join(self.legal_moves),
+                    "nice",
+                    "./rubikscubelookuptables/builder-crunch-workq",
+                    "--size",
+                    self.size[0],
+                    "--inputfile",
+                    self.workq_filename,
+                    "--linewidth",
+                    str(self.workq_line_length + 1),
+                    "--start",
+                    str(start),
+                    "--end",
+                    str(end),
+                    "--outputfile",
+                    self.get_workq_filename_for_core(core),
+                    "--moves",
+                    "%s" % " ".join(self.legal_moves),
                 ]
 
             else:
                 cmd = [
-                    'nice',
-                    './rubikscubelookuptables/builder-crunch-workq.py',
+                    "nice",
+                    "./rubikscubelookuptables/builder-crunch-workq.py",
                     self.size,
                     self.workq_filename,
                     str(self.workq_line_length),
                     str(start),
                     str(end),
                     self.get_workq_filename_for_core(core),
-                    '%s' % " ".join(self.legal_moves),
+                    "%s" % " ".join(self.legal_moves),
                 ]
 
             if self.use_edges_pattern:
-                cmd.append('--use-edges-pattern')
+                cmd.append("--use-edges-pattern")
 
-            log.info(' '.join(cmd))
+            log.info(" ".join(cmd))
 
-            thread = BackgroundProcess(cmd, 'builder-crunch-workq core %d' % core)
+            thread = BackgroundProcess(cmd, "builder-crunch-workq core %d" % core)
             thread.start()
             threads.append(thread)
 
@@ -752,11 +798,8 @@ class BFS(object):
         BILLION = 1000 * MILLION
         if self.workq_size >= BILLION:
             log.info("running builder-crunch-workq-housekeeper.py to keep disk usage in check")
-            cmd = [
-                'nice',
-                './rubikscubelookuptables/builder-crunch-workq-housekeeper.py',
-            ]
-            thread = BackgroundProcess(cmd, 'builder-crunch-workq-housekeeper')
+            cmd = ["nice", "./rubikscubelookuptables/builder-crunch-workq-housekeeper.py"]
+            thread = BackgroundProcess(cmd, "builder-crunch-workq-housekeeper")
             thread.start()
             threads.append(thread)
 
@@ -815,18 +858,20 @@ class BFS(object):
             state_width = len(state)
 
         with open("tmp/files_to_sort.txt", "w") as fh:
-            fh.write('\0'.join(core_files))
+            fh.write("\0".join(core_files))
 
         log.info("sort all of the files created by builder-crunch-workq processes begin")
         # log.info(f"state_width {state_width} per {first_core_file}")
         start_time = dt.datetime.now()
-        cmd = "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=./tmp/ --output %s --files0-from='tmp/files_to_sort.txt'" % \
-            (self.cores, state_width, sorted_results_filename)
-        #log.info(cmd)
+        cmd = (
+            "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=./tmp/ --output %s --files0-from='tmp/files_to_sort.txt'"
+            % (self.cores, state_width, sorted_results_filename)
+        )
+        # log.info(cmd)
         subprocess.check_output(cmd, shell=True)
         self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
-        #linecount = int(subprocess.check_output("wc -l %s" % sorted_results_filename, shell=True).decode("ascii").strip().split()[0])
-        #log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
+        # linecount = int(subprocess.check_output("wc -l %s" % sorted_results_filename, shell=True).decode("ascii").strip().split()[0])
+        # log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
         log.info("sort all of the files created by builder-crunch-workq processes end")
 
         log.info("rm builder-crunch-workq output files begin")
@@ -846,13 +891,21 @@ class BFS(object):
 
             log.info("builder-find-new-edges-pattern-states.py begin")
             start_time = dt.datetime.now()
-            subprocess.check_output("nice ./rubikscubelookuptables/builder-find-new-edges-pattern-states.py %s %s %s.20-new-states" % (self.filename, sorted_results_filename, self.workq_filename) , shell=True)
+            subprocess.check_output(
+                "nice ./rubikscubelookuptables/builder-find-new-edges-pattern-states.py %s %s %s.20-new-states"
+                % (self.filename, sorted_results_filename, self.workq_filename),
+                shell=True,
+            )
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-edges-pattern-states.py end")
         else:
             log.info("builder-find-new-states.py begin")
             start_time = dt.datetime.now()
-            cmd = "nice ./rubikscubelookuptables/builder-find-new-states.py %s %s %s.20-new-states" % (self.filename, sorted_results_filename, self.workq_filename)
+            cmd = "nice ./rubikscubelookuptables/builder-find-new-states.py %s %s %s.20-new-states" % (
+                self.filename,
+                sorted_results_filename,
+                self.workq_filename,
+            )
             log.info(cmd)
             subprocess.check_output(cmd, shell=True)
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
@@ -860,19 +913,17 @@ class BFS(object):
 
         log.info("building next workq file begin")
         start_time = dt.datetime.now()
-        new_states_count = int(subprocess.check_output("wc -l %s.20-new-states" % self.workq_filename, shell=True).strip().split()[0])
+        new_states_count = int(
+            subprocess.check_output("wc -l %s.20-new-states" % self.workq_filename, shell=True).strip().split()[0]
+        )
         log.info("there are {:,} new states".format(new_states_count))
         pruned = 0
         kept = 0
 
-        if self.name in (
-                "5x5x5-edges-stage-first-four",
-            ) and not self.lt_centers:
+        if self.name in ("5x5x5-edges-stage-first-four",) and not self.lt_centers:
             self.lt_centers = {}
 
-            if self.name in (
-                    "5x5x5-edges-stage-first-four",
-                ):
+            if self.name in ("5x5x5-edges-stage-first-four",):
                 lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
 
                 if lt_centers_filename.endswith("5-deep"):
@@ -888,7 +939,7 @@ class BFS(object):
             log.info("begin loading %s" % lt_centers_filename)
             with open(lt_centers_filename, "r") as fh:
                 for line in fh:
-                    (state, steps) = line.strip().split(':')
+                    (state, steps) = line.strip().split(":")
                     self.lt_centers[state] = len(steps.split())
             log.info("end loading %s" % lt_centers_filename)
 
@@ -896,18 +947,19 @@ class BFS(object):
             to_write = []
             to_write_count = 0
 
-            with open(self.workq_filename + '.20-new-states', 'r') as fh_new_states,\
-                open(self.workq_filename_next, 'w') as fh_workq_next:
+            with open(self.workq_filename + ".20-new-states", "r") as fh_new_states, open(
+                self.workq_filename_next, "w"
+            ) as fh_workq_next:
 
                 for line in fh_new_states:
 
                     # Find the state and steps_to_solve
                     if self.use_edges_pattern:
-                        (pattern, state, steps_to_solve) = line.rstrip().split(':')
+                        (pattern, state, steps_to_solve) = line.rstrip().split(":")
                         self.cube.state = list(state)
 
                     else:
-                        (state, steps_to_solve) = line.rstrip().split(':')
+                        (state, steps_to_solve) = line.rstrip().split(":")
                         self.cube.state = list(state)
 
                     if self.lt_centers_max_depth:
@@ -916,8 +968,8 @@ class BFS(object):
                         else:
                             move_budget = max_depth - self.depth + 1
 
-                        centers = ''.join([self.cube.state[x] for x in centers_555])
-                        centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth+1)
+                        centers = "".join([self.cube.state[x] for x in centers_555])
+                        centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth + 1)
 
                         # Are the centers so scrambled that we cannot solve them in the steps
                         # budget we have left? If so prune this branch.
@@ -934,7 +986,7 @@ class BFS(object):
                             kept += 1
 
                     # Add entries to the next workq file
-                    steps_to_scramble = ' '.join(reverse_steps(steps_to_solve.split()))
+                    steps_to_scramble = " ".join(reverse_steps(steps_to_solve.split()))
 
                     if self.use_edges_pattern:
                         workq_line = "%s:%s:%s" % (pattern, state, steps_to_scramble)
@@ -946,18 +998,18 @@ class BFS(object):
                     self.workq_size += 1
 
                     if to_write_count >= 10000:
-                        fh_workq_next.write(''.join(to_write))
+                        fh_workq_next.write("".join(to_write))
                         to_write = []
                         to_write_count = 0
 
                 if to_write_count:
-                    fh_workq_next.write(''.join(to_write))
+                    fh_workq_next.write("".join(to_write))
                     to_write = []
                     to_write_count = 0
 
         else:
 
-            with open(self.workq_filename_next, 'w') as fh_workq_next:
+            with open(self.workq_filename_next, "w") as fh_workq_next:
                 pass
 
         if pruned:
@@ -971,12 +1023,17 @@ class BFS(object):
         if os.path.exists(self.filename):
             log.info("sort --merge our current lookup-table.txt file with the .20-new-states file begin")
             start_time = dt.datetime.now()
-            subprocess.check_output("LC_ALL=C nice sort --parallel=%d --merge --temporary-directory=./tmp/ --output %s.30-final %s %s.20-new-states" %
-                (self.cores, self.workq_filename, self.filename, self.workq_filename), shell=True)
+            subprocess.check_output(
+                "LC_ALL=C nice sort --parallel=%d --merge --temporary-directory=./tmp/ --output %s.30-final %s %s.20-new-states"
+                % (self.cores, self.workq_filename, self.filename, self.workq_filename),
+                shell=True,
+            )
             self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
             log.info("sort --merge our current lookup-table.txt file with the .20-new-states file end")
         else:
-            subprocess.check_output("cp %s.20-new-states %s.30-final" % (self.workq_filename, self.workq_filename) , shell=True)
+            subprocess.check_output(
+                "cp %s.20-new-states %s.30-final" % (self.workq_filename, self.workq_filename), shell=True
+            )
 
         shutil.move("%s.30-final" % self.workq_filename, self.filename)
         os.remove("%s.10-results" % self.workq_filename)
@@ -989,7 +1046,7 @@ class BFS(object):
         self.stats[self.depth] = new_states_count
         log.warning("{}: finished depth {}, workq size {:,}".format(self.index, self.depth, self.workq_size))
 
-    def search(self, max_depth,cores):
+    def search(self, max_depth, cores):
         """
         This is where the magic happens
         """
@@ -1014,23 +1071,25 @@ class BFS(object):
     def save_starting_states(self):
         patterns = []
         to_write = []
-        with open(self.filename, 'r') as fh_read:
+        with open(self.filename, "r") as fh_read:
             for line in fh_read:
                 if self.use_edges_pattern:
-                    (pattern, cube_state_string, steps) = line.rstrip().split(':')
+                    (pattern, cube_state_string, steps) = line.rstrip().split(":")
                     self.cube.state = list(cube_state_string)
                 else:
-                    (cube_state_string, steps) = line.rstrip().split(':')
+                    (cube_state_string, steps) = line.rstrip().split(":")
                     self.cube.state = list(cube_state_string)
 
                 if self.use_edges_pattern:
                     patterns.append(pattern)
 
                 if self.name == "5x5x5-edges-solve-second-four":
-                    if (self.cube.state[53] != "F" or
-                        self.cube.state[73] != "F" or
-                        self.cube.state[103] != "B" or
-                        self.cube.state[123] != "B"):
+                    if (
+                        self.cube.state[53] != "F"
+                        or self.cube.state[73] != "F"
+                        or self.cube.state[103] != "B"
+                        or self.cube.state[123] != "B"
+                    ):
                         continue
 
                 to_write.append("             ('%s', 'ULFRBD')," % cube_state_string[1:])
@@ -1038,38 +1097,36 @@ class BFS(object):
                 for step in self.rotations:
                     self.cube.state = list(cube_state_string)
                     self.cube.rotate(step)
-                    #self.cube.print_cube()
-                    to_write.append("             ('%s', 'ULFRBD')," % ''.join(self.cube.state[1:]))
+                    # self.cube.print_cube()
+                    to_write.append("             ('%s', 'ULFRBD')," % "".join(self.cube.state[1:]))
 
-        with open("%s.starting-states" % self.filename, 'w') as fh_final:
+        with open("%s.starting-states" % self.filename, "w") as fh_final:
             to_write.sort()
             fh_final.write("\n".join(to_write) + "\n")
         log.info("wrote %d starting states" % len(to_write))
 
-
         to_write = []
-        with open("%s.starting-states" % self.filename, 'r') as fh_read:
+        with open("%s.starting-states" % self.filename, "r") as fh_read:
             for line in fh_read:
                 (state, order) = line.strip().split("', '")
 
                 # remove the leading ('
                 state = state[2:]
-                state = state.replace('.', '')
+                state = state.replace(".", "")
 
                 if self.store_as_hex:
                     state = convert_state_to_hex(state)
 
                 to_write.append("'%s'," % state)
 
-        with open("%s.starting-states.compact" % self.filename, 'w') as fh:
+        with open("%s.starting-states.compact" % self.filename, "w") as fh:
             to_write.sort()
             fh.write("\n".join(to_write) + "\n")
 
         if self.use_edges_pattern:
-            print("state_target patterns:\n%s\n\n" % '\n'.join(patterns))
+            print("state_target patterns:\n%s\n\n" % "\n".join(patterns))
 
         shutil.move("%s.starting-states" % self.filename, self.filename)
-
 
     def save(self):
         start_time = dt.datetime.now()
@@ -1081,18 +1138,18 @@ class BFS(object):
         # remove all of the '.'s and if convert to hex (if requested).
         log.info("%s: save() begin" % self)
         log.info("%s: convert state to smaller format, file %s" % (self, self.filename))
-        with open("%s.small" % self.filename, 'w') as fh_final:
-            with open(self.filename, 'r') as fh_read:
+        with open("%s.small" % self.filename, "w") as fh_final:
+            with open(self.filename, "r") as fh_read:
                 odd_even = ""
 
                 if self.use_edges_pattern:
                     for line in fh_read:
-                        (pattern, cube_state_string, steps) = line.rstrip().split(':')
-                        pattern = pattern.replace('.', '')
+                        (pattern, cube_state_string, steps) = line.rstrip().split(":")
+                        pattern = pattern.replace(".", "")
                         self.cube.state = list(cube_state_string)
 
                         if self.lt_centers_max_depth:
-                            centers = ''.join([self.cube.state[x] for x in centers_555])
+                            centers = "".join([self.cube.state[x] for x in centers_555])
 
                             # Only keep the entries where centers are solved
                             if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
@@ -1110,24 +1167,24 @@ class BFS(object):
 
                 elif self.use_centers_then_edges:
                     for line in fh_read:
-                        (cube_state_string, steps) = line.rstrip().split(':')
+                        (cube_state_string, steps) = line.rstrip().split(":")
                         self.cube.state = list(cube_state_string)
 
-                        if self.size == '4x4x4':
-                            centers = ''.join([self.cube.state[x] for x in centers_444])
-                            edges = ''.join([self.cube.state[x] for x in edges_444])
-                            centers = centers.replace('.', '')
-                            edges = edges.replace('.', '')
+                        if self.size == "4x4x4":
+                            centers = "".join([self.cube.state[x] for x in centers_444])
+                            edges = "".join([self.cube.state[x] for x in edges_444])
+                            centers = centers.replace(".", "")
+                            edges = edges.replace(".", "")
 
                             if self.store_as_hex:
                                 centers = convert_state_to_hex(centers)
                                 edges = convert_state_to_hex(edges)
 
-                        elif self.size == '5x5x5':
-                            centers = ''.join([self.cube.state[x] for x in centers_555])
-                            edges = ''.join([self.cube.state[x] for x in edges_555])
-                            centers = centers.replace('.', '')
-                            edges = edges.replace('.', '')
+                        elif self.size == "5x5x5":
+                            centers = "".join([self.cube.state[x] for x in centers_555])
+                            edges = "".join([self.cube.state[x] for x in edges_555])
+                            centers = centers.replace(".", "")
+                            edges = edges.replace(".", "")
 
                             if self.store_as_hex:
                                 centers = convert_state_to_hex(centers)
@@ -1150,20 +1207,20 @@ class BFS(object):
                     use_odd_even = None
 
                     for line in fh_read:
-                        (cube_state_string, steps) = line.rstrip().split(':')
+                        (cube_state_string, steps) = line.rstrip().split(":")
 
                         if lt_centers_max_depth:
                             self.cube.state = list(cube_state_string)
-                            edges = ''.join([self.cube.state[x] for x in edges_555])
-                            edges = edges.replace('-', 'x')
-                            centers = ''.join([self.cube.state[x] for x in centers_555])
+                            edges = "".join([self.cube.state[x] for x in edges_555])
+                            edges = edges.replace("-", "x")
+                            centers = "".join([self.cube.state[x] for x in centers_555])
 
                             if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
                                 continue
 
                             cube_state_string_small = edges
                         else:
-                            cube_state_string_small = cube_state_string[1:].replace('.', '')
+                            cube_state_string_small = cube_state_string[1:].replace(".", "")
 
                         if use_odd_even is None:
                             use_odd_even = bool("_odd" in cube_state_string_small or "_even" in cube_state_string_small)
@@ -1218,7 +1275,7 @@ class BFS(object):
                                 raise Exception(line)
 
         else:
-            files_to_pad = (self.filename, )
+            files_to_pad = (self.filename,)
 
         for filename in files_to_pad:
             log.info("%s: pad the file" % self)
@@ -1230,8 +1287,11 @@ class BFS(object):
                 subprocess.check_output("LC_ALL=C nice sort --check %s" % filename, shell=True)
             except subprocess.CalledProcessError:
                 log.info("%s: sort the file" % self)
-                subprocess.check_output("LC_ALL=C nice sort --parallel=%d --temporary-directory=./tmp/ --output=%s %s" %
-                    (self.cores, filename, filename), shell=True)
+                subprocess.check_output(
+                    "LC_ALL=C nice sort --parallel=%d --temporary-directory=./tmp/ --output=%s %s"
+                    % (self.cores, filename, filename),
+                    shell=True,
+                )
 
             log.info("%s: build histogram" % self)
             subprocess.check_output("nice ./utils/print-histogram.py %s >> histogram.txt" % filename, shell=True)
@@ -1253,29 +1313,29 @@ class BFS(object):
             foo = []
 
             for (state, state_type) in self.starting_cube_states:
-                if state_type == 'ULFRBD':
+                if state_type == "ULFRBD":
 
                     if use_edges_pattern:
                         self.cube.state = ["x"] + list(state)
 
                         if self.size == "5x5x5":
                             state = edges_recolor_pattern_555(self.cube.state[:])
-                            state = ''.join([state[index] for index in wings_for_edges_pattern_555])
+                            state = "".join([state[index] for index in wings_for_edges_pattern_555])
                         elif self.size == "4x4x4":
                             state = edges_recolor_pattern_444(self.cube.state[:])
-                            state = ''.join([state[index] for (_, index, _) in wings_for_edges_recolor_pattern_444])
+                            state = "".join([state[index] for (_, index, _) in wings_for_edges_recolor_pattern_444])
                         else:
                             raise Exception("use_edges_pattern not supported for %s" % self.size)
 
                     else:
-                        state = ''.join(state.split()).strip().replace('.', '')
+                        state = "".join(state.split()).strip().replace(".", "")
 
                         if use_hex:
                             state = convert_state_to_hex(state)
 
                     foo.append("        '" + state + "'")
 
-                elif state_type == 'ascii':
+                elif state_type == "ascii":
                     # do this later
                     pass
                 else:
@@ -1289,32 +1349,33 @@ class BFS(object):
         return starting_states
 
     def _code_gen_lookup_table(self):
-        class_name = type(self).__name__.replace('Build', 'LookupTable')
+        class_name = type(self).__name__.replace("Build", "LookupTable")
 
         next_prime = {
-            2520 : 2521,
-            12870 : 12889,
-            20160 : 20161,
-            58800 : 58831,
-            176400 : 176401,
-            343000 : 343019,
-            5880600 : 5880601,
-            24010000 : 24010031,
-            51482970 : 51482999,
-            67326336 : 67326361,
-            165636900 : 165636907,
-            121287375 : 121287377,
-            197568000 : 197568011,
-            239500800 : 239500847,
-            383328000 : 383328041,
-            479001600 : 479001629,
-            812851200 : 812851219,
+            2520: 2521,
+            12870: 12889,
+            20160: 20161,
+            58800: 58831,
+            176400: 176401,
+            343000: 343019,
+            5880600: 5880601,
+            24010000: 24010031,
+            51482970: 51482999,
+            67326336: 67326361,
+            165636900: 165636907,
+            121287375: 121287377,
+            197568000: 197568011,
+            239500800: 239500847,
+            383328000: 383328041,
+            479001600: 479001629,
+            812851200: 812851219,
         }
 
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
 
-        print('''
+        print(
+            '''
 class %s(LookupTable):
     """
 %s
@@ -1348,25 +1409,27 @@ class %s(LookupTable):
 
         for (pos, pos_state) in zip(CUBE_POSITION_LIST, state):
             cube[pos] = pos_state
-''' % (
-    class_name,
-    histogram,
-    starting_states,
-    self.filename,
-    linecount,
-    max_depth,
-    os.path.getsize(self.filename),
-    self.size.replace("x", ""),
-    '",\n                "'.join(self.illegal_moves),
-
-    ))
+'''
+            % (
+                class_name,
+                histogram,
+                starting_states,
+                self.filename,
+                linecount,
+                max_depth,
+                os.path.getsize(self.filename),
+                self.size.replace("x", ""),
+                '",\n                "'.join(self.illegal_moves),
+            )
+        )
 
     def _code_gen_lookup_table_ida(self):
-        class_name = type(self).__name__.replace('Build', 'LookupTableIDA')
+        class_name = type(self).__name__.replace("Build", "LookupTableIDA")
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
 
-        print('''
+        print(
+            '''
 class %s(LookupTableIDA):
     """
 %s
@@ -1391,39 +1454,49 @@ class %s(LookupTableIDA):
             filesize=%d)
 
     def ida_heuristic(self):
-        parent_state = self.parent.state''' % (
-    class_name,
-    histogram,
-    starting_states,
-    self.filename,
-    self.size.replace('x', ''),
-    linecount,
-    max_depth,
-    os.path.getsize(self.filename)
-    ))
+        parent_state = self.parent.state'''
+            % (
+                class_name,
+                histogram,
+                starting_states,
+                self.filename,
+                self.size.replace("x", ""),
+                linecount,
+                max_depth,
+                os.path.getsize(self.filename),
+            )
+        )
 
         if self.store_as_hex:
-            print("        lt_state = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])" % self.size.replace('x', ''))
+            print(
+                "        lt_state = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])"
+                % self.size.replace("x", "")
+            )
             print("        lt_state = self.hex_format % int(lt_state, 2)\n\n")
 
         elif self.use_edges_pattern:
-            print("        state = edges_recolor_pattern_%s(parent_state[:])" % self.size.replace('x', ''))
-            print("        edges_state = ''.join([state[index] for index in wings_for_edges_pattern_%s])" % self.size.replace('x', ''))
+            print("        state = edges_recolor_pattern_%s(parent_state[:])" % self.size.replace("x", ""))
+            print(
+                "        edges_state = ''.join([state[index] for index in wings_for_edges_pattern_%s])"
+                % self.size.replace("x", "")
+            )
             print("        lt_state = edges_state")
 
         else:
-            print("        lt_state = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace('x', ''))
+            print("        lt_state = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace("x", ""))
 
         print("        cost_to_goal = max(foo_cost, bar_cost)")
         print("        return (lt_state, cost_to_goal)\n\n")
 
     def code_gen(self):
-        assert self.filename.startswith('lookup-table-'), "--code-gen only applies to BuildXYZ classes"
+        assert self.filename.startswith("lookup-table-"), "--code-gen only applies to BuildXYZ classes"
 
-        if '0.txt' in self.filename:
-            first_prune_table_filename = self.filename.replace('0.txt', '1.txt').replace('lookup-table', 'starting-states-lookup-table')
+        if "0.txt" in self.filename:
+            first_prune_table_filename = self.filename.replace("0.txt", "1.txt").replace(
+                "lookup-table", "starting-states-lookup-table"
+            )
 
-            #if os.path.exists(first_prune_table_filename):
+            # if os.path.exists(first_prune_table_filename):
             if True or os.path.exists(first_prune_table_filename):
                 log.info("prune table %s does exist" % first_prune_table_filename)
                 self._code_gen_lookup_table_ida()
@@ -1443,7 +1516,7 @@ class %s(LookupTableIDA):
             table[cube_state_minus_x] = []
 
             for step in self.legal_moves:
-                workq.append((cube_state_minus_x, [step,]))
+                workq.append((cube_state_minus_x, [step]))
 
         index = 0
         max_depth = 5
@@ -1451,17 +1524,17 @@ class %s(LookupTableIDA):
 
         while workq:
             (state, steps_to_scramble) = workq.popleft()
-            #log.info(f"{index}: {state}, {steps_to_scramble}")
+            # log.info(f"{index}: {state}, {steps_to_scramble}")
 
             debug = False
-            '''
+            """
             if len(steps_to_scramble) >= 3 and steps_to_scramble[0] == "Lw" and steps_to_scramble[1] == "U'" and steps_to_scramble[2] == "3Bw2":
                 log.info(f"{index}: {steps_to_scramble}")
                 debug = True
 
             if debug:
                 log.info(state)
-            '''
+            """
 
             cube.state = ["x"]
             cube.state.extend(list(state))
@@ -1477,7 +1550,7 @@ class %s(LookupTableIDA):
             if cube_state_minus_x not in table:
                 add_to_table = True
             else:
-                #if len(steps_to_scramble) <= len(table[cube_state_minus_x]):
+                # if len(steps_to_scramble) <= len(table[cube_state_minus_x]):
                 if len(steps_to_scramble) < len(table[cube_state_minus_x]):
                     add_to_table = True
 
@@ -1486,16 +1559,20 @@ class %s(LookupTableIDA):
 
                 if len(steps_to_scramble) < max_depth:
                     for step in self.legal_moves:
-                        workq.append((cube_state_minus_x, steps_to_scramble + [step,]))
+                        workq.append((cube_state_minus_x, steps_to_scramble + [step]))
 
             if debug:
                 cube.print_cube()
-                log.info(f"cube_state_minus_x {cube_state_minus_x}, cube state pretty {cube_state_minus_x.replace('.', '')}, add_to_table {add_to_table}")
+                log.info(
+                    f"cube_state_minus_x {cube_state_minus_x}, cube state pretty {cube_state_minus_x.replace('.', '')}, add_to_table {add_to_table}"
+                )
 
             index += 1
 
             if index % 10000 == 0:
-                log.info(f"{index:,}: depth {len(steps_to_scramble)}, {len(workq):,} items on workq, {len(table):,} items in table")
+                log.info(
+                    f"{index:,}: depth {len(steps_to_scramble)}, {len(workq):,} items on workq, {len(table):,} items in table"
+                )
 
         with open(self.filename, "w") as fh:
             for cube_state_minus_x in sorted(table.keys()):
@@ -1504,9 +1581,8 @@ class %s(LookupTableIDA):
                 fh.write("%s:%s\n" % (cube_state_minus_x, " ".join(steps_to_solve)))
 
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)24s %(levelname)8s: %(message)s')
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)24s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
@@ -1514,4 +1590,5 @@ if __name__ == '__main__':
     logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
 
     import doctest
+
     doctest.testmod()

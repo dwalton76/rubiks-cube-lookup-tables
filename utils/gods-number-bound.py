@@ -3,18 +3,19 @@
 # See this post
 # http://cubesolvingprograms.freeforums.net/thread/12/number-5x5x5-positions-function-depth?page=2&scrollTo=717
 
+
 def gods_number(size, MOVE_COUNT, COMBOS):
     prev_depth = MOVE_COUNT
     total = MOVE_COUNT
 
     PADDING = len(str(COMBOS))
-    PADDING += int(PADDING/3)
+    PADDING += int(PADDING / 3)
 
     print("\n{}x{}x{} number of states is\n{:,}\n".format(size, size, size, COMBOS))
 
-    #print("     {}  {}".format("This Depth".rjust(PADDING), "Total".rjust(PADDING)))
-    #print("===  {}  {}".format("=" * PADDING, "=" * PADDING))
-    #print("{:02d}:  {}  {}".format(1, "{:,}".format(prev_depth).rjust(PADDING), "{:,}".format(total).rjust(PADDING)))
+    # print("     {}  {}".format("This Depth".rjust(PADDING), "Total".rjust(PADDING)))
+    # print("===  {}  {}".format("=" * PADDING, "=" * PADDING))
+    # print("{:02d}:  {}  {}".format(1, "{:,}".format(prev_depth).rjust(PADDING), "{:,}".format(total).rjust(PADDING)))
     print("     {}".format("This Depth".rjust(PADDING)))
     print("===  {}".format("=" * PADDING))
     print("{:02d}:  {}".format(1, "{:,}".format(prev_depth).rjust(PADDING)))
@@ -28,7 +29,7 @@ def gods_number(size, MOVE_COUNT, COMBOS):
             this_depth -= over_by
             total -= over_by
 
-        #print("{:02d}:  {}  {}".format(depth, "{:,}".format(this_depth).rjust(PADDING), "{:,}".format(total).rjust(PADDING)))
+        # print("{:02d}:  {}  {}".format(depth, "{:,}".format(this_depth).rjust(PADDING), "{:,}".format(total).rjust(PADDING)))
         print("{:02d}:  {}".format(depth, "{:,}".format(this_depth).rjust(PADDING)))
 
         if total >= COMBOS:

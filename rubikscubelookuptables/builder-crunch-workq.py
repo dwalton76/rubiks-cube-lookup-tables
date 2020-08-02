@@ -10,7 +10,8 @@ from pprint import pformat
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import WRITE_BATCH_SIZE, reverse_steps, supported_sizes
-#from rubikscubelookuptables.buildercore import supported_sizes, reverse_steps
+
+# from rubikscubelookuptables.buildercore import supported_sizes, reverse_steps
 from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, moves_222, rotate_222, solved_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, moves_333, rotate_333, solved_333
@@ -66,10 +67,10 @@ r_midges_555 = [15, 78, 65, 86, 90, 111, 98, 140]
 def apply_333_phase_binary(cube_state, positions):
 
     for x in positions:
-        if cube_state[x] == '1':
-            cube_state[x] = '0';
-        elif cube_state[x] == '0':
-            cube_state[x] = '1';
+        if cube_state[x] == "1":
+            cube_state[x] = "0"
+        elif cube_state[x] == "0":
+            cube_state[x] = "1"
 
     return cube_state
 
@@ -77,10 +78,10 @@ def apply_333_phase_binary(cube_state, positions):
 def apply_555_phase_binary(cube_state, positions):
 
     for x in positions:
-        if cube_state[x] == 'U':
-            cube_state[x] = 'D';
-        elif cube_state[x] == 'D':
-            cube_state[x] = 'U';
+        if cube_state[x] == "U":
+            cube_state[x] = "D"
+        elif cube_state[x] == "D":
+            cube_state[x] = "U"
 
     return cube_state
 
@@ -93,12 +94,14 @@ def get_odd_even(steps, layer):
         if "w" in step and not step.endswith("2"):
 
             if layer is None:
-                if (step.startswith("U") or
-                    step.startswith("L") or
-                    step.startswith("F") or
-                    step.startswith("R") or
-                    step.startswith("B") or
-                    step.startswith("D")):
+                if (
+                    step.startswith("U")
+                    or step.startswith("L")
+                    or step.startswith("F")
+                    or step.startswith("R")
+                    or step.startswith("B")
+                    or step.startswith("D")
+                ):
                     quarter_wide_turns += 1
 
             else:
@@ -125,17 +128,17 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     assert start >= 0
     assert end >= start
 
-    if size == '2x2x2':
+    if size == "2x2x2":
         rotate_xxx = rotate_222
-    elif size == '3x3x3':
+    elif size == "3x3x3":
         rotate_xxx = rotate_333
-    elif size == '4x4x4':
+    elif size == "4x4x4":
         rotate_xxx = rotate_444
-    elif size == '5x5x5':
+    elif size == "5x5x5":
         rotate_xxx = rotate_555
-    elif size == '6x6x6':
+    elif size == "6x6x6":
         rotate_xxx = rotate_666
-    elif size == '7x7x7':
+    elif size == "7x7x7":
         rotate_xxx = rotate_777
     else:
         raise Exception("we should not be here")
@@ -163,33 +166,33 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     else:
         odd_even_layer = None
 
-    with open(inputfile, 'r') as fh_input:
+    with open(inputfile, "r") as fh_input:
 
         # We add 1 here to account for the newline character
-        fh_input.seek(start * (linewidth+1))
+        fh_input.seek(start * (linewidth + 1))
         is_333_phase1 = "3x3x3-phase1" in inputfile
         is_333_phase2 = "3x3x3-phase2" in inputfile
         is_333_phase3 = "3x3x3-phase3" in inputfile
 
         is_555_EO = (
-            "5x5x5-LR-center-stage-EO-inner-orbit" in inputfile or
-            "5x5x5-LR-center-stage-EO-both-orbits" in inputfile or
-            "5x5x5-EO-inner-orbit" in inputfile or
-            "5x5x5-EO-both-orbits" in inputfile
+            "5x5x5-LR-center-stage-EO-inner-orbit" in inputfile
+            or "5x5x5-LR-center-stage-EO-both-orbits" in inputfile
+            or "5x5x5-EO-inner-orbit" in inputfile
+            or "5x5x5-EO-both-orbits" in inputfile
         )
 
-        for linenumber in range(start, end+1):
+        for linenumber in range(start, end + 1):
             line = next(fh_input)
 
             if use_edges_pattern:
                 try:
-                    (_, cube_state, moves_to_scramble) = line.rstrip().split(':')
+                    (_, cube_state, moves_to_scramble) = line.rstrip().split(":")
                 except Exception:
                     log.warning("ERROR on %d: %s" % (linenumber, line))
                     raise
             else:
                 try:
-                    (cube_state, moves_to_scramble) = line.rstrip().split(':')
+                    (cube_state, moves_to_scramble) = line.rstrip().split(":")
                 except Exception:
                     log.warning("ERROR on %d: %s" % (linenumber, line))
                     raise
@@ -249,36 +252,38 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     cube_state = list(cube_state)
 
                 if use_edges_pattern:
-                    cube_state_string = ''.join(cube_state)
+                    cube_state_string = "".join(cube_state)
 
-                    if size == '4x4x4':
+                    if size == "4x4x4":
                         state_for_edges = edges_recolor_pattern_444(cube_state[:])
-                        edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_444])
-                        centers = ''.join([cube_state[x] for x in centers_444])
-                    elif size == '5x5x5':
+                        edges_pattern = "".join([state_for_edges[square_index] for square_index in wings_444])
+                        centers = "".join([cube_state[x] for x in centers_444])
+                    elif size == "5x5x5":
                         state_for_edges = edges_recolor_pattern_555(cube_state[:])
-                        edges_pattern = ''.join([state_for_edges[square_index] for square_index in wings_555])
-                        centers = ''.join([cube_state[x] for x in centers_555])
+                        edges_pattern = "".join([state_for_edges[square_index] for square_index in wings_555])
+                        centers = "".join([cube_state[x] for x in centers_555])
                     else:
                         raise Exception("Implement this")
 
-                    to_write.append("%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, ' '.join(moves_to_scramble)))
+                    to_write.append(
+                        "%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, " ".join(moves_to_scramble))
+                    )
                     to_write_count += 1
 
                 else:
-                    cube_state_string = ''.join(cube_state)
+                    cube_state_string = "".join(cube_state)
 
                     if odd_even_layer is not None:
                         odd_even = get_odd_even(moves_to_scramble, odd_even_layer)
-                        to_write.append("%s_%s:%s" % (cube_state_string, odd_even, ' '.join(moves_to_scramble)))
+                        to_write.append("%s_%s:%s" % (cube_state_string, odd_even, " ".join(moves_to_scramble)))
                         to_write_count += 1
 
                     else:
                         if cube_state_string not in states_written:
                             if next_move is None:
-                                to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble[0:-1])))
+                                to_write.append("%s:%s" % (cube_state_string, " ".join(moves_to_scramble[0:-1])))
                             else:
-                                to_write.append("%s:%s" % (cube_state_string, ' '.join(moves_to_scramble)))
+                                to_write.append("%s:%s" % (cube_state_string, " ".join(moves_to_scramble)))
                             states_written.add(cube_state_string)
                             to_write_count += 1
 
@@ -288,7 +293,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 outputfile_index += 1
                 lines_since_last_merge += to_write_count
 
-                with open(outputfile, 'w') as fh_output:
+                with open(outputfile, "w") as fh_output:
                     fh_output.write("\n".join(to_write) + "\n")
 
                 to_write = []
@@ -299,10 +304,13 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 # it.  We do this to keep the amount of disk spaced used reasonable when building
                 # huge tables.
                 if lines_since_last_merge >= 100000000:
-                    #log.info("sort --merge all of the files created so far")
-                    subprocess.check_output("LC_ALL=C nice sort --merge --temporary-directory=./tmp/ --output %s.all %s.*" %
-                        (outputfilebase, outputfilebase), shell=True)
-                    #log.info("rm %s.0*" % outputfilebase)
+                    # log.info("sort --merge all of the files created so far")
+                    subprocess.check_output(
+                        "LC_ALL=C nice sort --merge --temporary-directory=./tmp/ --output %s.all %s.*"
+                        % (outputfilebase, outputfilebase),
+                        shell=True,
+                    )
+                    # log.info("rm %s.0*" % outputfilebase)
                     subprocess.check_output("rm %s.0*" % outputfilebase, shell=True)
                     subprocess.check_output("nice ./utils/keep-best-solution.py %s.all" % outputfilebase, shell=True)
                     lines_since_last_merge = 0
@@ -312,7 +320,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
             outputfile = outputfilebase + ".%05d" % outputfile_index
             outputfile_index += 1
 
-            with open(outputfile, 'w') as fh_output:
+            with open(outputfile, "w") as fh_output:
                 fh_output.write("\n".join(to_write) + "\n")
 
             to_write = []
@@ -320,9 +328,8 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
             states_written = set()
 
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)24s %(levelname)8s: %(message)s')
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)24s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
@@ -330,18 +337,22 @@ if __name__ == '__main__':
     logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('size', type=str, help='Cube size')
-    parser.add_argument('inputfile', type=str, help='The workq file to crunch')
-    parser.add_argument('linewidth', type=int, help='The width of a line in the file')
-    parser.add_argument('start', type=int, help='The starting linenumber to crunch in inputfile')
-    parser.add_argument('end', type=int, help='The final linenumber to crunch in inputfile')
-    parser.add_argument('outputfile', type=str, help='The file to write results')
-    parser.add_argument('legalmoves', type=str, help='List of legal moves')
-    parser.add_argument('--use-edges-pattern', default=False, action='store_true', help='use edges patterns')
+    parser.add_argument("size", type=str, help="Cube size")
+    parser.add_argument("inputfile", type=str, help="The workq file to crunch")
+    parser.add_argument("linewidth", type=int, help="The width of a line in the file")
+    parser.add_argument("start", type=int, help="The starting linenumber to crunch in inputfile")
+    parser.add_argument("end", type=int, help="The final linenumber to crunch in inputfile")
+    parser.add_argument("outputfile", type=str, help="The file to write results")
+    parser.add_argument("legalmoves", type=str, help="List of legal moves")
+    parser.add_argument("--use-edges-pattern", default=False, action="store_true", help="use edges patterns")
     args = parser.parse_args()
 
-    crunch_workq(args.size, args.inputfile, args.linewidth,
-        args.start, args.end,
+    crunch_workq(
+        args.size,
+        args.inputfile,
+        args.linewidth,
+        args.start,
+        args.end,
         args.outputfile,
         args.use_edges_pattern,
         args.legalmoves.split(),

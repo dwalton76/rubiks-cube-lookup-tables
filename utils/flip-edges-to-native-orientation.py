@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# This also needs to 
+# This also needs to
 # - resort
 # - keep-best
 # - pad-lines
@@ -19,8 +19,7 @@ from rubikscubennnsolver.RubiksCube555 import (
     wings_for_edges_pattern_555,
 )
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)20s %(levelname)8s: %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")
 log = logging.getLogger(__name__)
 
 # Color the errors and warnings in red
@@ -52,7 +51,7 @@ with open(filename_new, "w") as fh_new:
             cube.edges_flip_to_original_orientation()
 
             state = edges_recolor_pattern_555(cube.state[:])
-            edges_state = ''.join([state[index] for index in wings_for_edges_pattern_555])
+            edges_state = "".join([state[index] for index in wings_for_edges_pattern_555])
             to_write.append("%s:%s" % (edges_state, " ".join(steps_to_solve)))
             to_write_count += 1
 
@@ -60,7 +59,7 @@ with open(filename_new, "w") as fh_new:
                 fh_new.write("\n".join(to_write) + "\n")
                 to_write = []
                 to_write_count = 0
- 
+
             line_number += 1
 
             if line_number % 1000000 == 0:

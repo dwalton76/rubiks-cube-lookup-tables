@@ -9,6 +9,7 @@ from collections import Counter
 
 log = logging.getLogger(__name__)
 
+
 def permutation_rank(word):
     """
     Based on
@@ -38,23 +39,23 @@ def permutation_rank(word):
 
         for j in myCounter:
 
-            if (j < permutationContainer):
-                rank += (permutations * myCounter[j] // myCounter[permutationContainer])
+            if j < permutationContainer:
+                rank += permutations * myCounter[j] // myCounter[permutationContainer]
 
-        permutations = ((permutations * (i + 1)) // myCounter[permutationContainer])
+        permutations = (permutations * (i + 1)) // myCounter[permutationContainer]
 
     return rank
 
 
 def convert_to_cost_only(filename, use_permutation_rank, state_targets):
-    filename_new = filename.replace('.txt', '.cost-only.txt')
+    filename_new = filename.replace(".txt", ".cost-only.txt")
     prev_state_int = None
     first_permutation_rank = None
 
-    with open(filename, 'r') as fh:
-        with open(filename_new, 'w') as fh_new:
+    with open(filename, "r") as fh:
+        with open(filename_new, "w") as fh_new:
             for (line_number, line) in enumerate(fh):
-                (state, steps) = line.strip().split(':')
+                (state, steps) = line.strip().split(":")
                 steps = steps.split()
 
                 if use_permutation_rank:
@@ -65,18 +66,18 @@ def convert_to_cost_only(filename, use_permutation_rank, state_targets):
                 if first_permutation_rank is None:
                     first_permutation_rank = state_int
 
-                #state_int -= first_permutation_rank
-                #log.info("%s: permutation rank %d" % (state, state_int))
+                # state_int -= first_permutation_rank
+                # log.info("%s: permutation rank %d" % (state, state_int))
 
                 # Add 0s for every state from prev_state_int to state_int
                 if prev_state_int is None:
                     zeroes_between_prev_and_now = state_int
                 else:
-                    zeroes_between_prev_and_now = (state_int - prev_state_int - 1)
+                    zeroes_between_prev_and_now = state_int - prev_state_int - 1
 
                 if zeroes_between_prev_and_now > 0:
-                    #log.info("zeroes_between_prev_and_now %s" % zeroes_between_prev_and_now)
-                    zeroes_between_prev_and_now = zeroes_between_prev_and_now * '0'
+                    # log.info("zeroes_between_prev_and_now %s" % zeroes_between_prev_and_now)
+                    zeroes_between_prev_and_now = zeroes_between_prev_and_now * "0"
                     fh_new.write(zeroes_between_prev_and_now)
 
                 # Write the steps_len
@@ -103,17 +104,18 @@ def convert_to_cost_only(filename, use_permutation_rank, state_targets):
                 prev_state_int = state_int
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # setup logging
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(filename)16s %(levelname)8s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)16s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('filename', type=str, help='lookup-table filename')
-    parser.add_argument('statetargets', type=str, help='comma sep list of state targets')
-    parser.add_argument('--use-permutation-rank', default=False, action='store_true', help='calculate permutation_rank()')
+    parser.add_argument("filename", type=str, help="lookup-table filename")
+    parser.add_argument("statetargets", type=str, help="comma sep list of state targets")
+    parser.add_argument(
+        "--use-permutation-rank", default=False, action="store_true", help="calculate permutation_rank()"
+    )
     args = parser.parse_args()
 
     convert_to_cost_only(args.filename, args.use_permutation_rank, args.statetargets.split(","))

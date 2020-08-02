@@ -74,8 +74,7 @@ def keep_best_solutions(filename):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)24s %(levelname)8s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)24s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red

@@ -14,23 +14,31 @@ from rubikscubennnsolver.RubiksCube555 import (
     wings_for_edges_pattern_555,
 )
 
-cube = RubiksCube555(solved_555, order='URFDLB')
+cube = RubiksCube555(solved_555, order="URFDLB")
 cube.nuke_corners()
 
 
 legal_moves = (
-    "U", "U'", "U2",
-    "F2", "B2", "D2",
-    "2L", "2L'", "2L2",
-    "2R", "2R'", "2R2",
-
+    "U",
+    "U'",
+    "U2",
+    "F2",
+    "B2",
+    "D2",
+    "2L",
+    "2L'",
+    "2L2",
+    "2R",
+    "2R'",
+    "2R2",
     # middle layer slice
-    "3L", "3L'", "3L2",
-
+    "3L",
+    "3L'",
+    "3L2",
     # BTM slices
-    #"2-3Lw", "2-3Lw'", "2-3Lw2",
-    #"2-3Rw", "2-3Rw'", "2-3Rw2",
-    #"2-4Lw", "2-4Lw'", "2-4Lw2",
+    # "2-3Lw", "2-3Lw'", "2-3Lw2",
+    # "2-3Rw", "2-3Rw'", "2-3Rw2",
+    # "2-4Lw", "2-4Lw'", "2-4Lw2",
 )
 
 
@@ -48,23 +56,23 @@ with open("horse_shoe_centers_solutions_555.txt.D-on-top", "w") as fh:
         cube.re_init()
 
         # Put F on top
-        #cube.rotate("x")
+        # cube.rotate("x")
 
         # Put D on top
         cube.rotate("x")
         cube.rotate("x")
 
         # Put B on top
-        #cube.rotate("x")
-        #cube.rotate("x")
-        #cube.rotate("x")
+        # cube.rotate("x")
+        # cube.rotate("x")
+        # cube.rotate("x")
 
         cube.rotate(move1)
         move1_cube_state = cube.state[:]
         move1_cube_solution = cube.solution[:]
 
         steps_to_solve = reverse_steps(cube.solution)
-        centers_state = ''.join([cube.state[x] for x in centers_555])
+        centers_state = "".join([cube.state[x] for x in centers_555])
         to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
         to_write_count += 1
 
@@ -80,10 +88,9 @@ with open("horse_shoe_centers_solutions_555.txt.D-on-top", "w") as fh:
             move2_cube_solution = cube.solution[:]
 
             steps_to_solve = reverse_steps(cube.solution)
-            centers_state = ''.join([cube.state[x] for x in centers_555])
+            centers_state = "".join([cube.state[x] for x in centers_555])
             to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
             to_write_count += 1
-
 
             for move3 in legal_moves:
 
@@ -97,10 +104,9 @@ with open("horse_shoe_centers_solutions_555.txt.D-on-top", "w") as fh:
                 move3_cube_solution = cube.solution[:]
 
                 steps_to_solve = reverse_steps(cube.solution)
-                centers_state = ''.join([cube.state[x] for x in centers_555])
+                centers_state = "".join([cube.state[x] for x in centers_555])
                 to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                 to_write_count += 1
-
 
                 for move4 in legal_moves:
 
@@ -114,7 +120,7 @@ with open("horse_shoe_centers_solutions_555.txt.D-on-top", "w") as fh:
                     move4_cube_solution = cube.solution[:]
 
                     steps_to_solve = reverse_steps(cube.solution)
-                    centers_state = ''.join([cube.state[x] for x in centers_555])
+                    centers_state = "".join([cube.state[x] for x in centers_555])
                     to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                     to_write_count += 1
 
@@ -137,7 +143,7 @@ with open("horse_shoe_centers_solutions_555.txt.D-on-top", "w") as fh:
                         move5_cube_solution = cube.solution[:]
 
                         steps_to_solve = reverse_steps(cube.solution)
-                        centers_state = ''.join([cube.state[x] for x in centers_555])
+                        centers_state = "".join([cube.state[x] for x in centers_555])
                         to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                         to_write_count += 1
 
@@ -147,7 +153,7 @@ with open("horse_shoe_centers_solutions_555.txt.D-on-top", "w") as fh:
                             to_write = []
                             to_write_count = 0
 
-                        '''
+                        """
                         # took 52s, found 509,820
                         for move6 in legal_moves:
 
@@ -242,7 +248,7 @@ with open("horse_shoe_centers_solutions_555.txt.D-on-top", "w") as fh:
                                             fh.flush()
                                             to_write = []
                                             to_write_count = 0
-                        '''
+                        """
 
     if to_write_count:
         fh.write("\n".join(to_write) + "\n")

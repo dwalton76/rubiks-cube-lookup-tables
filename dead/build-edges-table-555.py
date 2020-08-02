@@ -49,28 +49,28 @@ def get_outer_layer_steps():
     with open("utils/cycles-outer-layer-1-deep.json", "r") as fh:
         outer_layer_1deep = json.load(fh)
 
-    #with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
+    # with open("utils/cycles-outer-layer-2-deep.json", "r") as fh:
     #    outer_layer_2deep = json.load(fh)
 
-    #with open("utils/cycles-outer-layer-3-deep.json", "r") as fh:
+    # with open("utils/cycles-outer-layer-3-deep.json", "r") as fh:
     #    outer_layer_3deep = json.load(fh)
 
-    #with open("utils/cycles-outer-layer-4-deep.json", "r") as fh:
+    # with open("utils/cycles-outer-layer-4-deep.json", "r") as fh:
     #    outer_layer_4deep = json.load(fh)
 
-    #with open("utils/cycles-outer-layer-5-deep.json", "r") as fh:
+    # with open("utils/cycles-outer-layer-5-deep.json", "r") as fh:
     #    outer_layer_5deep = json.load(fh)
 
-    #with open("utils/cycles-outer-layer-6-deep.json", "r") as fh:
+    # with open("utils/cycles-outer-layer-6-deep.json", "r") as fh:
     #    outer_layer_6deep = json.load(fh)
 
     outer_layer_steps = []
     outer_layer_steps = outer_layer_1deep
-    #outer_layer_steps += outer_layer_2deep
-    #outer_layer_steps += outer_layer_3deep
-    #outer_layer_steps += outer_layer_4deep
-    #outer_layer_steps += outer_layer_5deep
-    #outer_layer_steps += outer_layer_6deep
+    # outer_layer_steps += outer_layer_2deep
+    # outer_layer_steps += outer_layer_3deep
+    # outer_layer_steps += outer_layer_4deep
+    # outer_layer_steps += outer_layer_5deep
+    # outer_layer_steps += outer_layer_6deep
     outer_layer_steps.append([])
 
     return outer_layer_steps
@@ -90,32 +90,32 @@ def sanity_check(filename):
             cube.re_init()
 
             for step in steps_to_scramble:
-                #cube.rotate(step)
+                # cube.rotate(step)
                 cube.state = rotate_555(cube.state[:], step)
 
             state = edges_recolor_pattern_555(cube.state[:])
-            edges_state = ''.join([state[index] for index in wings_for_edges_pattern_555])
+            edges_state = "".join([state[index] for index in wings_for_edges_pattern_555])
             assert edges_state == lt_edges_state, "{} != {}".format(edges_state, lt_edges_state)
 
-            #log.info("steps_to_scramble: {}".format(steps_to_scramble))
-            #log.info(edges_state)
-            #cube.print_cube()
+            # log.info("steps_to_scramble: {}".format(steps_to_scramble))
+            # log.info(edges_state)
+            # cube.print_cube()
 
             for step in steps_to_solve:
-                #cube.rotate(step)
+                # cube.rotate(step)
                 cube.state = rotate_555(cube.state[:], step)
 
             state = edges_recolor_pattern_555(cube.state[:])
-            edges_state = ''.join([state[index] for index in wings_for_edges_pattern_555])
+            edges_state = "".join([state[index] for index in wings_for_edges_pattern_555])
 
-            #log.info("steps_to_solve: {}".format(steps_to_solve))
-            #log.info(edges_state)
-            #cube.print_cube()
+            # log.info("steps_to_solve: {}".format(steps_to_solve))
+            # log.info(edges_state)
+            # cube.print_cube()
 
             # OOopPPQQqrRRsSSTTtuUUVVvWWwxXXYYyzZZ
             assert cube.centers_solved(), "centers should be solved but are not"
             assert cube.edges_paired(), "edges should be paired but are not"
-            #break
+            # break
 
 
 def get_cycle_steps():
@@ -128,12 +128,12 @@ def get_cycle_steps():
     cycles = []
 
     for filename in (
-            "utils/cycles-5-deep.txt",
-            "utils/cycles-6-deep.txt",
-            "utils/cycles-7-deep.txt",
-            "utils/cycles-8-deep.txt",
-            "utils/cycles-multiple-wide-moves.txt",
-        ):
+        "utils/cycles-5-deep.txt",
+        "utils/cycles-6-deep.txt",
+        "utils/cycles-7-deep.txt",
+        "utils/cycles-8-deep.txt",
+        "utils/cycles-multiple-wide-moves.txt",
+    ):
 
         with open(filename, "r") as fh:
             for line in fh:
@@ -141,9 +141,9 @@ def get_cycle_steps():
                 cycles.append(steps_in_cycle)
 
     for filename in (
-            "lookup-table-5x5x5-step900-edges.txt",
-            "lookup-table-5x5x5-step310-edges-x-plane-with-solved-centers.txt",
-            ):
+        "lookup-table-5x5x5-step900-edges.txt",
+        "lookup-table-5x5x5-step310-edges-x-plane-with-solved-centers.txt",
+    ):
 
         with open(filename, "r") as fh:
             for line in fh:
@@ -191,15 +191,14 @@ def keep_best_solutions(filename):
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(filename)20s %(levelname)8s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
     logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
     logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
 
-    cube = RubiksCube555(solved_555, 'URFDLB')
+    cube = RubiksCube555(solved_555, "URFDLB")
     step800_filename = "lookup-table-555-step800-edges.txt"
 
     if not os.path.exists(step800_filename):
@@ -221,9 +220,9 @@ if __name__ == "__main__":
                     cube.state = rotate_555(cube.state[:], step)
 
                 cube.edges_flip_to_original_orientation()
-                #assert cube.centers_solved(), "centers should be solved but are not"
+                # assert cube.centers_solved(), "centers should be solved but are not"
                 state = edges_recolor_pattern_555(cube.state[:], uppercase_paired_edges=False)
-                edges_state = ''.join([state[index] for index in wings_for_edges_pattern_555])
+                edges_state = "".join([state[index] for index in wings_for_edges_pattern_555])
 
                 to_write.append("%s:%s" % (edges_state, " ".join(steps_to_solve)))
                 to_write_count += 1
@@ -241,13 +240,14 @@ if __name__ == "__main__":
                 to_write_count = 0
                 log.info("{:,}/{:,}".format(index, index_target))
 
-        subprocess.check_output("LC_ALL=C sort --temporary-directory=./tmp/ --output %s %s " %
-            (step800_filename, step800_filename), shell=True)
-        #sanity_check(step800_filename)
+        subprocess.check_output(
+            "LC_ALL=C sort --temporary-directory=./tmp/ --output %s %s " % (step800_filename, step800_filename),
+            shell=True,
+        )
+        # sanity_check(step800_filename)
 
         keep_best_solutions(step800_filename)
         subprocess.check_output("./utils/pad-lines.py %s" % step800_filename, shell=True)
-
 
     step810_filename = "lookup-table-555-step810-edges.txt"
 
@@ -284,9 +284,9 @@ if __name__ == "__main__":
                             cube.state = rotate_555(cube.state[:], step)
 
                         cube.edges_flip_to_original_orientation()
-                        #assert cube.centers_solved(), "centers should be solved but are not"
+                        # assert cube.centers_solved(), "centers should be solved but are not"
                         state = edges_recolor_pattern_555(cube.state[:], uppercase_paired_edges=False)
-                        edges_state = ''.join([state[index] for index in wings_for_edges_pattern_555])
+                        edges_state = "".join([state[index] for index in wings_for_edges_pattern_555])
 
                         to_write.append("%s:%s" % (edges_state, " ".join(steps_to_solve)))
                         to_write_count += 1
@@ -304,9 +304,11 @@ if __name__ == "__main__":
                     to_write_count = 0
                     log.info("{:,}/{:,}".format(index, index_target))
 
-        subprocess.check_output("LC_ALL=C sort --temporary-directory=./tmp/ --output %s %s " %
-            (step810_filename, step810_filename), shell=True)
-        #sanity_check(step810_filename)
+        subprocess.check_output(
+            "LC_ALL=C sort --temporary-directory=./tmp/ --output %s %s " % (step810_filename, step810_filename),
+            shell=True,
+        )
+        # sanity_check(step810_filename)
 
         keep_best_solutions(step810_filename)
         subprocess.check_output("./utils/pad-lines.py %s" % step810_filename, shell=True)

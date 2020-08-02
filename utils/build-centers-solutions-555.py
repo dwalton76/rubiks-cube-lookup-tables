@@ -15,7 +15,7 @@ from rubikscubennnsolver.RubiksCube555 import (
     wings_for_edges_pattern_555,
 )
 
-cube = RubiksCube555(solved_555, order='URFDLB')
+cube = RubiksCube555(solved_555, order="URFDLB")
 cube.nuke_corners()
 
 
@@ -28,12 +28,25 @@ with open("foo.txt", "w") as fh:
 
         # Do not bother starting with an outer layer move
         if move1 in (
-            "U", "U'", "U2",
-            "L", "L'", "L2",
-            "F" , "F'", "F2",
-            "R" , "R'", "R2",
-            "B" , "B'", "B2",
-            "D" , "D'", "D2"):
+            "U",
+            "U'",
+            "U2",
+            "L",
+            "L'",
+            "L2",
+            "F",
+            "F'",
+            "F2",
+            "R",
+            "R'",
+            "R2",
+            "B",
+            "B'",
+            "B2",
+            "D",
+            "D'",
+            "D2",
+        ):
             continue
 
         cube.re_init()
@@ -42,7 +55,7 @@ with open("foo.txt", "w") as fh:
         move1_cube_solution = cube.solution[:]
 
         steps_to_solve = reverse_steps(cube.solution)
-        centers_state = ''.join([cube.state[x] for x in centers_555])
+        centers_state = "".join([cube.state[x] for x in centers_555])
         to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
         to_write_count += 1
 
@@ -59,10 +72,9 @@ with open("foo.txt", "w") as fh:
             move2_cube_solution = cube.solution[:]
 
             steps_to_solve = reverse_steps(cube.solution)
-            centers_state = ''.join([cube.state[x] for x in centers_555])
+            centers_state = "".join([cube.state[x] for x in centers_555])
             to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
             to_write_count += 1
-
 
             # took 1.6s, found 20214
             # with slices took 6s and found 95,508
@@ -78,7 +90,7 @@ with open("foo.txt", "w") as fh:
                 move3_cube_solution = cube.solution[:]
 
                 steps_to_solve = reverse_steps(cube.solution)
-                centers_state = ''.join([cube.state[x] for x in centers_555])
+                centers_state = "".join([cube.state[x] for x in centers_555])
                 to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                 to_write_count += 1
 
@@ -102,7 +114,7 @@ with open("foo.txt", "w") as fh:
                     move4_cube_solution = cube.solution[:]
 
                     steps_to_solve = reverse_steps(cube.solution)
-                    centers_state = ''.join([cube.state[x] for x in centers_555])
+                    centers_state = "".join([cube.state[x] for x in centers_555])
                     to_write.append("{}:{}".format(centers_state, " ".join(steps_to_solve)))
                     to_write_count += 1
 
@@ -112,7 +124,7 @@ with open("foo.txt", "w") as fh:
                         to_write = []
                         to_write_count = 0
 
-                    '''
+                    """
                     # took 17m 16s (32x move4), found 22,013,658
                     for move5 in moves_555:
 
@@ -157,7 +169,7 @@ with open("foo.txt", "w") as fh:
                                 fh.flush()
                                 to_write = []
                                 to_write_count = 0
-                    '''
+                    """
 
     if to_write_count:
         fh.write("\n".join(to_write) + "\n")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # http://cubesolvingprograms.freeforums.net/thread/62/solving-centers-opposite-sides-first?page=1&scrollTo=508
-'''
+"""
 # 5x5x5 gods number
 depth = 4
 prev_count_at_depth = 810831
@@ -22,10 +22,10 @@ prev_count_at_depth = 754156
 count_total = 783364
 rate = float(26.79)
 count_total_target = 7401196841564901869874093974498574336000000000 # 444
-'''
+"""
 
 # 4x4x4 centers
-'''
+"""
 depth = 6
 prev_count_at_depth = 83113883
 count_total = 87727430
@@ -105,7 +105,7 @@ prev_count_at_depth = 5353259
 count_total = 5946658
 rate = float(9.89)
 count_total_target = 5538111488
-'''
+"""
 
 # 666 stage UD centers
 depth = 6
@@ -131,10 +131,13 @@ while count_total < count_total_target:
     count_total += count_at_depth
     move_total += depth * count_at_depth
 
-    print("    {:,} steps has {:,} entries ({}x previous step)".format(
-        depth, count_at_depth, "{0:.2f}".format(count_at_depth/prev_count_at_depth)))
+    print(
+        "    {:,} steps has {:,} entries ({}x previous step)".format(
+            depth, count_at_depth, "{0:.2f}".format(count_at_depth / prev_count_at_depth)
+        )
+    )
 
     prev_count_at_depth = count_at_depth
 
-print("\n    Average: {:,}".format(move_total/count_total))
+print("\n    Average: {:,}".format(move_total / count_total))
 print("    Total  : {:,}\n".format(count_total))

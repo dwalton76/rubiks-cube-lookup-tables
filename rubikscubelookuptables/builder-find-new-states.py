@@ -43,7 +43,7 @@ def diff_states(filenameA, filenameB, outputfile):
 
     if not os.path.isfile(filenameA):
         # touch the file so the while loop below can do its magic
-        with open(filenameA, 'w') as fhA:
+        with open(filenameA, "w") as fhA:
             pass
 
     if not os.path.isfile(filenameB):
@@ -52,20 +52,18 @@ def diff_states(filenameA, filenameB, outputfile):
     to_write = []
     to_write_count = 0
 
-    with open(filenameA, 'r') as fhA,\
-         open(filenameB, 'r') as fhB,\
-         open(outputfile, 'w') as fh:
+    with open(filenameA, "r") as fhA, open(filenameB, "r") as fhB, open(outputfile, "w") as fh:
         lineA = advance_filehandle(fhA)
         lineB = advance_filehandle(fhB)
 
         if lineB:
-            (stateB, steps_to_scrambleB) = lineB.split(':')
+            (stateB, steps_to_scrambleB) = lineB.split(":")
         # filenameB is empty
         else:
             return
 
         if lineA:
-            (stateA, steps_to_scrambleA) = lineA.split(':')
+            (stateA, steps_to_scrambleA) = lineA.split(":")
         # filenameA is empty
         else:
             stateA = None
@@ -81,7 +79,7 @@ def diff_states(filenameA, filenameB, outputfile):
 
             # We have hit the end of filenameA so everything left in filenameB is missing from filenameA
             if lineA is None:
-                steps_to_solve = ' '.join(reverse_steps(steps_to_scrambleB.split()))
+                steps_to_solve = " ".join(reverse_steps(steps_to_scrambleB.split()))
                 to_write.append(f"{stateB}:{steps_to_solve}")
                 to_write_count += 1
 
@@ -94,7 +92,7 @@ def diff_states(filenameA, filenameB, outputfile):
                 lineB = advance_filehandle_to_state_change(state_length, stateB, fhB)
 
                 if lineB:
-                    (stateB, steps_to_scrambleB) = lineB.split(':')
+                    (stateB, steps_to_scrambleB) = lineB.split(":")
                 else:
                     break
 
@@ -107,12 +105,12 @@ def diff_states(filenameA, filenameB, outputfile):
                     lineA = None
 
                 if lineA:
-                    (stateA, steps_to_scrambleA) = lineA.split(':')
+                    (stateA, steps_to_scrambleA) = lineA.split(":")
                 else:
                     stateA = None
 
             elif stateA == stateB:
-                #log.info("stateA == stateB, advance both filehandles")
+                # log.info("stateA == stateB, advance both filehandles")
 
                 # Avoid this function call
                 # lineA = advance_filehandle(fhA)
@@ -124,19 +122,19 @@ def diff_states(filenameA, filenameB, outputfile):
                 lineB = advance_filehandle_to_state_change(state_length, stateB, fhB)
 
                 if lineA:
-                    (stateA, steps_to_scrambleA) = lineA.split(':')
+                    (stateA, steps_to_scrambleA) = lineA.split(":")
                 else:
                     stateA = None
 
                 if lineB:
-                    (stateB, steps_to_scrambleB) = lineB.split(':')
+                    (stateB, steps_to_scrambleB) = lineB.split(":")
                 else:
                     stateB = None
 
             # stateA > stateB
             else:
                 while stateA > stateB:
-                    steps_to_solve = ' '.join(reverse_steps(steps_to_scrambleB.split()))
+                    steps_to_solve = " ".join(reverse_steps(steps_to_scrambleB.split()))
                     to_write.append(f"{stateB}:{steps_to_solve}")
                     to_write_count += 1
 
@@ -146,11 +144,11 @@ def diff_states(filenameA, filenameB, outputfile):
                         to_write = []
                         to_write_count = 0
 
-                    #log.info("stateB < stateA writing %s" % lineB)
+                    # log.info("stateB < stateA writing %s" % lineB)
                     lineB = advance_filehandle_to_state_change(state_length, stateB, fhB)
 
                     if lineB:
-                        (stateB, steps_to_scrambleB) = lineB.split(':')
+                        (stateB, steps_to_scrambleB) = lineB.split(":")
                     else:
                         stateB = None
                         break
@@ -162,9 +160,8 @@ def diff_states(filenameA, filenameB, outputfile):
             to_write_count = 0
 
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)24s %(levelname)8s: %(message)s')
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)24s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
@@ -172,9 +169,9 @@ if __name__ == '__main__':
     logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('filenameA', type=str, help='filenameA')
-    parser.add_argument('filenameB', type=str, help='filenameB')
-    parser.add_argument('outputfile', type=str, help='output file')
+    parser.add_argument("filenameA", type=str, help="filenameA")
+    parser.add_argument("filenameB", type=str, help="filenameB")
+    parser.add_argument("outputfile", type=str, help="output file")
     args = parser.parse_args()
 
     diff_states(args.filenameA, args.filenameB, args.outputfile)

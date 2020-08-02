@@ -30,49 +30,25 @@ def build_symmetry_48():
 
     I ran this once to build symmetry_48
     """
-    half_edge_rotations = (
-        "x x y",
-        "x x y'",
-        "x y y",
-        "z y y",
-        "x' y y",
-        "z' y y",
-    )
+    half_edge_rotations = ("x x y", "x x y'", "x y y", "z y y", "x' y y", "z' y y")
 
-    half_rotations = (
-        "x x",
-        "y y",
-        "z z",
-    )
+    half_rotations = ("x x", "y y", "z z")
 
-    reflections_xyz = (
-        "reflect-x",
-        "reflect-y",
-        "reflect-z",
-    )
+    reflections_xyz = ("reflect-x", "reflect-y", "reflect-z")
 
-    quarter_rotations = (
-        "x", "x'",
-        "y", "y'",
-        "z", "z'",
-    )
+    quarter_rotations = ("x", "x'", "y", "y'", "z", "z'")
 
-    third_edge_rotations = (
-        "x y",
-        "x y'",
-        "z y'",
-        "x' y'",
-    )
+    third_edge_rotations = ("x y", "x y'", "z y'", "x' y'")
 
     rotations = [""]
     rotations.extend(quarter_rotations)
     rotations.extend(half_rotations)
-    '''
+    """
     rotations.extend(quarter_rotations)
     rotations.extend(half_rotations)
     rotations.extend(half_edge_rotations)
     rotations.extend(third_edge_rotations)
-    '''
+    """
 
     for a in quarter_rotations:
         for b in quarter_rotations + half_rotations:
@@ -81,25 +57,29 @@ def build_symmetry_48():
             if rotation in ("x x x", "y y y", "z z z"):
                 continue
 
-            if ("x x'" in rotation or
-                "x' x" in rotation or
-                "y y'" in rotation or
-                "y' y" in rotation or
-                "z z'" in rotation or
-                "z' z" in rotation):
+            if (
+                "x x'" in rotation
+                or "x' x" in rotation
+                or "y y'" in rotation
+                or "y' y" in rotation
+                or "z z'" in rotation
+                or "z' z" in rotation
+            ):
                 continue
 
             if rotation not in rotations:
                 rotations.append(rotation)
 
-    #log.info("rotations:\n%s" % pformat(rotations))
-    #log.info("Found %d rotations" % len(rotations))
+    # log.info("rotations:\n%s" % pformat(rotations))
+    # log.info("Found %d rotations" % len(rotations))
 
     reflections = [""]
     reflections.extend(reflections_xyz)
 
-    cube = RubiksCube444('FLDFDLBDFBLFFRRBDRFRRURBRDUBBDLURUDRRBFFBDLUBLUULUFRRFBLDDUULBDBDFLDBLUBFRFUFBDDUBFLLRFLURDULLRU', 'URFDLB')
-    #cube.print_cube()
+    cube = RubiksCube444(
+        "FLDFDLBDFBLFFRRBDRFRRURBRDUBBDLURUDRRBFFBDLUBLUULUFRRFBLDDUULBDBDFLDBLUBFRFUFBDDUBFLLRFLURDULLRU", "URFDLB"
+    )
+    # cube.print_cube()
 
     found_cubes = []
     tmp_state = cube.state[:]
@@ -117,22 +97,22 @@ def build_symmetry_48():
                 for step in rotate.split():
                     cube.state = rotate_444(cube.state[:], step)
 
-            cube_state_string = ''.join(cube.state)
+            cube_state_string = "".join(cube.state)
 
             if cube_state_string not in found_cubes:
                 tmp = "%s %s" % (reflect, rotate)
                 symmetry_48.append(tuple(tmp.strip().split()))
-                #print("%d: %s %s" % (len(found_cubes) + 1, reflect, rotate))
+                # print("%d: %s %s" % (len(found_cubes) + 1, reflect, rotate))
                 found_cubes.append(cube_state_string)
             attempts += 1
 
     symmetry_48 = tuple(symmetry_48)
-    #print("attempts: %d" % attempts)
+    # print("attempts: %d" % attempts)
     log.info("symmetry_48 = \n%s\n" % pformat(symmetry_48))
 
     print("symmetry_48 = (")
     for seq in symmetry_48:
-        print("    \"%s\"," % ' '.join(seq))
+        print('    "%s",' % " ".join(seq))
     print(")")
 
 
@@ -142,8 +122,8 @@ def print_reflect_x(size):
     reflect_x = [0]
 
     for side_index in range(1, 7):
-        first_index_for_size = ((side_index-1) * per_side_size) + 1
-        #log.info("side %d, first %d" % (side_index, first_index_for_size))
+        first_index_for_size = ((side_index - 1) * per_side_size) + 1
+        # log.info("side %d, first %d" % (side_index, first_index_for_size))
 
         if side_index == 1:
             for row in range(size):
@@ -237,7 +217,7 @@ def print_reflect_x(size):
                 else:
                     raise Exception("implement this")
 
-                #log.info("side %d, row %d, sister_row %d" % (side_index, row, sister_row))
+                # log.info("side %d, row %d, sister_row %d" % (side_index, row, sister_row))
                 for col in range(size):
                     reflect_x.append(first_index_for_size + (sister_row * size) + col)
 
@@ -250,16 +230,16 @@ def print_reflect_y(size):
     reflect_y = [0]
 
     for side_index in range(1, 7):
-        first_index_for_size = ((side_index-1) * per_side_size) + 1
-        #log.info("side %d, first %d" % (side_index, first_index_for_size))
+        first_index_for_size = ((side_index - 1) * per_side_size) + 1
+        # log.info("side %d, first %d" % (side_index, first_index_for_size))
 
-        if side_index in (2, 4) :
+        if side_index in (2, 4):
             for row in range(size):
                 row_entries = []
                 index = first_index_for_size + (row * size)
 
                 for col in range(size):
-                    row_entries.append(index+col)
+                    row_entries.append(index + col)
 
                 reflect_y.extend(list(reversed(row_entries)))
 
@@ -310,16 +290,16 @@ def print_reflect_z(size):
     reflect_z = [0]
 
     for side_index in range(1, 7):
-        first_index_for_size = ((side_index-1) * per_side_size) + 1
-        #log.info("side %d, first %d" % (side_index, first_index_for_size))
+        first_index_for_size = ((side_index - 1) * per_side_size) + 1
+        # log.info("side %d, first %d" % (side_index, first_index_for_size))
 
-        if side_index in (1, 3, 5, 6) :
+        if side_index in (1, 3, 5, 6):
             for row in range(size):
                 row_entries = []
                 index = first_index_for_size + (row * size)
 
                 for col in range(size):
-                    row_entries.append(index+col)
+                    row_entries.append(index + col)
 
                 reflect_z.extend(list(reversed(row_entries)))
 
@@ -346,14 +326,14 @@ def print_reflect_z(size):
 
 def print_cubes(filename):
     state = []
-    with open(filename, 'r') as fh:
+    with open(filename, "r") as fh:
         for line in fh:
             if line.strip():
                 state.append(line)
-    state = ''.join(state)
-    order = 'ULFRBD'
+    state = "".join(state)
+    order = "ULFRBD"
 
-    len_state = len(state.replace('\n', '').replace(' ', ''))
+    len_state = len(state.replace("\n", "").replace(" ", ""))
 
     if len_state == 24:
         state = parse_ascii_222(state)
@@ -388,7 +368,7 @@ def print_cubes(filename):
     else:
         raise Exception("cube has %d entries, what size is this?" % len_state)
 
-    #cube.print_cube()
+    # cube.print_cube()
     tmp_state = cube.state[:]
 
     keepers = []
@@ -401,35 +381,35 @@ def print_cubes(filename):
 
         if cube.state == tmp_state:
             log.info("================")
-            log.info(' '.join(seq))
+            log.info(" ".join(seq))
             log.info("================")
             cube.print_cube()
             log.info("\n\n\n\n\n")
-            keepers.append(' '.join(seq))
+            keepers.append(" ".join(seq))
 
-    print("foo = (\n    \"" + '",\n    "'.join(keepers) + '"\n)')
+    print('foo = (\n    "' + '",\n    "'.join(keepers) + '"\n)')
 
 
 def print_symmetry_swaps(size):
-    order = 'ULFRBD'
+    order = "ULFRBD"
 
     if size == 2:
-        cube = RubiksCube222(solved_222, 'URFDLB')
+        cube = RubiksCube222(solved_222, "URFDLB")
         rotate_xxx = rotate_222
     elif size == 3:
-        cube = RubiksCube333(solved_333, 'URFDLB')
+        cube = RubiksCube333(solved_333, "URFDLB")
         rotate_xxx = rotate_333
     elif size == 4:
-        cube = RubiksCube444(solved_444, 'URFDLB')
+        cube = RubiksCube444(solved_444, "URFDLB")
         rotate_xxx = rotate_444
     elif size == 5:
-        cube = RubiksCube555(solved_555, 'URFDLB')
+        cube = RubiksCube555(solved_555, "URFDLB")
         rotate_xxx = rotate_555
     elif size == 6:
-        cube = RubiksCube666(solved_666, 'URFDLB')
+        cube = RubiksCube666(solved_666, "URFDLB")
         rotate_xxx = rotate_666
     elif size == 7:
-        cube = RubiksCube777(solved_777, 'URFDLB')
+        cube = RubiksCube777(solved_777, "URFDLB")
         rotate_xxx = rotate_777
     else:
         assert False
@@ -442,7 +422,7 @@ def print_symmetry_swaps(size):
 
     for seq in symmetry_48:
         cube.state = orig_state[:]
-        seq_str = ' '.join(seq)
+        seq_str = " ".join(seq)
 
         if seq_str in ("", "x", "x'", "y", "y'", "z", "z'"):
             continue
@@ -450,41 +430,40 @@ def print_symmetry_swaps(size):
         for step in seq:
             cube.state = rotate_xxx(cube.state[:], step)
 
-        print('    "%s" : (%s),' % (' '.join(seq), ', '.join(cube.state)))
+        print('    "%s" : (%s),' % (" ".join(seq), ", ".join(cube.state)))
 
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(filename)20s %(levelname)8s: %(message)s')
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
     logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
     logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
 
-    #print_reflect_y(4)
-    #print_reflect_z(4)
-    #build_symmetry_48()
+    # print_reflect_y(4)
+    # print_reflect_z(4)
+    # build_symmetry_48()
 
-    #print_reflect_x(2)
-    #print_reflect_x(3)
+    # print_reflect_x(2)
+    # print_reflect_x(3)
     print_reflect_x(4)
-    #print_reflect_x(5)
-    #print_reflect_x(6)
-    #print_reflect_x(7)
+    # print_reflect_x(5)
+    # print_reflect_x(6)
+    # print_reflect_x(7)
 
-    #print_symmetry_swaps(2)
-    #print_symmetry_swaps(3)
-    #print_symmetry_swaps(4)
-    #print_symmetry_swaps(5)
-    #print_symmetry_swaps(6)
-    #print_symmetry_swaps(7)
+    # print_symmetry_swaps(2)
+    # print_symmetry_swaps(3)
+    # print_symmetry_swaps(4)
+    # print_symmetry_swaps(5)
+    # print_symmetry_swaps(6)
+    # print_symmetry_swaps(7)
 
-    '''
+    """
     if len(sys.argv) < 2:
         print("symmetry.py FILENAME")
         sys.exit(1)
 
     filename = sys.argv[1]
     print_cubes(filename)
-    '''
+    """
