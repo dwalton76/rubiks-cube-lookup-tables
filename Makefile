@@ -22,6 +22,9 @@ format:
 	@./venv/bin/python3 -m black --config=pyproject.toml .
 	@./venv/bin/python3 -m flake8 --config=.flake8
 
+wheel:
+	@./venv/bin/python3 setup.py bdist_wheel
+
 222: clean
 	./utils/builderui.py Build222Ultimate
 
