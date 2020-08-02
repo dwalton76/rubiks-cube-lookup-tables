@@ -1,4 +1,7 @@
-#!/usr/bin/env python3
+"""
+Create a .new copy of the lookup table that only keeps entries where
+the solution is a specified length
+"""
 
 # standard libraries
 import subprocess
@@ -22,9 +25,5 @@ with open(filename_new, "w") as fh_new:
 
             if line_number % 1000000 == 0:
                 print("WRITE: %d" % line_number)
-
-subprocess.check_output(
-    "LC_ALL=C nice sort --temporary-directory=./tmp/ --output=%s %s" % (filename_new, filename_new), shell=True
-)
 
 subprocess.check_output("./utils/pad-lines.py %s" % filename_new, shell=True)
