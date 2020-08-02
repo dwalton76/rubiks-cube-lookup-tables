@@ -1,11 +1,9 @@
 __pycache__/
 venv/
 
-lookup-table*.txt
+lookup-table*
 starting-states*
 histogram.txt
 tmp
 *.swp
 nohup.out
-builder-crunch-workq
-builder-next-workq

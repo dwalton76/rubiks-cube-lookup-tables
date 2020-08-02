@@ -769,18 +769,6 @@ class BFS(object):
             thread.start()
             threads.append(thread)
 
-        # This is only needed for extreme cases...builder-crunch-workq-housekeeper.py will
-        # do a "sort --merge --uniq" of the tmp/*core* files to reduce the amount of disk
-        # space used.
-        MILLION = 1000000
-        BILLION = 1000 * MILLION
-        if self.workq_size >= BILLION:
-            log.info("running builder-crunch-workq-housekeeper.py to keep disk usage in check")
-            cmd = ["nice", "./rubikscubelookuptables/builder-crunch-workq-housekeeper.py"]
-            thread = BackgroundProcess(cmd, "builder-crunch-workq-housekeeper")
-            thread.start()
-            threads.append(thread)
-
         hit_error = False
         for thread in threads:
             thread.join()
