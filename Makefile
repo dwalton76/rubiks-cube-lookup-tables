@@ -49,7 +49,6 @@ format:
 	./builderui.py Build444HighLowEdges --depth 6
 
 444-phase3: clean
-	./builderui.py StartingStates444Reduce333Centers
 	./builderui.py Build444Reduce333Centers
 	./utils/convert-to-hashed-cost-only.py lookup-table-4x4x4-step32-reduce333-centers.txt 58831 lookup-table-4x4x4-step32-reduce333-centers.txt.starting-states.compact
 	./builderui.py Build444Reduce333Edges
