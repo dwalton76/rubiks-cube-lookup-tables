@@ -3,7 +3,6 @@
 # standard libraries
 import logging
 import sys
-from pprint import pprint
 
 # rubiks cube libraries
 from rubikscubennnsolver import reverse_steps

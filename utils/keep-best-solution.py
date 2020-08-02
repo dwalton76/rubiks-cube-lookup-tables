@@ -18,11 +18,10 @@ def keep_best_solutions(filename):
     state_min_solution_len = 99
     state_min_solution = None
     prev_state = ""
-    use_edges_pattern = None
     to_write = []
     to_write_count = 0
 
-    re_line = re.compile("^(.*):(.*?)\s*$")
+    re_line = re.compile(r"^(.*):(.*?)\s*$")
 
     with open(filename, "r") as fh:
         line = next(fh)

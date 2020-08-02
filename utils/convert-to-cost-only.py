@@ -3,8 +3,6 @@
 # standard libraries
 import argparse
 import logging
-import os
-import sys
 from collections import Counter
 
 log = logging.getLogger(__name__)

@@ -14,7 +14,6 @@ from collections import deque
 from threading import Thread
 
 # rubiks cube libraries
-from rubikscubennnsolver import reverse_steps
 from rubikscubennnsolver.misc import (
     parse_ascii_222,
     parse_ascii_333,
@@ -131,20 +130,6 @@ def reverse_steps(steps):
     >>> reverse_steps(["U", "R'", "D2"])
     ['D2', 'R', "U'"]
     """
-
-    """
-    results = []
-    for step in reversed(steps):
-        if step[-1] == "2":
-            pass
-        elif step[-1] == "'":
-            step = step[0:-1]
-        else:
-            step += "'"
-
-        results.append(step)
-    return results
-    """
     return [step if step[-1] == "2" else step[0:-1] if step[-1] == "'" else step + "'" for step in reversed(steps)]
 
 
@@ -222,8 +207,6 @@ def convert_to_cost_only(filename):
 
 def convert_to_hash_cost_only(filename, bucketcount):
     filename_new = filename.replace(".txt", ".hash-cost-only.txt")
-    prev_state_int = None
-    first_permutation_rank = None
 
     bucket = bytearray(bucketcount)
     collisions = 0
@@ -351,7 +334,7 @@ def get_starting_states(filename, class_name, hex_digits):
                 )
                 line = line.replace("'", "")
                 line = line.replace(",", "")
-                # print("             %0dx," % hex(int(line, 2))[2:])
+                hex_format = "TBD_HEX_FORMAT"
                 result.append("             '" + hex_format % int(line, 2) + "'")
             else:
                 result.append("%s" % line)
@@ -656,7 +639,6 @@ class BFS(object):
 
     def log_table_stats(self):
         states_per_depth = ""
-        prev = None
         total = 0
 
         for i in sorted(self.stats)[1:]:
@@ -823,10 +805,6 @@ class BFS(object):
         """
         to_write = []
         to_write_count = 0
-        to_write_lookup_table = []
-        to_write_lookup_table_count = 0
-        cube = self.cube
-        rotate_xxx = self.rotate_xxx
         workq_line_length = self.workq_line_length
         self.workq_size = 0
         sorted_results_filename = "%s.10-results" % self.workq_filename
@@ -1305,6 +1283,7 @@ class BFS(object):
         self.time_in_save = (dt.datetime.now() - start_time).total_seconds()
 
     def get_starting_states(self, use_hex, use_edges_pattern):
+
         if self.starting_cube_states:
             foo = []
 
@@ -1340,6 +1319,7 @@ class BFS(object):
             foo.sort()
             starting_states = ",\n".join(foo)
         else:
+            class_name = type(self).__name__.replace("Build", "LookupTable")
             starting_states = get_starting_states(self.filename, class_name, None)
 
         return starting_states
@@ -1347,6 +1327,7 @@ class BFS(object):
     def _code_gen_lookup_table(self):
         class_name = type(self).__name__.replace("Build", "LookupTable")
 
+        """
         next_prime = {
             2520: 2521,
             12870: 12889,
@@ -1366,6 +1347,7 @@ class BFS(object):
             479001600: 479001629,
             812851200: 812851219,
         }
+        """
 
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)

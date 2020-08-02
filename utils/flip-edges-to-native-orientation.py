@@ -10,10 +10,9 @@ import logging
 import sys
 
 # rubiks cube libraries
-from rubikscubennnsolver import reverse_steps, wing_strs_all
+from rubikscubennnsolver import reverse_steps
 from rubikscubennnsolver.RubiksCube555 import (
     RubiksCube555,
-    edges_partner_555,
     edges_recolor_pattern_555,
     solved_555,
     wings_for_edges_pattern_555,

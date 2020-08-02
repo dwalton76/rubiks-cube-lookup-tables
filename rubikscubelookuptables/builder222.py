@@ -3,7 +3,6 @@ import logging
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
-from rubikscubennnsolver.RubiksCube222 import RubiksCube222, moves_222, rotate_222, solved_222
 
 log = logging.getLogger(__name__)
 
@@ -13,7 +12,7 @@ class StartingStatesBuild222Ultimate(BFS):
         BFS.__init__(
             self,
             "2x2x2-ultimate",
-            moves_222,
+            (),
             "2x2x2",
             "starting-states-2x2x2-step00-ultimate.txt",
             False,  # store_as_hex

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # standard libraries
-import subprocess
 import sys
 
 

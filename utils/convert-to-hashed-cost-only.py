@@ -3,8 +3,6 @@
 # standard libraries
 import argparse
 import logging
-import os
-import sys
 
 # rubiks cube libraries
 from pyhashxx import hashxx
@@ -35,8 +33,6 @@ def convert_to_cost_only(filename, bucketcount, filename_statetargets):
             state_targets.add(line)
 
     filename_new = filename.replace(".txt", ".hash-cost-only.txt")
-    prev_state_int = None
-    first_permutation_rank = None
 
     bucket = bytearray(bucketcount)
     collisions = 0

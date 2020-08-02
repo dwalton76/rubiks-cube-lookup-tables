@@ -9,7 +9,8 @@ from rubikscubennnsolver.RubiksCube444 import (
     LookupTable444UDCentersStage,
     LookupTable444LRCentersStage,
     LookupTable444FBCentersStage,
-RubiksCube444, solved_444
+    RubiksCube444,
+    solved_444,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")

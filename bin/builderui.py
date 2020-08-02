@@ -5,7 +5,6 @@ import importlib
 import argparse
 import datetime as dt
 import logging
-import sys
 
 
 def get_class(kls):

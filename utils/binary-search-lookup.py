@@ -4,7 +4,6 @@
 import logging
 import os
 import sys
-from pprint import pformat
 
 seek_count = 0
 
@@ -190,7 +189,7 @@ def get_file_vitals(filename):
 if __name__ == "__main__":
 
     if len(sys.argv) != 3:
-        print("ERROR: To use './binary-search-lookup.py FILENAME KEY'" % input_filename)
+        print("ERROR: To use './binary-search-lookup.py FILENAME KEY'")
         sys.exit(1)
 
     filename = sys.argv[1]
