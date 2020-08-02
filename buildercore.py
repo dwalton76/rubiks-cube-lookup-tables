@@ -804,10 +804,14 @@ class BFS(object):
         with open(first_core_file, "r") as fh:
             line = next(fh)
 
-            if line.count(":") != 1:
+            if line.count(":") == 1:
+                state = line.split(":")[0]
+            elif line.count(":") == 2:
+                (state1, state2, steps) = line.split(":")
+                state = ":".join([state1, state2])
+            else:
                 raise Exception(f"Found {line.count(':')} :s in line:\n{line}")
 
-            state = line.split(":")[0]
             state_width = len(state)
 
         with open("tmp/files_to_sort.txt", "w") as fh:
@@ -1291,6 +1295,7 @@ class BFS(object):
             2520 : 2521,
             12870 : 12889,
             20160 : 20161,
+            58800 : 58831,
             176400 : 176401,
             343000 : 343019,
             5880600 : 5880601,

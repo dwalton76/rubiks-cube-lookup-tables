@@ -73,7 +73,7 @@ def convert_to_cost_only(filename, bucketcount, filename_statetargets):
                     if bucket[hash_index] > steps_len:
                         bucket[hash_index] = steps_len
 
-            if line_number % 1000000 == 0:
+            if line_number and line_number % 1000000 == 0:
                 log.info(line_number)
 
     log.info("%d collisions" % collisions)

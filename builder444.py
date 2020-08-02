@@ -179,7 +179,8 @@ class Build444UDCentersStage(BFS):
             # starting cubes
             (('.....UU..UU..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........UU..UU.....', 'ULFRBD'),
              ('.....xx..xx..........UU..UU..........xx..xx..........UU..UU..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........xx..xx..........UU..UU..........xx..xx..........UU..UU..........xx..xx.....', 'ULFRBD')),
+             ('.....xx..xx..........xx..xx..........UU..UU..........xx..xx..........UU..UU..........xx..xx.....', 'ULFRBD'),
+            ),
             use_c=True,
         )
 
@@ -199,7 +200,8 @@ class Build444LRCentersStage(BFS):
             # starting cubes
             (('.....LL..LL..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........LL..LL.....', 'ULFRBD'),
              ('.....xx..xx..........LL..LL..........xx..xx..........LL..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........xx..xx..........LL..LL..........xx..xx..........LL..LL..........xx..xx.....', 'ULFRBD')),
+             ('.....xx..xx..........xx..xx..........LL..LL..........xx..xx..........LL..LL..........xx..xx.....', 'ULFRBD'),
+            ),
             use_c=True,
         )
 
@@ -219,7 +221,8 @@ class Build444FBCentersStage(BFS):
             # starting cubes
             (('.....FF..FF..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........FF..FF.....', 'ULFRBD'),
              ('.....xx..xx..........FF..FF..........xx..xx..........FF..FF..........xx..xx..........xx..xx.....', 'ULFRBD'),
-             ('.....xx..xx..........xx..xx..........FF..FF..........xx..xx..........FF..FF..........xx..xx.....', 'ULFRBD'),),
+             ('.....xx..xx..........xx..xx..........FF..FF..........xx..xx..........FF..FF..........xx..xx.....', 'ULFRBD'),
+            ),
             use_c=True,
         )
 
@@ -347,7 +350,9 @@ class Build444HighLowEdgesEdges(BFS):
           . U D .
           D . . U
           U . . D
-          . D U .""", 'ascii'),)
+          . D U .""", 'ascii'),
+            ),
+            use_c=True,
         )
 
 
