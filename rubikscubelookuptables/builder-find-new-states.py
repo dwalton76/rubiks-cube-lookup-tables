@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.6
+#!/usr/bin/env python3
 
 """
 Given two lookup-table files (A & B), find all of the new cube states in B that
