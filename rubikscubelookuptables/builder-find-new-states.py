@@ -9,7 +9,6 @@ are not in A and write them to an output file.
 import argparse
 import logging
 import os
-import sys
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import WRITE_BATCH_SIZE, reverse_steps

@@ -1,11 +1,5 @@
-#!/usr/bin/env python3
-
 # standard libraries
 import logging
-import math
-import shutil
-import subprocess
-import sys
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS

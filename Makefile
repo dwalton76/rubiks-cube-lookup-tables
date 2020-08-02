@@ -17,7 +17,7 @@ gdb:
 
 format:
 	isort -rc dead rubikscubelookuptables utils
-	# @./venv/bin/python3 -m black --config=pyproject.toml .
+	@./venv/bin/python3 -m black --config=pyproject.toml .
 	# @./venv/bin/python3 -m flake8 --config=.flake8
 
 222: clean

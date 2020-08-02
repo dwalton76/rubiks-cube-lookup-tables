@@ -1,7 +1,6 @@
 #!/usr/bin/env python3.6
 
 # standard libraries
-import argparse
 import datetime as dt
 import gc
 import glob
@@ -12,12 +11,10 @@ import shutil
 import subprocess
 import sys
 from collections import deque
-from pprint import pformat
-from threading import Event, Thread
+from threading import Thread
 
 # rubiks cube libraries
 from rubikscubennnsolver import reverse_steps
-from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.misc import (
     parse_ascii_222,
     parse_ascii_333,
@@ -42,7 +39,6 @@ from rubikscubennnsolver.RubiksCube555 import (
     RubiksCube555,
     centers_555,
     edges_555,
-    edges_partner_555,
     edges_recolor_pattern_555,
     moves_555,
     rotate_555,

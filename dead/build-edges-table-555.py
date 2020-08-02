@@ -1,20 +1,15 @@
-#!/usr/bin/env python3
-
 
 # standard libraries
 import json
 import logging
 import os
 import subprocess
-import sys
 
 # rubiks cube libraries
 from rubikscubennnsolver import reverse_steps
-from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube555 import (
     RubiksCube555,
     edges_recolor_pattern_555,
-    moves_555,
     rotate_555,
     solved_555,
     wings_for_edges_pattern_555,

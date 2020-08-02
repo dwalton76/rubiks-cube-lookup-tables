@@ -9,7 +9,6 @@ are not in A and write them to an output file.
 import argparse
 import logging
 import os
-import sys
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import reverse_steps
@@ -99,7 +98,7 @@ def diff_states(filenameA, filenameB, outputfile):
                     (patternA, stateA, steps_to_scrambleA) = lineA.split(":")
                 else:
                     patternA = None
-                    stateA = None
+                    stateA = None  # noqa: F841
 
                 if lineB:
                     (patternB, stateB, steps_to_scrambleB) = lineB.split(":")

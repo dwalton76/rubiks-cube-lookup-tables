@@ -1,6 +1,6 @@
 [flake8]
-max-line-length = 120
-max-complexity = 40
+max-line-length = 320
+max-complexity = 50
 ignore =
   E203
   W503      # line break before binary operator; conflicts with black
