@@ -13,6 +13,9 @@ import sys
 from collections import deque
 from threading import Thread
 
+# third party libraries
+from pyhashxx import hashxx
+
 # rubiks cube libraries
 from rubikscubennnsolver.misc import (
     parse_ascii_222,
@@ -210,7 +213,6 @@ def convert_to_hash_cost_only(filename, bucketcount):
 
     bucket = bytearray(bucketcount)
     collisions = 0
-    from pyhashxx import hashxx
 
     with open(filename, "r") as fh:
         for (line_number, line) in enumerate(fh):
@@ -1555,6 +1557,7 @@ if __name__ == "__main__":
     logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
     logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
 
+    # standard libraries
     import doctest
 
     doctest.testmod()

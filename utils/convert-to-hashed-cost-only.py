@@ -4,7 +4,7 @@
 import argparse
 import logging
 
-# rubiks cube libraries
+# third party libraries
 from pyhashxx import hashxx
 
 log = logging.getLogger(__name__)

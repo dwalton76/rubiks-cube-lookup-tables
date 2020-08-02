@@ -4,7 +4,7 @@
 import os
 import sys
 
-# rubiks cube libraries
+# third party libraries
 from pyhashxx import hashxx
 
 if len(sys.argv) != 4:

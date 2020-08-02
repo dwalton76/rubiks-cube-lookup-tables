@@ -18,7 +18,7 @@ gdb:
 	gcc -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm --ggdb
 
 format:
-	isort -rc rubikscubelookuptables utils
+	isort rubikscubelookuptables utils
 	@./venv/bin/python3 -m black --config=pyproject.toml .
 	@./venv/bin/python3 -m flake8 --config=.flake8
 

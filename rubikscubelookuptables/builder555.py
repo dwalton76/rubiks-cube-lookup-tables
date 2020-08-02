@@ -6963,7 +6963,8 @@ class Build555Phase4(BFS):
 
     def __init__(self):
 
-        from builder555ss import starting_states_phase4
+        # rubiks cube libraries
+        from rubikscubelookuptables.builder555ss import starting_states_phase4
 
         BFS.__init__(
             self,
