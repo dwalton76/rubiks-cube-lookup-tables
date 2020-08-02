@@ -1,6 +1,6 @@
 
 clean:
-	rm -rf tmp nohup.out
+	rm -rf tmp nohup.out build dist *.egg-info
 	mkdir tmp
 	find . -name __pycache__ | xargs rm -rf
 
