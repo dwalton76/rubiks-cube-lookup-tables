@@ -3,6 +3,7 @@ See this post
 http://cubesolvingprograms.freeforums.net/thread/12/number-5x5x5-positions-function-depth?page=2&scrollTo=717
 """
 
+
 def gods_number(size, MOVE_COUNT, COMBOS):
     prev_depth = MOVE_COUNT
     total = MOVE_COUNT

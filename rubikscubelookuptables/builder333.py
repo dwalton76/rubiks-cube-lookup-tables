@@ -1,68 +1,27 @@
-# standard libraries
-import logging
-
-# rubiks cube libraries
-from rubikscubelookuptables.buildercore import BFS
-
-log = logging.getLogger(__name__)
-
-
-class Build333Ultimate(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "3x3x3-ultimate",
-            # illegal moves
-            (),
-            "3x3x3",
-            "lookup-table-3x3x3-step00-ultimate.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-        U U U
-        U U U
-        U U U
-
- L L L  F F F  R R R  B B B
- L L L  F F F  R R R  B B B
- L L L  F F F  R R R  B B B
-
-        D D D
-        D D D
-        D D D""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-
-
 """
-4-phase solver overview
+This is a 4-phase solver that was designed to run on the LEGO SPIKE platform.
+LEGO SPIKE has something like 90k of memory to play with.
 
 phase 1 - EO the edges
     - make the edges solveable without L L' R R'
     - (2^12)/2 or 2048 states
-    - 2048 * 128 is 262,144 states
-    - averages 6.37 moves
+    - averages 4.61 moves
 
 phase 2 - Remove F F' B B'
     - LB LF RB RF edges must be staged to x-plane
         12!/(8!*4!) is 495
-    - EO the corners again
-        - (2^8)/2 or 128 states
-    - 128 * 495 is 63,360
-    - averages 6.42 moves
+    - EO the corners
+        - (3^8)/3 or 2187 states
+    - 2187 * 495 is 1,082,565
+    - averages 7.80 moves
 
 phase 3 - Remove U U' D D'
     move 4 edges to y-plane, this in turn moves the other 4-edges to z-plane
     There must also be some corner manipulation done here
     - 8!/(4!*4!) is 70 for the edges
-    - 8!/(4!*4!) is 70 for the corners (I think)
-    - 70 * 70 is 4900
-    - averages 6.70 moves
+    -  is 40,320 for the corners
+    - 70 * 40,320 is 2,822,400
+    - averages 8.80 moves
 
 phase 4 - solve cube
     - all quarter turns have been removed by this point
@@ -74,8 +33,11 @@ phase 4 - solve cube
     - 6912 * 96 is 663,552
     - averages 10.13 moves
 
-This should averge 29 moves
+This should averge 31 moves
 """
+
+# rubiks cube libraries
+from rubikscubelookuptables.buildercore import BFS
 
 
 class Build333Phase1(BFS):
@@ -549,4 +511,36 @@ class Build333Phase4Corners(BFS):
                     "ascii",
                 ),
             ),
+        )
+
+
+class Build333Ultimate(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "3x3x3-ultimate",
+            # illegal moves
+            (),
+            "3x3x3",
+            "lookup-table-3x3x3-step00-ultimate.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+        U U U
+        U U U
+        U U U
+
+ L L L  F F F  R R R  B B B
+ L L L  F F F  R R R  B B B
+ L L L  F F F  R R R  B B B
+
+        D D D
+        D D D
+        D D D""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
         )

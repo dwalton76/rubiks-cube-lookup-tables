@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 # standard libraries
-import importlib
 import argparse
 import datetime as dt
+import importlib
 import logging
 
 
