@@ -12,8 +12,6 @@ log = logging.getLogger(__name__)
 
 
 class Build555Ultimate(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -42,11 +40,10 @@ class Build555Ultimate(BFS):
             D D D D D
             D D D D D
             D D D D D""", "ascii"),),
+            use_c=True,
         )
 
 class Build555UltimateCenters(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -106,13 +103,12 @@ class Build555UltimateCenters(BFS):
                 #"2U", "2U'", "2U2", "2D", "2D'", "2D2",
                 #"2L", "2L'", "2L2", "2R", "2R'", "2R2",
                 #"2F", "2F'", "2F2", "2B", "2B'", "2B2"
-            )
+            ),
+            use_c=True,
         )
 
 
 class Build555LRCenterStage(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -145,8 +141,6 @@ class Build555LRCenterStage(BFS):
 
 
 class Build555LRCenterStageTCenterOnly(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -179,8 +173,6 @@ class Build555LRCenterStageTCenterOnly(BFS):
 
 
 class Build555LRCenterStageXCenterOnly(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -213,8 +205,6 @@ class Build555LRCenterStageXCenterOnly(BFS):
 
 
 class Build555UDCenterStageTCenterOnly(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -247,8 +237,6 @@ class Build555UDCenterStageTCenterOnly(BFS):
 
 
 class Build555UDCenterStageXCenterOnly(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -281,8 +269,6 @@ class Build555UDCenterStageXCenterOnly(BFS):
 
 
 class Build555CenterStageTCenterOnly(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -310,13 +296,13 @@ class Build555CenterStageTCenterOnly(BFS):
             . . U . .
             . U . U .
             . . U . .
-            . . . . .""", "ascii"),),
+            . . . . .""", "ascii"),
+            ),
+            use_c=True,
         )
 
 
 class Build555CenterStageXCenterOnly(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -423,8 +409,6 @@ class Build555FBTCenterStage(BFS):
 
 
 class Build555FBXCenterStage(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -3480,8 +3464,6 @@ class Build555EdgeOrientBothOrbits(BFS):
 
 
 class StartingStatesBuild555Phase4(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -3554,8 +3536,6 @@ class Build555Phase4(BFS):
 
 
 class StartingStatesBuild555Phase5Centers(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -4300,8 +4280,6 @@ class Build555Phase5FBCenters(BFS):
 
 
 class Build555Phase6Centers(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -4346,8 +4324,6 @@ class Build555Phase6Centers(BFS):
 
 
 class Build555Phase6HighEdgeMidge(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,
@@ -4393,8 +4369,6 @@ class Build555Phase6HighEdgeMidge(BFS):
 
 
 class Build555Phase6LowEdgeMidge(BFS):
-    """
-    """
 
     def __init__(self):
         BFS.__init__(self,

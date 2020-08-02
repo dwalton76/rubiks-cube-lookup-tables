@@ -4,6 +4,7 @@ clean:
 	mkdir tmp
 
 init: clean
+	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
 	rm -rf venv rubikscubelookuptables/builder-crunch-workq
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	python3 -m venv venv
@@ -50,9 +51,9 @@ format:
 
 444-phase3: clean
 	./bin/builderui.py Build444Reduce333Centers
-	./utils/convert-to-hashed-cost-only.py lookup-table-4x4x4-step32-reduce333-centers.txt 58831 lookup-table-4x4x4-step32-reduce333-centers.txt.starting-states.compact
+	./utils/convert-to-hashed-cost-only.py lookup-table-4x4x4-step32-reduce333-centers.txt 58831 helper-tables/lookup-table-4x4x4-step32-reduce333-centers.txt.starting-states.compact
 	./bin/builderui.py Build444Reduce333Edges
-	./utils/convert-to-hashed-cost-only.py lookup-table-4x4x4-step31-reduce333-edges.txt 239500847 lookup-table-4x4x4-step31-reduce333-edges.txt.starting-states.compact
+	./utils/convert-to-hashed-cost-only.py lookup-table-4x4x4-step31-reduce333-edges.txt 239500847 helper-tables/lookup-table-4x4x4-step31-reduce333-edges.txt.starting-states.compact
 	./bin/builderui.py Build444Reduce333 --depth 6
 
 444: 444-phase1 444-phase2 444-phase3
