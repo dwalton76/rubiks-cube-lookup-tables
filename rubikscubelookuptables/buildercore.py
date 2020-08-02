@@ -713,7 +713,7 @@ class BFS(object):
             if self.use_c:
                 cmd = [
                     'nice',
-                    './builder-crunch-workq',
+                    './rubikscubelookuptables/builder-crunch-workq',
                     '--size', self.size[0],
                     '--inputfile', self.workq_filename,
                     '--linewidth', str(self.workq_line_length + 1),
@@ -726,7 +726,7 @@ class BFS(object):
             else:
                 cmd = [
                     'nice',
-                    './builder-crunch-workq.py',
+                    './rubikscubelookuptables/builder-crunch-workq.py',
                     self.size,
                     self.workq_filename,
                     str(self.workq_line_length),
@@ -751,10 +751,10 @@ class BFS(object):
         MILLION = 1000000
         BILLION = 1000 * MILLION
         if self.workq_size >= BILLION:
-            log.info("running ./builder-crunch-workq-housekeeper.py to keep disk usage in check")
+            log.info("running builder-crunch-workq-housekeeper.py to keep disk usage in check")
             cmd = [
                 'nice',
-                './builder-crunch-workq-housekeeper.py',
+                './rubikscubelookuptables/builder-crunch-workq-housekeeper.py',
             ]
             thread = BackgroundProcess(cmd, 'builder-crunch-workq-housekeeper')
             thread.start()
@@ -846,13 +846,13 @@ class BFS(object):
 
             log.info("builder-find-new-edges-pattern-states.py begin")
             start_time = dt.datetime.now()
-            subprocess.check_output("nice ./builder-find-new-edges-pattern-states.py %s %s %s.20-new-states" % (self.filename, sorted_results_filename, self.workq_filename) , shell=True)
+            subprocess.check_output("nice ./rubikscubelookuptables/builder-find-new-edges-pattern-states.py %s %s %s.20-new-states" % (self.filename, sorted_results_filename, self.workq_filename) , shell=True)
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-edges-pattern-states.py end")
         else:
             log.info("builder-find-new-states.py begin")
             start_time = dt.datetime.now()
-            cmd = "nice ./builder-find-new-states.py %s %s %s.20-new-states" % (self.filename, sorted_results_filename, self.workq_filename)
+            cmd = "nice ./rubikscubelookuptables/builder-find-new-states.py %s %s %s.20-new-states" % (self.filename, sorted_results_filename, self.workq_filename)
             log.info(cmd)
             subprocess.check_output(cmd, shell=True)
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()

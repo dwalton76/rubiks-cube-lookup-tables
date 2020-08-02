@@ -12,7 +12,7 @@ import os
 import sys
 
 # rubiks cube libraries
-from buildercore import reverse_steps
+from rubikscubelookuptables.buildercore import reverse_steps
 
 
 def advance_filehandle(fh):

@@ -9,8 +9,8 @@ import sys
 from pprint import pformat
 
 # rubiks cube libraries
-from buildercore import WRITE_BATCH_SIZE, reverse_steps, supported_sizes
-#from buildercore import supported_sizes, reverse_steps
+from rubikscubelookuptables.buildercore import WRITE_BATCH_SIZE, reverse_steps, supported_sizes
+#from rubikscubelookuptables.buildercore import supported_sizes, reverse_steps
 from rubikscubennnsolver.LookupTable import steps_cancel_out, steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import RubiksCube222, moves_222, rotate_222, solved_222
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, moves_333, rotate_333, solved_333

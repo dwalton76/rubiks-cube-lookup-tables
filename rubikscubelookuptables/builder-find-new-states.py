@@ -12,7 +12,7 @@ import os
 import sys
 
 # rubiks cube libraries
-from buildercore import WRITE_BATCH_SIZE, reverse_steps
+from rubikscubelookuptables.buildercore import WRITE_BATCH_SIZE, reverse_steps
 
 
 def advance_filehandle(fh):

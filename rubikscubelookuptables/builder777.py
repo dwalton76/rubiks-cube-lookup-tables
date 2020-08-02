@@ -5,7 +5,7 @@ import logging
 import sys
 
 # rubiks cube libraries
-from buildercore import BFS
+from rubikscubelookuptables.buildercore import BFS
 
 log = logging.getLogger(__name__)
 

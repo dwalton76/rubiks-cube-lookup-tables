@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 # rubiks cube libraries
-from buildercore import BFS
+from rubikscubelookuptables.buildercore import BFS
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, moves_666, rotate_666, solved_666
 
 log = logging.getLogger(__name__)

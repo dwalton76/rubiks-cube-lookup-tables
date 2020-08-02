@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # standard libraries
+import importlib
 import argparse
 import datetime as dt
 import logging
@@ -12,19 +13,20 @@ def get_class( kls ):
     Given a string that is the name of a class, import and return that class
     """
     m = None
+    print(kls)
 
-    if '444' in kls:
-        m = __import__('builder444')
+    if '222' in kls:
+        m = importlib.import_module("rubikscubelookuptables.builder222")
     elif '333' in kls:
-        m = __import__('builder333')
+        m = importlib.import_module("rubikscubelookuptables.builder333")
+    elif '444' in kls:
+        m = importlib.import_module("rubikscubelookuptables.builder444")
     elif '555' in kls:
-        m = __import__('builder555')
+        m = importlib.import_module("rubikscubelookuptables.builder555")
     elif '666' in kls:
-        m = __import__('builder666')
+        m = importlib.import_module("rubikscubelookuptables.builder666")
     elif '777' in kls:
-        m = __import__('builder777')
-    elif '222' in kls:
-        m = __import__('builder222')
+        m = importlib.import_module("rubikscubelookuptables.builder777")
     else:
         raise Exception("we should not be here")
 

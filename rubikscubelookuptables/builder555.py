@@ -5,7 +5,7 @@ import logging
 import sys
 
 # rubiks cube libraries
-from buildercore import BFS
+from rubikscubelookuptables.buildercore import BFS
 from rubikscubennnsolver.RubiksCube333 import moves_333
 
 log = logging.getLogger(__name__)

@@ -4,7 +4,7 @@
 import sys
 
 # rubiks cube libraries
-from buildercore import convert_state_to_hex
+from rubikscubelookuptables.buildercore import convert_state_to_hex
 
 filename = sys.argv[1]
 filename_new = filename + ".new"
