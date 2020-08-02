@@ -1,4 +1,7 @@
-#!/usr/bin/env python3
+"""
+Create a .final copy of the lookup table that contains the solution length
+instead of the solution steps
+"""
 
 # standard libraries
 import sys

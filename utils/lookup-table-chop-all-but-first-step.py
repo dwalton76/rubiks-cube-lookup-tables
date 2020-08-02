@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+"""
+Only keep the first step of the solution
+"""
 
 # standard libraries
 import shutil
@@ -27,5 +29,4 @@ with open(filename, "r") as fh_read:
                 print(count)
 
 shutil.move(filename_small, filename)
-
 subprocess.check_output("./utils/pad-lines.py %s" % filename, shell=True)

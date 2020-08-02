@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+"""
+Create a LOOKUP_TABE.cost-only.txt copy of the lookup table
+"""
 
 # standard libraries
 import argparse

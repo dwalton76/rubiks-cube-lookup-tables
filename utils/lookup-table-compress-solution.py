@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+"""
+Compress the solution by combining steps like "U U" into "U2".
+I can't remember what table I built where I used this, none of
+the ones I build today would have steps that could be combined.
+"""
 
 # standard libraries
 import sys

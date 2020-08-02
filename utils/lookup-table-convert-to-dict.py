@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+"""
+Create a dictionary copy of the lookup table stored in LOOKUP_TABLE-dict.py
+"""
 
 # standard libraries
 import logging
@@ -9,7 +11,7 @@ log = logging.getLogger(__name__)
 
 
 def convert_to_dict(filename):
-    filename_new = filename.replace(".txt", ".dict.py")
+    filename_new = filename.replace(".txt", "-dict.py")
 
     with open(filename_new, "w") as fh_new:
         fh_new.write("{\n")
