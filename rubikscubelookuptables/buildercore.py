@@ -712,100 +712,110 @@ class BFS(object):
         Launch one builder-crunch-workq process per core. Wait for all of them
         to complete before returning.
         """
-        log.info("builder-crunch-workq begin")
-        threads = []
-        line_numbers_for_cores = get_line_number_splits(self.workq_size, self.cores)
         start_time = dt.datetime.now()
-        # log.info("line_numbers_for_cores\n%s" % pformat(line_numbers_for_cores))
 
-        # Launch one builder-crunch-workq process per core
-        # - each one will process a subsection of workq_filename_next
-        # - wait for all of them to finish before we move on
-        for core in range(self.cores):
+        MILLION = 1000000
+        # BILLION = 1000 * MILLION
+        BATCH_SIZE = MILLION
+        # dwalton
+        BATCH_SIZE = 100000
+        batch_count = int(self.workq_size / BATCH_SIZE) + 1
+        workq_size = self.workq_size
 
-            # If we are out of memory and swapping this will fail due to "OSError: Cannot allocate memory"
-            (start, end) = line_numbers_for_cores[core]
+        for batch_index in range(batch_count):
+            log.info(f"builder-crunch-workq begin batch {batch_index+1}/{batch_count}")
+            threads = []
+            line_numbers_for_cores = get_line_number_splits(min(workq_size, BATCH_SIZE), self.cores)
+            line_number_offset = batch_index * BATCH_SIZE
 
-            if start is None:
-                continue
+            # Launch one builder-crunch-workq process per core
+            # - each one will process a subsection of workq_filename_next
+            # - wait for all of them to finish before we move on
+            for core in range(self.cores):
+                (start, end) = line_numbers_for_cores[core]
 
-            if self.use_c:
-                cmd = [
-                    "nice",
-                    "./rubikscubelookuptables/builder-crunch-workq",
-                    "--size",
-                    self.size[0],
-                    "--inputfile",
-                    self.workq_filename,
-                    "--linewidth",
-                    str(self.workq_line_length + 1),
-                    "--start",
-                    str(start),
-                    "--end",
-                    str(end),
-                    "--outputfile",
-                    self.get_workq_filename_for_core(core),
-                    "--moves",
-                    "%s" % " ".join(self.legal_moves),
-                ]
+                if start is None:
+                    continue
 
+                start += line_number_offset
+                end += line_number_offset
+
+                if self.use_c:
+                    cmd = [
+                        "nice",
+                        "./rubikscubelookuptables/builder-crunch-workq",
+                        "--size",
+                        self.size[0],
+                        "--inputfile",
+                        self.workq_filename,
+                        "--linewidth",
+                        str(self.workq_line_length + 1),
+                        "--start",
+                        str(start),
+                        "--end",
+                        str(end),
+                        "--outputfile",
+                        self.get_workq_filename_for_core(core),
+                        "--moves",
+                        "%s" % " ".join(self.legal_moves),
+                    ]
+
+                else:
+                    cmd = [
+                        "nice",
+                        "./rubikscubelookuptables/builder-crunch-workq.py",
+                        self.size,
+                        self.workq_filename,
+                        str(self.workq_line_length),
+                        str(start),
+                        str(end),
+                        self.get_workq_filename_for_core(core),
+                        "%s" % " ".join(self.legal_moves),
+                    ]
+
+                if self.use_edges_pattern:
+                    cmd.append("--use-edges-pattern")
+
+                log.info(" ".join(cmd))
+
+                thread = BackgroundProcess(cmd, "builder-crunch-workq core %d" % core)
+                thread.start()
+                threads.append(thread)
+
+            hit_error = False
+            for thread in threads:
+                thread.join()
+
+                if thread.ok:
+                    log.info("depth %d %s: finished" % (self.depth, thread))
+                else:
+                    hit_error = True
+                    log.info("depth %d %s: finished but with an error\n%s\n" % (self.depth, thread, thread.result))
+
+            if hit_error:
+                log.error("builder-crunch-workq hit an error")
+                sys.exit(1)
+
+            if workq_size > BATCH_SIZE:
+                workq_size -= BATCH_SIZE
             else:
-                cmd = [
-                    "nice",
-                    "./rubikscubelookuptables/builder-crunch-workq.py",
-                    self.size,
-                    self.workq_filename,
-                    str(self.workq_line_length),
-                    str(start),
-                    str(end),
-                    self.get_workq_filename_for_core(core),
-                    "%s" % " ".join(self.legal_moves),
-                ]
+                workq_size = 0
 
-            if self.use_edges_pattern:
-                cmd.append("--use-edges-pattern")
+            log.info(f"builder-crunch-workq end batch {batch_index+1}/{batch_count}")
 
-            log.info(" ".join(cmd))
-
-            thread = BackgroundProcess(cmd, "builder-crunch-workq core %d" % core)
-            thread.start()
-            threads.append(thread)
-
-        hit_error = False
-        for thread in threads:
-            thread.join()
-
-            if thread.ok:
-                log.info("depth %d %s: finished" % (self.depth, thread))
-            else:
-                hit_error = True
-                log.info("depth %d %s: finished but with an error\n%s\n" % (self.depth, thread, thread.result))
-
-        if hit_error:
-            log.error("builder-crunch-workq hit an error")
-            sys.exit(1)
+            # dwalton
+            if batch_index < batch_count - 1:
+                sorted_results_filename = "%s.10-results-batch-%d" % (self.workq_filename, batch_index)
+                self._sort_tmp_core_files(sorted_results_filename)
+                shutil.move(sorted_results_filename, f"{self.workq_filename}.core")
 
         self.time_in_crunching_workq += (dt.datetime.now() - start_time).total_seconds()
-        log.info("builder-crunch-workq end")
 
-    def _search_process_builder_crunch_workq_results(self, max_depth):
-        """
-        Process the results from all of the builder-crunch-workq processes
-        and build a new workq_filename_next
-        """
-        to_write = []
-        to_write_count = 0
-        workq_line_length = self.workq_line_length
-        self.workq_size = 0
-        sorted_results_filename = "%s.10-results" % self.workq_filename
-
-        # Remove the workq file to save some disk space
-        if os.path.exists(self.workq_filename):
-            os.remove(self.workq_filename)
+    def _sort_tmp_core_files(self, sorted_results_filename):
+        assert "core" not in sorted_results_filename, f"{sorted_results_filename} contains 'core'"
 
         # find state_width
         core_files = sorted(glob.glob("tmp/*core*"))
-        # log.info(f"core_files {core_files}")
         first_core_file = core_files[0]
 
         with open(first_core_file, "r") as fh:
@@ -825,13 +835,13 @@ class BFS(object):
             fh.write("\0".join(core_files))
 
         log.info("sort all of the files created by builder-crunch-workq processes begin")
-        # log.info(f"state_width {state_width} per {first_core_file}")
         start_time = dt.datetime.now()
         cmd = (
             "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=./tmp/ --output %s --files0-from='tmp/files_to_sort.txt'"
             % (self.cores, state_width, sorted_results_filename)
         )
         # log.info(cmd)
+
         subprocess.check_output(cmd, shell=True)
         self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
         # linecount = int(subprocess.check_output("wc -l %s" % sorted_results_filename, shell=True).decode("ascii").strip().split()[0])
@@ -843,6 +853,23 @@ class BFS(object):
         subprocess.check_output("rm %s.core* " % self.workq_filename, shell=True)
         self.time_in_file_delete += (dt.datetime.now() - start_time).total_seconds()
         log.info("rm builder-crunch-workq output files end")
+
+    def _search_process_builder_crunch_workq_results(self, max_depth):
+        """
+        Process the results from all of the builder-crunch-workq processes
+        and build a new workq_filename_next
+        """
+        to_write = []
+        to_write_count = 0
+        workq_line_length = self.workq_line_length
+        self.workq_size = 0
+        sorted_results_filename = "%s.10-results" % self.workq_filename
+
+        # Remove the workq file to save some disk space
+        if os.path.exists(self.workq_filename):
+            os.remove(self.workq_filename)
+
+        self._sort_tmp_core_files(sorted_results_filename)
 
         # Use "builder-find-new-states.py" to find the entries in the .results file that are not
         # in our current lookup-table.txt file. Save these in a .new_states file.
