@@ -11,7 +11,9 @@ import shutil
 import subprocess
 import sys
 from collections import deque
+from pathlib import Path
 from threading import Thread
+from typing import List, Tuple
 
 # third party libraries
 from pyhashxx import hashxx
@@ -55,20 +57,11 @@ supported_sizes = ("2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7")
 
 WRITE_BATCH_SIZE = 1000000
 LOG_BATCH_SIZE = 1000000
+SLOW_TMP = Path("/storage/dwalton76/tmp/")
+FAST_TMP = Path("/bigssd/lz4/tmp/")
 
 
-def create_dir(dirname):
-
-    if os.path.isdir(dirname):
-        return
-
-    if os.path.isfile(dirname):
-        raise Exception("%s already exist but is a file" % dirname)
-
-    os.makedirs(dirname)
-
-
-def get_line_number_splits(lines, cores):
+def get_line_number_splits(lines: int, cores: int) -> Tuple:
     """
     >>> get_line_number_splits(100, 1)
     ((0, 99),)
@@ -122,7 +115,7 @@ def get_line_number_splits(lines, cores):
     return tuple(results)
 
 
-def reverse_steps(steps):
+def reverse_steps(steps: List[str]) -> List[str]:
     """
     >>> reverse_steps([])
     []
@@ -136,7 +129,7 @@ def reverse_steps(steps):
     return [step if step[-1] == "2" else step[0:-1] if step[-1] == "'" else step + "'" for step in reversed(steps)]
 
 
-def convert_state_to_hex(state):
+def convert_state_to_hex(state: str) -> str:
     """
     This assumes that state only has "x"s and Us or Ls or Fs or Rs or Bs or Ds
 
@@ -168,7 +161,7 @@ def convert_state_to_hex(state):
     return hex_state.zfill(hex_width)
 
 
-def convert_to_cost_only(filename):
+def convert_to_cost_only(filename: str) -> None:
     filename_new = filename.replace(".txt", ".cost-only.txt")
     prev_state_int = None
 
@@ -208,7 +201,7 @@ def convert_to_cost_only(filename):
                 prev_state_int = state_int
 
 
-def convert_to_hash_cost_only(filename, bucketcount):
+def convert_to_hash_cost_only(filename: str, bucketcount: int) -> None:
     filename_new = filename.replace(".txt", ".hash-cost-only.txt")
 
     bucket = bytearray(bucketcount)
@@ -266,7 +259,7 @@ def convert_to_hash_cost_only(filename, bucketcount):
     log.info("end writing %s" % filename_new)
 
 
-def parse_histogram(filename):
+def parse_histogram(filename: str) -> str:
 
     if not os.path.exists("histogram.txt"):
         print("\n\nERROR: histogram.txt does not exist")
@@ -350,81 +343,6 @@ def get_starting_states(filename, class_name, hex_digits):
         return result
 
 
-def find_all_lines_for_state(fh, line_count, line_width, state_to_find):
-    """
-    Given a state, return a list of all of the lines
-    in the file that start with that state.
-
-    99.9% of lookup tables only have one entry per state so this is
-    rarely used.
-    """
-    fh.seek(0)
-    result = []
-
-    first = 0
-    last = line_count - 1
-    state_width = len(state_to_find)
-
-    # Find an entry with state
-    while first <= last:
-        midpoint = int((first + last) / 2)
-        fh.seek(midpoint * line_width)
-
-        # Only read the 'state' part of the line (for speed)
-        state = fh.read(state_width)
-
-        if state_to_find < state:
-            last = midpoint - 1
-
-        # If this is the line we are looking for
-        elif state_to_find == state:
-            break
-
-        else:
-            first = midpoint + 1
-    else:
-        log.warning("could not find signature %s" % state)
-        return result
-
-    line_number_midpoint_state = midpoint
-
-    # Go back one line at a time until we are at the first line with state
-    while True:
-        fh.seek(midpoint * line_width)
-
-        line = fh.read(line_width)
-        line = line.rstrip()
-        (state, steps) = line.split(":")
-
-        if state != state_to_find:
-            break
-
-        result.append(line)
-        midpoint -= 1
-
-        if midpoint < 0:
-            break
-
-    # Go forward one line at a time until we have read all the lines
-    # with state
-    midpoint = line_number_midpoint_state + 1
-
-    while midpoint <= line_count - 1:
-        fh.seek(midpoint * line_width)
-        line = fh.read(line_width)
-        line = line.rstrip()
-        (state, steps) = line.split(":")
-
-        if state == state_to_find:
-            result.append(line)
-        else:
-            break
-
-        midpoint += 1
-
-    return result
-
-
 class BackgroundProcess(Thread):
     def __init__(self, cmd, desc):
         Thread.__init__(self)
@@ -473,7 +391,7 @@ class BFS(object):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
-        self.filename = filename
+        self.filename = str(SLOW_TMP / filename)
         self.store_as_hex = store_as_hex
         self.starting_cubes = []
         self.use_cost_only = use_cost_only
@@ -665,9 +583,7 @@ class BFS(object):
         Prep work needed before we start our BFS
         """
         # We will write the workq to a file in a local tmp directory
-        tmp_dirname = "tmp"
-        create_dir(tmp_dirname)
-        self.workq_filename = os.path.join(tmp_dirname, "%s.workq.txt" % self)
+        self.workq_filename = os.path.join(FAST_TMP, "%s.workq.txt" % self)
         self.workq_filename_next = self.workq_filename + ".next"
         self.workq_size = 0
         self.depth = 1
@@ -707,6 +623,52 @@ class BFS(object):
         self.starting_cubes = []
         gc.collect()
 
+    def _sort_merge_state_files(self, files_to_sort, sorted_results_filename):
+        log.info(f"sort {len(files_to_sort)} files created by builder-crunch-workq processes begin")
+        start_time = dt.datetime.now()
+
+        # create a file with the list of the filenames to sort
+        files_to_sort_filename = f"{FAST_TMP}/files_to_sort.txt"
+        with open(files_to_sort_filename, "w") as fh:
+            fh.write("\0".join(files_to_sort))
+
+        # find state_width by reading the first line of the first file
+        first_file = files_to_sort[0]
+
+        with open(first_file, "r") as fh:
+            line = next(fh)
+
+            if line.count(":") == 1:
+                state = line.split(":")[0]
+            elif line.count(":") == 2:
+                (state1, state2, steps) = line.split(":")
+                state = ":".join([state1, state2])
+            else:
+                raise Exception(f"Found {line.count(':')} :s in line:\n{line}")
+
+            state_width = len(state)
+
+        cmd = (
+            "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
+            % (self.cores, state_width, FAST_TMP, sorted_results_filename, files_to_sort_filename)
+        )
+        # log.info(cmd)
+
+        subprocess.check_output(cmd, shell=True)
+        self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
+        os.unlink(files_to_sort_filename)
+        # linecount = int(subprocess.check_output("wc -l %s" % sorted_results_filename, shell=True).decode("ascii").strip().split()[0])
+        # log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
+        log.info(f"sort {len(files_to_sort)} files created by builder-crunch-workq processes end")
+
+    def rm_files(self, filenames: List[str]):
+        log.info("rm builder-crunch-workq output files begin")
+        start_time = dt.datetime.now()
+        for filename in filenames:
+            os.unlink(filename)
+        self.time_in_file_delete += (dt.datetime.now() - start_time).total_seconds()
+        log.info("rm builder-crunch-workq output files end")
+
     def _search_launch_builder_crunch_workq_per_core(self):
         """
         Launch one builder-crunch-workq process per core. Wait for all of them
@@ -715,10 +677,8 @@ class BFS(object):
         start_time = dt.datetime.now()
 
         MILLION = 1000000
-        # BILLION = 1000 * MILLION
-        BATCH_SIZE = MILLION
-        # dwalton
-        BATCH_SIZE = 100000
+        BILLION = 1000 * MILLION
+        BATCH_SIZE = BILLION
         batch_count = int(self.workq_size / BATCH_SIZE) + 1
         workq_size = self.workq_size
 
@@ -804,55 +764,12 @@ class BFS(object):
             log.info(f"builder-crunch-workq end batch {batch_index+1}/{batch_count}")
 
             # dwalton
-            if batch_index < batch_count - 1:
-                sorted_results_filename = "%s.10-results-batch-%d" % (self.workq_filename, batch_index)
-                self._sort_tmp_core_files(sorted_results_filename)
-                shutil.move(sorted_results_filename, f"{self.workq_filename}.core")
+            sorted_results_filename = f"{self.filename}-batch-{batch_index}"
+            core_files = sorted(glob.glob(f"{FAST_TMP}/*core*"))
+            self._sort_merge_state_files(core_files, sorted_results_filename)
+            self.rm_files(core_files)
 
         self.time_in_crunching_workq += (dt.datetime.now() - start_time).total_seconds()
-
-    def _sort_tmp_core_files(self, sorted_results_filename):
-        assert "core" not in sorted_results_filename, f"{sorted_results_filename} contains 'core'"
-
-        # find state_width
-        core_files = sorted(glob.glob("tmp/*core*"))
-        first_core_file = core_files[0]
-
-        with open(first_core_file, "r") as fh:
-            line = next(fh)
-
-            if line.count(":") == 1:
-                state = line.split(":")[0]
-            elif line.count(":") == 2:
-                (state1, state2, steps) = line.split(":")
-                state = ":".join([state1, state2])
-            else:
-                raise Exception(f"Found {line.count(':')} :s in line:\n{line}")
-
-            state_width = len(state)
-
-        with open("tmp/files_to_sort.txt", "w") as fh:
-            fh.write("\0".join(core_files))
-
-        log.info("sort all of the files created by builder-crunch-workq processes begin")
-        start_time = dt.datetime.now()
-        cmd = (
-            "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=./tmp/ --output %s --files0-from='tmp/files_to_sort.txt'"
-            % (self.cores, state_width, sorted_results_filename)
-        )
-        # log.info(cmd)
-
-        subprocess.check_output(cmd, shell=True)
-        self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
-        # linecount = int(subprocess.check_output("wc -l %s" % sorted_results_filename, shell=True).decode("ascii").strip().split()[0])
-        # log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
-        log.info("sort all of the files created by builder-crunch-workq processes end")
-
-        log.info("rm builder-crunch-workq output files begin")
-        start_time = dt.datetime.now()
-        subprocess.check_output("rm %s.core* " % self.workq_filename, shell=True)
-        self.time_in_file_delete += (dt.datetime.now() - start_time).total_seconds()
-        log.info("rm builder-crunch-workq output files end")
 
     def _search_process_builder_crunch_workq_results(self, max_depth):
         """
@@ -869,7 +786,13 @@ class BFS(object):
         if os.path.exists(self.workq_filename):
             os.remove(self.workq_filename)
 
-        self._sort_tmp_core_files(sorted_results_filename)
+        batch_files = sorted(glob.glob(f"{self.filename}-batch*"))
+
+        if len(batch_files) == 1:
+            shutil.move(batch_files[0], sorted_results_filename)
+        else:
+            self._sort_merge_state_files(batch_files, sorted_results_filename)
+            self.rm_files(batch_files)
 
         # Use "builder-find-new-states.py" to find the entries in the .results file that are not
         # in our current lookup-table.txt file. Save these in a .new_states file.
@@ -1015,8 +938,8 @@ class BFS(object):
             log.info("sort --merge our current lookup-table.txt file with the .20-new-states file begin")
             start_time = dt.datetime.now()
             subprocess.check_output(
-                "LC_ALL=C nice sort --parallel=%d --merge --temporary-directory=./tmp/ --output %s.30-final %s %s.20-new-states"
-                % (self.cores, self.workq_filename, self.filename, self.workq_filename),
+                "LC_ALL=C nice sort --parallel=%d --merge --temporary-directory=%s --output %s.30-final %s %s.20-new-states"
+                % (self.cores, FAST_TMP, self.workq_filename, self.filename, self.workq_filename),
                 shell=True,
             )
             self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
@@ -1279,8 +1202,8 @@ class BFS(object):
             except subprocess.CalledProcessError:
                 log.info("%s: sort the file" % self)
                 subprocess.check_output(
-                    "LC_ALL=C nice sort --parallel=%d --temporary-directory=./tmp/ --output=%s %s"
-                    % (self.cores, filename, filename),
+                    "LC_ALL=C nice sort --parallel=%d --temporary-directory=%s --output=%s %s"
+                    % (self.cores, FAST_TMP, filename, filename),
                     shell=True,
                 )
 

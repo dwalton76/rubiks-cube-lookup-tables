@@ -5,6 +5,10 @@ import argparse
 import datetime as dt
 import importlib
 import logging
+import shutil
+
+# rubiks cube libraries
+from rubikscubelookuptables.buildercore import FAST_TMP, SLOW_TMP
 
 
 def get_class(kls):
@@ -47,8 +51,16 @@ parser.add_argument("--depth", type=int, default=99, help="The number of moves d
 parser.add_argument("--cores", type=int, default=4, help="The number of cores to use")
 parser.add_argument("--code-gen", default=False, action="store_true", help="Print python classes for IDA")
 args = parser.parse_args()
-
 builder = get_class(args.type)()
+
+if SLOW_TMP.exists():
+    shutil.rmtree(SLOW_TMP)
+
+if FAST_TMP.exists():
+    shutil.rmtree(FAST_TMP)
+
+SLOW_TMP.mkdir(parents=True, exist_ok=False)
+FAST_TMP.mkdir(parents=True, exist_ok=False)
 
 log.info("")
 log.info("")
