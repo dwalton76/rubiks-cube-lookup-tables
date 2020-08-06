@@ -649,7 +649,7 @@ class BFS(object):
             state_width = len(state)
 
         cmd = (
-            "LC_ALL=C nice sort --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
+            "LC_ALL=C nice sort --batch-size=1000 --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
             % (self.cores, state_width, FAST_TMP, sorted_results_filename, files_to_sort_filename)
         )
         # log.info(cmd)
@@ -763,7 +763,6 @@ class BFS(object):
 
             log.info(f"builder-crunch-workq end batch {batch_index+1}/{batch_count}")
 
-            # dwalton
             sorted_results_filename = f"{self.filename}-batch-{batch_index}"
             core_files = sorted(glob.glob(f"{FAST_TMP}/*core*"))
             self._sort_merge_state_files(core_files, sorted_results_filename)
@@ -932,7 +931,7 @@ class BFS(object):
         self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
         log.info("building next workq file end")
 
-        # Now merge the lookup-table.txt we build in the previous levels with the .new file
+        # Now merge the lookup-table.txt we built in the previous levels with the .new file
         # Both are sorted so we can use the --merge option
         if os.path.exists(self.filename):
             log.info("sort --merge our current lookup-table.txt file with the .20-new-states file begin")
@@ -949,12 +948,16 @@ class BFS(object):
                 "cp %s.20-new-states %s.30-final" % (self.workq_filename, self.workq_filename), shell=True
             )
 
-        shutil.move("%s.30-final" % self.workq_filename, self.filename)
+        log.info("move files begin")
+        start_time = dt.datetime.now()
         os.remove("%s.10-results" % self.workq_filename)
         os.remove("%s.20-new-states" % self.workq_filename)
+        shutil.move("%s.30-final" % self.workq_filename, self.filename)
 
         # mv the next workq to be the current workq
         shutil.move(self.workq_filename_next, self.workq_filename)
+        self.time_in_file_delete += (dt.datetime.now() - start_time).total_seconds()
+        log.info("move files end")
 
         # We have finished this depth of the search, update our stats and print them
         self.stats[self.depth] = new_states_count
