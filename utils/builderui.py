@@ -60,7 +60,9 @@ if FAST_TMP.exists():
     shutil.rmtree(FAST_TMP)
 
 SLOW_TMP.mkdir(parents=True, exist_ok=False)
-FAST_TMP.mkdir(parents=True, exist_ok=False)
+
+if not FAST_TMP.exists():
+    FAST_TMP.mkdir(parents=True, exist_ok=False)
 
 log.info("")
 log.info("")
