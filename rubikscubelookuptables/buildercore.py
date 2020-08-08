@@ -57,8 +57,8 @@ supported_sizes = ("2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7")
 
 WRITE_BATCH_SIZE = 1000000
 LOG_BATCH_SIZE = 1000000
-SLOW_TMP = Path("/storage/dwalton76/tmp/")
-FAST_TMP = Path("/bigssd/lz4/tmp/")
+SLOW_TMP = Path("./tmp/")
+FAST_TMP = Path("./tmp/")
 
 
 def get_line_number_splits(lines: int, cores: int) -> Tuple:
