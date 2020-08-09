@@ -57,7 +57,7 @@ supported_sizes = ("2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7")
 
 WRITE_BATCH_SIZE = 1000000
 LOG_BATCH_SIZE = 1000000
-SLOW_TMP = Path("./tmp/")
+SLOW_TMP = Path("lookup-tables")
 FAST_TMP = Path("./tmp/")
 
 
@@ -391,7 +391,12 @@ class BFS(object):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
-        self.filename = str(SLOW_TMP / filename)
+
+        if SLOW_TMP:
+            self.filename = str(SLOW_TMP / filename)
+        else:
+            self.filename = filename
+
         self.store_as_hex = store_as_hex
         self.starting_cubes = []
         self.use_cost_only = use_cost_only

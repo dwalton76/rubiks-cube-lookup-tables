@@ -18,18 +18,18 @@ def get_class(kls):
     m = None
     print(kls)
 
-    if "222" in kls:
-        m = importlib.import_module("rubikscubelookuptables.builder222")
-    elif "333" in kls:
-        m = importlib.import_module("rubikscubelookuptables.builder333")
-    elif "444" in kls:
-        m = importlib.import_module("rubikscubelookuptables.builder444")
-    elif "555" in kls:
-        m = importlib.import_module("rubikscubelookuptables.builder555")
+    if "777" in kls:
+        m = importlib.import_module("rubikscubelookuptables.builder777")
     elif "666" in kls:
         m = importlib.import_module("rubikscubelookuptables.builder666")
-    elif "777" in kls:
-        m = importlib.import_module("rubikscubelookuptables.builder777")
+    elif "555" in kls:
+        m = importlib.import_module("rubikscubelookuptables.builder555")
+    elif "444" in kls:
+        m = importlib.import_module("rubikscubelookuptables.builder444")
+    elif "333" in kls:
+        m = importlib.import_module("rubikscubelookuptables.builder333")
+    elif "222" in kls:
+        m = importlib.import_module("rubikscubelookuptables.builder222")
     else:
         raise Exception("we should not be here")
 
@@ -53,16 +53,17 @@ parser.add_argument("--code-gen", default=False, action="store_true", help="Prin
 args = parser.parse_args()
 builder = get_class(args.type)()
 
-if SLOW_TMP.exists():
-    shutil.rmtree(SLOW_TMP)
+if SLOW_TMP == FAST_TMP:
+    if not FAST_TMP.exists():
+        FAST_TMP.mkdir(parents=True, exist_ok=False)
+else:
+    if FAST_TMP:
+        if FAST_TMP.exists():
+            shutil.rmtree(FAST_TMP)
+        FAST_TMP.mkdir(parents=True, exist_ok=False)
 
-if FAST_TMP.exists():
-    shutil.rmtree(FAST_TMP)
-
-SLOW_TMP.mkdir(parents=True, exist_ok=False)
-
-if not FAST_TMP.exists():
-    FAST_TMP.mkdir(parents=True, exist_ok=False)
+    if not SLOW_TMP.exists():
+        SLOW_TMP.mkdir(parents=True, exist_ok=False)
 
 log.info("")
 log.info("")
