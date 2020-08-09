@@ -66,3 +66,32 @@ wheel:
 	./utils/builderui.py Build444Reduce333 --depth 6
 
 444: 444-phase1 444-phase2 444-phase3
+
+555-phase1:
+	./utils/builderui.py Build555LRCenterStageTCenter
+	./utils/build-ida-graph.py Build555LRCenterStageTCenter
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.json
+	./utils/builderui.py Build555LRCenterStageXCenter
+	./utils/build-ida-graph.py Build555LRCenterStageXCenter
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
+
+555-phase2:
+	./utils/builderui.py Build555FBTCenterStage
+	./utils/build-ida-graph.py Build555FBTCenterStage
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step21-FB-t-centers-stage.json
+	./utils/builderui.py Build555FBXCenterStage
+	./utils/build-ida-graph.py Build555FBXCenterStage
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step22-FB-x-centers-stage.json
+
+555-phase3:
+	./utils/builderui.py Build555LRCenterStageEOInnerOrbit
+	./utils/build-ida-graph.py Build555LRCenterStageEOInnerOrbit
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json
+	./utils/builderui.py Build555EdgeOrientOuterOrbit
+	./utils/build-ida-graph.py Build555EdgeOrientOuterOrbit
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
+
+# Build555Phase5Centers need to update this one in S3 bucket
+555-phase5:
+	./utils/builderui.py Build555Phase5Centers
+	./utils/build-ida-graph.py Build555Phase5Centers
