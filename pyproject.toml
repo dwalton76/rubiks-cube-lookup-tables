@@ -18,7 +18,9 @@ exclude = '''
     | build
     | dist
     | venv
+    | lookup-tables
   )/
+  | rubikscubelookuptables/builder555ss.py
 )
 '''
 

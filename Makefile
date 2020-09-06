@@ -20,7 +20,8 @@ gdb:
 	gcc -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm --ggdb
 
 format:
-	isort rubikscubelookuptables utils
+	@./venv/bin/isort rubikscubelookuptables/
+	@./venv/bin/isort utils/
 	@./venv/bin/python3 -m black --config=pyproject.toml .
 	@./venv/bin/python3 -m flake8 --config=.flake8
 
@@ -67,7 +68,7 @@ wheel:
 
 444: 444-phase1 444-phase2 444-phase3
 
-555-phase1:
+555-phase1: clean
 	./utils/builderui.py Build555LRCenterStageTCenter
 	./utils/build-ida-graph.py Build555LRCenterStageTCenter
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.json
@@ -75,7 +76,7 @@ wheel:
 	./utils/build-ida-graph.py Build555LRCenterStageXCenter
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
 
-555-phase2:
+555-phase2: clean
 	./utils/builderui.py Build555FBTCenterStage
 	./utils/build-ida-graph.py Build555FBTCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step21-FB-t-centers-stage.json
@@ -83,15 +84,29 @@ wheel:
 	./utils/build-ida-graph.py Build555FBXCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step22-FB-x-centers-stage.json
 
-555-phase3:
+# TODO both of these are large enough that the json is split...this needs a join the json
+# files steps before calling json-to-binary.py
+# dwalton here now
+555-phase3: clean
 	./utils/builderui.py Build555LRCenterStageEOInnerOrbit
 	./utils/build-ida-graph.py Build555LRCenterStageEOInnerOrbit
+	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-1000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-2000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-3000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-4000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-5000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-6000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-7000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-8000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-9000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json-10000000 lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json
 	./utils/builderui.py Build555EdgeOrientOuterOrbit
 	./utils/build-ida-graph.py Build555EdgeOrientOuterOrbit
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
 
-# Build555Phase5Centers need to update this one in S3 bucket
-555-phase5:
+555-phase4: clean
+	./utils/builderui.py Build555Phase4 --depth 3
+
+# There are other files to build for phase 5
+555-phase5: clean
 	./utils/builderui.py Build555Phase5Centers
 	./utils/build-ida-graph.py Build555Phase5Centers
+	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-1000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-2000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
+	./utils/builderui.py Build555Phase5FBCenters
+	./utils/build-ida-graph.py Build555Phase5FBCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step56-phase5-fb-centers.json
+
+555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6

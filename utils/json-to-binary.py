@@ -73,11 +73,11 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
         print(f"ERROR: {filename} does not exist")
         sys.exit(1)
 
-    # load the json contents
+    log.info("load the json contents")
     with open(filename, "r") as fh:
         data = json.load(fh)
 
-    # build a dictionary that translates a state to its index among all states
+    log.info("build a dictionary that translates a state to its index among all states")
     states = sorted(data.keys())
     state_to_index = {}
 
@@ -86,6 +86,7 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
 
     binary_filename = filename.replace(".json", ".bin")
 
+    log.info(f"write {binary_filename}")
     with open(binary_filename, "wb") as fh:
         for (i, state) in enumerate(states):
             node = data[state]

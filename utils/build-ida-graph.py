@@ -20,6 +20,7 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555LRTCenterStage,
     LookupTable555LRXCenterStage,
     LookupTable555Phase5Centers,
+    LookupTable555Phase5FBCenters,
     RubiksCube555,
     solved_555,
 )
@@ -82,6 +83,10 @@ elif lt_class.startswith("Build555"):
     # phase 5
     elif lt_class == "Build555Phase5Centers":
         cube.lt = LookupTable555Phase5Centers(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build555Phase5FBCenters":
+        cube.lt = LookupTable555Phase5FBCenters(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
     else:
