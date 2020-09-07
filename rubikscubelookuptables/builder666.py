@@ -6,7 +6,33 @@ from rubikscubelookuptables.buildercore import BFS
 
 log = logging.getLogger(__name__)
 
+"""
+phase 1
+    stage the inner-x centers via 444 solver
 
+phase 2
+    pair the LR oblique edges
+    This happens via C via a heuristic formula based on unpaired LR oblique count so there is no table to build
+
+phase 3
+    stage LR centers via 555
+
+phase 4
+    pair the UD oblique edges and outer x-centers to finish staging centers
+
+phase 5
+    solve the UD inner x-centers and pair the UD oblique edges
+
+phase 6
+    solve the LR inner x-centers and pair the LR oblique edges
+    solve the FB inner x-centers and pair the FB oblique edges
+"""
+
+
+# =======
+# phase 4
+# =======
+# - pair the UD oblique edges and outer x-centers to finish staging centers
 class Build666UDLeftObliqueStage(BFS):
     def __init__(self):
         BFS.__init__(
@@ -299,79 +325,10 @@ class Build666UDOuterXCenterStage(BFS):
         )
 
 
-class Build666UDCentersStage(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "6x6x6-UD-centers-stage",
-            (
-                "3Uw",
-                "3Uw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Rw",
-                "3Rw'",
-                "3Bw",
-                "3Bw'",
-                "3Dw",
-                "3Dw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                # we are not manipulating anything on sides L or R
-                "L",
-                "L'",
-                "L2",
-                "R",
-                "R'",
-                "R2",
-                # restricting these has minimal impact on move count
-                # but having few moves to explore means a faster IDA
-                "U2",
-                "D2",
-                "F2",
-                "B2",
-            ),
-            "6x6x6",
-            "lookup-table-6x6x6-step10-UD-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . U U U U .
-              . U . . U .
-              . U . . U .
-              . U U U U .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . x x x x .  . . . . . .  . x x x x .
- . . . . . .  . x . . x .  . . . . . .  . x . . x .
- . . . . . .  . x . . x .  . . . . . .  . x . . x .
- . . . . . .  . x x x x .  . . . . . .  . x x x x .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . U U U U .
-              . U . . U .
-              . U . . U .
-              . U U U U .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-        )
-
-
+# =======
+# phase 5
+# =======
+# - solve the UD inner x-centers and pair the UD oblique edges
 class StartingStates666Step50(BFS):
     def __init__(self):
         BFS.__init__(
@@ -762,303 +719,11 @@ class Build666Step50(BFS):
         )
 
 
-class StartingStates666Step60(BFS):
-    """
-    There should be 4900 of them
-    """
-
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "6x6x6-step60",
-            (
-                "3Uw",
-                "3Uw'",
-                "3Uw2",
-                "3Lw",
-                "3Lw'",
-                "3Lw2",
-                "3Fw",
-                "3Fw'",
-                "3Fw2",
-                "3Rw",
-                "3Rw'",
-                "3Rw2",
-                "3Bw",
-                "3Bw'",
-                "3Bw2",
-                "3Dw",
-                "3Dw'",
-                "3Dw2",
-                "Uw",
-                "Uw'",
-                "Lw",
-                "Lw'",
-                "Fw",
-                "Fw'",
-                "Rw",
-                "Rw'",
-                "Bw",
-                "Bw'",
-                "Dw",
-                "Dw'",
-            ),
-            "6x6x6",
-            "starting-states-6x6x6-step60.txt",
-            True,  # store_as_hex
-            # starting cubes
-            (),
-        )
-
-
-class Build666LFRBInnerXCenterAndObliqueEdges(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "6x6x6-LFRB-solve-inner-x-center-and-oblique-edges",
-            (  # do not mess up staged centers
-                "3Rw",
-                "3Rw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Bw",
-                "3Bw'",
-                "3Uw",
-                "3Uw'",
-                "3Dw",
-                "3Dw'",
-                # do not mess up staged centers
-                "Rw",
-                "Rw'",
-                "Lw",
-                "Lw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                # do not mess up solved UD
-                "3Rw2",
-                "3Lw2",
-                "3Fw2",
-                "3Bw2",
-                # can skip these for 6x6x6 cubes
-                "3Lw",
-                "3Lw'",
-                "3Lw2",
-                "3Dw",
-                "3Dw'",
-                "3Dw2",
-                "3Bw",
-                "3Bw'",
-                "3Bw2",
-            ),
-            "6x6x6",
-            "lookup-table-6x6x6-step60-LFRB-solve-inner-x-center-and-oblique-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . L L . .  . . F F . .  . . R R . .  . . B B . .
- . L L L L .  . F F F F .  . R R R R .  . B B B B .
- . L L L L .  . F F F F .  . R R R R .  . B B B B .
- . . L L . .  . . F F . .  . . R R . .  . . B B . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . R R . .  . . F F . .  . . L L . .  . . B B . .
- . R L L R .  . F F F F .  . L R R L .  . B B B B .
- . R L L R .  . F F F F .  . L R R L .  . B B B B .
- . . R R . .  . . F F . .  . . L L . .  . . B B . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . L L . .  . . B B . .  . . R R . .  . . F F . .
- . L L L L .  . B F F B .  . R R R R .  . F B B F .
- . L L L L .  . B F F B .  . R R R R .  . F B B F .
- . . L L . .  . . B B . .  . . R R . .  . . F F . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . R R . .  . . B B . .  . . L L . .  . . F F . .
- . R L L R .  . B F F B .  . L R R L .  . F B B F .
- . R L L R .  . B F F B .  . L R R L .  . F B B F .
- . . R R . .  . . B B . .  . . L L . .  . . F F . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . L L . .  . . F F . .  . . R R . .  . . B B . .
- . L L L L .  . F F F F .  . R R R R .  . B B B B .
- . L L L L .  . F F F F .  . R R R R .  . B B B B .
- . . L L . .  . . F F . .  . . R R . .  . . B B . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . R R . .  . . F F . .  . . L L . .  . . B B . .
- . R L L R .  . F F F F .  . L R R L .  . B B B B .
- . R L L R .  . F F F F .  . L R R L .  . B B B B .
- . . R R . .  . . F F . .  . . L L . .  . . B B . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . L L . .  . . B B . .  . . R R . .  . . F F . .
- . L L L L .  . B F F B .  . R R R R .  . F B B F .
- . L L L L .  . B F F B .  . R R R R .  . F B B F .
- . . L L . .  . . B B . .  . . R R . .  . . F F . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . R R . .  . . B B . .  . . L L . .  . . F F . .
- . R L L R .  . B F F B .  . L R R L .  . F B B F .
- . R L L R .  . B F F B .  . L R R L .  . F B B F .
- . . R R . .  . . B B . .  . . L L . .  . . F F . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-        )
-
-
+# =======
+# phase 6
+# =======
+# - solve the LR inner x-centers and pair the LR oblique edges
+# - solve the FB inner x-centers and pair the FB oblique edges
 class Build666LRInnerXCenterAndObliqueEdges(BFS):
     def __init__(self):
         BFS.__init__(
@@ -1308,110 +973,6 @@ class Build666FBInnerXCenterAndObliqueEdges(BFS):
               . . . . . .
               . . . . . .
               . . . . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-        )
-
-
-class Build666UDInnerXCenterAndObliqueEdges(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "6x6x6-UD-solve-inner-x-center-and-oblique-edges",
-            (  # do not mess up staged centers
-                "3Rw",
-                "3Rw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Bw",
-                "3Bw'",
-                "3Uw",
-                "3Uw'",
-                "3Dw",
-                "3Dw'",
-                # do not mess up staged centers
-                "Rw",
-                "Rw'",
-                "Lw",
-                "Lw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                # do not mess up solved UD
-                "3Rw2",
-                "3Lw2",
-                "3Fw2",
-                "3Bw2",
-                # can skip these for 6x6x6 cubes
-                "3Lw",
-                "3Lw'",
-                "3Lw2",
-                "3Dw",
-                "3Dw'",
-                "3Dw2",
-                "3Bw",
-                "3Bw'",
-                "3Bw2",
-            ),
-            "6x6x6",
-            "lookup-table-6x6x6-step63-UD-solve-inner-x-center-and-oblique-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . D D . .
-              . D . . D .
-              . D . . D .
-              . . D D . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . U U . .
-              . U . . U .
-              . U . . U .
-              . . U U . .
               . . . . . .""",
                     "ascii",
                 ),

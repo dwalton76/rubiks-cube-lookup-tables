@@ -108,3 +108,16 @@ wheel:
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step56-phase5-fb-centers.json
 
 555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6
+
+666-phase4:
+	./utils/builderui.py Build666UDLeftObliqueStage
+	./utils/builderui.py Build666UDRightObliqueStage
+	./utils/builderui.py Build666UDObliqueStage
+	./utils/builderui.py Build666UDOuterXCenterStage
+
+666-phase5:
+	./utils/builderui.py Build666Step50
+
+666-phase6:
+	./utils/builderui.py Build666LRInnerXCenterAndObliqueEdges
+	./utils/builderui.py Build666FBInnerXCenterAndObliqueEdges
