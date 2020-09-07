@@ -6,7 +6,41 @@ from rubikscubelookuptables.buildercore import BFS
 
 log = logging.getLogger(__name__)
 
+"""
+phase 1
+    use 555 solver to stage the LR inner centers
 
+phase 2
+    pair LR oblique edges
+    uses heuristic formula so no table to build
+
+phase 3
+    use 5x5x5 solver to stage the LR inner centers
+
+phase 4
+    use 5x5x5 solver to stage the UD inner centers
+
+phase 5
+    pair the oblique UD edges
+    uses heuristic formula so no table to build
+
+phase 6
+    use 5x5x5 to stage the UD centers
+
+phase 7
+    LR centers to vertical bars
+
+phase 8
+    UD centers to vertical bars
+
+phase 9
+    centers daisy solve
+"""
+
+
+# =====================================
+# phase 7 - LR centers to vertical bars
+# =====================================
 class StartingStates777Step41(BFS):
     def __init__(self):
         BFS.__init__(
@@ -1274,6 +1308,9 @@ class Build777Step44(BFS):
         )
 
 
+# =====================================
+# phase 8 - UD centers to vertical bars
+# =====================================
 class StartingStates777Step51(BFS):
     def __init__(self):
         BFS.__init__(
@@ -2662,6 +2699,9 @@ class Build777Step55(BFS):
         )
 
 
+# =============================
+# phase 9 - centers daisy solve
+# =============================
 class Build777Step61(BFS):
     def __init__(self):
         BFS.__init__(
@@ -3094,6 +3134,9 @@ class Build777Step66(BFS):
         )
 
 
+# =================================================
+# phase solve t-centers (for cubes larger than 777)
+# =================================================
 class Build777Step71(BFS):
     def __init__(self):
         BFS.__init__(

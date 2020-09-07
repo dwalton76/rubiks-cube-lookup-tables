@@ -121,3 +121,32 @@ wheel:
 666-phase6:
 	./utils/builderui.py Build666LRInnerXCenterAndObliqueEdges
 	./utils/builderui.py Build666FBInnerXCenterAndObliqueEdges
+
+666: 666-phase4 666-phase5 666-phase6
+
+777-phase7:
+	./utils/builderui.py Build777Step41
+	./utils/builderui.py Build777Step42
+	./utils/builderui.py Build777Step43
+	./utils/builderui.py Build777Step44
+
+777-phase8:
+	./utils/builderui.py Build777Step51
+	./utils/builderui.py Build777Step52
+	./utils/builderui.py Build777Step53
+	./utils/builderui.py Build777Step54
+	./utils/builderui.py Build777Step55
+
+777-phase9:
+	./utils/builderui.py Build777Step61
+	./utils/builderui.py Build777Step62
+	./utils/builderui.py Build777Step65
+	./utils/builderui.py Build777Step66
+
+777-phase-solve-t-centers:
+	./utils/builderui.py Build777Step71
+	./utils/builderui.py Build777Step72
+	./utils/builderui.py Build777Step75
+	./utils/builderui.py Build777Step76
+
+777: 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers
