@@ -84,9 +84,6 @@ wheel:
 	./utils/build-ida-graph.py Build555FBXCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step22-FB-x-centers-stage.json
 
-# TODO both of these are large enough that the json is split...this needs a join the json
-# files steps before calling json-to-binary.py
-# dwalton here now
 555-phase3: clean
 	./utils/builderui.py Build555LRCenterStageEOInnerOrbit
 	./utils/build-ida-graph.py Build555LRCenterStageEOInnerOrbit
@@ -94,6 +91,7 @@ wheel:
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage-EO-inner-orbit.json
 	./utils/builderui.py Build555EdgeOrientOuterOrbit
 	./utils/build-ida-graph.py Build555EdgeOrientOuterOrbit
+	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json-1000000 lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json-2000000 lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
 
 555-phase4: clean
