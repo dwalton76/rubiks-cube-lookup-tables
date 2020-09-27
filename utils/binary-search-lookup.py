@@ -1,69 +1,12 @@
 #!/usr/bin/env python3
 
 # standard libraries
+import datetime as dt
 import logging
 import os
 import sys
 
 seek_count = 0
-
-
-def guess_first_and_last(linecount, state_to_find):
-    unique_chars = sorted(set(state_to_find))
-    unique_chars_count = len(unique_chars)
-    range_per_char = 1 / unique_chars_count
-    first = 0
-    last = linecount
-    log.info(f"init {first:,} -> {last:,}, unique_chars {unique_chars}, range_per_char {range_per_char}")
-
-    for index in range(8):
-        char = state_to_find[index]
-        delta = last - first
-
-        for (unique_char_index, unique_char) in enumerate(unique_chars):
-            if char == unique_char:
-                first += int(delta * unique_char_index * range_per_char)
-                last -= int(delta * (unique_chars_count - 1 - unique_char_index) * range_per_char)
-                log.info(
-                    f"{char} is unique_char_index {unique_char_index}, {first:,} -> {last:,}, delta {last - first}"
-                )
-                break
-        else:
-            raise Exception(f"should not be here {char}")
-
-    return (first, last)
-
-
-def binary_search_memory(data, width, state_width, linecount, state_to_find):
-    # global seek_count
-    first = 0
-    last = linecount - 1
-    b_state_to_find = bytearray(state_to_find, encoding="utf-8")
-
-    while first <= last:
-        midpoint = int((first + last) / 2)
-        # fh.seek(midpoint * width)
-
-        # Only read the 'state' part of the line (for speed)
-        # b_state = fh.read(state_width)
-        line_start = midpoint * width
-        b_state = data[line_start : line_start + state_width]
-
-        if b_state_to_find < b_state:
-            last = midpoint - 1
-
-        # If this is the line we are looking for, then read the entire line
-        elif b_state_to_find == b_state:
-            # fh.seek(midpoint * width)
-            # line = fh.read(width)
-            line = data[line_start : line_start + width]
-            (_, value) = line.decode("utf-8").rstrip().split(":")
-            return value, midpoint
-
-        else:
-            first = midpoint + 1
-
-    return None, None
 
 
 def binary_search(fh, width, state_width, linecount, state_to_find):
@@ -72,11 +15,7 @@ def binary_search(fh, width, state_width, linecount, state_to_find):
     last = linecount - 1
     b_state_to_find = bytearray(state_to_find, encoding="utf-8")
 
-    # first, last = guess_first_and_last(linecount, state_to_find)
     log.info(f"line width {width}, state_width {state_width}")
-
-    MEGABYTE = 1024 * 1024
-    delta_trigger = int(MEGABYTE / width)
 
     while first <= last:
         midpoint = int((first + last) / 2)
@@ -98,18 +37,6 @@ def binary_search(fh, width, state_width, linecount, state_to_find):
 
         else:
             first = midpoint + 1
-
-        delta = last - first
-
-        # dwalton stopped here
-        if delta <= delta_trigger:
-            # at this point we can hold all of the remaining lines in memory
-            # read them into memory and binary search that instead
-            fh.seek(first * width)
-            # dwalton double check the math
-            remaining_lines = fh.read(delta * width)
-            (value, midpoint) = binary_search_memory(remaining_lines, width, state_width, delta, state_to_find)
-            return (value, midpoint + first)
 
     return None, None
 
@@ -314,7 +241,10 @@ if __name__ == "__main__":
             log.info("Took %d seeks" % seek_count)
 
         else:
+            start_time = dt.datetime.now()
             (value, line_number) = binary_search(fh, width, state_width, linecount, key)
-            log.info(f"key {key} value is {value} on line {line_number:,} (took {seek_count} seeks)")
+            log.info(
+                f"key {key} value is {value} on line {line_number:,} {seek_count} seeks, took {dt.datetime.now() - start_time} "
+            )
 
         log.info("search end")

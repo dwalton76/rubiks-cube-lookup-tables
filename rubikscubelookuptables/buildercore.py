@@ -57,6 +57,9 @@ supported_sizes = ("2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7")
 
 WRITE_BATCH_SIZE = 1000000
 LOG_BATCH_SIZE = 1000000
+
+# SLOW_TMP = Path("/storage/dwalton76/tmp/")
+# FAST_TMP = Path("/bigssd/lz4/tmp/")
 SLOW_TMP = Path("lookup-tables")
 FAST_TMP = Path("./tmp/")
 
@@ -1415,8 +1418,6 @@ class %s(LookupTableIDA):
         print("        return (lt_state, cost_to_goal)\n\n")
 
     def code_gen(self):
-        assert self.filename.startswith("lookup-table-"), "--code-gen only applies to BuildXYZ classes"
-
         if "0.txt" in self.filename:
             first_prune_table_filename = self.filename.replace("0.txt", "1.txt").replace(
                 "lookup-table", "starting-states-lookup-table"
