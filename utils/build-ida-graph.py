@@ -64,14 +64,6 @@ elif lt_class.startswith("Build555"):
         cube.lt = LookupTable555LRXCenterStage(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
-    elif lt_class == "Build555UDCenterStageTCenter":
-        cube.lt = LookupTable555UDTCenterStage(cube, build_state_index=True)
-        cube.lt.build_ida_graph()
-
-    elif lt_class == "Build555UDCenterStageXCenter":
-        cube.lt = LookupTable555UDXCenterStage(cube, build_state_index=True)
-        cube.lt.build_ida_graph()
-
     # phase 2
     elif lt_class == "Build555FBTCenterStage":
         cube.lt = LookupTable555FBTCenterStage(cube, build_state_index=True)
