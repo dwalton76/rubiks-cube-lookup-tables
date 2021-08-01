@@ -174,6 +174,188 @@ class Build555LRCenterStageXCenter(BFS):
         )
 
 
+class Build555CenterStageOnePhase(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-center-stage",
+            (),
+            "5x5x5",
+            "lookup-table-5x5x5-step14-centers-stage.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . . . . .
+            . U U U .
+            . U . U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . F F F .  . L L L .  . F F F .
+ . L . L .  . F . F .  . L . L .  . F . F .
+ . L L L .  . F F F .  . L L L .  . F F F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U U U .
+            . U . U .
+            . U U U .
+            . . . . .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
+        )
+
+
+class Build555CenterStageTCenterOnly(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-t-center-stage",
+            (),
+            "5x5x5",
+            "lookup-table-5x5x5-step15-centers-stage-t-center-only.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . F . .  . . L . .  . . F . .
+ . L . L .  . F . F .  . L . L .  . F . F .
+ . . L . .  . . F . .  . . L . .  . . F . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
+        )
+
+
+class Build555CenterStageXCenterOnly(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-x-center-stage",
+            (),
+            "5x5x5",
+            "lookup-table-5x5x5-step16-centers-stage-x-center-only.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . F . F .  . L . L .  . F . F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . F . F .  . L . L .  . F . F .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+
+
+class Build555UDCenterStageTCenter(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-UD-t-center-stage",
+            (),
+            "5x5x5",
+            "lookup-table-5x5x5-step17-UD-centers-stage-t-center-only.txt",
+            True,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . x . .  . . x . .  . . x . .  . . x . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . x . .  . . x . .  . . x . .  . . x . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+
+
+class Build555UDCenterStageXCenter(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-UD-x-center-stage",
+            (),
+            "5x5x5",
+            "lookup-table-5x5x5-step18-UD-centers-stage-x-center-only.txt",
+            True,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . x . x .  . x . x .  . x . x .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U . U .
+            . . . . .
+            . U . U .
+            . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+
+
 # =======
 # phase 2
 # =======
