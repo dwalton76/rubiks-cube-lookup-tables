@@ -104,7 +104,7 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
                     next_state_index = state_to_index[next_state]
                     fh.write(struct.pack(">L", next_state_index))
 
-            if i % 1000 == 0:
+            if i % 10000 == 0:
                 log.info(i)
 
 

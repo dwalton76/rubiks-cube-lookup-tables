@@ -21,8 +21,8 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555LRXCenterStage,
     LookupTable555Phase5Centers,
     LookupTable555Phase5FBCenters,
-    LookupTable555UDTCenterStage,
-    LookupTable555UDXCenterStage,
+    LookupTable555UDCenterStageTCenter,
+    LookupTable555UDCenterStageXCenter,
     RubiksCube555,
     solved_555,
 )
@@ -65,11 +65,11 @@ elif lt_class.startswith("Build555"):
         cube.lt.build_ida_graph()
 
     elif lt_class == "Build555UDCenterStageTCenter":
-        cube.lt = LookupTable555UDTCenterStage(cube, build_state_index=True)
+        cube.lt = LookupTable555UDCenterStageTCenter(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
     elif lt_class == "Build555UDCenterStageXCenter":
-        cube.lt = LookupTable555UDXCenterStage(cube, build_state_index=True)
+        cube.lt = LookupTable555UDCenterStageXCenter(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
     # phase 2
