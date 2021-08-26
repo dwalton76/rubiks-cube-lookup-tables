@@ -67,6 +67,24 @@ phase 6
 # phase 1
 # =======
 class Build555LRCenterStage(BFS):
+    """
+    1 steps has 5 entries (0 percent, 0.00x previous step)
+    2 steps has 98 entries (0 percent, 19.60x previous step)
+    3 steps has 2,036 entries (0 percent, 20.78x previous step)
+    4 steps has 41,096 entries (0 percent, 20.18x previous step)
+    5 steps has 824,950 entries (4 percent, 20.07x previous step)
+    6 steps has 16,300,291 entries (94 percent, 19.76x previous step)
+
+    # extrapolate from here
+    7 steps has 309,053,517 entries (18.96x previous step)
+    8 steps has 5,612,411,868 entries (18.16x previous step)
+    9 steps has 97,431,470,028 entries (17.36x previous step)
+    10 steps has 437,547,487,952 entries (4.49x previous step)
+
+    Average: 9.79709452838934
+    Total  : 540,917,591,841
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -194,9 +212,9 @@ class Build555CenterStageOnePhase(BFS):
             . . . . .
 
  . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . L L L .  . F F F .
- . L . L .  . F . F .  . L . L .  . F . F .
- . L L L .  . F F F .  . L L L .  . F F F .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . L . L .  . x . x .  . L . L .  . x . x .
+ . L L L .  . x x x .  . L L L .  . x x x .
  . . . . .  . . . . .  . . . . .  . . . . .
 
             . . . . .
