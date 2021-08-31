@@ -230,6 +230,29 @@ class Build555CenterStageOnePhase(BFS):
 
 
 class Build555CenterStageTCenterOnly(BFS):
+    """
+    The total here should have been 9,465,511,770...somehow it missed 22 entries
+
+    /storage/dwalton76/lookup-table-5x5x5-step15-centers-stage-t-center-only.txt
+    ============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 123 entries (0 percent, 20.50x previous step)
+    3 steps has 2,166 entries (0 percent, 17.61x previous step)
+    4 steps has 35,280 entries (0 percent, 16.29x previous step)
+    5 steps has 586,600 entries (0 percent, 16.63x previous step)
+    6 steps has 9,252,143 entries (0 percent, 15.77x previous step)
+    7 steps has 130,941,778 entries (1 percent, 14.15x previous step)
+    8 steps has 1,297,964,554 entries (13 percent, 9.91x previous step)
+    9 steps has 5,192,860,806 entries (54 percent, 4.00x previous step)
+    10 steps has 2,775,063,476 entries (29 percent, 0.53x previous step)
+    11 steps has 58,804,680 entries (0 percent, 0.02x previous step)
+    12 steps has 135 entries (0 percent, 0.00x previous step)
+
+    Total: 9,465,511,748 entries
+    Average: 9.14 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -267,6 +290,26 @@ class Build555CenterStageTCenterOnly(BFS):
 
 
 class Build555CenterStageXCenterOnly(BFS):
+    """
+    /storage/dwalton76/lookup-table-5x5x5-step16-centers-stage-x-center-only.txt
+    ============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 135 entries (0 percent, 22.50x previous step)
+    3 steps has 2,286 entries (0 percent, 16.93x previous step)
+    4 steps has 36,728 entries (0 percent, 16.07x previous step)
+    5 steps has 562,932 entries (0 percent, 15.33x previous step)
+    6 steps has 8,047,054 entries (0 percent, 14.29x previous step)
+    7 steps has 105,823,666 entries (1 percent, 13.15x previous step)
+    8 steps has 1,147,351,438 entries (12 percent, 10.84x previous step)
+    9 steps has 5,653,730,364 entries (59 percent, 4.93x previous step)
+    10 steps has 2,535,422,638 entries (26 percent, 0.45x previous step)
+    11 steps has 14,534,522 entries (0 percent, 0.01x previous step)
+
+    Total: 9,465,511,770 entries
+    Average: 9.12 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,

@@ -21,7 +21,7 @@ def gods_number(size, MOVE_COUNT, COMBOS):
     print("{:02d}:  {}".format(1, "{:,}".format(prev_depth).rjust(PADDING)))
 
     for depth in range(2, 100):
-        this_depth = (MOVE_COUNT - 1) * prev_depth
+        this_depth = (MOVE_COUNT - 3) * prev_depth
         total += this_depth
 
         if total > COMBOS:
