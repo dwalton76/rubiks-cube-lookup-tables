@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # standard libraries
 import logging
 import os
@@ -71,6 +73,7 @@ def convert_json_one_line_to_binary(filename: str, state_is_hex: bool) -> None:
         sys.exit(1)
 
     # build a dictionary that translates a state to its index among all states
+    log.info("load .state_index begin")
     state_index_filename = filename.replace(".json-one-line", ".state_index")
     state_to_index = {}
 
@@ -78,36 +81,41 @@ def convert_json_one_line_to_binary(filename: str, state_is_hex: bool) -> None:
         for line in fh:
             (state, state_index) = line.rstrip().split(":")
             state_to_index[state] = int(state_index)
+    log.info("load .state_index end")
 
     binary_filename = filename.replace(".json-one-line", ".bin")
 
+    with open(filename, "r") as fh:
+        log.info("load data begin")
+        data = eval(next(fh))
+        log.info("load data end")
+
     with open(binary_filename, "wb") as fh_bin:
-        with open(filename, "r") as fh:
-            for (line_number, line) in enumerate(fh):
-                data = eval(line)
-                state = list(data.keys())[0]
+        count = 0
 
-                node = data[state]
-                cost = node["cost"]
-                edges = node["edges"]
+        for state, node in data.items():
+            cost = node["cost"]
+            edges = node["edges"]
 
-                # write the cost_to_goal (1 byte)
-                fh_bin.write(struct.pack(">B", cost))
+            # write the cost_to_goal (1 byte)
+            fh_bin.write(struct.pack(">B", cost))
 
-                # write all of the step/next_state pairs
-                for step in moves_777:
-                    next_state = edges.get(step)
+            # write all of the step/next_state pairs
+            for step in moves_777:
+                next_state = edges.get(step)
 
-                    if next_state:
-                        next_state_index = state_to_index[next_state]
-                        fh_bin.write(struct.pack(">L", next_state_index))
+                if next_state:
+                    next_state_index = state_to_index[next_state]
+                    fh_bin.write(struct.pack(">L", next_state_index))
 
-                        next_node = data[next_state]
-                        next_node_cost = next_node["cost"]
-                        fh.write(struct.pack(">B", next_node_cost))
+                    next_node = data[next_state]
+                    next_node_cost = next_node["cost"]
+                    fh.write(struct.pack(">B", next_node_cost))
 
-                if line_number % 100000 == 0:
-                    log.info(line_number)
+            count += 1
+
+            if count % 10000 == 0:
+                log.info(count)
 
 
 if __name__ == "__main__":

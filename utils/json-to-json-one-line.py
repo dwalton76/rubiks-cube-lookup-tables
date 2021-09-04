@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # standard libraries
 import logging
 import os
@@ -14,18 +16,22 @@ def convert_json_to_json_one_line(filename: str) -> None:
 
     to_write = []
     to_write_count = 0
-    BATCH_SIZE = 10000
+    BATCH_SIZE = 1000000
     one_line_filename = filename.replace(".json", ".json-one-line")
 
     with open(one_line_filename, "w") as fh_one_line:
         with open(filename, "r") as fh:
             for line_index, line in enumerate(fh):
-                line = line.rstrip()
+                line = line.strip()
+
+                if not line:
+                    continue
+
                 to_write.append(line)
                 to_write_count += 1
 
                 if to_write_count >= BATCH_SIZE:
-                    log.info(f"{line_index+1:,}")
+                    log.info(f"{line_index:,}")
                     fh_one_line.write("".join(to_write))
                     to_write = []
                     to_write_count = 0
