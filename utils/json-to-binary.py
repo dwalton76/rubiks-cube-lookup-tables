@@ -109,7 +109,7 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
                     fh.write(struct.pack(">B", next_node_cost))
 
             if i % 10000 == 0:
-                log.info(i)
+                log.info(f"{i:,}")
 
 
 if __name__ == "__main__":
