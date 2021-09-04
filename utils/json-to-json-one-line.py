@@ -1,49 +1,39 @@
 # standard libraries
 import logging
 import os
-import subprocess
 import sys
 
 log = logging.getLogger(__name__)
 
 
-def convert_json_to_json_one_line(filename: str, entry_length: int, state_is_hex: bool) -> None:
+def convert_json_to_json_one_line(filename: str) -> None:
 
     if not os.path.exists(filename):
         print(f"ERROR: {filename} does not exist")
         sys.exit(1)
 
-    # You must define this!! This is how many lines long an entry is in the .json file you are converting
-    assert entry_length > 1
-
+    to_write = []
+    to_write_count = 0
+    BATCH_SIZE = 10000
     one_line_filename = filename.replace(".json", ".json-one-line")
+
     with open(one_line_filename, "w") as fh_one_line:
         with open(filename, "r") as fh:
-            # The first line in the opening {, skip it
-            next(fh)
-            i = 0
+            for line_index, line in enumerate(fh):
+                line = line.rstrip()
+                to_write.append(line)
+                to_write_count += 1
 
-            while True:
-                data_str = ""
+                if to_write_count >= BATCH_SIZE:
+                    log.info(f"{line_index+1:,}")
+                    fh_one_line.write("".join(to_write))
+                    to_write = []
+                    to_write_count = 0
 
-                try:
-                    for x in range(entry_length):
-                        data_str += next(fh).rstrip()
-                except StopIteration:
-                    break
-                data_str = data_str.lstrip()
-                data_str = data_str.rstrip(",")
-                fh_one_line.write("{" + data_str + "}\n")
+            if to_write_count:
+                fh_one_line.write("".join(to_write))
 
-                i += 1
-
-                if i % 100000 == 0:
-                    log.info(i)
-
-    subprocess.call(
-        "LC_ALL=C nice sort --temporary-directory=./tmp/ --output %s %s" % (one_line_filename, one_line_filename),
-        shell=True,
-    )
+            fh_one_line.write("\n")
 
 
 if __name__ == "__main__":
@@ -51,5 +41,4 @@ if __name__ == "__main__":
     log = logging.getLogger(__name__)
 
     filename = sys.argv[1]
-    entry_length = int(sys.argv[2])
-    convert_json_to_json_one_line(filename, entry_length, True)
+    convert_json_to_json_one_line(filename)

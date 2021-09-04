@@ -50,9 +50,6 @@ wheel:
 	./utils/builderui.py Build444LRCentersStage
 	./utils/build-ida-graph.py Build444LRCentersStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step12-LR-centers-stage.json
-	#./utils/builderui.py Build444FBCentersStage
-	#./utils/build-ida-graph.py Build444FBCentersStage
-	#./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step13-FB-centers-stage.json
 
 444-phase2: clean
 	./utils/builderui.py Build444HighLowEdgesEdges
@@ -75,12 +72,12 @@ wheel:
 	./utils/builderui.py Build555LRCenterStageXCenter
 	./utils/build-ida-graph.py Build555LRCenterStageXCenter
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
-	./utils/builderui.py Build555UDCenterStageTCenter
-	./utils/build-ida-graph.py Build555UDCenterStageTCenter
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step17-UD-centers-stage-t-center-only.json
-	./utils/builderui.py Build555UDCenterStageXCenter
-	./utils/build-ida-graph.py Build555UDCenterStageXCenter
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step18-UD-centers-stage-x-center-only.json
+	#./utils/builderui.py Build555UDCenterStageTCenter
+	#./utils/build-ida-graph.py Build555UDCenterStageTCenter
+	#./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step17-UD-centers-stage-t-center-only.json
+	#./utils/builderui.py Build555UDCenterStageXCenter
+	#./utils/build-ida-graph.py Build555UDCenterStageXCenter
+	#./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step18-UD-centers-stage-x-center-only.json
 
 555-phase2: clean
 	./utils/builderui.py Build555FBTCenterStage
@@ -109,9 +106,26 @@ wheel:
 	./utils/build-ida-graph.py Build555Phase5Centers
 	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-1000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-2000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
+	./utils/builderui.py Build555Phase5HighEdgeMidge
+	./utils/build-ida-graph.py Build555Phase5HighEdgeMidge
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.json
+	./utils/builderui.py Build555Phase5LowEdgeMidge
+	./utils/build-ida-graph.py Build555Phase5LowEdgeMidge
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
 	./utils/builderui.py Build555Phase5FBCenters
 	./utils/build-ida-graph.py Build555Phase5FBCenters
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step56-phase5-fb-centers.json
+
+555-solve-staged-centers: clean
+	./utils/builderui.py Build555UDCenterSolve
+	./utils/build-ida-graph.py Build555UDCenterSolve
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step34-UD-centers-solve.json
+	./utils/builderui.py Build555LRCenterSolve
+	./utils/build-ida-graph.py Build555LRCenterSolve
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step35-LR-centers-solve.json
+	./utils/builderui.py Build555FBCenterSolve
+	./utils/build-ida-graph.py Build555FBCenterSolve
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step36-FB-centers-solve.json
 
 555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6
 

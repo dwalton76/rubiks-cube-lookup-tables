@@ -234,34 +234,6 @@ class Build444LRCentersStage(BFS):
         )
 
 
-class Build444FBCentersStage(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "4x4x4-FB-centers-stage",
-            ("Lw", "Lw'", "Lw2", "Bw", "Bw'", "Bw2", "Dw", "Dw'", "Dw2"),  # can skip these for 4x4x4 cubes
-            "4x4x4",
-            "lookup-table-4x4x4-step13-FB-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    ".....FF..FF..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........FF..FF.....",
-                    "ULFRBD",
-                ),
-                (
-                    ".....xx..xx..........FF..FF..........xx..xx..........FF..FF..........xx..xx..........xx..xx.....",
-                    "ULFRBD",
-                ),
-                (
-                    ".....xx..xx..........xx..xx..........FF..FF..........xx..xx..........FF..FF..........xx..xx.....",
-                    "ULFRBD",
-                ),
-            ),
-            use_c=True,
-        )
-
-
 class Build444ULFRBDCentersStage(BFS):
     def __init__(self):
         BFS.__init__(

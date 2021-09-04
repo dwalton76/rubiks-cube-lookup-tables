@@ -102,6 +102,10 @@ def convert_json_one_line_to_binary(filename: str, state_is_hex: bool) -> None:
                         next_state_index = state_to_index[next_state]
                         fh_bin.write(struct.pack(">L", next_state_index))
 
+                        next_node = data[next_state]
+                        next_node_cost = next_node["cost"]
+                        fh.write(struct.pack(">B", next_node_cost))
+
                 if line_number % 100000 == 0:
                     log.info(line_number)
 

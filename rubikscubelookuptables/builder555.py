@@ -425,7 +425,7 @@ class Build555FBCenterStage(BFS):
         BFS.__init__(
             self,
             "5x5x5-FB-center-stage",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'"),
+            ("Uw", "Uw'", "L", "L'", "L2", "Fw", "Fw'", "R", "R'", "R2", "Bw", "Bw'", "Dw", "Dw'"),
             "5x5x5",
             "lookup-table-5x5x5-step20-FB-centers-stage.txt",
             True,  # store_as_hex
@@ -461,7 +461,7 @@ class Build555FBTCenterStage(BFS):
         BFS.__init__(
             self,
             "5x5x5-FB-t-center-stage",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'"),
+            ("Uw", "Uw'", "L", "L'", "L2", "Fw", "Fw'", "R", "R'", "R2", "Bw", "Bw'", "Dw", "Dw'"),
             "5x5x5",
             "lookup-table-5x5x5-step21-FB-t-centers-stage.txt",
             True,  # store_as_hex
@@ -497,7 +497,7 @@ class Build555FBXCenterStage(BFS):
         BFS.__init__(
             self,
             "5x5x5-FB-x-center-stage",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'"),
+            ("Uw", "Uw'", "L", "L'", "L2", "Fw", "Fw'", "R", "R'", "R2", "Bw", "Bw'", "Dw", "Dw'"),
             "5x5x5",
             "lookup-table-5x5x5-step22-FB-x-centers-stage.txt",
             True,  # store_as_hex
