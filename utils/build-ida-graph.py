@@ -33,6 +33,15 @@ from rubikscubennnsolver.RubiksCube555 import (
     RubiksCube555,
     solved_555,
 )
+from rubikscubennnsolver.RubiksCube666 import (
+    LookupTable666FBInnerXCenterAndObliqueEdges,
+    LookupTable666LRInnerXCenterAndObliqueEdges,
+    LookupTable666UDLeftObliqueStage,
+    LookupTable666UDOuterXCenterStage,
+    LookupTable666UDRightObliqueStage,
+    RubiksCube666,
+    solved_666,
+)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")
 log = logging.getLogger(__name__)
@@ -41,7 +50,6 @@ lt_class = sys.argv[1]
 
 if lt_class.startswith("Build444"):
     cube = RubiksCube444(solved_444, "URFDLB")
-    cube.cpu_mode = "normal"
 
     if lt_class == "Build444UDCentersStage":
         cube.lt = LookupTable444UDCentersStage(cube, build_state_index=True)
@@ -56,7 +64,6 @@ if lt_class.startswith("Build444"):
 
 elif lt_class.startswith("Build555"):
     cube = RubiksCube555(solved_555, "URFDLB")
-    cube.cpu_mode = "normal"
 
     # phase 1
     if lt_class == "Build555LRCenterStageTCenter":
@@ -137,6 +144,32 @@ elif lt_class.startswith("Build555"):
         cube.lt.build_ida_graph()
 
     else:
-        raise ValueError(lt_class)
+        raise NotImplementedError(lt_class)
+
+elif lt_class.startswith("Build666"):
+    cube = RubiksCube666(solved_666, "URFDLB")
+
+    if lt_class == "Build666UDLeftObliqueStage":
+        cube.lt = LookupTable666UDLeftObliqueStage(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build666UDRightObliqueStage":
+        cube.lt = LookupTable666UDRightObliqueStage(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build666UDOuterXCenterStage":
+        cube.lt = LookupTable666UDOuterXCenterStage(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build666LRInnerXCenterAndObliqueEdges":
+        cube.lt = LookupTable666LRInnerXCenterAndObliqueEdges(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build666FBInnerXCenterAndObliqueEdges":
+        cube.lt = LookupTable666FBInnerXCenterAndObliqueEdges(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    else:
+        raise NotImplementedError(lt_class)
 else:
-    raise ValueError(lt_class)
+    raise NotImplementedError(lt_class)
