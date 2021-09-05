@@ -35,43 +35,29 @@ phase 6
 # - pair the UD oblique edges and outer x-centers to finish staging centers
 class Build666UDLeftObliqueStage(BFS):
     def __init__(self):
+        # fmt: off
         BFS.__init__(
             self,
             "6x6x6-UD-left-oblique-stage",
             (
-                "3Uw",
-                "3Uw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Rw",
-                "3Rw'",
-                "3Bw",
-                "3Bw'",
-                "3Dw",
-                "3Dw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
+                "3Uw", "3Uw'",
+                "3Lw", "3Lw'",
+                "3Fw", "3Fw'",
+                "3Rw", "3Rw'",
+                "3Bw", "3Bw'",
+                "3Dw", "3Dw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
                 # we are not manipulating anything on sides L or R
-                "L",
-                "L'",
-                "L2",
-                "R",
-                "R'",
-                "R2",
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+
                 # restricting these has minimal impact on move count
                 # but having few moves to explore means a faster IDA
-                "U2",
-                "D2",
-                "F2",
-                "B2",
+                "U2", "D2", "F2", "B2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step11-UD-left-oblique-stage.txt",
@@ -104,47 +90,34 @@ class Build666UDLeftObliqueStage(BFS):
                 ),
             ),
         )
+        # fmt: on
 
 
 class Build666UDRightObliqueStage(BFS):
     def __init__(self):
+        # fmt: off
         BFS.__init__(
             self,
             "6x6x6-UD-right-oblique-stage",
             (
-                "3Uw",
-                "3Uw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Rw",
-                "3Rw'",
-                "3Bw",
-                "3Bw'",
-                "3Dw",
-                "3Dw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
+                "3Uw", "3Uw'",
+                "3Lw", "3Lw'",
+                "3Fw", "3Fw'",
+                "3Rw", "3Rw'",
+                "3Bw", "3Bw'",
+                "3Dw", "3Dw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
                 # we are not manipulating anything on sides L or R
-                "L",
-                "L'",
-                "L2",
-                "R",
-                "R'",
-                "R2",
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+
                 # restricting these has minimal impact on move count
                 # but having few moves to explore means a faster IDA
-                "U2",
-                "D2",
-                "F2",
-                "B2",
+                "U2", "D2", "F2", "B2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step12-UD-right-oblique-stage.txt",
@@ -177,47 +150,34 @@ class Build666UDRightObliqueStage(BFS):
                 ),
             ),
         )
+        # fmt: on
 
 
 class Build666UDObliqueStage(BFS):
     def __init__(self):
+        # fmt: off
         BFS.__init__(
             self,
             "6x6x6-UD-oblique-stage",
             (
-                "3Uw",
-                "3Uw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Rw",
-                "3Rw'",
-                "3Bw",
-                "3Bw'",
-                "3Dw",
-                "3Dw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
+                "3Uw", "3Uw'",
+                "3Lw", "3Lw'",
+                "3Fw", "3Fw'",
+                "3Rw", "3Rw'",
+                "3Bw", "3Bw'",
+                "3Dw", "3Dw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
                 # we are not manipulating anything on sides L or R
-                "L",
-                "L'",
-                "L2",
-                "R",
-                "R'",
-                "R2",
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+
                 # restricting these has minimal impact on move count
                 # but having few moves to explore means a faster IDA
-                "U2",
-                "D2",
-                "F2",
-                "B2",
+                "U2", "D2", "F2", "B2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step14-UD-oblique-stage.txt",
@@ -250,47 +210,34 @@ class Build666UDObliqueStage(BFS):
                 ),
             ),
         )
+        # fmt: on
 
 
 class Build666UDOuterXCenterStage(BFS):
     def __init__(self):
+        # fmt: off
         BFS.__init__(
             self,
             "6x6x6-UD-outer-x-centers-stage",
             (
-                "3Uw",
-                "3Uw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Rw",
-                "3Rw'",
-                "3Bw",
-                "3Bw'",
-                "3Dw",
-                "3Dw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
+                "3Uw", "3Uw'",
+                "3Lw", "3Lw'",
+                "3Fw", "3Fw'",
+                "3Rw", "3Rw'",
+                "3Bw", "3Bw'",
+                "3Dw", "3Dw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
                 # we are not manipulating anything on sides L or R
-                "L",
-                "L'",
-                "L2",
-                "R",
-                "R'",
-                "R2",
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+
                 # restricting these has minimal impact on move count
                 # but having few moves to explore means a faster IDA
-                "U2",
-                "D2",
-                "F2",
-                "B2",
+                "U2", "D2", "F2", "B2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step13-UD-outer-x-centers-stage.txt",
@@ -323,6 +270,7 @@ class Build666UDOuterXCenterStage(BFS):
                 ),
             ),
         )
+        # fmt: on
 
 
 # =======
@@ -331,40 +279,23 @@ class Build666UDOuterXCenterStage(BFS):
 # - solve the UD inner x-centers and pair the UD oblique edges
 class StartingStates666Step50(BFS):
     def __init__(self):
+        # fmt: off
         BFS.__init__(
             self,
             "6x6x6-step50",
             (
-                "3Uw",
-                "3Uw'",
-                "3Uw2",
-                "3Lw",
-                "3Lw'",
-                "3Lw2",
-                "3Fw",
-                "3Fw'",
-                "3Fw2",
-                "3Rw",
-                "3Rw'",
-                "3Rw2",
-                "3Bw",
-                "3Bw'",
-                "3Bw2",
-                "3Dw",
-                "3Dw'",
-                "3Dw2",
-                "Uw",
-                "Uw'",
-                "Lw",
-                "Lw'",
-                "Fw",
-                "Fw'",
-                "Rw",
-                "Rw'",
-                "Bw",
-                "Bw'",
-                "Dw",
-                "Dw'",
+                "3Uw", "3Uw'", "3Uw2",
+                "3Lw", "3Lw'", "3Lw2",
+                "3Fw", "3Fw'", "3Fw2",
+                "3Rw", "3Rw'", "3Rw2",
+                "3Bw", "3Bw'", "3Bw2",
+                "3Dw", "3Dw'", "3Dw2",
+                "Uw", "Uw'",
+                "Lw", "Lw'",
+                "Fw", "Fw'",
+                "Rw", "Rw'",
+                "Bw", "Bw'",
+                "Dw", "Dw'",
             ),
             "6x6x6",
             "starting-states-6x6x6-step50.txt",
@@ -397,39 +328,29 @@ class StartingStates666Step50(BFS):
                 ),
             ),
         )
+        # fmt: on
 
 
 class Build666Step50(BFS):
     def __init__(self):
+        # fmt: off
         BFS.__init__(
             self,
             "6x6x6-step50",
             (
-                "3Rw",
-                "3Rw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Bw",
-                "3Bw'",
-                "3Uw",
-                "3Uw'",
-                "3Dw",
-                "3Dw'",  # do not mess up staged centers
-                "Rw",
-                "Rw'",
-                "Lw",
-                "Lw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-            ),  # do not mess up staged centers
+                "3Rw", "3Rw'",
+                "3Lw", "3Lw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "Rw", "Rw'",
+                "Lw", "Lw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+            ),
             "6x6x6",
             "lookup-table-6x6x6-step50-UD-solve-inner-x-center-and-oblique-edges.txt",
             True,  # store_as_hex
@@ -717,6 +638,7 @@ class Build666Step50(BFS):
                 ),
             ),
         )
+        # fmt: on
 
 
 # =======
@@ -726,50 +648,36 @@ class Build666Step50(BFS):
 # - solve the FB inner x-centers and pair the FB oblique edges
 class Build666LRInnerXCenterAndObliqueEdges(BFS):
     def __init__(self):
+        # fmt: off
         BFS.__init__(
             self,
             "6x6x6-LR-solve-inner-x-center-and-oblique-edges",
             (  # do not mess up staged centers
-                "3Rw",
-                "3Rw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Bw",
-                "3Bw'",
-                "3Uw",
-                "3Uw'",
-                "3Dw",
-                "3Dw'",
+                "3Rw", "3Rw'",
+                "3Lw", "3Lw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+
                 # do not mess up staged centers
-                "Rw",
-                "Rw'",
-                "Lw",
-                "Lw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
+                "Rw", "Rw'",
+                "Lw", "Lw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+
                 # do not mess up solved UD
                 "3Rw2",
                 "3Lw2",
                 "3Fw2",
                 "3Bw2",
+
                 # can skip these for 6x6x6 cubes
-                "3Lw",
-                "3Lw'",
-                "3Lw2",
-                "3Dw",
-                "3Dw'",
-                "3Dw2",
-                "3Bw",
-                "3Bw'",
-                "3Bw2",
+                "3Lw", "3Lw'", "3Lw2",
+                "3Dw", "3Dw'", "3Dw2",
+                "3Bw", "3Bw'", "3Bw2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step61-LR-solve-inner-x-center-and-oblique-edges.txt",
@@ -874,54 +782,41 @@ class Build666LRInnerXCenterAndObliqueEdges(BFS):
                 ),
             ),
         )
+        # fmt: on
 
 
 class Build666FBInnerXCenterAndObliqueEdges(BFS):
     def __init__(self):
+        # fmt: off
         BFS.__init__(
             self,
             "6x6x6-FB-solve-inner-x-center-and-oblique-edges",
             (  # do not mess up staged centers
-                "3Rw",
-                "3Rw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Bw",
-                "3Bw'",
-                "3Uw",
-                "3Uw'",
-                "3Dw",
-                "3Dw'",
+                "3Rw", "3Rw'",
+                "3Lw", "3Lw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+
                 # do not mess up staged centers
-                "Rw",
-                "Rw'",
-                "Lw",
-                "Lw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
+                "Rw", "Rw'",
+                "Lw", "Lw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+
                 # do not mess up solved UD
                 "3Rw2",
                 "3Lw2",
                 "3Fw2",
                 "3Bw2",
+
                 # can skip these for 6x6x6 cubes
-                "3Lw",
-                "3Lw'",
-                "3Lw2",
-                "3Dw",
-                "3Dw'",
-                "3Dw2",
-                "3Bw",
-                "3Bw'",
-                "3Bw2",
+                "3Lw", "3Lw'", "3Lw2",
+                "3Dw", "3Dw'", "3Dw2",
+                "3Bw", "3Bw'", "3Bw2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.txt",
@@ -978,3 +873,4 @@ class Build666FBInnerXCenterAndObliqueEdges(BFS):
                 ),
             ),
         )
+        # fmt: on
