@@ -24,6 +24,9 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555Phase5FBCenters,
     LookupTable555Phase5HighEdgeMidge,
     LookupTable555Phase5LowEdgeMidge,
+    LookupTable555Phase6Centers,
+    LookupTable555Phase6HighEdgeMidge,
+    LookupTable555Phase6LowEdgeMidge,
     LookupTable555UDCenterSolve,
     LookupTable555UDCenterStageTCenter,
     LookupTable555UDCenterStageXCenter,
@@ -105,6 +108,19 @@ elif lt_class.startswith("Build555"):
 
     elif lt_class == "Build555Phase5FBCenters":
         cube.lt = LookupTable555Phase5FBCenters(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    # phase 6
+    elif lt_class == "Build555Phase6Centers":
+        cube.lt = LookupTable555Phase6Centers(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build555Phase6HighEdgeMidge":
+        cube.lt = LookupTable555Phase6HighEdgeMidge(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build555Phase6LowEdgeMidge":
+        cube.lt = LookupTable555Phase6LowEdgeMidge(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
     # solve staged centers
