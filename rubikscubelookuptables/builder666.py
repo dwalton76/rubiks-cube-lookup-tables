@@ -54,10 +54,6 @@ class Build666UDLeftObliqueStage(BFS):
                 # we are not manipulating anything on sides L or R
                 "L", "L'", "L2",
                 "R", "R'", "R2",
-
-                # restricting these has minimal impact on move count
-                # but having few moves to explore means a faster IDA
-                "U2", "D2", "F2", "B2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step11-UD-left-oblique-stage.txt",
@@ -114,10 +110,6 @@ class Build666UDRightObliqueStage(BFS):
                 # we are not manipulating anything on sides L or R
                 "L", "L'", "L2",
                 "R", "R'", "R2",
-
-                # restricting these has minimal impact on move count
-                # but having few moves to explore means a faster IDA
-                "U2", "D2", "F2", "B2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step12-UD-right-oblique-stage.txt",
@@ -174,10 +166,6 @@ class Build666UDObliqueStage(BFS):
                 # we are not manipulating anything on sides L or R
                 "L", "L'", "L2",
                 "R", "R'", "R2",
-
-                # restricting these has minimal impact on move count
-                # but having few moves to explore means a faster IDA
-                "U2", "D2", "F2", "B2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step14-UD-oblique-stage.txt",
@@ -234,10 +222,6 @@ class Build666UDOuterXCenterStage(BFS):
                 # we are not manipulating anything on sides L or R
                 "L", "L'", "L2",
                 "R", "R'", "R2",
-
-                # restricting these has minimal impact on move count
-                # but having few moves to explore means a faster IDA
-                "U2", "D2", "F2", "B2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step13-UD-outer-x-centers-stage.txt",
@@ -464,11 +448,6 @@ class Build666LRInnerXCenterAndObliqueEdges(BFS):
                 "3Lw2",
                 "3Fw2",
                 "3Bw2",
-
-                # can skip these for 6x6x6 cubes
-                "3Lw", "3Lw'", "3Lw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "3Bw", "3Bw'", "3Bw2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step61-LR-solve-inner-x-center-and-oblique-edges.txt",
@@ -556,11 +535,6 @@ class Build666FBInnerXCenterAndObliqueEdges(BFS):
                 "3Lw2",
                 "3Fw2",
                 "3Bw2",
-
-                # can skip these for 6x6x6 cubes
-                "3Lw", "3Lw'", "3Lw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "3Bw", "3Bw'", "3Bw2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.txt",
@@ -648,11 +622,6 @@ class Build666UDObliqueEdges(BFS):
                 "3Lw2",
                 "3Fw2",
                 "3Bw2",
-
-                # can skip these for 6x6x6 cubes
-                "3Lw", "3Lw'", "3Lw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "3Bw", "3Bw'", "3Bw2",
             ),
             "6x6x6",
             "lookup-table-6x6x6-step63-UD-oblique-edges.txt",

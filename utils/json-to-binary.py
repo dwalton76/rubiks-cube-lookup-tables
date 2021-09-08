@@ -49,7 +49,7 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
             edges = node["edges"]
 
             # write the cost_to_goal (1 byte)
-            fh.write(struct.pack(">B", cost))
+            fh.write(struct.pack("B", cost))
 
             # write all of the step/next_state pairs
             for step in moves_777:
@@ -57,11 +57,11 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
 
                 if next_state is not None:
                     next_state_index = state_to_index[next_state]
-                    fh.write(struct.pack(">L", next_state_index))
+                    fh.write(struct.pack("<L", next_state_index))
 
                     next_node = data[next_state]
                     next_node_cost = next_node["cost"]
-                    fh.write(struct.pack(">B", next_node_cost))
+                    fh.write(struct.pack("B", next_node_cost))
 
             if i % 100000 == 0:
                 log.info(f"{i:,}")

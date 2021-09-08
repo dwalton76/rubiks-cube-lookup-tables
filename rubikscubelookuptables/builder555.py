@@ -62,6 +62,32 @@ phase 6
     -16 moves
 """
 
+"""
+If we dropped phase 4 then phase 5 would become
+
+    LR and FB centers to vertical bars
+    pair x-plane edges
+
+    432 LR center states
+    4,900 FB center states
+
+    high wings
+        (12!/8!) = 11,800 is how many states the high wings can be in
+
+    low wings
+        (12!/8!) = 11,800 is how many states the low wings can be in
+
+    midges
+        8!/(12!*4!) = 495 is how many states the midges can be in
+
+    A high-edge-midge prune table is 495 * 11800 = 5,841,000
+    A low-edge-midge prune table is 495 * 11800 = 5,841,000
+    A centers prune table is 432 * 4900 = 2,116,800
+
+    But there wouldn't be two tables we could use to create a perfect-hash...heck the current
+    phase 5 is super slow if you don't use the perfect-hash
+"""
+
 
 # =======
 # phase 1
