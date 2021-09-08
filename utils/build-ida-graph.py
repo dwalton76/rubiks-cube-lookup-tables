@@ -12,14 +12,15 @@ from rubikscubennnsolver.RubiksCube444 import (
     solved_444,
 )
 from rubikscubennnsolver.RubiksCube555 import (
+    LookupTable555EdgeOrientInnerOrbit,
     LookupTable555EdgeOrientOuterOrbit,
     LookupTable555FBCenterSolve,
     LookupTable555FBTCenterStage,
     LookupTable555FBXCenterStage,
     LookupTable555LRCenterSolve,
-    LookupTable555LRCenterStageEOInnerOrbit,
     LookupTable555LRTCenterStage,
     LookupTable555LRXCenterStage,
+    LookupTable555Phase3LRCenterStage,
     LookupTable555Phase5Centers,
     LookupTable555Phase5FBCenters,
     LookupTable555Phase5HighEdgeMidge,
@@ -114,12 +115,16 @@ elif lt_class.startswith("Build555"):
         cube.lt.build_ida_graph()
 
     # phase 3
-    elif lt_class == "Build555LRCenterStageEOInnerOrbit":
-        cube.lt = LookupTable555LRCenterStageEOInnerOrbit(cube, build_state_index=True)
+    elif lt_class == "Build555Phase3LRCenterStage":
+        cube.lt = LookupTable555Phase3LRCenterStage(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
     elif lt_class == "Build555EdgeOrientOuterOrbit":
         cube.lt = LookupTable555EdgeOrientOuterOrbit(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build555EdgeOrientInnerOrbit":
+        cube.lt = LookupTable555EdgeOrientInnerOrbit(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
     # phase 5
