@@ -57,11 +57,18 @@ wheel:
 	./utils/builderui.py Build444HighLowEdges --depth 6
 
 444-phase3: clean
+	./utils/builderui.py Build444Reduce333FirstTwoCenters
+	./utils/build-ida-graph.py Build444Reduce333FirstTwoCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-centers.json
+	./utils/builderui.py Build444Reduce333FirstFourEdges
+	./utils/build-ida-graph.py Build444Reduce333FirstFourEdges
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.txt
 	./utils/builderui.py Build444Reduce333Centers
-	./utils/convert-to-hashed-cost-only.py lookup-tables/lookup-table-4x4x4-step32-reduce333-centers.txt 58831 helper-tables/lookup-table-4x4x4-step32-reduce333-centers.txt.starting-states.compact
-	./utils/builderui.py Build444Reduce333Edges
-	./utils/convert-to-hashed-cost-only.py lookup-tables/lookup-table-4x4x4-step31-reduce333-edges.txt 239500847 helper-tables/lookup-table-4x4x4-step31-reduce333-edges.txt.starting-states.compact
-	./utils/builderui.py Build444Reduce333 --depth 6
+	./utils/build-ida-graph.py Build444Reduce333Centers
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step41-centers.json
+	./utils/builderui.py Build444Reduce333LastEightEdges
+	./utils/build-ida-graph.py Build444Reduce333LastEightEdges
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step42-last-eight-edges.json
 
 444: 444-phase1 444-phase2 444-phase3
 

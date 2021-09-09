@@ -1314,7 +1314,7 @@ class %s(LookupTable):
 %s
     )
 
-    def __init__(self, parent):
+    def __init__(self, parent, build_state_index: bool = False):
         LookupTable.__init__(
             self,
             parent,
@@ -1322,11 +1322,12 @@ class %s(LookupTable):
             self.state_targets,
             linecount=%d,
             max_depth=%d,
-            filesize=%d,
             all_moves=moves_%s,
             illegal_moves=(
                 "%s"
             ),
+            use_state_index=True,
+            build_state_index=build_state_index,
         )
 
     def state(self):
@@ -1346,7 +1347,6 @@ class %s(LookupTable):
                 self.filename,
                 linecount,
                 max_depth,
-                os.path.getsize(self.filename),
                 self.size.replace("x", ""),
                 '",\n                "'.join(self.illegal_moves),
             )
