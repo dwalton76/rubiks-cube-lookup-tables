@@ -36,6 +36,8 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555Phase6HighEdgeMidge,
     LookupTable555Phase6LowEdgeMidge,
     LookupTable555UDCenterSolve,
+    LookupTable555UDCenterStageTCenter,
+    LookupTable555UDCenterStageXCenter,
     RubiksCube555,
     solved_555,
 )
@@ -141,6 +143,14 @@ elif lt_class.startswith("Build555"):
 
     elif lt_class == "Build555Phase2LRCenterStage":
         cube.lt = LookupTable555Phase2LRCenterStage(cube, build_state_index=True)
+
+    elif lt_class == "Build555UDCenterStageTCenter":
+        cube.lt = LookupTable555UDCenterStageTCenter(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build555UDCenterStageXCenter":
+        cube.lt = LookupTable555UDCenterStageXCenter(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
 
     # phase 3
     elif lt_class == "Build555Phase3LRCenterStage":

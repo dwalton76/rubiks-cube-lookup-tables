@@ -94,6 +94,12 @@ wheel:
 	./utils/builderui.py Build555LRCenterStageXCenter
 	./utils/build-ida-graph.py Build555LRCenterStageXCenter
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
+	./utils/builderui.py Build555UDCenterStageTCenter
+	./utils/build-ida-graph.py Build555UDCenterStageTCenter
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step17-UD-centers-stage-t-center-only.json
+	./utils/builderui.py Build555UDCenterStageXCenter
+	./utils/build-ida-graph.py Build555UDCenterStageXCenter
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step18-UD-centers-stage-x-center-only.json
 
 555-phase2: clean
 	./utils/builderui.py Build555FBTCenterStage
