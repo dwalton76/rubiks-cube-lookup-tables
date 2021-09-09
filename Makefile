@@ -62,7 +62,7 @@ wheel:
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-centers.json
 	./utils/builderui.py Build444Reduce333FirstFourEdges
 	./utils/build-ida-graph.py Build444Reduce333FirstFourEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.txt
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
 	./utils/builderui.py Build444Reduce333Centers
 	./utils/build-ida-graph.py Build444Reduce333Centers
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step41-centers.json
