@@ -16,6 +16,7 @@ def json_combine_files(filenames: List[str]) -> None:
         fh_final.write("{\n")
 
         for (index, filename) in enumerate(filenames):
+            log.info(f"{filename} begin")
 
             # If this is not the first file, write a "," to continue the json
             # from the previous file
@@ -33,6 +34,7 @@ def json_combine_files(filenames: List[str]) -> None:
 
             # rm the file
             os.unlink(filename)
+            log.info(f"{filename} end")
 
         # end with a }
         fh_final.write("\n}\n")

@@ -107,13 +107,21 @@ rate = float(9.89)
 count_total_target = 5538111488
 """
 
+# 555 LR centers stage
+depth = 6
+prev_count_at_depth = 16300291
+count_total = 17168476
+rate = float(19.76)
+count_total_target = 540917591841
+
+"""
 # 666 stage UD centers
 depth = 6
 prev_count_at_depth = 633025
 count_total = 690675
 rate = float(11.97)
 count_total_target = 2131746903000
-
+"""
 
 move_total = 0
 
