@@ -1,5 +1,5 @@
 """
-This is a 4-phase solver that was designed to run on the LEGO SPIKE platform.
+This is a 4-micropython-phase solver that was designed to run on the LEGO SPIKE platform.
 LEGO SPIKE has something like 90k of memory to play with.
 
 phase 1 - EO the edges
@@ -40,11 +40,11 @@ This should averge 31 moves
 from rubikscubelookuptables.buildercore import BFS
 
 
-class Build333Phase1(BFS):
+class Build333MicroPythonPhase1(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase1",
+            "3x3x3-micropython-phase1",
             # illegal moves
             (),
             "3x3x3",
@@ -71,11 +71,11 @@ class Build333Phase1(BFS):
         )
 
 
-class Build333Phase2(BFS):
+class Build333MicroPythonPhase2(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase2",
+            "3x3x3-micropython-phase2",
             # illegal moves
             ("L", "L'", "R", "R'"),
             "3x3x3",
@@ -102,11 +102,11 @@ class Build333Phase2(BFS):
         )
 
 
-class Build333Phase2Edges(BFS):
+class Build333MicroPythonPhase2Edges(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase2-edges",
+            "3x3x3-micropython-phase2-edges",
             # illegal moves
             ("L", "L'", "R", "R'"),
             "3x3x3",
@@ -133,11 +133,11 @@ class Build333Phase2Edges(BFS):
         )
 
 
-class Build333Phase2Corners(BFS):
+class Build333MicroPythonPhase2Corners(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase2-corners",
+            "3x3x3-micropython-phase2-corners",
             # illegal moves
             ("L", "L'", "R", "R'"),
             "3x3x3",
@@ -164,11 +164,11 @@ class Build333Phase2Corners(BFS):
         )
 
 
-class Build333Phase3(BFS):
+class Build333MicroPythonPhase3(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase3",
+            "3x3x3-micropython-phase3",
             # illegal moves
             ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
             "3x3x3",
@@ -277,11 +277,11 @@ class Build333Phase3(BFS):
         )
 
 
-class Build333Phase3Edges(BFS):
+class Build333MicroPythonPhase3Edges(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase-edges",
+            "3x3x3-micropython-phase3-edges",
             # illegal moves
             ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
             "3x3x3",
@@ -309,11 +309,11 @@ class Build333Phase3Edges(BFS):
         )
 
 
-class Build333Phase3Corners(BFS):
+class Build333MicroPythonPhase3Corners(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase3-corners",
+            "3x3x3-micropython-phase3-corners",
             # illegal moves
             ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
             "3x3x3",
@@ -421,11 +421,11 @@ class Build333Phase3Corners(BFS):
         )
 
 
-class Build333Phase4(BFS):
+class Build333MicroPythonPhase4(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase4",
+            "3x3x3-micropython-phase4",
             # illegal moves
             ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
             "3x3x3",
@@ -452,11 +452,11 @@ class Build333Phase4(BFS):
         )
 
 
-class Build333Phase4Edges(BFS):
+class Build333MicroPythonPhase4Edges(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase4-edges",
+            "3x3x3-micropython-phase4-edges",
             # illegal moves
             ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
             "3x3x3",
@@ -483,11 +483,11 @@ class Build333Phase4Edges(BFS):
         )
 
 
-class Build333Phase4Corners(BFS):
+class Build333MicroPythonPhase4Corners(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "3x3x3-phase4-corners",
+            "3x3x3-micropython-phase4-corners",
             # illegal moves
             ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
             "3x3x3",

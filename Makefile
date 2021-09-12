@@ -32,16 +32,16 @@ wheel:
 	./utils/builderui.py Build222Ultimate
 
 333: clean
-	./utils/builderui.py Build333Phase1
-	./utils/builderui.py Build333Phase2
-	./utils/builderui.py Build333Phase2Edges
-	./utils/builderui.py Build333Phase2Corners
-	./utils/builderui.py Build333Phase3
-	./utils/builderui.py Build333Phase3Edges
-	./utils/builderui.py Build333Phase3Corners
-	./utils/builderui.py Build333Phase4
-	./utils/builderui.py Build333Phase4Edges
-	./utils/builderui.py Build333Phase4Corners
+	./utils/builderui.py Build333MicroPythonPhase1
+	./utils/builderui.py Build333MicroPythonPhase2
+	./utils/builderui.py Build333MicroPythonPhase2Edges
+	./utils/builderui.py Build333MicroPythonPhase2Corners
+	./utils/builderui.py Build333MicroPythonPhase3
+	./utils/builderui.py Build333MicroPythonPhase3Edges
+	./utils/builderui.py Build333MicroPythonPhase3Corners
+	./utils/builderui.py Build333MicroPythonPhase4
+	./utils/builderui.py Build333MicroPythonPhase4Edges
+	./utils/builderui.py Build333MicroPythonPhase4Corners
 
 444-phase1: clean
 	./utils/builderui.py Build444UDCentersStage
