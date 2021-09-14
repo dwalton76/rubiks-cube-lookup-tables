@@ -23,7 +23,7 @@ with open(filename_new, "w") as fh_new:
             (state, steps) = line.rstrip().split(":")
             cube.solution = steps.split()
             cube.compress_solution()
-            fh_new.write("%s:%s\n" % (state, " ".join(cube.solution)))
+            fh_new.write(f"{state}:{' '.join(cube.solution)}\n")
             line_number += 1
 
             if line_number % 1000000 == 0:

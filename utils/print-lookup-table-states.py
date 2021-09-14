@@ -50,5 +50,5 @@ with open(filename, "r") as fh:
             cube.rotate(step)
 
         cube.print_cube()
-        log.info("steps_to_scramble %s" % " ".join(steps_to_scramble))
-        log.info("steps_to_solve    %s\n\n" % " ".join(steps_to_solve))
+        log.info(f"steps_to_scramble {' '.join(steps_to_scramble)}")
+        log.info(f"steps_to_solve    {' '.join(steps_to_solve)}\n\n")

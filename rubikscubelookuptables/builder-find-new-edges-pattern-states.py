@@ -51,7 +51,7 @@ def diff_states(filenameA, filenameB, outputfile):
             pass
 
     if not os.path.isfile(filenameB):
-        raise Exception("%s does not exists" % filenameB)
+        raise Exception(f"{filenameB} does not exists")
 
     with open(filenameA, "r") as fhA, open(filenameB, "r") as fhB, open(outputfile, "w") as fh:
         lineA = advance_filehandle(fhA)
@@ -73,7 +73,7 @@ def diff_states(filenameA, filenameB, outputfile):
 
             # We have hit the end of filenameA so everything left in filenameB is missing from filenameA
             if lineA is None:
-                fh.write("%s:%s:%s\n" % (patternB, stateB, " ".join(reverse_steps(steps_to_scrambleB.split()))))
+                fh.write(f"{patternB}:{stateB}:{' '.join(reverse_steps(steps_to_scrambleB.split()))}\n")
                 lineB = advance_filehandle_to_edges_pattern_change(patternB, fhB)
 
                 if lineB:
@@ -108,7 +108,7 @@ def diff_states(filenameA, filenameB, outputfile):
 
             else:
                 while patternB < patternA:
-                    fh.write("%s:%s:%s\n" % (patternB, stateB, " ".join(reverse_steps(steps_to_scrambleB.split()))))
+                    fh.write(f"{patternB}:{stateB}:{' '.join(reverse_steps(steps_to_scrambleB.split()))}\n")
                     # log.info("stateB < stateA writing %s" % lineB)
                     lineB = advance_filehandle_to_edges_pattern_change(patternB, fhB)
 
@@ -125,8 +125,8 @@ if __name__ == "__main__":
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
-    logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
-    logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
+    logging.addLevelName(logging.ERROR, f"[91m   {logging.getLevelName(logging.ERROR)}[0m")
+    logging.addLevelName(logging.WARNING, f"[91m {logging.getLevelName(logging.WARNING)}[0m")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("filenameA", type=str, help="filenameA")

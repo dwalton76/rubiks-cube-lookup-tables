@@ -24,11 +24,11 @@ with open(filename_new, "w") as fh_new:
                 steps_len = len(steps.split())
 
             if steps_len <= step_limit:
-                fh_new.write("%s:%s\n" % (state, steps))
+                fh_new.write(f"{state}:{steps}\n")
 
             line_number += 1
 
             if line_number % 1000000 == 0:
                 print("WRITE: %d" % line_number)
 
-subprocess.check_output("./utils/pad-lines.py %s" % filename_new, shell=True)
+subprocess.check_output(f"./utils/pad-lines.py {filename_new}", shell=True)

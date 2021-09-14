@@ -242,9 +242,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     else:
                         raise Exception("Implement this")
 
-                    to_write.append(
-                        "%s%s:%s:%s" % (centers, edges_pattern, cube_state_string, " ".join(moves_to_scramble))
-                    )
+                    to_write.append(f"{centers}{edges_pattern}:{cube_state_string}:{' '.join(moves_to_scramble)}")
                     to_write_count += 1
 
                 else:
@@ -252,15 +250,15 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
                     if odd_even_layer is not None:
                         odd_even = get_odd_even(moves_to_scramble, odd_even_layer)
-                        to_write.append("%s_%s:%s" % (cube_state_string, odd_even, " ".join(moves_to_scramble)))
+                        to_write.append(f"{cube_state_string}_{odd_even}:{' '.join(moves_to_scramble)}")
                         to_write_count += 1
 
                     else:
                         if cube_state_string not in states_written:
                             if next_move is None:
-                                to_write.append("%s:%s" % (cube_state_string, " ".join(moves_to_scramble[0:-1])))
+                                to_write.append(f"{cube_state_string}:{' '.join(moves_to_scramble[0:-1])}")
                             else:
-                                to_write.append("%s:%s" % (cube_state_string, " ".join(moves_to_scramble)))
+                                to_write.append(f"{cube_state_string}:{' '.join(moves_to_scramble)}")
                             states_written.add(cube_state_string)
                             to_write_count += 1
 
@@ -288,8 +286,8 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                         shell=True,
                     )
                     # log.info("rm %s.0*" % outputfilebase)
-                    subprocess.check_output("rm %s.0*" % outputfilebase, shell=True)
-                    subprocess.check_output("nice ./utils/keep-best-solution.py %s.all" % outputfilebase, shell=True)
+                    subprocess.check_output(f"rm {outputfilebase}.0*", shell=True)
+                    subprocess.check_output(f"nice ./utils/keep-best-solution.py {outputfilebase}.all", shell=True)
                     lines_since_last_merge = 0
 
         if to_write:
@@ -310,8 +308,8 @@ if __name__ == "__main__":
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
-    logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
-    logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
+    logging.addLevelName(logging.ERROR, f"[91m   {logging.getLevelName(logging.ERROR)}[0m")
+    logging.addLevelName(logging.WARNING, f"[91m {logging.getLevelName(logging.WARNING)}[0m")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("size", type=str, help="Cube size")

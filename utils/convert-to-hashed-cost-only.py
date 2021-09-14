@@ -73,7 +73,7 @@ def convert_to_cost_only(filename, bucketcount, filename_statetargets):
                 log.info(line_number)
 
     log.info("%d collisions" % collisions)
-    log.info("begin writing %s" % filename_new)
+    log.info(f"begin writing {filename_new}")
     with open(filename_new, "w") as fh_new:
         to_write = []
 
@@ -94,7 +94,7 @@ def convert_to_cost_only(filename, bucketcount, filename_statetargets):
             to_write = []
 
         fh_new.write("\n")
-    log.info("end writing %s" % filename_new)
+    log.info(f"end writing {filename_new}")
 
 
 if __name__ == "__main__":

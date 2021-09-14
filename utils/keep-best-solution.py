@@ -45,7 +45,7 @@ def keep_best_solutions(filename):
                 solution_len = steps_to_solve.count(" ") + 1
 
                 if state != prev_state and prev_state:
-                    to_write.append("%s:%s\n" % (prev_state, state_min_solution))
+                    to_write.append(f"{prev_state}:{state_min_solution}\n")
                     to_write_count += 1
                     state_min_solution_len = 99
                     state_min_solution = None
@@ -61,7 +61,7 @@ def keep_best_solutions(filename):
 
                 prev_state = state
 
-            to_write.append("%s:%s\n" % (prev_state, state_min_solution))
+            to_write.append(f"{prev_state}:{state_min_solution}\n")
             to_write_count += 1
 
         if to_write_count:
@@ -77,7 +77,7 @@ if __name__ == "__main__":
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
-    logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
-    logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
+    logging.addLevelName(logging.ERROR, f"[91m   {logging.getLevelName(logging.ERROR)}[0m")
+    logging.addLevelName(logging.WARNING, f"[91m {logging.getLevelName(logging.WARNING)}[0m")
 
     keep_best_solutions(sys.argv[1])

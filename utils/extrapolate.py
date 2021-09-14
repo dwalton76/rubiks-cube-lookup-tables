@@ -147,5 +147,5 @@ while count_total < count_total_target:
 
     prev_count_at_depth = count_at_depth
 
-print("\n    Average: {:,}".format(move_total / count_total))
-print("    Total  : {:,}\n".format(count_total))
+print(f"\n    Average: {move_total / count_total:,}")
+print(f"    Total  : {count_total:,}\n")

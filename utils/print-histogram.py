@@ -227,7 +227,7 @@ if do_edges:
             len_steps_count = edge_stats2[key][len_steps]
             print("    %d steps has %d entries" % (len_steps, len_steps_count))
 
-print("\n    Total: {:,} entries".format(linecount))
+print(f"\n    Total: {linecount:,} entries")
 
 if linecount:
-    print("    Average: %.2f moves\n\n" % float(total_steps / linecount))
+    print(f"    Average: {float(total_steps / linecount):.2f} moves\n\n")

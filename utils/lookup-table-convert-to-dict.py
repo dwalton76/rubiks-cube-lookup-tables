@@ -27,7 +27,7 @@ def convert_to_dict(filename):
                 else:
                     fh_new.write(",\n")
 
-                fh_new.write('"%s" : "%s"' % (state, steps))
+                fh_new.write(f'"{state}" : "{steps}"')
         fh_new.write("\n}\n")
 
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     filename = sys.argv[1]
 
     if not os.path.isfile(filename):
-        print("ERROR: %s does not exist" % filename)
+        print(f"ERROR: {filename} does not exist")
         sys.exit(1)
 
     # setup logging

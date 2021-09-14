@@ -19,9 +19,9 @@ with open(filename, "r") as fh_read:
             steps = steps.split()
 
             if steps:
-                fh.write("%s:%s\n" % (state, steps[0]))
+                fh.write(f"{state}:{steps[0]}\n")
             else:
-                fh.write("%s:\n" % state)
+                fh.write(f"{state}:\n")
 
             count += 1
 
@@ -29,4 +29,4 @@ with open(filename, "r") as fh_read:
                 print(count)
 
 shutil.move(filename_small, filename)
-subprocess.check_output("./utils/pad-lines.py %s" % filename, shell=True)
+subprocess.check_output(f"./utils/pad-lines.py {filename}", shell=True)

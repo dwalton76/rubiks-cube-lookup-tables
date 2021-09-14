@@ -11,14 +11,14 @@ def gods_number(size, MOVE_COUNT, COMBOS):
     PADDING = len(str(COMBOS))
     PADDING += int(PADDING / 3)
 
-    print("\n{}x{}x{} number of states is\n{:,}\n".format(size, size, size, COMBOS))
+    print(f"\n{size}x{size}x{size} number of states is\n{COMBOS:,}\n")
 
     # print("     {}  {}".format("This Depth".rjust(PADDING), "Total".rjust(PADDING)))
     # print("===  {}  {}".format("=" * PADDING, "=" * PADDING))
     # print("{:02d}:  {}  {}".format(1, "{:,}".format(prev_depth).rjust(PADDING), "{:,}".format(total).rjust(PADDING)))
-    print("     {}".format("This Depth".rjust(PADDING)))
-    print("===  {}".format("=" * PADDING))
-    print("{:02d}:  {}".format(1, "{:,}".format(prev_depth).rjust(PADDING)))
+    print(f"     {'This Depth'.rjust(PADDING)}")
+    print(f"===  {'=' * PADDING}")
+    print(f"{1:02d}:  {'{:,}'.format(prev_depth).rjust(PADDING)}")
 
     for depth in range(2, 100):
         this_depth = (MOVE_COUNT - 3) * prev_depth
@@ -30,7 +30,7 @@ def gods_number(size, MOVE_COUNT, COMBOS):
             total -= over_by
 
         # print("{:02d}:  {}  {}".format(depth, "{:,}".format(this_depth).rjust(PADDING), "{:,}".format(total).rjust(PADDING)))
-        print("{:02d}:  {}".format(depth, "{:,}".format(this_depth).rjust(PADDING)))
+        print(f"{depth:02d}:  {'{:,}'.format(this_depth).rjust(PADDING)}")
 
         if total >= COMBOS:
             break

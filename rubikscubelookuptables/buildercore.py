@@ -240,7 +240,7 @@ def convert_to_hash_cost_only(filename: str, bucketcount: int) -> None:
             #    break
 
     log.info("%d collisions" % collisions)
-    log.info("begin writing %s" % filename_new)
+    log.info(f"begin writing {filename_new}")
     with open(filename_new, "w") as fh_new:
         to_write = []
 
@@ -259,7 +259,7 @@ def convert_to_hash_cost_only(filename: str, bucketcount: int) -> None:
             fh_new.write("".join(to_write))
 
         fh_new.write("\n")
-    log.info("end writing %s" % filename_new)
+    log.info(f"end writing {filename_new}")
 
 
 def parse_histogram(filename: str) -> str:
@@ -294,7 +294,7 @@ def parse_histogram(filename: str) -> str:
                     break
 
     if not found_filename:
-        print("\n\nERROR: %s is not in histogram.txt" % filename)
+        print(f"\n\nERROR: {filename} is not in histogram.txt")
         sys.exit(0)
 
     return ("\n".join(histogram), linecount, max_depth)
@@ -307,8 +307,8 @@ def get_starting_states(filename, class_name, hex_digits):
     ss_filename = "starting-states-" + filename
 
     if not os.path.exists(ss_filename):
-        print("\n\nERROR: %s does not exist. run:" % ss_filename)
-        print("\n./builderui.py %s\n" % class_name.replace("LookupTable", "StartingStates"))
+        print(f"\n\nERROR: {ss_filename} does not exist. run:")
+        print(f"\n./builderui.py {class_name.replace('LookupTable', 'StartingStates')}\n")
         sys.exit(1)
 
     with open(ss_filename, "r") as fh:
@@ -335,7 +335,7 @@ def get_starting_states(filename, class_name, hex_digits):
                 hex_format = "TBD_HEX_FORMAT"
                 result.append("             '" + hex_format % int(line, 2) + "'")
             else:
-                result.append("%s" % line)
+                result.append(f"{line}")
 
         result.sort()
 
@@ -358,7 +358,7 @@ class BackgroundProcess(Thread):
         return self.desc
 
     def run(self):
-        log.debug("Running %s" % " ".join(self.cmd))
+        log.debug(f"Running {' '.join(self.cmd)}")
         try:
             self.result = subprocess.check_output(self.cmd)
 
@@ -414,7 +414,7 @@ class BFS(object):
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
-        assert self.size in supported_sizes, "%s not supported" % self.size
+        assert self.size in supported_sizes, f"{self.size} not supported"
         assert isinstance(self.filename, str)
         assert isinstance(self.store_as_hex, bool)
         assert isinstance(starting_cube_states, tuple)
@@ -504,9 +504,9 @@ class BFS(object):
                     self.legal_moves.append(move)
 
         # self.legal_moves = sorted(self.legal_moves)
-        log.info("all moves     : %s" % " ".join(self.all_moves))
-        log.info("illegal moves : %s" % " ".join(self.illegal_moves))
-        log.info("legal moves   : %s" % " ".join(self.legal_moves))
+        log.info(f"all moves     : {' '.join(self.all_moves)}")
+        log.info(f"illegal moves : {' '.join(self.illegal_moves)}")
+        log.info(f"legal moves   : {' '.join(self.legal_moves)}")
         self.bucketcount = 0
         self.size_number = int(self.size[0])
         self.workq_line_length = self.get_workq_line_length()
@@ -583,7 +583,7 @@ class BFS(object):
                     i, self.stats[i], int(float(self.stats[i] / total) * 100), delta
                 )
 
-        states_per_depth += "    Total: {:,} entries".format(total)
+        states_per_depth += f"    Total: {total:,} entries"
         log.info("\n\n" + states_per_depth + "\n\n")
 
     def _search_setup(self):
@@ -591,7 +591,7 @@ class BFS(object):
         Prep work needed before we start our BFS
         """
         # We will write the workq to a file in a local tmp directory
-        self.workq_filename = os.path.join(FAST_TMP, "%s.workq.txt" % self)
+        self.workq_filename = os.path.join(FAST_TMP, f"{self}.workq.txt")
         self.workq_filename_next = self.workq_filename + ".next"
         self.workq_size = 0
         self.depth = 1
@@ -613,17 +613,17 @@ class BFS(object):
             elif self.size == "5x5x5":
                 pattern = "TBD"
             else:
-                raise Exception("implement edges-pattern for %s" % self.size)
+                raise Exception(f"implement edges-pattern for {self.size}")
         else:
             pattern = ""
 
         with open(self.workq_filename, "w") as fh:
             for cube in self.starting_cubes:
-                log.info("starting cube %s" % "".join(cube.state).replace(".", "")[1:])
+                log.info(f"starting cube {''.join(cube.state).replace('.', '')[1:]}")
                 if self.use_edges_pattern:
-                    workq_line = "%s:%s:" % (pattern, "".join(cube.state))
+                    workq_line = f"{pattern}:{''.join(cube.state)}:"
                 else:
-                    workq_line = "%s:" % ("".join(cube.state))
+                    workq_line = f"{''.join(cube.state)}:"
 
                 fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
                 self.workq_size += 1
@@ -725,7 +725,7 @@ class BFS(object):
                         "--outputfile",
                         self.get_workq_filename_for_core(core),
                         "--moves",
-                        "%s" % " ".join(self.legal_moves),
+                        f"{' '.join(self.legal_moves)}",
                     ]
 
                 else:
@@ -738,7 +738,7 @@ class BFS(object):
                         str(start),
                         str(end),
                         self.get_workq_filename_for_core(core),
-                        "%s" % " ".join(self.legal_moves),
+                        f"{' '.join(self.legal_moves)}",
                     ]
 
                 if self.use_edges_pattern:
@@ -787,7 +787,7 @@ class BFS(object):
         to_write_count = 0
         workq_line_length = self.workq_line_length
         self.workq_size = 0
-        sorted_results_filename = "%s.10-results" % self.workq_filename
+        sorted_results_filename = f"{self.workq_filename}.10-results"
 
         # Remove the workq file to save some disk space
         if os.path.exists(self.workq_filename):
@@ -806,7 +806,7 @@ class BFS(object):
         if self.use_edges_pattern:
             log.info("keep-best-solution.py begin")
             start_time = dt.datetime.now()
-            subprocess.check_output("nice ./utils/keep-best-solution.py %s" % sorted_results_filename, shell=True)
+            subprocess.check_output(f"nice ./utils/keep-best-solution.py {sorted_results_filename}", shell=True)
             self.time_in_keep_best_solution += (dt.datetime.now() - start_time).total_seconds()
             log.info("keep-best-solution.py end")
 
@@ -835,9 +835,9 @@ class BFS(object):
         log.info("building next workq file begin")
         start_time = dt.datetime.now()
         new_states_count = int(
-            subprocess.check_output("wc -l %s.20-new-states" % self.workq_filename, shell=True).strip().split()[0]
+            subprocess.check_output(f"wc -l {self.workq_filename}.20-new-states", shell=True).strip().split()[0]
         )
-        log.info("there are {:,} new states".format(new_states_count))
+        log.info(f"there are {new_states_count:,} new states")
         pruned = 0
         kept = 0
 
@@ -855,14 +855,14 @@ class BFS(object):
                     raise Exception()
 
             else:
-                raise Exception("Implement this %s" % self.name)
+                raise Exception(f"Implement this {self.name}")
 
-            log.info("begin loading %s" % lt_centers_filename)
+            log.info(f"begin loading {lt_centers_filename}")
             with open(lt_centers_filename, "r") as fh:
                 for line in fh:
                     (state, steps) = line.strip().split(":")
                     self.lt_centers[state] = len(steps.split())
-            log.info("end loading %s" % lt_centers_filename)
+            log.info(f"end loading {lt_centers_filename}")
 
         if max_depth is None or self.depth < max_depth:
             to_write = []
@@ -910,9 +910,9 @@ class BFS(object):
                     steps_to_scramble = " ".join(reverse_steps(steps_to_solve.split()))
 
                     if self.use_edges_pattern:
-                        workq_line = "%s:%s:%s" % (pattern, state, steps_to_scramble)
+                        workq_line = f"{pattern}:{state}:{steps_to_scramble}"
                     else:
-                        workq_line = "%s:%s" % (state, steps_to_scramble)
+                        workq_line = f"{state}:{steps_to_scramble}"
 
                     to_write.append(workq_line + " " * (workq_line_length - len(workq_line)) + "\n")
                     to_write_count += 1
@@ -934,7 +934,7 @@ class BFS(object):
                 pass
 
         if pruned:
-            log.warning("kept {:,}, pruned {:,}".format(kept, pruned))
+            log.warning(f"kept {kept:,}, pruned {pruned:,}")
 
         self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
         log.info("building next workq file end")
@@ -953,14 +953,14 @@ class BFS(object):
             log.info("sort --merge our current lookup-table.txt file with the .20-new-states file end")
         else:
             subprocess.check_output(
-                "cp %s.20-new-states %s.30-final" % (self.workq_filename, self.workq_filename), shell=True
+                f"cp {self.workq_filename}.20-new-states {self.workq_filename}.30-final", shell=True
             )
 
         log.info("move files begin")
         start_time = dt.datetime.now()
-        os.remove("%s.10-results" % self.workq_filename)
-        os.remove("%s.20-new-states" % self.workq_filename)
-        shutil.move("%s.30-final" % self.workq_filename, self.filename)
+        os.remove(f"{self.workq_filename}.10-results")
+        os.remove(f"{self.workq_filename}.20-new-states")
+        shutil.move(f"{self.workq_filename}.30-final", self.filename)
 
         # mv the next workq to be the current workq
         shutil.move(self.workq_filename_next, self.workq_filename)
@@ -969,7 +969,7 @@ class BFS(object):
 
         # We have finished this depth of the search, update our stats and print them
         self.stats[self.depth] = new_states_count
-        log.warning("{}: finished depth {}, workq size {:,}".format(self.index, self.depth, self.workq_size))
+        log.warning(f"{self.index}: finished depth {self.depth}, workq size {self.workq_size:,}")
 
     def search(self, max_depth, cores):
         """
@@ -1017,21 +1017,21 @@ class BFS(object):
                     ):
                         continue
 
-                to_write.append("             ('%s', 'ULFRBD')," % cube_state_string[1:])
+                to_write.append(f"             ('{cube_state_string[1:]}', 'ULFRBD'),")
 
                 for step in self.rotations:
                     self.cube.state = list(cube_state_string)
                     self.cube.rotate(step)
                     # self.cube.print_cube()
-                    to_write.append("             ('%s', 'ULFRBD')," % "".join(self.cube.state[1:]))
+                    to_write.append(f"             ('{''.join(self.cube.state[1:])}', 'ULFRBD'),")
 
-        with open("%s.starting-states" % self.filename, "w") as fh_final:
+        with open(f"{self.filename}.starting-states", "w") as fh_final:
             to_write.sort()
             fh_final.write("\n".join(to_write) + "\n")
         log.info("wrote %d starting states" % len(to_write))
 
         to_write = []
-        with open("%s.starting-states" % self.filename, "r") as fh_read:
+        with open(f"{self.filename}.starting-states", "r") as fh_read:
             for line in fh_read:
                 (state, order) = line.strip().split("', '")
 
@@ -1042,16 +1042,16 @@ class BFS(object):
                 if self.store_as_hex:
                     state = convert_state_to_hex(state)
 
-                to_write.append("'%s'," % state)
+                to_write.append(f"'{state}',")
 
-        with open("%s.starting-states.compact" % self.filename, "w") as fh:
+        with open(f"{self.filename}.starting-states.compact", "w") as fh:
             to_write.sort()
             fh.write("\n".join(to_write) + "\n")
 
         if self.use_edges_pattern:
             print("state_target patterns:\n%s\n\n" % "\n".join(patterns))
 
-        shutil.move("%s.starting-states" % self.filename, self.filename)
+        shutil.move(f"{self.filename}.starting-states", self.filename)
 
     def save(self):
         start_time = dt.datetime.now()
@@ -1061,9 +1061,9 @@ class BFS(object):
 
         # Convert the states in our lookup-table to their smaller format...basically
         # remove all of the '.'s and if convert to hex (if requested).
-        log.info("%s: save() begin" % self)
-        log.info("%s: convert state to smaller format, file %s" % (self, self.filename))
-        with open("%s.small" % self.filename, "w") as fh_final:
+        log.info(f"{self}: save() begin")
+        log.info(f"{self}: convert state to smaller format, file {self.filename}")
+        with open(f"{self.filename}.small", "w") as fh_final:
             with open(self.filename, "r") as fh_read:
                 odd_even = ""
 
@@ -1082,7 +1082,7 @@ class BFS(object):
 
                             pattern = pattern.replace("UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD", "")
 
-                        to_write.append("%s:%s" % (pattern, steps))
+                        to_write.append(f"{pattern}:{steps}")
                         to_write_count += 1
 
                         if to_write_count >= WRITE_BATCH_SIZE:
@@ -1116,9 +1116,9 @@ class BFS(object):
                                 edges = convert_state_to_hex(edges)
 
                         else:
-                            raise Exception("Add support for %s" % self.size)
+                            raise Exception(f"Add support for {self.size}")
 
-                        to_write.append("%s%s:%s" % (centers, edges, steps))
+                        to_write.append(f"{centers}{edges}:{steps}")
                         to_write_count += 1
 
                         if to_write_count >= WRITE_BATCH_SIZE:
@@ -1178,7 +1178,7 @@ class BFS(object):
                 to_write = []
                 to_write_count = 0
 
-        shutil.move("%s.small" % self.filename, self.filename)
+        shutil.move(f"{self.filename}.small", self.filename)
 
         if odd_even:
             odd_filename = self.filename.replace(".txt", "-odd.txt")
@@ -1203,33 +1203,33 @@ class BFS(object):
             files_to_pad = (self.filename,)
 
         for filename in files_to_pad:
-            log.info("%s: pad the file" % self)
-            subprocess.check_output("nice ./utils/pad-lines.py %s" % filename, shell=True)
+            log.info(f"{self}: pad the file")
+            subprocess.check_output(f"nice ./utils/pad-lines.py {filename}", shell=True)
 
             # Check to see if the file is already sorted before we spend the cycles to sort it
             try:
-                log.info("%s: sort --check" % self)
-                subprocess.check_output("LC_ALL=C nice sort --check %s" % filename, shell=True)
+                log.info(f"{self}: sort --check")
+                subprocess.check_output(f"LC_ALL=C nice sort --check {filename}", shell=True)
             except subprocess.CalledProcessError:
-                log.info("%s: sort the file" % self)
+                log.info(f"{self}: sort the file")
                 subprocess.check_output(
                     "LC_ALL=C nice sort --parallel=%d --temporary-directory=%s --output=%s %s"
                     % (self.cores, FAST_TMP, filename, filename),
                     shell=True,
                 )
 
-            log.info("%s: build histogram" % self)
-            subprocess.check_output("nice ./utils/print-histogram.py %s >> histogram.txt" % filename, shell=True)
+            log.info(f"{self}: build histogram")
+            subprocess.check_output(f"nice ./utils/print-histogram.py {filename} >> histogram.txt", shell=True)
 
             if self.use_cost_only:
-                log.info("%s: build cost-only copy of file" % self)
+                log.info(f"{self}: build cost-only copy of file")
                 convert_to_cost_only(filename)
 
             elif self.use_hash_cost_only:
-                log.info("%s: build hash-cost-only copy of file" % self)
+                log.info(f"{self}: build hash-cost-only copy of file")
                 convert_to_hash_cost_only(filename, self.bucketcount)
 
-            log.info("%s: save() end" % self)
+            log.info(f"{self}: save() end")
 
         self.time_in_save = (dt.datetime.now() - start_time).total_seconds()
 
@@ -1251,7 +1251,7 @@ class BFS(object):
                             state = edges_recolor_pattern_444(self.cube.state[:])
                             state = "".join([state[index] for (_, index, _) in wings_for_edges_recolor_pattern_444])
                         else:
-                            raise Exception("use_edges_pattern not supported for %s" % self.size)
+                            raise Exception(f"use_edges_pattern not supported for {self.size}")
 
                     else:
                         state = "".join(state.split()).strip().replace(".", "")
@@ -1265,7 +1265,7 @@ class BFS(object):
                     # do this later
                     pass
                 else:
-                    raise Exception("%s is an invalid state_type" % state_type)
+                    raise Exception(f"{state_type} is an invalid state_type")
 
             foo.sort()
             starting_states = ",\n".join(foo)
@@ -1404,7 +1404,7 @@ class %s(LookupTableIDA):
             print("        lt_state = self.hex_format % int(lt_state, 2)\n\n")
 
         elif self.use_edges_pattern:
-            print("        state = edges_recolor_pattern_%s(parent_state[:])" % self.size.replace("x", ""))
+            print(f"        state = edges_recolor_pattern_{self.size.replace('x', '')}(parent_state[:])")
             print(
                 "        edges_state = ''.join([state[index] for index in wings_for_edges_pattern_%s])"
                 % self.size.replace("x", "")
@@ -1412,7 +1412,7 @@ class %s(LookupTableIDA):
             print("        lt_state = edges_state")
 
         else:
-            print("        lt_state = ''.join([parent_state[x] for x in TBD_%s])" % self.size.replace("x", ""))
+            print(f"        lt_state = ''.join([parent_state[x] for x in TBD_{self.size.replace('x', '')}])")
 
         print("        cost_to_goal = max(foo_cost, bar_cost)")
         print("        return (lt_state, cost_to_goal)\n\n")
@@ -1425,10 +1425,10 @@ class %s(LookupTableIDA):
 
             # if os.path.exists(first_prune_table_filename):
             if True or os.path.exists(first_prune_table_filename):
-                log.info("prune table %s does exist" % first_prune_table_filename)
+                log.info(f"prune table {first_prune_table_filename} does exist")
                 self._code_gen_lookup_table_ida()
             else:
-                log.info("prune table %s does NOT exist" % first_prune_table_filename)
+                log.info(f"prune table {first_prune_table_filename} does NOT exist")
                 self._code_gen_lookup_table()
         else:
             self._code_gen_lookup_table()
@@ -1505,7 +1505,7 @@ class %s(LookupTableIDA):
             for cube_state_minus_x in sorted(table.keys()):
                 steps_to_scramble = table[cube_state_minus_x]
                 steps_to_solve = reverse_steps(steps_to_scramble)
-                fh.write("%s:%s\n" % (cube_state_minus_x, " ".join(steps_to_solve)))
+                fh.write(f"{cube_state_minus_x}:{' '.join(steps_to_solve)}\n")
 
 
 if __name__ == "__main__":
@@ -1513,8 +1513,8 @@ if __name__ == "__main__":
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
-    logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
-    logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
+    logging.addLevelName(logging.ERROR, f"[91m   {logging.getLevelName(logging.ERROR)}[0m")
+    logging.addLevelName(logging.WARNING, f"[91m {logging.getLevelName(logging.WARNING)}[0m")
 
     # standard libraries
     import doctest
