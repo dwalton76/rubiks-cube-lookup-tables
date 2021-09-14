@@ -10,7 +10,7 @@ filename_pad = filename + ".pad"
 
 # Use "wc --max-line-length" to get the width of the longest line in the file
 max_length = int(
-    subprocess.check_output("wc --max-line-length %s" % filename, shell=True).decode("utf-8").strip().split()[0]
+    subprocess.check_output(f"wc --max-line-length {filename}", shell=True).decode("utf-8").strip().split()[0]
 )
 print("%s max_length: %d" % (filename, max_length))
 

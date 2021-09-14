@@ -127,7 +127,7 @@ def binary_search_multiple(fh, width, state_width, linecount, states_to_find):
             index += 1
             continue
         elif b_state_to_find > b_state_last:
-            log.info("DONE %s > %s" % (b_state_to_find, b_state_last))
+            log.info(f"DONE {b_state_to_find} > {b_state_last}")
             break
 
         if cache:
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     key = sys.argv[2]
 
     if not os.path.isfile(filename):
-        print("ERROR: %s does not exist" % filename)
+        print(f"ERROR: {filename} does not exist")
         sys.exit(1)
 
     if os.path.isfile(key):
@@ -224,7 +224,7 @@ if __name__ == "__main__":
         log.info("search start")
 
         if keys:
-            log.info("finding {:,} keys".format(len(keys)))
+            log.info(f"finding {len(keys):,} keys")
             # for x in key.split(','):
             #    seek_count = 0
             #    value = binary_search(fh, width, state_width, linecount, x)
@@ -237,7 +237,7 @@ if __name__ == "__main__":
             for (key, value) in zip(keys, values):
                 # if value is not None:
                 #    print("key %s value is %s" % (key, value))
-                log.info("key %s value is %s" % (key, value))
+                log.info(f"key {key} value is {value}")
             log.info("Took %d seeks" % seek_count)
 
         else:

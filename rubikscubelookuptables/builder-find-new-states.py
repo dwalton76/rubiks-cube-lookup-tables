@@ -46,7 +46,7 @@ def diff_states(filenameA, filenameB, outputfile):
             pass
 
     if not os.path.isfile(filenameB):
-        raise Exception("%s does not exists" % filenameB)
+        raise Exception(f"{filenameB} does not exists")
 
     to_write = []
     to_write_count = 0
@@ -164,8 +164,8 @@ if __name__ == "__main__":
     log = logging.getLogger(__name__)
 
     # Color the errors and warnings in red
-    logging.addLevelName(logging.ERROR, "\033[91m   %s\033[0m" % logging.getLevelName(logging.ERROR))
-    logging.addLevelName(logging.WARNING, "\033[91m %s\033[0m" % logging.getLevelName(logging.WARNING))
+    logging.addLevelName(logging.ERROR, f"[91m   {logging.getLevelName(logging.ERROR)}[0m")
+    logging.addLevelName(logging.WARNING, f"[91m {logging.getLevelName(logging.WARNING)}[0m")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("filenameA", type=str, help="filenameA")
