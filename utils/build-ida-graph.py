@@ -7,6 +7,10 @@ import sys
 # rubiks cube libraries
 from rubikscubennnsolver.RubiksCube444 import (
     LookupTable444LRCentersStage,
+    LookupTable444Reduce333Centers,
+    LookupTable444Reduce333FirstFourEdges,
+    LookupTable444Reduce333FirstTwoCenters,
+    LookupTable444Reduce333LastEightEdges,
     LookupTable444UDCentersStage,
     RubiksCube444,
     solved_444,
@@ -69,15 +73,34 @@ log = logging.getLogger(__name__)
 
 lt_class = sys.argv[1]
 
-if lt_class.startswith("Build444"):
+if lt_class.startswith("Build444"):  # noqa: C901
     cube = RubiksCube444(solved_444, "URFDLB")
 
+    # phase 1
     if lt_class == "Build444UDCentersStage":
         cube.lt = LookupTable444UDCentersStage(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
     elif lt_class == "Build444LRCentersStage":
         cube.lt = LookupTable444LRCentersStage(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    # phase 3
+    elif lt_class == "Build444Reduce333FirstTwoCenters":
+        cube.lt = LookupTable444Reduce333FirstTwoCenters(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build444Reduce333FirstFourEdges":
+        cube.lt = LookupTable444Reduce333FirstFourEdges(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    # phase 4
+    elif lt_class == "Build444Reduce333Centers":
+        cube.lt = LookupTable444Reduce333Centers(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build444Reduce333LastEightEdges":
+        cube.lt = LookupTable444Reduce333LastEightEdges(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
     else:

@@ -32,16 +32,16 @@ wheel:
 	./utils/builderui.py Build222Ultimate
 
 333: clean
-	./utils/builderui.py Build333Phase1
-	./utils/builderui.py Build333Phase2
-	./utils/builderui.py Build333Phase2Edges
-	./utils/builderui.py Build333Phase2Corners
-	./utils/builderui.py Build333Phase3
-	./utils/builderui.py Build333Phase3Edges
-	./utils/builderui.py Build333Phase3Corners
-	./utils/builderui.py Build333Phase4
-	./utils/builderui.py Build333Phase4Edges
-	./utils/builderui.py Build333Phase4Corners
+	./utils/builderui.py Build333MicroPythonPhase1
+	./utils/builderui.py Build333MicroPythonPhase2
+	./utils/builderui.py Build333MicroPythonPhase2Edges
+	./utils/builderui.py Build333MicroPythonPhase2Corners
+	./utils/builderui.py Build333MicroPythonPhase3
+	./utils/builderui.py Build333MicroPythonPhase3Edges
+	./utils/builderui.py Build333MicroPythonPhase3Corners
+	./utils/builderui.py Build333MicroPythonPhase4
+	./utils/builderui.py Build333MicroPythonPhase4Edges
+	./utils/builderui.py Build333MicroPythonPhase4Corners
 
 444-phase1: clean
 	./utils/builderui.py Build444UDCentersStage
@@ -57,11 +57,19 @@ wheel:
 	./utils/builderui.py Build444HighLowEdges --depth 6
 
 444-phase3: clean
+	./utils/builderui.py Build444Reduce333FirstTwoCenters
+	./utils/build-ida-graph.py Build444Reduce333FirstTwoCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-centers.json
+	./utils/builderui.py Build444Reduce333FirstFourEdges
+	./utils/build-ida-graph.py Build444Reduce333FirstFourEdges
+	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-1000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-2000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-3000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-4000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-5000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
 	./utils/builderui.py Build444Reduce333Centers
-	./utils/convert-to-hashed-cost-only.py lookup-tables/lookup-table-4x4x4-step32-reduce333-centers.txt 58831 helper-tables/lookup-table-4x4x4-step32-reduce333-centers.txt.starting-states.compact
-	./utils/builderui.py Build444Reduce333Edges
-	./utils/convert-to-hashed-cost-only.py lookup-tables/lookup-table-4x4x4-step31-reduce333-edges.txt 239500847 helper-tables/lookup-table-4x4x4-step31-reduce333-edges.txt.starting-states.compact
-	./utils/builderui.py Build444Reduce333 --depth 6
+	./utils/build-ida-graph.py Build444Reduce333Centers
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step41-centers.json
+	./utils/builderui.py Build444Reduce333LastEightEdges
+	./utils/build-ida-graph.py Build444Reduce333LastEightEdges
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step42-last-eight-edges.json
 
 444: 444-phase1 444-phase2 444-phase3
 
