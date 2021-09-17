@@ -491,7 +491,7 @@ class BFS(object):
         # Print all starting cubes
         if len(self.starting_cubes) < 20000:
             for cube in self.starting_cubes:
-                cube.print_cube()
+                cube.print_cube("starting cube")
 
         # Build list of legal moves from allmoves minus illegal moves
         if legal_moves:
