@@ -6,6 +6,8 @@ import sys
 
 # rubiks cube libraries
 from rubikscubennnsolver.RubiksCube444 import (
+    LookupTable444HighLowEdgesEdgesPhase1,
+    LookupTable444LCentersStage,
     LookupTable444LRCentersStage,
     LookupTable444Reduce333Centers,
     LookupTable444Reduce333FirstFourEdges,
@@ -83,6 +85,14 @@ if lt_class.startswith("Build444"):  # noqa: C901
 
     elif lt_class == "Build444LRCentersStage":
         cube.lt = LookupTable444LRCentersStage(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build444LCentersStage":
+        cube.lt = LookupTable444LCentersStage(cube, build_state_index=True)
+        cube.lt.build_ida_graph()
+
+    elif lt_class == "Build444HighLowEdgesEdgesPhase1":
+        cube.lt = LookupTable444HighLowEdgesEdgesPhase1(cube, build_state_index=True)
         cube.lt.build_ida_graph()
 
     # phase 3

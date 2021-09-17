@@ -50,6 +50,14 @@ wheel:
 	./utils/builderui.py Build444LRCentersStage
 	./utils/build-ida-graph.py Build444LRCentersStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step12-LR-centers-stage.json
+	./utils/builderui.py Build444LCentersStage
+	./utils/build-ida-graph.py Build444LCentersStage
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step13-L-centers-stage.json
+	./utils/builderui.py Build444HighLowEdgesEdgesPhase1
+	./utils/build-ida-graph.py Build444HighLowEdgesEdgesPhase1
+	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step14-highlow-edges-edges.json-1000000 lookup-tables/lookup-table-4x4x4-step14-highlow-edges-edges.json-2000000 lookup-tables/lookup-table-4x4x4-step14-highlow-edges-edges.json
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step14-highlow-edges-edges.json
+
 
 444-phase2: clean
 	./utils/builderui.py Build444HighLowEdgesEdges
