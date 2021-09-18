@@ -203,6 +203,24 @@ class Build444HighLowEdgesEdgesPhase1(BFS):
 
 
 class Build444ULFRBDCentersStage(BFS):
+    """
+    1 steps has 7 entries (0 percent, 0.00x previous step)
+    2 steps has 135 entries (0 percent, 19.29x previous step)
+    3 steps has 2,286 entries (0 percent, 16.93x previous step)
+    4 steps has 36,728 entries (0 percent, 16.07x previous step)
+    5 steps has 562,932 entries (6 percent, 15.33x previous step)
+    6 steps has 8,047,054 entries (93 percent, 14.29x previous step)
+
+    # extrapolate from here
+
+    7 steps has 108,554,758 entries (13.49x previous step)
+    8 steps has 1,377,559,879 entries (12.69x previous step)
+    9 steps has 7,970,747,991 entries (5.79x previous step)
+
+    Average: 8.823304675580156
+    Total  : 9,465,511,770
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -229,6 +247,7 @@ class Build444ULFRBDCentersStage(BFS):
           . U U .
           . . . .""",
                     "ascii"),),
+            use_c=True,
         )
         # fmt: on
 
