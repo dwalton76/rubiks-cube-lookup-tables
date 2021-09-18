@@ -67,7 +67,7 @@ class Build444UDCentersStage(BFS):
           . U U .
           . U U .
           . . . .""",
-                    "ascii")),
+                    "ascii"),),
             use_c=True,
         )
         # fmt: on
@@ -99,7 +99,7 @@ class Build444LRCentersStage(BFS):
           . x x .
           . x x .
           . . . .""",
-                    "ascii")),
+                    "ascii"),),
             use_c=True,
         )
         # fmt: on
@@ -112,7 +112,7 @@ class StartingStates444LCentersStage(BFS):
             "4x4x4-L-centers-stage",
             ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "L", "L'", "R", "R'"),
             "4x4x4",
-            "starting-states-lookup-table-4x4x4-step21-highlow-edges-centers-new.txt",
+            "starting-states-lookup-table-4x4x4-step13-L-centers-stage.txt",
             False,  # store_as_hex
             # starting cubes
             (
@@ -228,7 +228,7 @@ class Build444ULFRBDCentersStage(BFS):
           . U U .
           . U U .
           . . . .""",
-                    "ascii")),
+                    "ascii"),),
         )
         # fmt: on
 
