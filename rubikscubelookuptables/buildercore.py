@@ -1263,7 +1263,7 @@ class BFS(object):
                         if use_hex:
                             state = convert_state_to_hex(state)
 
-                    foo.append("        '" + state + "'")
+                    foo.append('        "' + state + '"')
 
                 elif state_type == "ascii":
                     # do this later
@@ -1284,6 +1284,7 @@ class BFS(object):
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
         filename_minus_directory = self.filename.split("/")[1]
+        # dwalton
 
         print(
             '''
