@@ -3,7 +3,6 @@ import logging
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
-from rubikscubennnsolver.RubiksCube444 import moves_444
 
 log = logging.getLogger(__name__)
 
@@ -42,108 +41,6 @@ class Build444Ultimate(BFS):
         )
 
 
-class StartingStates444UDCentersStage(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "4x4x4-UD-centers-stage",
-            moves_444,
-            "4x4x4",
-            "starting-states-4x4x4-step11-UD-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . x x .  . x x .  . x x .  . x x .
- . x x .  . x x .  . x x .  . x x .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""",
-                    "ascii",
-                ),
-            ),
-            legal_moves=("x", "x'", "y", "y'", "z", "z'"),
-        )
-
-
-class StartingStates444LRCentersStage(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "4x4x4-LR-centers-stage",
-            moves_444,
-            "4x4x4",
-            "starting-states-4x4x4-step12-LR-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          . . . .
-          . x x .
-          . x x .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . x x .  . L L .  . x x .
- . L L .  . x x .  . L L .  . x x .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . x x .
-          . x x .
-          . . . .""",
-                    "ascii",
-                ),
-            ),
-            legal_moves=("x", "x'", "y", "y'", "z", "z'"),
-        )
-
-
-class StartingStates444ULFRBDCentersStage(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "4x4x4-ULFRBD-centers-stage",
-            moves_444,
-            "4x4x4",
-            "starting-states-4x4x4-step10-ULFRBD-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . F F .  . L L .  . F F .
- . L L .  . F F .  . L L .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""",
-                    "ascii",
-                ),
-            ),
-            legal_moves=("x", "x'", "y", "y'", "z", "z'"),
-        )
-
-
 class Build444UDCentersStage(BFS):
     def __init__(self):
         # fmt: off
@@ -155,11 +52,22 @@ class Build444UDCentersStage(BFS):
             "lookup-table-4x4x4-step11-UD-centers-stage.txt",
             False,  # store_as_hex
             # starting cubes
-            (
-                (".....UU..UU..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........UU..UU.....", "ULFRBD",),
-                (".....xx..xx..........UU..UU..........xx..xx..........UU..UU..........xx..xx..........xx..xx.....", "ULFRBD",),
-                (".....xx..xx..........xx..xx..........UU..UU..........xx..xx..........UU..UU..........xx..xx.....", "ULFRBD",),
-            ),
+            (("""
+          . . . .
+          . U U .
+          . U U .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . x x .  . x x .  . x x .  . x x .
+ . x x .  . x x .  . x x .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . U U .
+          . U U .
+          . . . .""",
+                    "ascii"),),
             use_c=True,
         )
         # fmt: on
@@ -176,10 +84,84 @@ class Build444LRCentersStage(BFS):
             "lookup-table-4x4x4-step12-LR-centers-stage.txt",
             False,  # store_as_hex
             # starting cubes
+            (("""
+          . . . .
+          . x x .
+          . x x .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . x x .  . L L .  . x x .
+ . L L .  . x x .  . L L .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . x x .
+          . x x .
+          . . . .""",
+                    "ascii"),),
+            use_c=True,
+        )
+        # fmt: on
+
+
+class StartingStates444LCentersStage(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "4x4x4-L-centers-stage",
+            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "L", "L'", "R", "R'"),
+            "4x4x4",
+            "starting-states-lookup-table-4x4x4-step13-L-centers-stage.txt",
+            False,  # store_as_hex
+            # starting cubes
             (
-                (".....LL..LL..........xx..xx..........xx..xx..........xx..xx..........xx..xx..........LL..LL.....", "ULFRBD",),
-                (".....xx..xx..........LL..LL..........xx..xx..........LL..LL..........xx..xx..........xx..xx.....", "ULFRBD",),
-                (".....xx..xx..........xx..xx..........LL..LL..........xx..xx..........LL..LL..........xx..xx.....", "ULFRBD",),
+                (
+                    """
+          . . . .
+          . x x .
+          . x x .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . x x .  . x x .  . x x .
+ . L L .  . x x .  . x x .  . x x .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . x x .
+          . x x .
+          . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+
+
+class Build444LCentersStage(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "4x4x4-L-centers-stage",
+            (),
+            "4x4x4",
+            "lookup-table-4x4x4-step13-L-centers-stage.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                ('.....xx..xx..........LL..LL..........xx..xx..........xx..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........LL..xx..........xx..xx..........LL..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........LL..xx..........xx..xx..........xx..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........Lx..Lx..........xx..xx..........Lx..Lx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........Lx..Lx..........xx..xx..........xL..xL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........Lx..xL..........xx..xx..........xL..Lx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........xL..Lx..........xx..xx..........Lx..xL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........xL..xL..........xx..xx..........Lx..Lx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........xL..xL..........xx..xx..........xL..xL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........xx..LL..........xx..xx..........LL..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........xx..LL..........xx..xx..........xx..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
+                ('.....xx..xx..........xx..xx..........xx..xx..........LL..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
             ),
             use_c=True,
         )
@@ -187,6 +169,27 @@ class Build444LRCentersStage(BFS):
 
 
 class Build444ULFRBDCentersStage(BFS):
+    """
+    I have not built this table but started it...it is the exact same as the 5x5x5 x-centers
+    table which I have built which is
+
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 135 entries (0 percent, 22.50x previous step)
+    3 steps has 2,286 entries (0 percent, 16.93x previous step)
+    4 steps has 36,728 entries (0 percent, 16.07x previous step)
+    5 steps has 562,932 entries (0 percent, 15.33x previous step)
+    6 steps has 8,047,054 entries (0 percent, 14.29x previous step)
+    7 steps has 105,823,666 entries (1 percent, 13.15x previous step)
+    8 steps has 1,147,351,438 entries (12 percent, 10.84x previous step)
+    9 steps has 5,653,730,364 entries (59 percent, 4.93x previous step)
+    10 steps has 2,535,422,638 entries (26 percent, 0.45x previous step)
+    11 steps has 14,534,522 entries (0 percent, 0.01x previous step)
+
+    Total: 9,465,511,770 entries
+    Average: 9.12 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -197,14 +200,23 @@ class Build444ULFRBDCentersStage(BFS):
             "lookup-table-4x4x4-step10-ULFRBD-centers-stage.txt",
             False,  # store_as_hex
             # starting cubes
-            (
-                (".....FF..FF..........LL..LL..........UU..UU..........LL..LL..........UU..UU..........FF..FF.....", "ULFRBD",),
-                (".....FF..FF..........UU..UU..........LL..LL..........UU..UU..........LL..LL..........FF..FF.....", "ULFRBD",),
-                (".....LL..LL..........FF..FF..........UU..UU..........FF..FF..........UU..UU..........LL..LL.....", "ULFRBD",),
-                (".....LL..LL..........UU..UU..........FF..FF..........UU..UU..........FF..FF..........LL..LL.....", "ULFRBD",),
-                (".....UU..UU..........FF..FF..........LL..LL..........FF..FF..........LL..LL..........UU..UU.....", "ULFRBD",),
-                (".....UU..UU..........LL..LL..........FF..FF..........LL..LL..........FF..FF..........UU..UU.....", "ULFRBD",),
-            ),
+            (("""
+          . . . .
+          . U U .
+          . U U .
+          . . . .
+
+ . . . .  . . . .  . . . .  . . . .
+ . L L .  . F F .  . L L .  . F F .
+ . L L .  . F F .  . L L .  . F F .
+ . . . .  . . . .  . . . .  . . . .
+
+          . . . .
+          . U U .
+          . U U .
+          . . . .""",
+                    "ascii"),),
+            use_c=True,
         )
         # fmt: on
 
@@ -222,18 +234,18 @@ class StartingStates444HighLowEdges(BFS):
                 (
                     """
           . U D .
-          D . . U
-          U . . D
+          D U U U
+          U U U D
           . D U .
 
  . D U .  . D U .  . D U .  . D U .
- D L L U  U . . D  D R R U  U . . D
- U L L D  D . . U  U R R D  D . . U
+ D L L U  U x x D  D R R U  U x x D
+ U L L D  D x x U  U R R D  D x x U
  . U D .  . U D .  . U D .  . U D .
 
           . U D .
-          D . . U
-          U . . D
+          D U U U
+          U U U D
           . D U .""",
                     "ascii",
                 ),
@@ -248,25 +260,25 @@ class StartingStates444HighLowEdgesCenters(BFS):
             "444-highlow-edges-centers",
             ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "L", "L'", "R", "R'"),
             "4x4x4",
-            "starting-states-lookup-table-4x4x4-step21-highlow-edges-centers.txt",
+            "starting-states-lookup-table-4x4x4-step22-highlow-edges-centers.txt",
             False,  # store_as_hex
             # starting cubes
             (
                 (
                     """
           . . . .
-          . . . .
-          . . . .
+          . U U .
+          . U U .
           . . . .
 
  . . . .  . . . .  . . . .  . . . .
- . L L .  . . . .  . R R .  . . . .
- . L L .  . . . .  . R R .  . . . .
+ . L L .  . x x .  . R R .  . x x .
+ . L L .  . x x .  . R R .  . x x .
  . . . .  . . . .  . . . .  . . . .
 
           . . . .
-          . . . .
-          . . . .
+          . U U .
+          . U U .
           . . . .""",
                     "ascii",
                 ),
@@ -279,7 +291,7 @@ class Build444HighLowEdgesEdges(BFS):
         BFS.__init__(
             self,
             "444-highlow-edges-edges",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'"),
+            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'"),
             "4x4x4",
             "lookup-table-4x4x4-step21-highlow-edges-edges.txt",
             False,  # store_as_hex
@@ -314,24 +326,24 @@ class Build444HighLowEdgesCenters(BFS):
         BFS.__init__(
             self,
             "444-highlow-edges-centers",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'"),
+            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'"),
             "4x4x4",
             "lookup-table-4x4x4-step22-highlow-edges-centers.txt",
             False,  # store_as_hex
             # starting cubes
             (
-                (".....................LL..LL..........................RR..RR.....................................", "ULFRBD",),
-                (".....................LL..RR..........................LL..RR.....................................", "ULFRBD",),
-                (".....................LL..RR..........................RR..LL.....................................", "ULFRBD",),
-                (".....................LR..LR..........................LR..LR.....................................", "ULFRBD",),
-                (".....................LR..LR..........................RL..RL.....................................", "ULFRBD",),
-                (".....................LR..RL..........................RL..LR.....................................", "ULFRBD",),
-                (".....................RL..LR..........................LR..RL.....................................", "ULFRBD",),
-                (".....................RL..RL..........................LR..LR.....................................", "ULFRBD",),
-                (".....................RL..RL..........................RL..RL.....................................", "ULFRBD",),
-                (".....................RR..LL..........................LL..RR.....................................", "ULFRBD",),
-                (".....................RR..LL..........................RR..LL.....................................", "ULFRBD",),
-                (".....................RR..RR..........................LL..LL.....................................", "ULFRBD",),
+                ('.....UU..UU..........LL..LL..........xx..xx..........RR..RR..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........LL..RR..........xx..xx..........LL..RR..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........LL..RR..........xx..xx..........RR..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........LR..LR..........xx..xx..........LR..LR..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........LR..LR..........xx..xx..........RL..RL..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........LR..RL..........xx..xx..........RL..LR..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........RL..LR..........xx..xx..........LR..RL..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........RL..RL..........xx..xx..........LR..LR..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........RL..RL..........xx..xx..........RL..RL..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........RR..LL..........xx..xx..........LL..RR..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........RR..LL..........xx..xx..........RR..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
+                ('.....UU..UU..........RR..RR..........xx..xx..........LL..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
             ),
         )
         # fmt: on
@@ -343,24 +355,24 @@ class Build444HighLowEdges(BFS):
         BFS.__init__(
             self,
             "444-highlow-edges",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'"),
+            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'"),
             "4x4x4",
             "lookup-table-4x4x4-step20-highlow-edges.txt",
             False,  # store_as_hex
             # starting cubes
             (
-                (".UD.D..UU..D.DU..DU.DLLUULLD.UD..DU.U..DD..U.UD..DU.DRRUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DLLUURRD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DLRUULRD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DLRUURLD.UD..DU.U..DD..U.UD..DU.DRLUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DRLUULRD.UD..DU.U..DD..U.UD..DU.DLRUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DLRUULRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DRLUURLD.UD..DU.U..DD..U.UD..DU.DRLUURLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DLLUURRD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DRRUULLD.UD..DU.U..DD..U.UD..DU.DRRUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
-                (".UD.D..UU..D.DU..DU.DRRUURRD.UD..DU.U..DD..U.UD..DU.DLLUULLD.UD..DU.U..DD..U.UD..UD.D..UU..D.DU.", "ULFRBD",),
+                ('.UD.DUUUUUUD.DU..DU.DLLUULLD.UD..DU.UxxDDxxU.UD..DU.DRRUURRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DLRUURLD.UD..DU.UxxDDxxU.UD..DU.DRLUULRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DRLUULRD.UD..DU.UxxDDxxU.UD..DU.DLRUURLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
+                ('.UD.DUUUUUUD.DU..DU.DRRUURRD.UD..DU.UxxDDxxU.UD..DU.DLLUULLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
             ),
             use_centers_then_edges=True,
         )

@@ -33,12 +33,14 @@ rate = float(19)
 count_total_target = 3246670537110000 # 24!/(4!^6)
 
 # 4x4x4 centers stage
-depth = 7
-prev_count_at_depth = 112158744
-count_total = 121951614
-rate = float(12.41)
-count_total_target = 9465511770 # 24!/(8!*8!*8!)
+"""
+depth = 8
+prev_count_at_depth = 1147351438
+count_total = 1261824246
+rate = float(10.84)
+count_total_target = 9465511770  # 24!/(8!*8!*8!)
 
+"""
 # 4x4x4 centers stage
 depth = 4
 prev_count_at_depth = 1948920
@@ -68,15 +70,12 @@ count_total = 33435924
 rate = float(36.84)
 count_total_target = 10540869576538135887152100000000 # (24!/(4!^6))^2
 
-
-
 # 5x5x5 horseshoe stage
 depth = 11
 prev_count_at_depth = 80163256
 count_total = 109442672
 rate = float(3.76)
 count_total_target = 2498640144 # (24!/(12!*12!)) * (12!/(6!*6!)) states
-
 
 # 5x5x5 horseshoe solve
 depth = 10
@@ -105,7 +104,6 @@ prev_count_at_depth = 5353259
 count_total = 5946658
 rate = float(9.89)
 count_total_target = 5538111488
-"""
 
 # 555 LR centers stage
 depth = 6
@@ -114,7 +112,6 @@ count_total = 17168476
 rate = float(19.76)
 count_total_target = 540917591841
 
-"""
 # 666 stage UD centers
 depth = 6
 prev_count_at_depth = 633025

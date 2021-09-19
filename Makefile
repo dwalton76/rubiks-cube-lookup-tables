@@ -47,26 +47,39 @@ wheel:
 	./utils/builderui.py Build444UDCentersStage
 	./utils/build-ida-graph.py Build444UDCentersStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step11-UD-centers-stage.json
+
 	./utils/builderui.py Build444LRCentersStage
 	./utils/build-ida-graph.py Build444LRCentersStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step12-LR-centers-stage.json
 
+	./utils/builderui.py Build444LCentersStage
+	./utils/build-ida-graph.py Build444LCentersStage
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step13-L-centers-stage.json
+
 444-phase2: clean
 	./utils/builderui.py Build444HighLowEdgesEdges
+	./utils/build-ida-graph.py Build444HighLowEdgesEdges
+	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json-1000000 lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json-2000000 lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
+
 	./utils/builderui.py Build444HighLowEdgesCenters
-	./utils/builderui.py Build444HighLowEdges --depth 6
+	./utils/build-ida-graph.py Build444HighLowEdgesCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step22-highlow-edges-centers.json
 
 444-phase3: clean
 	./utils/builderui.py Build444Reduce333FirstTwoCenters
 	./utils/build-ida-graph.py Build444Reduce333FirstTwoCenters
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-centers.json
+
 	./utils/builderui.py Build444Reduce333FirstFourEdges
 	./utils/build-ida-graph.py Build444Reduce333FirstFourEdges
 	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-1000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-2000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-3000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-4000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-5000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
+
 	./utils/builderui.py Build444Reduce333Centers
 	./utils/build-ida-graph.py Build444Reduce333Centers
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step41-centers.json
+
 	./utils/builderui.py Build444Reduce333LastEightEdges
 	./utils/build-ida-graph.py Build444Reduce333LastEightEdges
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step42-last-eight-edges.json
@@ -77,6 +90,7 @@ wheel:
 	./utils/builderui.py Build555LRCenterStageTCenter
 	./utils/build-ida-graph.py Build555LRCenterStageTCenter
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.json
+
 	./utils/builderui.py Build555LRCenterStageXCenter
 	./utils/build-ida-graph.py Build555LRCenterStageXCenter
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
@@ -85,19 +99,24 @@ wheel:
 	./utils/builderui.py Build555FBTCenterStage
 	./utils/build-ida-graph.py Build555FBTCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step21-FB-t-centers-stage.json
+
 	./utils/builderui.py Build555FBXCenterStage
 	./utils/build-ida-graph.py Build555FBXCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step22-FB-x-centers-stage.json
+
+	./utils/builderui.py Build555Phase2LRCenterStage
+	./utils/build-ida-graph.py Build555Phase2LRCenterStage
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step23-LR-center-stage.json
 
 555-phase3: clean
 	./utils/builderui.py Build555Phase3LRCenterStage
 	./utils/build-ida-graph.py Build555Phase3LRCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage.json
 
+	# This takes a lot of RAM...run on an ec2 instance
 	./utils/builderui.py Build555EdgeOrientOuterOrbit
 	./utils/build-ida-graph.py Build555EdgeOrientOuterOrbit
 	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json-1000000 lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json-2000000 lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
-	# This takes a lot of RAM...run on an ec2 instance
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
 
 	./utils/builderui.py Build555EdgeOrientInnerOrbit
@@ -108,17 +127,20 @@ wheel:
 	./utils/builderui.py Build555Phase4 --depth 3
 
 555-phase5: clean
+	# This takes a lot of RAM...run on an ec2 instance
 	./utils/builderui.py Build555Phase5Centers
 	./utils/build-ida-graph.py Build555Phase5Centers
 	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-1000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-2000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
-	# This takes a lot of RAM...run on an ec2 instance
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
+
 	./utils/builderui.py Build555Phase5HighEdgeMidge
 	./utils/build-ida-graph.py Build555Phase5HighEdgeMidge
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.json
+
 	./utils/builderui.py Build555Phase5LowEdgeMidge
 	./utils/build-ida-graph.py Build555Phase5LowEdgeMidge
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
+
 	./utils/builderui.py Build555Phase5FBCenters
 	./utils/build-ida-graph.py Build555Phase5FBCenters
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step56-phase5-fb-centers.json
@@ -127,9 +149,11 @@ wheel:
 	./utils/builderui.py Build555Phase6Centers
 	./utils/build-ida-graph.py Build555Phase6Centers
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step61-phase6-centers.json
+
 	./utils/builderui.py Build555Phase6HighEdgeMidge
 	./utils/build-ida-graph.py Build555Phase6HighEdgeMidge
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step62-phase6-high-edge-midge.json
+
 	./utils/builderui.py Build555Phase6LowEdgeMidge
 	./utils/build-ida-graph.py Build555Phase6LowEdgeMidge
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step63-phase6-low-edge-midge.json
@@ -138,9 +162,11 @@ wheel:
 	./utils/builderui.py Build555UDCenterSolve
 	./utils/build-ida-graph.py Build555UDCenterSolve
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step34-UD-centers-solve.json
+
 	./utils/builderui.py Build555LRCenterSolve
 	./utils/build-ida-graph.py Build555LRCenterSolve
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step35-LR-centers-solve.json
+
 	./utils/builderui.py Build555FBCenterSolve
 	./utils/build-ida-graph.py Build555FBCenterSolve
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step36-FB-centers-solve.json
@@ -151,9 +177,11 @@ wheel:
 	./utils/builderui.py Build666UDLeftObliqueStage
 	./utils/build-ida-graph.py Build666UDLeftObliqueStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step11-UD-left-oblique-stage.json
+
 	./utils/builderui.py Build666UDRightObliqueStage
 	./utils/build-ida-graph.py Build666UDRightObliqueStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step12-UD-right-oblique-stage.json
+
 	./utils/builderui.py Build666UDOuterXCenterStage
 	./utils/build-ida-graph.py Build666UDOuterXCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step13-UD-outer-x-centers-stage.json
@@ -165,9 +193,11 @@ wheel:
 	./utils/builderui.py Build666LRInnerXCenterAndObliqueEdges
 	./utils/build-ida-graph.py Build666LRInnerXCenterAndObliqueEdges
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step61-LR-solve-inner-x-center-and-oblique-edges.json
+
 	./utils/builderui.py Build666FBInnerXCenterAndObliqueEdges
 	./utils/build-ida-graph.py Build666FBInnerXCenterAndObliqueEdges
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.json
+
 	./utils/builderui.py Build666UDObliqueEdges
 	./utils/build-ida-graph.py Build666UDObliqueEdges
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step63-UD-oblique-edges.json
@@ -178,12 +208,15 @@ wheel:
 	./utils/builderui.py Build777Step41
 	./utils/build-ida-graph.py Build777Step41
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step41.json
+
 	./utils/builderui.py Build777Step42
 	./utils/build-ida-graph.py Build777Step42
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step42.json
+
 	./utils/builderui.py Build777Step43
 	./utils/build-ida-graph.py Build777Step43
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step43.json
+
 	./utils/builderui.py Build777Step44
 	./utils/build-ida-graph.py Build777Step44
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step44.json
@@ -192,15 +225,19 @@ wheel:
 	./utils/builderui.py Build777Step51
 	./utils/build-ida-graph.py Build777Step51
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step51.json
+
 	./utils/builderui.py Build777Step52
 	./utils/build-ida-graph.py Build777Step52
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step52.json
+
 	./utils/builderui.py Build777Step53
 	./utils/build-ida-graph.py Build777Step53
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step53.json
+
 	./utils/builderui.py Build777Step54
 	./utils/build-ida-graph.py Build777Step54
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step54.json
+
 	./utils/builderui.py Build777Step55
 	./utils/build-ida-graph.py Build777Step55
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step55.json
@@ -209,12 +246,15 @@ wheel:
 	./utils/builderui.py Build777Step61
 	./utils/build-ida-graph.py Build777Step61
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step61.json
+
 	./utils/builderui.py Build777Step62
 	./utils/build-ida-graph.py Build777Step62
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step62.json
+
 	./utils/builderui.py Build777Step65
 	./utils/build-ida-graph.py Build777Step65
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step65.json
+
 	./utils/builderui.py Build777Step66
 	./utils/build-ida-graph.py Build777Step66
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step66.json
@@ -223,12 +263,15 @@ wheel:
 	./utils/builderui.py Build777Step71
 	./utils/build-ida-graph.py Build777Step71
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step71.json
+
 	./utils/builderui.py Build777Step72
 	./utils/build-ida-graph.py Build777Step72
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step72.json
+
 	./utils/builderui.py Build777Step75
 	./utils/build-ida-graph.py Build777Step75
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step75.json
+
 	./utils/builderui.py Build777Step76
 	./utils/build-ida-graph.py Build777Step76
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step76.json

@@ -279,10 +279,14 @@ def parse_histogram(filename: str) -> str:
 
             if not found_filename and line == filename:
                 found_filename = True
+                line = line.replace("lookup-tables/", "")
                 histogram.append("    " + line)
                 log.info(line)
 
             elif found_filename:
+                if line.startswith("===="):
+                    line = line[len("lookup-tables/") :]
+
                 histogram.append("    " + line)
                 log.info(line)
 
@@ -1259,7 +1263,7 @@ class BFS(object):
                         if use_hex:
                             state = convert_state_to_hex(state)
 
-                    foo.append("        '" + state + "'")
+                    foo.append('        "' + state + '"')
 
                 elif state_type == "ascii":
                     # do this later
@@ -1277,31 +1281,10 @@ class BFS(object):
 
     def _code_gen_lookup_table(self):
         class_name = type(self).__name__.replace("Build", "LookupTable")
-
-        """
-        next_prime = {
-            2520: 2521,
-            12870: 12889,
-            20160: 20161,
-            58800: 58831,
-            176400: 176401,
-            343000: 343019,
-            5880600: 5880601,
-            24010000: 24010031,
-            51482970: 51482999,
-            67326336: 67326361,
-            165636900: 165636907,
-            121287375: 121287377,
-            197568000: 197568011,
-            239500800: 239500847,
-            383328000: 383328041,
-            479001600: 479001629,
-            812851200: 812851219,
-        }
-        """
-
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
+        filename_minus_directory = self.filename.split("/")[1]
+        # dwalton
 
         print(
             '''
@@ -1318,7 +1301,7 @@ class %s(LookupTable):
         LookupTable.__init__(
             self,
             parent,
-            '%s',
+            \"%s\",
             self.state_targets,
             linecount=%d,
             max_depth=%d,
@@ -1344,7 +1327,7 @@ class %s(LookupTable):
                 class_name,
                 histogram,
                 starting_states,
-                self.filename,
+                filename_minus_directory,
                 linecount,
                 max_depth,
                 self.size.replace("x", ""),
