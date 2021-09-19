@@ -59,6 +59,7 @@ wheel:
 444-phase2: clean
 	./utils/builderui.py Build444HighLowEdgesEdges
 	./utils/build-ida-graph.py Build444HighLowEdgesEdges
+	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json-1000000 lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json-2000000 lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
 
 	./utils/builderui.py Build444HighLowEdgesCenters
