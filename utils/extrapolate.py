@@ -34,10 +34,10 @@ count_total_target = 3246670537110000 # 24!/(4!^6)
 
 # 4x4x4 centers stage
 """
-depth = 6
-prev_count_at_depth = 8047054
-count_total = 8649142
-rate = float(14.29)
+depth = 8
+prev_count_at_depth = 1147351438
+count_total = 1261824246
+rate = float(10.84)
 count_total_target = 9465511770  # 24!/(8!*8!*8!)
 
 """

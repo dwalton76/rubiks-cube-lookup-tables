@@ -56,16 +56,14 @@ wheel:
 	./utils/build-ida-graph.py Build444LCentersStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step13-L-centers-stage.json
 
-	./utils/builderui.py Build444HighLowEdgesEdgesPhase1
-	./utils/build-ida-graph.py Build444HighLowEdgesEdgesPhase1
-	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step14-highlow-edges-edges.json-1000000 lookup-tables/lookup-table-4x4x4-step14-highlow-edges-edges.json-2000000 lookup-tables/lookup-table-4x4x4-step14-highlow-edges-edges.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step14-highlow-edges-edges.json
-
-
 444-phase2: clean
 	./utils/builderui.py Build444HighLowEdgesEdges
+	./utils/build-ida-graph.py Build444HighLowEdgesEdges
+	# ./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
+
 	./utils/builderui.py Build444HighLowEdgesCenters
-	./utils/builderui.py Build444HighLowEdges --depth 6
+	./utils/build-ida-graph.py Build444HighLowEdgesCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step22-highlow-edges-centers.json
 
 444-phase3: clean
 	./utils/builderui.py Build444Reduce333FirstTwoCenters

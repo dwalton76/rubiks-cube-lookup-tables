@@ -6,7 +6,8 @@ import sys
 
 # rubiks cube libraries
 from rubikscubennnsolver.RubiksCube444 import (
-    LookupTable444HighLowEdgesEdgesPhase1,
+    LookupTable444HighLowEdgesCenters,
+    LookupTable444HighLowEdgesEdges,
     LookupTable444LCentersStage,
     LookupTable444LRCentersStage,
     LookupTable444Reduce333Centers,
@@ -89,8 +90,12 @@ if lt_class.startswith("Build444"):  # noqa: C901
     elif lt_class == "Build444LCentersStage":
         cube.lt = LookupTable444LCentersStage(cube, build_state_index=True)
 
-    elif lt_class == "Build444HighLowEdgesEdgesPhase1":
-        cube.lt = LookupTable444HighLowEdgesEdgesPhase1(cube, build_state_index=True)
+    # phase 2
+    elif lt_class == "Build444HighLowEdgesEdges":
+        cube.lt = LookupTable444HighLowEdgesEdges(cube, build_state_index=True)
+
+    elif lt_class == "Build444HighLowEdgesCenters":
+        cube.lt = LookupTable444HighLowEdgesCenters(cube, build_state_index=True)
 
     # phase 3
     elif lt_class == "Build444Reduce333FirstTwoCenters":
