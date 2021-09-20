@@ -29,6 +29,47 @@ phase 6
 """
 
 
+class Build666LRInnerXCentersStage(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "6x6x6-LR-inner-x-centers-stage",
+            (),
+            "6x6x6",
+            "lookup-table-6x6x6-step00-inner-x-centers-stage.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+              . . . . . .
+              . . . . . .
+              . . x x . .
+              . . x x . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . L L . .  . . x x . .  . . L L . .  . . x x . .
+ . . L L . .  . . x x . .  . . L L . .  . . x x . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . x x . .
+              . . x x . .
+              . . . . . .
+              . . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
 # =======
 # phase 4
 # =======

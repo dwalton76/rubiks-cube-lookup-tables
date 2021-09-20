@@ -46,7 +46,7 @@ def print_node(
     for step in legal_moves:
 
         # the next state_index takes 4 bytes
-        next_state_index = struct.unpack(">L", bindata[i : i + 4])[0]
+        next_state_index = struct.unpack("<L", bindata[i : i + 4])[0]
         next_state = states[next_state_index]
         i += 4
 

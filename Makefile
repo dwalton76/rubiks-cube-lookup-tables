@@ -173,6 +173,11 @@ wheel:
 
 555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6 555-solve-staged-centers
 
+666-phase1:
+	./utils/builderui.py Build666LRInnerXCentersStage
+	./utils/build-ida-graph.py Build666LRInnerXCentersStage
+	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step00-inner-x-centers-stage.json
+
 666-phase4:
 	./utils/builderui.py Build666UDLeftObliqueStage
 	./utils/build-ida-graph.py Build666UDLeftObliqueStage

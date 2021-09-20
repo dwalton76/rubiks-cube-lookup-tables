@@ -8,7 +8,6 @@ import sys
 from rubikscubennnsolver.RubiksCube444 import (
     LookupTable444HighLowEdgesCenters,
     LookupTable444HighLowEdgesEdges,
-    LookupTable444LCentersStage,
     LookupTable444LRCentersStage,
     LookupTable444Reduce333Centers,
     LookupTable444Reduce333FirstFourEdges,
@@ -43,6 +42,7 @@ from rubikscubennnsolver.RubiksCube555 import (
 from rubikscubennnsolver.RubiksCube666 import (
     LookupTable666FBInnerXCenterAndObliqueEdges,
     LookupTable666LRInnerXCenterAndObliqueEdges,
+    LookupTable666LRInnerXCentersStage,
     LookupTable666UDLeftObliqueStage,
     LookupTable666UDObliqueEdges,
     LookupTable666UDOuterXCenterStage,
@@ -86,9 +86,6 @@ if lt_class.startswith("Build444"):  # noqa: C901
 
     elif lt_class == "Build444LRCentersStage":
         cube.lt = LookupTable444LRCentersStage(cube, build_state_index=True)
-
-    elif lt_class == "Build444LCentersStage":
-        cube.lt = LookupTable444LCentersStage(cube, build_state_index=True)
 
     # phase 2
     elif lt_class == "Build444HighLowEdgesEdges":
@@ -183,8 +180,12 @@ elif lt_class.startswith("Build555"):
 elif lt_class.startswith("Build666"):
     cube = RubiksCube666(solved_666, "URFDLB")
 
+    # phase 1
+    if lt_class == "Build666LRInnerXCentersStage":
+        cube.lt = LookupTable666LRInnerXCentersStage(cube, build_state_index=True)
+
     # phase 5
-    if lt_class == "Build666UDLeftObliqueStage":
+    elif lt_class == "Build666UDLeftObliqueStage":
         cube.lt = LookupTable666UDLeftObliqueStage(cube, build_state_index=True)
 
     elif lt_class == "Build666UDRightObliqueStage":
