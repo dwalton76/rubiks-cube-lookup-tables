@@ -285,7 +285,8 @@ class Build666UDRightObliqueCentersStage(BFS):
         # fmt: on
 
 
-# dwalton here now...will be a perfect hash table
+# dwalton here now
+# perfect hash table
 class Build666UDObliqueCentersStage(BFS):
     def __init__(self):
         # fmt: off
@@ -334,6 +335,115 @@ class Build666UDObliqueCentersStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
+        )
+        # fmt: on
+
+
+# perfect hash table
+class Build666UDLeftObliqueInnerXCentersStage(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "6x6x6-UD-left-oblique-inner-x-centers-stage",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "6x6x6",
+            "lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+              . . . . . .
+              . . U . . .
+              . . U U U .
+              . U U U . .
+              . . . U . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . x . . .  . . . . . .  . . x . . .
+ . . . . . .  . . x x x .  . . . . . .  . . x x x .
+ . . . . . .  . x x x . .  . . . . . .  . x x x . .
+ . . . . . .  . . . x . .  . . . . . .  . . . x . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . U . . .
+              . . U U U .
+              . U U U . .
+              . . . U . .
+              . . . . . .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
+        )
+        # fmt: on
+
+
+# perfect hash table
+class Build666UDRightObliqueInnerXCentersStage(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "6x6x6-UD-right-oblique-inner-x-centers-stage",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "6x6x6",
+            "lookup-table-6x6x6-step17-UD-right-oblique-inner-x-centers.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+              . . . . . .
+              . . . U . .
+              . U U U . .
+              . . U U U .
+              . . U . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . x . .  . . . . . .  . . . x . .
+ . . . . . .  . x x x . .  . . . . . .  . x x x . .
+ . . . . . .  . . x x x .  . . . . . .  . . x x x .
+ . . . . . .  . . x . . .  . . . . . .  . . x . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . U . .
+              . U U U . .
+              . . U U U .
+              . . U . . .
+              . . . . . .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
         )
         # fmt: on
 
