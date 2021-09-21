@@ -1069,8 +1069,6 @@ class BFS(object):
         log.info(f"{self}: convert state to smaller format, file {self.filename}")
         with open(f"{self.filename}.small", "w") as fh_final:
             with open(self.filename, "r") as fh_read:
-                odd_even = ""
-
                 if self.use_edges_pattern:
                     for line in fh_read:
                         (pattern, cube_state_string, steps) = line.rstrip().split(":")
@@ -1133,7 +1131,6 @@ class BFS(object):
                 else:
                     lt_centers_max_depth = self.lt_centers_max_depth
                     store_as_hex = self.store_as_hex
-                    use_odd_even = None
 
                     for line in fh_read:
                         (cube_state_string, steps) = line.rstrip().split(":")
@@ -1151,23 +1148,10 @@ class BFS(object):
                         else:
                             cube_state_string_small = cube_state_string[1:].replace(".", "")
 
-                        if use_odd_even is None:
-                            use_odd_even = bool("_odd" in cube_state_string_small or "_even" in cube_state_string_small)
-
-                        odd_even = ""
-
-                        if use_odd_even:
-                            if "_odd" in cube_state_string_small:
-                                odd_even = "_odd"
-                                cube_state_string_small = cube_state_string_small.replace("_odd", "")
-                            elif "_even" in cube_state_string_small:
-                                odd_even = "_even"
-                                cube_state_string_small = cube_state_string_small.replace("_even", "")
-
                         if store_as_hex:
                             cube_state_string_small = convert_state_to_hex(cube_state_string_small)
 
-                        to_write.append(f"{cube_state_string_small}{odd_even}:{steps}")
+                        to_write.append(f"{cube_state_string_small}:{steps}")
                         to_write_count += 1
 
                         if to_write_count >= WRITE_BATCH_SIZE:
@@ -1183,28 +1167,7 @@ class BFS(object):
                 to_write_count = 0
 
         shutil.move(f"{self.filename}.small", self.filename)
-
-        if odd_even:
-            odd_filename = self.filename.replace(".txt", "-odd.txt")
-            even_filename = self.filename.replace(".txt", "-even.txt")
-
-            files_to_pad = (odd_filename, even_filename)
-
-            with open(self.filename, "r") as fh:
-                with open(odd_filename, "w") as fh_odd:
-                    with open(even_filename, "w") as fh_even:
-                        for line in fh:
-                            if "_odd" in line:
-                                line = line.replace("_odd", "")
-                                fh_odd.write(line)
-                            elif "_even" in line:
-                                line = line.replace("_even", "")
-                                fh_even.write(line)
-                            else:
-                                raise Exception(line)
-
-        else:
-            files_to_pad = (self.filename,)
+        files_to_pad = (self.filename,)
 
         for filename in files_to_pad:
             log.info(f"{self}: pad the file")

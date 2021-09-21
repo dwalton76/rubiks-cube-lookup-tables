@@ -29,6 +29,9 @@ phase 6
 """
 
 
+# =======
+# phase 1
+# =======
 class Build666LRInnerXCentersStage(BFS):
     def __init__(self):
         # fmt: off
@@ -71,33 +74,133 @@ class Build666LRInnerXCentersStage(BFS):
 
 
 # =======
-# phase 4
+# phase 3
 # =======
-# - pair the UD oblique edges and outer x-centers to finish staging centers
-class Build666UDLeftObliqueStage(BFS):
+class Build666UDInnerXCentersStage(BFS):
     def __init__(self):
         # fmt: off
         BFS.__init__(
             self,
-            "6x6x6-UD-left-oblique-stage",
+            "6x6x6-UD-inner-x-centers-stage",
             (
                 "3Uw", "3Uw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Rw", "3Rw'",
-                "3Bw", "3Bw'",
                 "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
                 "Bw", "Bw'",
-
-                # we are not manipulating anything on sides L or R
                 "L", "L'", "L2",
                 "R", "R'", "R2",
             ),
             "6x6x6",
-            "lookup-table-6x6x6-step11-UD-left-oblique-stage.txt",
+            "lookup-table-6x6x6-step11-UD-inner-x-centers-stage.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+              . . . . . .
+              . . . . . .
+              . . U U . .
+              . . U U . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . x x . .  . . . . . .  . . x x . .
+ . . . . . .  . . x x . .  . . . . . .  . . x x . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . U U . .
+              . . U U . .
+              . . . . . .
+              . . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+class Build666UDXCentersStage(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "6x6x6-UD-x-centers-stage",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "6x6x6",
+            "lookup-table-6x6x6-step12-UD-x-centers.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+              . . . . . .
+              . U . . U .
+              . . . . . .
+              . . . . . .
+              . U . . U .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . U . . U .
+              . . . . . .
+              . . . . . .
+              . U . . U .
+              . . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+# dwalton here now
+class Build666UDLeftObliqueCentersStage(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "6x6x6-UD-left-oblique-centers-stage",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "6x6x6",
+            "lookup-table-6x6x6-step13-UD-left-oblique-centers.txt",
             False,  # store_as_hex
             # starting cubes
             (
@@ -130,30 +233,26 @@ class Build666UDLeftObliqueStage(BFS):
         # fmt: on
 
 
-class Build666UDRightObliqueStage(BFS):
+class Build666UDRightObliqueCentersStage(BFS):
     def __init__(self):
         # fmt: off
         BFS.__init__(
             self,
-            "6x6x6-UD-right-oblique-stage",
+            "6x6x6-UD-right-oblique-centers-stage",
             (
                 "3Uw", "3Uw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Rw", "3Rw'",
-                "3Bw", "3Bw'",
                 "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
                 "Bw", "Bw'",
-
-                # we are not manipulating anything on sides L or R
                 "L", "L'", "L2",
                 "R", "R'", "R2",
             ),
             "6x6x6",
-            "lookup-table-6x6x6-step12-UD-right-oblique-stage.txt",
+            "lookup-table-6x6x6-step14-UD-right-oblique-centers.txt",
             False,  # store_as_hex
             # starting cubes
             (
@@ -186,30 +285,27 @@ class Build666UDRightObliqueStage(BFS):
         # fmt: on
 
 
-class Build666UDObliqueStage(BFS):
+# dwalton here now...will be a perfect hash table
+class Build666UDObliqueCentersStage(BFS):
     def __init__(self):
         # fmt: off
         BFS.__init__(
             self,
-            "6x6x6-UD-oblique-stage",
+            "6x6x6-UD-oblique-centers-stage",
             (
                 "3Uw", "3Uw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Rw", "3Rw'",
-                "3Bw", "3Bw'",
                 "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
                 "Bw", "Bw'",
-
-                # we are not manipulating anything on sides L or R
                 "L", "L'", "L2",
                 "R", "R'", "R2",
             ),
             "6x6x6",
-            "lookup-table-6x6x6-step14-UD-oblique-stage.txt",
+            "lookup-table-6x6x6-step15-UD-oblique-centers.txt",
             False,  # store_as_hex
             # starting cubes
             (
@@ -234,62 +330,6 @@ class Build666UDObliqueStage(BFS):
               . U . . U .
               . U . . U .
               . . U U . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-        )
-        # fmt: on
-
-
-class Build666UDOuterXCenterStage(BFS):
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "6x6x6-UD-outer-x-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Rw", "3Rw'",
-                "3Bw", "3Bw'",
-                "3Dw", "3Dw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anything on sides L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
-            "6x6x6",
-            "lookup-table-6x6x6-step13-UD-outer-x-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . U . . U .
-              . . . . . .
-              . . . . . .
-              . U . . U .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . x . . x .  . . . . . .  . x . . x .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . x . . x .  . . . . . .  . x . . x .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . U . . U .
-              . . . . . .
-              . . . . . .
-              . U . . U .
               . . . . . .""",
                     "ascii",
                 ),

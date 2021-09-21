@@ -64,38 +64,6 @@ def apply_555_phase_binary(cube_state, positions):
     return cube_state
 
 
-def get_odd_even(steps, layer):
-    assert isinstance(steps, list)
-    quarter_wide_turns = 0
-
-    for step in steps:
-        if "w" in step and not step.endswith("2"):
-
-            if layer is None:
-                if (
-                    step.startswith("U")
-                    or step.startswith("L")
-                    or step.startswith("F")
-                    or step.startswith("R")
-                    or step.startswith("B")
-                    or step.startswith("D")
-                ):
-                    quarter_wide_turns += 1
-
-            else:
-                if layer == "2":
-                    if not step[0].isdigit():
-                        quarter_wide_turns += 1
-                else:
-                    if step.startswith(layer):
-                        quarter_wide_turns += 1
-
-    if quarter_wide_turns % 2 == 0:
-        return "even"
-    else:
-        return "odd"
-
-
 def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern, legal_moves):
     assert isinstance(size, str)
     assert size in supported_sizes
@@ -136,13 +104,6 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
     legal_moves_per_move[None] = legal_moves
     legal_moves.insert(0, None)
-
-    if "6x6x6-LR-inner-x-center-stage" in inputfile or "6x6x6-UD-inner-x-centers-stage" in inputfile:
-        odd_even_layer = "3"
-    elif "4x4x4-LRFB-centers-stage" in inputfile:
-        odd_even_layer = "2"
-    else:
-        odd_even_layer = None
 
     with open(inputfile, "r") as fh_input:
 
@@ -248,19 +209,13 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 else:
                     cube_state_string = "".join(cube_state)
 
-                    if odd_even_layer is not None:
-                        odd_even = get_odd_even(moves_to_scramble, odd_even_layer)
-                        to_write.append(f"{cube_state_string}_{odd_even}:{' '.join(moves_to_scramble)}")
+                    if cube_state_string not in states_written:
+                        if next_move is None:
+                            to_write.append(f"{cube_state_string}:{' '.join(moves_to_scramble[0:-1])}")
+                        else:
+                            to_write.append(f"{cube_state_string}:{' '.join(moves_to_scramble)}")
+                        states_written.add(cube_state_string)
                         to_write_count += 1
-
-                    else:
-                        if cube_state_string not in states_written:
-                            if next_move is None:
-                                to_write.append(f"{cube_state_string}:{' '.join(moves_to_scramble[0:-1])}")
-                            else:
-                                to_write.append(f"{cube_state_string}:{' '.join(moves_to_scramble)}")
-                            states_written.add(cube_state_string)
-                            to_write_count += 1
 
             if to_write_count >= WRITE_BATCH_SIZE:
                 to_write.sort()

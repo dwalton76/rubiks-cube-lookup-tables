@@ -43,10 +43,11 @@ from rubikscubennnsolver.RubiksCube666 import (
     LookupTable666FBInnerXCenterAndObliqueEdges,
     LookupTable666LRInnerXCenterAndObliqueEdges,
     LookupTable666LRInnerXCentersStage,
-    LookupTable666UDLeftObliqueStage,
+    LookupTable666UDInnerXCentersStage,
+    LookupTable666UDLeftObliqueCentersStage,
     LookupTable666UDObliqueEdges,
-    LookupTable666UDOuterXCenterStage,
-    LookupTable666UDRightObliqueStage,
+    LookupTable666UDRightObliqueCentersStage,
+    LookupTable666UDXCentersStage,
     RubiksCube666,
     solved_666,
 )
@@ -184,15 +185,19 @@ elif lt_class.startswith("Build666"):
     if lt_class == "Build666LRInnerXCentersStage":
         cube.lt = LookupTable666LRInnerXCentersStage(cube, build_state_index=True)
 
-    # phase 5
-    elif lt_class == "Build666UDLeftObliqueStage":
-        cube.lt = LookupTable666UDLeftObliqueStage(cube, build_state_index=True)
+    # dwalton
+    # phase 3
+    elif lt_class == "Build666UDInnerXCentersStage":
+        cube.lt = LookupTable666UDInnerXCentersStage(cube, build_state_index=True)
 
-    elif lt_class == "Build666UDRightObliqueStage":
-        cube.lt = LookupTable666UDRightObliqueStage(cube, build_state_index=True)
+    elif lt_class == "Build666UDLeftObliqueCentersStage":
+        cube.lt = LookupTable666UDLeftObliqueCentersStage(cube, build_state_index=True)
 
-    elif lt_class == "Build666UDOuterXCenterStage":
-        cube.lt = LookupTable666UDOuterXCenterStage(cube, build_state_index=True)
+    elif lt_class == "Build666UDRightObliqueCentersStage":
+        cube.lt = LookupTable666UDRightObliqueCentersStage(cube, build_state_index=True)
+
+    elif lt_class == "Build666UDXCentersStage":
+        cube.lt = LookupTable666UDXCentersStage(cube, build_state_index=True)
 
     # phase 6
     elif lt_class == "Build666LRInnerXCenterAndObliqueEdges":
