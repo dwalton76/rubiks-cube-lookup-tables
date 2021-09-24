@@ -285,4 +285,14 @@ wheel:
 	./utils/build-ida-graph.py Build777Step76
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step76.json
 
+777-experiment:
+	./utils/builderui.py Build777UDInnerTcenters
+	./utils/build-ida-graph.py Build777UDInnerTcenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step00-foobar-UD-t-centers.json
+
+	./utils/builderui.py Build777UDInnerXcenters
+	./utils/build-ida-graph.py Build777UDInnerXcenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step00-foobar-UD-x-centers.json
+
+
 777: 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers

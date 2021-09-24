@@ -12,7 +12,6 @@ from rubikscubennnsolver.RubiksCube666 import (
     RubiksCube666,
     UFBD_inner_x_centers_666,
     UFBD_left_oblique_edges_666,
-    UFBD_outer_x_centers_666,
     UFBD_right_oblique_edges_666,
     solved_666,
 )
@@ -58,30 +57,6 @@ def main(file_in: str, file_out: str) -> None:
         lt_file_a = cube.lt_UD_left_oblique_edges_stage
         lt_file_b = cube.lt_UD_right_oblique_edges_stage
         positions = sorted(list(UFBD_left_oblique_edges_666) + list(UFBD_right_oblique_edges_666))
-
-    elif file_in.endswith("lookup-table-6x6x6-step18-UD-left-oblique-outer-x-centers.txt"):
-        cube = RubiksCube666(solved_666, "URFDLB")
-        cube.lt_init()
-
-        lt_file_a = cube.lt_UD_outer_x_centers_stage
-        lt_file_b = cube.lt_UD_left_oblique_edges_stage
-        positions = sorted(list(UFBD_outer_x_centers_666) + list(UFBD_left_oblique_edges_666))
-
-    elif file_in.endswith("lookup-table-6x6x6-step19-UD-right-oblique-outer-x-centers.txt"):
-        cube = RubiksCube666(solved_666, "URFDLB")
-        cube.lt_init()
-
-        lt_file_a = cube.lt_UD_outer_x_centers_stage
-        lt_file_b = cube.lt_UD_right_oblique_edges_stage
-        positions = sorted(list(UFBD_outer_x_centers_666) + list(UFBD_right_oblique_edges_666))
-
-    elif file_in.endswith("lookup-table-6x6x6-step19-UD-inner-x-outer-x-centers.txt"):
-        cube = RubiksCube666(solved_666, "URFDLB")
-        cube.lt_init()
-
-        lt_file_b = cube.lt_UD_inner_x_centers_stage
-        lt_file_a = cube.lt_UD_outer_x_centers_stage
-        positions = sorted(list(UFBD_inner_x_centers_666) + list(UFBD_outer_x_centers_666))
 
     else:
         raise NotImplementedError(file_in)

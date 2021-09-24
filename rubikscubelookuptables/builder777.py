@@ -38,6 +38,178 @@ phase 9
 """
 
 
+class Build777UDInnerTcenters(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-step-foobar-UD-t-centers",
+            (
+                # keep LR centers staged
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-step00-foobar-UD-t-centers.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . . . . . .
+                . . . U . . .
+                . . U . U . .
+                . . . U . . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . x . . .  . . . . . . .  . . . x . . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . . x . . .  . . . . . . .  . . . x . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . . U . . .
+                . . U . U . .
+                . . . U . . .
+                . . . . . . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+class Build777UDInnerXcenters(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-step-foobar-UD-x-centers",
+            (
+                # keep LR centers staged
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-step00-foobar-UD-x-centers.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . . . . . .
+                . . U . U . .
+                . . . . . . .
+                . . U . U . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . U . U . .
+                . . . . . . .
+                . . U . U . .
+                . . . . . . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+# perfect hash
+class Build777UDInnerCenters(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-step-foobar-UD-inner-centers",
+            (
+                # keep LR centers staged
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-step00-foobar-inner-centers.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . . . . . .
+                . . U U U . .
+                . . U . U . .
+                . . U U U . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . U U U . .
+                . . U . U . .
+                . . U U U . .
+                . . . . . . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
 # =====================================
 # phase 7 - LR centers to vertical bars
 # =====================================

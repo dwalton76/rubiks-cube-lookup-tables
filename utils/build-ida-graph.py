@@ -69,6 +69,8 @@ from rubikscubennnsolver.RubiksCube777 import (
     LookupTable777Step72,
     LookupTable777Step75,
     LookupTable777Step76,
+    LookupTable777UDInnerTcenters,
+    LookupTable777UDInnerXcenters,
     RubiksCube777,
     solved_777,
 )
@@ -269,6 +271,12 @@ elif lt_class.startswith("Build777"):
 
     elif lt_class == "Build777Step76":
         cube.lt = LookupTable777Step76(cube, build_state_index=True)
+
+    elif lt_class == "Build777UDInnerTcenters":
+        cube.lt = LookupTable777UDInnerTcenters(cube, build_state_index=True)
+
+    elif lt_class == "Build777UDInnerXcenters":
+        cube.lt = LookupTable777UDInnerXcenters(cube, build_state_index=True)
 
     else:
         raise NotImplementedError(lt_class)
