@@ -52,6 +52,8 @@ from rubikscubennnsolver.RubiksCube666 import (
     solved_666,
 )
 from rubikscubennnsolver.RubiksCube777 import (
+    LookupTable777Phase45TCenters,
+    LookupTable777Phase45XCenters,
     LookupTable777Step41,
     LookupTable777Step42,
     LookupTable777Step43,
@@ -69,8 +71,6 @@ from rubikscubennnsolver.RubiksCube777 import (
     LookupTable777Step72,
     LookupTable777Step75,
     LookupTable777Step76,
-    LookupTable777UDInnerTcenters,
-    LookupTable777UDInnerXcenters,
     RubiksCube777,
     solved_777,
 )
@@ -187,7 +187,6 @@ elif lt_class.startswith("Build666"):
     if lt_class == "Build666LRInnerXCentersStage":
         cube.lt = LookupTable666LRInnerXCentersStage(cube, build_state_index=True)
 
-    # dwalton
     # phase 3
     elif lt_class == "Build666UDInnerXCentersStage":
         cube.lt = LookupTable666UDInnerXCentersStage(cube, build_state_index=True)
@@ -217,8 +216,15 @@ elif lt_class.startswith("Build666"):
 elif lt_class.startswith("Build777"):
     cube = RubiksCube777(solved_777, "URFDLB")
 
+    # phase 4 and 5 combined
+    if lt_class == "Build777Phase45TCenters":
+        cube.lt = LookupTable777Phase45TCenters(cube, build_state_index=True)
+
+    elif lt_class == "Build777Phase45XCenters":
+        cube.lt = LookupTable777Phase45XCenters(cube, build_state_index=True)
+
     # phase 7
-    if lt_class == "Build777Step41":
+    elif lt_class == "Build777Step41":
         cube.lt = LookupTable777Step41(cube, build_state_index=True)
 
     elif lt_class == "Build777Step42":
@@ -271,12 +277,6 @@ elif lt_class.startswith("Build777"):
 
     elif lt_class == "Build777Step76":
         cube.lt = LookupTable777Step76(cube, build_state_index=True)
-
-    elif lt_class == "Build777UDInnerTcenters":
-        cube.lt = LookupTable777UDInnerTcenters(cube, build_state_index=True)
-
-    elif lt_class == "Build777UDInnerXcenters":
-        cube.lt = LookupTable777UDInnerXcenters(cube, build_state_index=True)
 
     else:
         raise NotImplementedError(lt_class)

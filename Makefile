@@ -213,6 +213,18 @@ wheel:
 
 666: 666-phase4 666-phase5 666-phase6
 
+777-phase45:
+	./utils/builderui.py Build777Phase45TCenters
+	./utils/build-ida-graph.py Build777Phase45TCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step11-phase45-t-centers.json
+
+	./utils/builderui.py Build777Phase45XCenters
+	./utils/build-ida-graph.py Build777Phase45XCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step12-phase45-x-centers.json
+
+	./utils/builderui.py Build777Phase45Centers
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-step13-inner-centers.txt
+
 777-phase7:
 	./utils/builderui.py Build777Step41
 	./utils/build-ida-graph.py Build777Step41
@@ -284,15 +296,5 @@ wheel:
 	./utils/builderui.py Build777Step76
 	./utils/build-ida-graph.py Build777Step76
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step76.json
-
-777-experiment:
-	./utils/builderui.py Build777UDInnerTcenters
-	./utils/build-ida-graph.py Build777UDInnerTcenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step00-foobar-UD-t-centers.json
-
-	./utils/builderui.py Build777UDInnerXcenters
-	./utils/build-ida-graph.py Build777UDInnerXcenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step00-foobar-UD-x-centers.json
-
 
 777: 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers

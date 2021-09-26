@@ -38,12 +38,15 @@ phase 9
 """
 
 
-class Build777UDInnerTcenters(BFS):
+# ======================
+# phase 4 and 5 combined
+# ======================
+class Build777Phase45TCenters(BFS):
     def __init__(self):
         # fmt: off
         BFS.__init__(
             self,
-            "7x7x7-step-foobar-UD-t-centers",
+            "7x7x7-step-phase45-t-centers",
             (
                 # keep LR centers staged
                 "3Uw", "3Uw'",
@@ -60,7 +63,7 @@ class Build777UDInnerTcenters(BFS):
                 "R", "R'", "R2",
             ),
             "7x7x7",
-            "lookup-table-7x7x7-step00-foobar-UD-t-centers.txt",
+            "lookup-table-7x7x7-step11-phase45-t-centers.txt",
             False,  # store_as_hex
             (
                 (
@@ -95,12 +98,12 @@ class Build777UDInnerTcenters(BFS):
         # fmt: on
 
 
-class Build777UDInnerXcenters(BFS):
+class Build777Phase45XCenters(BFS):
     def __init__(self):
         # fmt: off
         BFS.__init__(
             self,
-            "7x7x7-step-foobar-UD-x-centers",
+            "7x7x7-step-phase45-x-centers",
             (
                 # keep LR centers staged
                 "3Uw", "3Uw'",
@@ -117,7 +120,7 @@ class Build777UDInnerXcenters(BFS):
                 "R", "R'", "R2",
             ),
             "7x7x7",
-            "lookup-table-7x7x7-step00-foobar-UD-x-centers.txt",
+            "lookup-table-7x7x7-step12-phase45-x-centers.txt",
             False,  # store_as_hex
             (
                 (
@@ -153,12 +156,12 @@ class Build777UDInnerXcenters(BFS):
 
 
 # perfect hash
-class Build777UDInnerCenters(BFS):
+class Build777Phase45Centers(BFS):
     def __init__(self):
         # fmt: off
         BFS.__init__(
             self,
-            "7x7x7-step-foobar-UD-inner-centers",
+            "7x7x7-phase45-inner-centers",
             (
                 # keep LR centers staged
                 "3Uw", "3Uw'",
@@ -175,7 +178,7 @@ class Build777UDInnerCenters(BFS):
                 "R", "R'", "R2",
             ),
             "7x7x7",
-            "lookup-table-7x7x7-step00-foobar-inner-centers.txt",
+            "lookup-table-7x7x7-step13-inner-centers.txt",
             False,  # store_as_hex
             (
                 (
