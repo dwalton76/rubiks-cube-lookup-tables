@@ -43,6 +43,8 @@ from rubikscubennnsolver.RubiksCube666 import (
     LookupTable666FBInnerXCenterAndObliqueEdges,
     LookupTable666LRInnerXCenterAndObliqueEdges,
     LookupTable666LRInnerXCentersStage,
+    LookupTable666Step50HighLowEdges,
+    LookupTable666Step50LRCenters,
     LookupTable666UDInnerXCentersStage,
     LookupTable666UDLeftObliqueCentersStage,
     LookupTable666UDObliqueEdges,
@@ -199,6 +201,13 @@ elif lt_class.startswith("Build666"):
 
     elif lt_class == "Build666UDXCentersStage":
         cube.lt = LookupTable666UDXCentersStage(cube, build_state_index=True)
+
+    # phase 5
+    elif lt_class == "Build666Step50LRCenters":
+        cube.lt = LookupTable666Step50LRCenters(cube, build_state_index=True)
+
+    elif lt_class == "Build666Step50HighLowEdges":
+        cube.lt = LookupTable666Step50HighLowEdges(cube, build_state_index=True)
 
     # phase 6
     elif lt_class == "Build666LRInnerXCenterAndObliqueEdges":

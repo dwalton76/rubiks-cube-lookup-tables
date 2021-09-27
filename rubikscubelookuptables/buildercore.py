@@ -1256,9 +1256,11 @@ class %s(LookupTable):
 %s
     """
 
+    # fmt: off
     state_targets = (
 %s
     )
+    # fmt: on
 
     def __init__(self, parent, build_state_index: bool = False):
         LookupTable.__init__(
@@ -1269,16 +1271,18 @@ class %s(LookupTable):
             linecount=%d,
             max_depth=%d,
             all_moves=moves_%s,
+            # fmt: off
             illegal_moves=(
                 "%s"
             ),
+            # fmt: on
             use_state_index=True,
             build_state_index=build_state_index,
         )
 
     def state(self):
-        parent_state = self.parent.state
-        return "".join([parent_state[x] for x in CUBE_POSITION_LIST])
+        return "".join([self.parent.state[x] for x in CUBE_POSITION_LIST])
+        return "".join(["U" if self.parent.state[x] in ("U", "D") else "x" for x in CUBE_POSITION_LIST])
 
     def populate_cube_from_state(self, state, cube, steps_to_solve):
         state = list(state)

@@ -16,7 +16,10 @@ def json_combine_files(filenames: List[str]) -> None:
         fh_final.write("{\n")
 
         for (index, filename) in enumerate(filenames):
-            log.info(f"{filename} begin")
+            # count the number of lines in the file without reading the entire file into memory at once
+            line_count = sum(1 for line in open(filename))
+
+            log.info(f"{filename} begin ({line_count:,} lines)")
 
             # If this is not the first file, write a "," to continue the json
             # from the previous file
@@ -24,20 +27,22 @@ def json_combine_files(filenames: List[str]) -> None:
                 fh_final.write(",\n")
 
             with open(filename, "r") as fh:
-                lines = fh.readlines()
+                last_line_index = line_count - 1
 
-                # chop the first and last line
-                lines = lines[1:-1]
+                for line_index, line in enumerate(fh):
+                    # chop the first and last line, they contain the opening { and closing }
+                    if line_index == 0 or line_index == last_line_index:
+                        continue
+                    fh_final.write(f"{line}\n")
 
-                # write everything else
-                fh_final.write("\n".join(lines))
-
-            # rm the file
-            os.unlink(filename)
             log.info(f"{filename} end")
 
         # end with a }
         fh_final.write("\n}\n")
+
+    # delete the .json files, we no longer need them
+    for (index, filename) in enumerate(filenames):
+        os.unlink(filename)
 
     # save all output to the last filename
     shutil.move(output_filename, filenames[-1])
