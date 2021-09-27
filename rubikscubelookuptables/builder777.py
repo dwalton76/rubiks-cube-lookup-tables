@@ -38,6 +38,181 @@ phase 9
 """
 
 
+# ======================
+# phase 4 and 5 combined
+# ======================
+class Build777Phase45TCenters(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-step-phase45-t-centers",
+            (
+                # keep LR centers staged
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-step11-phase45-t-centers.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . . . . . .
+                . . . U . . .
+                . . U . U . .
+                . . . U . . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . x . . .  . . . . . . .  . . . x . . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . . x . . .  . . . . . . .  . . . x . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . . U . . .
+                . . U . U . .
+                . . . U . . .
+                . . . . . . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+class Build777Phase45XCenters(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-step-phase45-x-centers",
+            (
+                # keep LR centers staged
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-step12-phase45-x-centers.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . . . . . .
+                . . U . U . .
+                . . . . . . .
+                . . U . U . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . U . U . .
+                . . . . . . .
+                . . U . U . .
+                . . . . . . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+# perfect hash
+class Build777Phase45Centers(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-phase45-inner-centers",
+            (
+                # keep LR centers staged
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-step13-inner-centers.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . . . . . .
+                . . U U U . .
+                . . U . U . .
+                . . U U U . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . U U U . .
+                . . U . U . .
+                . . U U U . .
+                . . . . . . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
 # =====================================
 # phase 7 - LR centers to vertical bars
 # =====================================

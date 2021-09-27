@@ -1870,28 +1870,20 @@ class StartingStatesBuild555Phase4(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase4",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "U",
-                "U'",
-                "D",
-                "D'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
             ),
+            # fmt: on
             "5x5x5",
             "starting-states-lookup-table-5x5x5-step40-phase4.txt",
             False,  # store_as_hex
@@ -1951,34 +1943,22 @@ class StartingStatesBuild555Phase5Centers(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-centers",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Uw2",
-                "Dw",
-                "Dw'",
-                "Dw2",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "U",
-                "U'",
-                "D",
-                "D'",
-                "F",
-                "F'",
-                "B",
-                "B'",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
+                "F", "F'",
+                "B", "B'",
             ),
+            # fmt: on
             "5x5x5",
             "starting-states-lookup-table-5x5x5-step51-phase5-centers.txt",
             False,  # store_as_hex
@@ -2077,70 +2057,6 @@ class Build555Phase5Centers(BFS):
         # fmt: on
 
 
-class Build555Phase5ThreeEdges(BFS):
-    """
-    (8*7*6)^2 = 112,896 is how many states the wings can be in
-    8!/(3!*5!) = 56 is how many states the midges can be in
-    112,896 * 70 = 6,322,176
-    """
-
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "5x5x5-phase5-three-edges",
-            (
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "U",
-                "U'",
-                "D",
-                "D'",
-            ),
-            "5x5x5",
-            "lookup-table-5x5x5-step55-phase5-three-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- - . . . L  F . . . F  R . . . R  B . . . -
- - . . . L  F . . . F  R . . . R  B . . . -
- - . . . L  F . . . F  R . . . R  B . . . -
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""",
-                    "ascii",
-                ),
-            ),
-            use_edges_pattern=True,
-        )
-
-
 class Build555Phase5Edges(BFS):
     """
     (8*7*6*5)^2 = 2822400 is how many states the wings can be in
@@ -2152,28 +2068,20 @@ class Build555Phase5Edges(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-edges",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "U",
-                "U'",
-                "D",
-                "D'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step52-phase5-edges.txt",
             False,  # store_as_hex
@@ -2214,28 +2122,20 @@ class Build555Phase5HighEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-high-edge-and-midge",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "U",
-                "U'",
-                "D",
-                "D'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt",
             False,  # store_as_hex
@@ -2276,28 +2176,20 @@ class Build555Phase5LowEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-low-edge-and-midge",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "U",
-                "U'",
-                "D",
-                "D'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step54-phase5-low-edge-and-midge.txt",
             False,  # store_as_hex
@@ -2340,28 +2232,20 @@ class Build555Phase5FBCentersHighEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-fb-centers-high-edge-and-midge",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "U",
-                "U'",
-                "D",
-                "D'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.txt",
             False,  # store_as_hex
@@ -2509,28 +2393,20 @@ class Build555Phase5FBCentersLowEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-fb-centers-low-edge-and-midge",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "U",
-                "U'",
-                "D",
-                "D'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step57-phase5-fb-centers-low-edge-and-midge.txt",
             False,  # store_as_hex
@@ -2676,28 +2552,20 @@ class Build555Phase5FBCenters(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-fb-centers",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "U",
-                "U'",
-                "D",
-                "D'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step56-phase5-fb-centers.txt",
             False,  # store_as_hex
@@ -2848,30 +2716,20 @@ class Build555PairLastEightEdgesEdgesOnly(BFS):
             self,
             "5x5x5-pair-last-eight-edges-edges-only",
             # illegal moves
+            # fmt: off
             (
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "Uw",
-                "Uw'",
-                "Uw2",
-                "Dw",
-                "Dw'",
-                "Dw2",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "F",
-                "F'",
-                "B",
-                "B'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+                "L", "L'",
+                "R", "R'",
+                "F", "F'",
+                "B", "B'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt",
             False,  # store_as_hex
@@ -2913,30 +2771,20 @@ class Build555PairLastEightEdgesCentersOnly(BFS):
             self,
             "5x5x5-pair-last-eight-edges-centers-only",
             # illegal moves
+            # fmt: off
             (
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "Uw",
-                "Uw'",
-                "Uw2",
-                "Dw",
-                "Dw'",
-                "Dw2",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "F",
-                "F'",
-                "B",
-                "B'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+                "L", "L'",
+                "R", "R'",
+                "F", "F'",
+                "B", "B'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step502-pair-last-eight-edges-centers-only.txt",
             False,  # store_as_hex
@@ -2973,30 +2821,20 @@ class Build555PairLastEightEdges(BFS):
             self,
             "5x5x5-pair-last-eight-edges",
             # illegal moves
+            # fmt: off
             (
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "Uw",
-                "Uw'",
-                "Uw2",
-                "Dw",
-                "Dw'",
-                "Dw2",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "F",
-                "F'",
-                "B",
-                "B'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+                "L", "L'",
+                "R", "R'",
+                "F", "F'",
+                "B", "B'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step500-pair-last-eight-edges.txt",
             False,  # store_as_hex
@@ -3033,30 +2871,20 @@ class Build555Phase6Centers(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase6-centers",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Uw2",
-                "Dw",
-                "Dw'",
-                "Dw2",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "F",
-                "F'",
-                "B",
-                "B'",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "F", "F'",
+                "B", "B'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step61-phase6-centers.txt",
             False,  # store_as_hex
@@ -3092,30 +2920,20 @@ class Build555Phase6HighEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase6-high-edge-midge",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Uw2",
-                "Dw",
-                "Dw'",
-                "Dw2",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "F",
-                "F'",
-                "B",
-                "B'",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "F", "F'",
+                "B", "B'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step62-phase6-high-edge-midge.txt",
             False,  # store_as_hex
@@ -3152,30 +2970,20 @@ class Build555Phase6LowEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase6-low-edge-midge",
+            # fmt: off
             (
-                "Uw",
-                "Uw'",
-                "Uw2",
-                "Dw",
-                "Dw'",
-                "Dw2",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Lw",
-                "Lw'",
-                "Rw",
-                "Rw'",
-                "L",
-                "L'",
-                "R",
-                "R'",
-                "F",
-                "F'",
-                "B",
-                "B'",
+                "Uw", "Uw'", "Uw2",
+                "Dw", "Dw'", "Dw2",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "F", "F'",
+                "B", "B'",
             ),
+            # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step63-phase6-low-edge-midge.txt",
             False,  # store_as_hex
@@ -3281,65 +3089,16 @@ class Build555UltimateCenters(BFS):
                     "ascii",
                 ),
             ),
+            # fmt: off
             legal_moves=(
-                # OBTM 36 moves
-                "U",
-                "U'",
-                "U2",
-                "Uw",
-                "Uw'",
-                "Uw2",
-                "L",
-                "L'",
-                "L2",
-                "Lw",
-                "Lw'",
-                "Lw2",
-                "F",
-                "F'",
-                "F2",
-                "Fw",
-                "Fw'",
-                "Fw2",
-                "R",
-                "R'",
-                "R2",
-                "Rw",
-                "Rw'",
-                "Rw2",
-                "B",
-                "B'",
-                "B2",
-                "Bw",
-                "Bw'",
-                "Bw2",
-                "D",
-                "D'",
-                "D2",
-                "Dw",
-                "Dw'",
-                "Dw2",
-                # SSTM 36 moves
-                # "U", "U'", "U2",
-                # "L", "L'", "L2",
-                # "F" , "F'", "F2",
-                # "R" , "R'", "R2",
-                # "B" , "B'", "B2",
-                # "D" , "D'", "D2",
-                # "2U", "2U'", "2U2", "2D", "2D'", "2D2",
-                # "2L", "2L'", "2L2", "2R", "2R'", "2R2",
-                # "2F", "2F'", "2F2", "2B", "2B'", "2B2"
-                # BTM is both, 54 moves
-                # "U", "U'", "U2", "Uw", "Uw'", "Uw2",
-                # "L", "L'", "L2", "Lw", "Lw'", "Lw2",
-                # "F" , "F'", "F2", "Fw", "Fw'", "Fw2",
-                # "R" , "R'", "R2", "Rw", "Rw'", "Rw2",
-                # "B" , "B'", "B2", "Bw", "Bw'", "Bw2",
-                # "D" , "D'", "D2", "Dw", "Dw'", "Dw2",
-                # "2U", "2U'", "2U2", "2D", "2D'", "2D2",
-                # "2L", "2L'", "2L2", "2R", "2R'", "2R2",
-                # "2F", "2F'", "2F2", "2B", "2B'", "2B2"
+                "U", "U'", "U2", "Uw", "Uw'", "Uw2",
+                "L", "L'", "L2", "Lw", "Lw'", "Lw2",
+                "F", "F'", "F2", "Fw", "Fw'", "Fw2",
+                "R", "R'", "R2", "Rw", "Rw'", "Rw2",
+                "B", "B'", "B2", "Bw", "Bw'", "Bw2",
+                "D", "D'", "D2", "Dw", "Dw'", "Dw2",
             ),
+            # fmt: on
             use_c=True,
         )
 
@@ -3525,6 +3284,197 @@ class Build555ULFRBDTCenterSolve(BFS):
             . . D . .
             . D . D .
             . . D . .
+            . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+
+
+class Build555ULFRBDTCenterDaisySolve(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-t-centers-solve",
+            ("Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "Uw", "Uw'", "Dw", "Dw'"),
+            "5x5x5",
+            "lookup-table-5x5x5-step33-ULFRBD-t-centers-daisy-solve.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                # UD normal, LR normal, FB normal
+                (
+                    """
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . F . .  . . R . .  . . B . .
+ . L . L .  . F . F .  . R . R .  . B . B .
+ . . L . .  . . F . .  . . R . .  . . B . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . D . .
+            . D . D .
+            . . D . .
+            . . . . .""",
+                    "ascii",
+                ),
+                # UD normal, LR normal, FB flip
+                (
+                    """
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . B . .  . . R . .  . . F . .
+ . L . L .  . B . B .  . R . R .  . F . F .
+ . . L . .  . . B . .  . . R . .  . . F . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . D . .
+            . D . D .
+            . . D . .
+            . . . . .""",
+                    "ascii",
+                ),
+                # UD normal, LR flip, FB normal
+                (
+                    """
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . R . .  . . F . .  . . L . .  . . B . .
+ . R . R .  . F . F .  . L . L .  . B . B .
+ . . R . .  . . F . .  . . L . .  . . B . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . D . .
+            . D . D .
+            . . D . .
+            . . . . .""",
+                    "ascii",
+                ),
+                # UD normal, LR flip, FB flip
+                (
+                    """
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . R . .  . . B . .  . . L . .  . . F . .
+ . R . R .  . B . B .  . L . L .  . F . F .
+ . . R . .  . . B . .  . . L . .  . . F . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . D . .
+            . D . D .
+            . . D . .
+            . . . . .""",
+                    "ascii",
+                ),
+                # UD flip, LR normal, FB normal
+                (
+                    """
+            . . . . .
+            . . D . .
+            . D . D .
+            . . D . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . F . .  . . R . .  . . B . .
+ . L . L .  . F . F .  . R . R .  . B . B .
+ . . L . .  . . F . .  . . R . .  . . B . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .""",
+                    "ascii",
+                ),
+                # UD flip, LR normal, FB flip
+                (
+                    """
+            . . . . .
+            . . D . .
+            . D . D .
+            . . D . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . B . .  . . R . .  . . F . .
+ . L . L .  . B . B .  . R . R .  . F . F .
+ . . L . .  . . B . .  . . R . .  . . F . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .""",
+                    "ascii",
+                ),
+                # UD flip, LR flip, FB normal
+                (
+                    """
+            . . . . .
+            . . D . .
+            . D . D .
+            . . D . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . R . .  . . F . .  . . L . .  . . B . .
+ . R . R .  . F . F .  . L . L .  . B . B .
+ . . R . .  . . F . .  . . L . .  . . B . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
+            . . . . .""",
+                    "ascii",
+                ),
+                # UD flip, LR flip, FB flip
+                (
+                    """
+            . . . . .
+            . . D . .
+            . D . D .
+            . . D . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . R . .  . . B . .  . . L . .  . . F . .
+ . R . R .  . B . B .  . L . L .  . F . F .
+ . . R . .  . . B . .  . . L . .  . . F . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . U . .
+            . U . U .
+            . . U . .
             . . . . .""",
                     "ascii",
                 ),
