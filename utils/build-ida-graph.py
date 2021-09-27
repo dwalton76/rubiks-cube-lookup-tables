@@ -41,13 +41,13 @@ from rubikscubennnsolver.RubiksCube555 import (
 )
 from rubikscubennnsolver.RubiksCube666 import (
     LookupTable666FBInnerXCenterAndObliqueEdges,
-    LookupTable666LRInnerXCenterAndObliqueEdges,
     LookupTable666LRInnerXCentersStage,
+    LookupTable666LRObliqueEdges,
     LookupTable666Step50HighLowEdges,
     LookupTable666Step50LRCenters,
+    LookupTable666UDInnerXCenterAndObliqueEdges,
     LookupTable666UDInnerXCentersStage,
     LookupTable666UDLeftObliqueCentersStage,
-    LookupTable666UDObliqueEdges,
     LookupTable666UDRightObliqueCentersStage,
     LookupTable666UDXCentersStage,
     RubiksCube666,
@@ -210,14 +210,14 @@ elif lt_class.startswith("Build666"):
         cube.lt = LookupTable666Step50HighLowEdges(cube, build_state_index=True)
 
     # phase 6
-    elif lt_class == "Build666LRInnerXCenterAndObliqueEdges":
-        cube.lt = LookupTable666LRInnerXCenterAndObliqueEdges(cube, build_state_index=True)
+    elif lt_class == "Build666UDInnerXCenterAndObliqueEdges":
+        cube.lt = LookupTable666UDInnerXCenterAndObliqueEdges(cube, build_state_index=True)
 
     elif lt_class == "Build666FBInnerXCenterAndObliqueEdges":
         cube.lt = LookupTable666FBInnerXCenterAndObliqueEdges(cube, build_state_index=True)
 
-    elif lt_class == "Build666UDObliqueEdges":
-        cube.lt = LookupTable666UDObliqueEdges(cube, build_state_index=True)
+    elif lt_class == "Build666LRObliqueEdges":
+        cube.lt = LookupTable666LRObliqueEdges(cube, build_state_index=True)
 
     else:
         raise NotImplementedError(lt_class)

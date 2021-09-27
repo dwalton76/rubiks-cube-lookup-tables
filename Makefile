@@ -206,17 +206,17 @@ wheel:
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json
 
 666-phase6: clean
-	./utils/builderui.py Build666LRInnerXCenterAndObliqueEdges
-	./utils/build-ida-graph.py Build666LRInnerXCenterAndObliqueEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step61-LR-solve-inner-x-center-and-oblique-edges.json
+	./utils/builderui.py Build666UDInnerXCenterAndObliqueEdges
+	./utils/build-ida-graph.py Build666UDInnerXCenterAndObliqueEdges
+	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step61-UD-solve-inner-x-center-and-oblique-edges.json
 
 	./utils/builderui.py Build666FBInnerXCenterAndObliqueEdges
 	./utils/build-ida-graph.py Build666FBInnerXCenterAndObliqueEdges
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.json
 
-	./utils/builderui.py Build666UDObliqueEdges
-	./utils/build-ida-graph.py Build666UDObliqueEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step63-UD-oblique-edges.json
+	./utils/builderui.py Build666LRObliqueEdges
+	./utils/build-ida-graph.py Build666LRObliqueEdges
+	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step63-LR-oblique-edges.json
 
 666: 666-phase4 666-phase5 666-phase6
 

@@ -33,7 +33,7 @@ def json_combine_files(filenames: List[str]) -> None:
                     # chop the first and last line, they contain the opening { and closing }
                     if line_index == 0 or line_index == last_line_index:
                         continue
-                    fh_final.write(f"{line}\n")
+                    fh_final.write(line)
 
             log.info(f"{filename} end")
 
