@@ -37,10 +37,104 @@ phase 9
     centers daisy solve
 """
 
+# ===============================
+# phase 2 - pair LR oblique edges
+# ===============================
 
-# ======================
-# phase 4 and 5 combined
-# ======================
+
+# dwalton
+class StartingStates777Phase2(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-phase2",
+            (
+                # do not break an oblique edge
+                "3Uw", "3Uw'", "3Uw2",
+                "3Dw", "3Dw'", "3Dw2",
+                "3Fw", "3Fw'", "3Fw2",
+                "3Bw", "3Bw'", "3Bw2",
+                "3Lw", "3Lw'", "3Lw2",
+                "3Rw", "3Rw'", "3Rw2",
+            ),
+            "7x7x7",
+            "starting-states-lookup-table-7x7x7-phase2.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . x x x . .
+                . x . . . x .
+                . x . . . x .
+                . x . . . x .
+                . . x x x . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . L L L . .  . . x x x . .  . . L L L . .  . . x x x . .
+ . L . . . L .  . x . . . x .  . L . . . L .  . x . . . x .
+ . L . . . L .  . x . . . x .  . L . . . L .  . x . . . x .
+ . L . . . L .  . x . . . x .  . L . . . L .  . x . . . x .
+ . . L L L . .  . . x x x . .  . . L L L . .  . . x x x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . x x x . .
+                . x . . . x .
+                . x . . . x .
+                . x . . . x .
+                . . x x x . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+class Build777Phase2(BFS):
+    """
+    There are 24!/(8!*8!) or 735741 starting states.
+    From those are (24!/(8!*8!))^3 or 398,267,506,305,474,021 states.
+    The result is the table explodes quickly! We only build this to give us a rough idea
+    of how many moves this phase should take so that we know if our current unpaired_count
+    IDA heuristic works well or not.
+
+    lookup-table-7x7x7-phase2.txt
+    =============================
+
+    # extrapolate from here
+
+    """
+
+    def __init__(self):
+        # fmt: off
+        # rubiks cube libraries
+        from rubikscubelookuptables.builder777ss import phase2_ss
+        BFS.__init__(
+            self,
+            "7x7x7-phase2",
+            (
+                # keep LR inside centers staged
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-phase2.txt",
+            False,  # store_as_hex
+            phase2_ss,
+            use_c=True,
+        )
+        # fmt: on
+
+
+# =======================================================
+# phase 4 - stage UD inner centers, pair UD oblique edges
+# =======================================================
 class Build777Phase45TCenters(BFS):
     def __init__(self):
         # fmt: off
@@ -48,11 +142,13 @@ class Build777Phase45TCenters(BFS):
             self,
             "7x7x7-step-phase45-t-centers",
             (
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "3Uw", "3Uw'",
                 "3Dw", "3Dw'",
                 "3Fw", "3Fw'",
                 "3Bw", "3Bw'",
+
+                # keep LR centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -105,11 +201,13 @@ class Build777Phase45XCenters(BFS):
             self,
             "7x7x7-step-phase45-x-centers",
             (
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "3Uw", "3Uw'",
                 "3Dw", "3Dw'",
                 "3Fw", "3Fw'",
                 "3Bw", "3Bw'",
+
+                # keep LR centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -163,11 +261,13 @@ class Build777Phase45Centers(BFS):
             self,
             "7x7x7-phase45-inner-centers",
             (
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "3Uw", "3Uw'",
                 "3Dw", "3Dw'",
                 "3Fw", "3Fw'",
                 "3Bw", "3Bw'",
+
+                # keep LR centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -213,7 +313,9 @@ class Build777Phase45Centers(BFS):
         # fmt: on
 
 
-# dwalton
+# ===============================
+# phase 5 - pair UD oblique edges
+# ===============================
 class Build777Phase5LeftOblique(BFS):
     def __init__(self):
         # fmt: off
@@ -221,6 +323,7 @@ class Build777Phase5LeftOblique(BFS):
             self,
             "7x7x7-phase5-left-oblique",
             (
+                # keep inside centers staged
                 "3Uw", "3Uw'",
                 "3Dw", "3Dw'",
                 "3Fw", "3Fw'",
@@ -228,7 +331,7 @@ class Build777Phase5LeftOblique(BFS):
                 "3Lw", "3Lw'",
                 "3Rw", "3Rw'",
 
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -273,6 +376,7 @@ class Build777Phase5LeftOblique(BFS):
         )
         # fmt: on
 
+
 class Build777Phase5RightOblique(BFS):
     def __init__(self):
         # fmt: off
@@ -280,6 +384,7 @@ class Build777Phase5RightOblique(BFS):
             self,
             "7x7x7-phase5-right-oblique",
             (
+                # keep inside centers staged
                 "3Uw", "3Uw'",
                 "3Dw", "3Dw'",
                 "3Fw", "3Fw'",
@@ -287,7 +392,7 @@ class Build777Phase5RightOblique(BFS):
                 "3Lw", "3Lw'",
                 "3Rw", "3Rw'",
 
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -340,6 +445,7 @@ class Build777Phase5MiddleOblique(BFS):
             self,
             "7x7x7-phase5",
             (
+                # keep inside centers staged
                 "3Uw", "3Uw'",
                 "3Dw", "3Dw'",
                 "3Fw", "3Fw'",
@@ -347,7 +453,7 @@ class Build777Phase5MiddleOblique(BFS):
                 "3Lw", "3Lw'",
                 "3Rw", "3Rw'",
 
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -393,8 +499,7 @@ class Build777Phase5MiddleOblique(BFS):
         # fmt: on
 
 
-
-
+# dwalton reference
 class StartingStates777Phase5(BFS):
     def __init__(self):
         # fmt: off
@@ -410,7 +515,7 @@ class StartingStates777Phase5(BFS):
                 "3Lw", "3Lw'", "3Lw2",
                 "3Rw", "3Rw'", "3Rw2",
 
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -456,14 +561,16 @@ class StartingStates777Phase5(BFS):
         # fmt: on
 
 
-
-# dwalton
 class Build777Phase5(BFS):
     """
+    lookup-table-7x7x7-phase5.txt
+    =============================
     1 steps has 77,446 entries (0 percent, 0.00x previous step)
     2 steps has 831,520 entries (8 percent, 10.74x previous step)
     3 steps has 9,010,776 entries (90 percent, 10.84x previous step)
+
     # extrapolate from here
+
     4 steps has 90,468,191 entries (10.04x previous step)
     5 steps has 835,926,084 entries (9.24x previous step)
     6 steps has 7,055,216,148 entries (8.44x previous step)
@@ -474,13 +581,16 @@ class Build777Phase5(BFS):
     Average: 8.76472660201022
     Total  : 2,131,746,903,000
     """
+
     def __init__(self):
         # fmt: off
+        # rubiks cube libraries
         from rubikscubelookuptables.builder777ss import phase5_ss
         BFS.__init__(
             self,
             "7x7x7-phase5",
             (
+                # keep inside centers staged
                 "3Uw", "3Uw'",
                 "3Dw", "3Dw'",
                 "3Fw", "3Fw'",
@@ -488,7 +598,7 @@ class Build777Phase5(BFS):
                 "3Lw", "3Lw'",
                 "3Rw", "3Rw'",
 
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -507,8 +617,6 @@ class Build777Phase5(BFS):
         # fmt: on
 
 
-
-
 class StartingStates777Phase5LeftRightOblique(BFS):
     def __init__(self):
         # fmt: off
@@ -524,7 +632,7 @@ class StartingStates777Phase5LeftRightOblique(BFS):
                 "3Lw", "3Lw'", "3Lw2",
                 "3Rw", "3Rw'", "3Rw2",
 
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -573,11 +681,13 @@ class StartingStates777Phase5LeftRightOblique(BFS):
 class Build777Phase5LeftRightOblique(BFS):
     def __init__(self):
         # fmt: off
+        # rubiks cube libraries
         from rubikscubelookuptables.builder777ss import phase5_left_right_oblique_ss
         BFS.__init__(
             self,
             "7x7x7-phase5",
             (
+                # keep inside centers staged
                 "3Uw", "3Uw'",
                 "3Dw", "3Dw'",
                 "3Fw", "3Fw'",
@@ -585,7 +695,7 @@ class Build777Phase5LeftRightOblique(BFS):
                 "3Lw", "3Lw'",
                 "3Rw", "3Rw'",
 
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -604,7 +714,6 @@ class Build777Phase5LeftRightOblique(BFS):
         # fmt: on
 
 
-
 class StartingStates777Phase5LeftMiddleOblique(BFS):
     def __init__(self):
         # fmt: off
@@ -620,7 +729,7 @@ class StartingStates777Phase5LeftMiddleOblique(BFS):
                 "3Lw", "3Lw'", "3Lw2",
                 "3Rw", "3Rw'", "3Rw2",
 
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",
@@ -669,11 +778,13 @@ class StartingStates777Phase5LeftMiddleOblique(BFS):
 class Build777Phase5LeftMiddleOblique(BFS):
     def __init__(self):
         # fmt: off
+        # rubiks cube libraries
         from rubikscubelookuptables.builder777ss import phase5_left_middle_oblique_ss
         BFS.__init__(
             self,
             "7x7x7-phase5",
             (
+                # keep inside centers staged
                 "3Uw", "3Uw'",
                 "3Dw", "3Dw'",
                 "3Fw", "3Fw'",
@@ -681,7 +792,7 @@ class Build777Phase5LeftMiddleOblique(BFS):
                 "3Lw", "3Lw'",
                 "3Rw", "3Rw'",
 
-                # keep LR centers staged
+                # keep LR inside centers staged
                 "Uw", "Uw'",
                 "Dw", "Dw'",
                 "Fw", "Fw'",

@@ -119,12 +119,21 @@ count_total_target = 2131746903000
 """
 
 # dwalton
+# 777 stage LR oblique edges
+depth = 2
+prev_count_at_depth = None
+count_total = None
+rate = float(10.84)
+count_total_target = 398267506305474021  # 735741^3
+
+"""
 # 777 stage UD oblique edges
 depth = 3
 prev_count_at_depth = 9010776
 count_total = 9919742
 rate = float(10.84)
 count_total_target = 2131746903000 # 12870^3
+"""
 
 
 move_total = 0
