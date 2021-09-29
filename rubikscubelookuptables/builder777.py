@@ -42,7 +42,6 @@ phase 9
 # ===============================
 
 
-# dwalton
 class StartingStates777Phase2(BFS):
     def __init__(self):
         # fmt: off
@@ -104,9 +103,22 @@ class Build777Phase2(BFS):
 
     lookup-table-7x7x7-phase2.txt
     =============================
+    1 steps has 7,606,735 entries (4 percent, 0.00x previous step)
+    2 steps has 151,277,968 entries (95 percent, 19.89x previous step)
 
     # extrapolate from here
 
+    3 steps has 2,886,383,629 entries (19.08x previous step)
+    4 steps has 52,763,092,738 entries (18.28x previous step)
+    5 steps has 922,298,861,060 entries (17.48x previous step)
+    6 steps has 15,383,945,002,480 entries (16.68x previous step)
+    7 steps has 244,297,046,639,382 entries (15.88x previous step)
+    8 steps has 3,683,999,463,321,879 entries (15.08x previous step)
+    9 steps has 52,607,512,336,236,408 entries (14.28x previous step)
+    10 steps has 341,715,335,407,051,742 entries (6.50x previous step)
+
+    Average: 9.847401841508537
+    Total  : 398,267,506,305,474,021
     """
 
     def __init__(self):
@@ -499,7 +511,6 @@ class Build777Phase5MiddleOblique(BFS):
         # fmt: on
 
 
-# dwalton reference
 class StartingStates777Phase5(BFS):
     def __init__(self):
         # fmt: off

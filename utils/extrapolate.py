@@ -121,9 +121,9 @@ count_total_target = 2131746903000
 # dwalton
 # 777 stage LR oblique edges
 depth = 2
-prev_count_at_depth = None
-count_total = None
-rate = float(10.84)
+prev_count_at_depth = 151277968
+count_total = 158884703
+rate = float(19.88)
 count_total_target = 398267506305474021  # 735741^3
 
 """
