@@ -449,8 +449,8 @@ class Build666UDRightObliqueInnerXCentersStage(BFS):
 # =======
 # phase 5
 # =======
-# - reduce LR centers to 555 centers
-# dwalton this needs to hit a state that can be solved without L L' R R'
+# - put LR centers such that they can be solved with L L' R R'
+# - EO the inside oribit of edges to prep for the 444 solver to pair those edge
 class StartingStates666Step50LRCenters(BFS):
     def __init__(self):
         # fmt: off
@@ -578,32 +578,22 @@ class Build666Step50HighLowEdges(BFS):
         BFS.__init__(
             self,
             "666-highlow-edges",
+            # fmt: off
             (
-                "3Rw",
-                "3Rw'",
-                "3Lw",
-                "3Lw'",
-                "3Fw",
-                "3Fw'",
-                "3Bw",
-                "3Bw'",
-                "3Uw",
-                "3Uw'",
-                "3Dw",
-                "3Dw'",
-                "Rw",
-                "Rw'",
-                "Lw",
-                "Lw'",
-                "Fw",
-                "Fw'",
-                "Bw",
-                "Bw'",
-                "Uw",
-                "Uw'",
-                "Dw",
-                "Dw'",
+                "3Rw", "3Rw'",
+                "3Lw", "3Lw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "Rw", "Rw'",
+                "Lw", "Lw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
             ),
+            # fmt: on
             "6x6x6",
             "lookup-table-6x6x6-step51-highlow-edges.txt",
             False,  # store_as_hex

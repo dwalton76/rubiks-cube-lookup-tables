@@ -213,6 +213,493 @@ class Build777Phase45Centers(BFS):
         # fmt: on
 
 
+# dwalton
+class Build777Phase5LeftOblique(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-phase5-left-oblique",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Lw", "3Lw'",
+                "3Rw", "3Rw'",
+
+                # keep LR centers staged
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-phase5-left-oblique.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . U . . . .
+                . . . . . U .
+                . . . . . . .
+                . U . . . . .
+                . . . . U . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x . . . .  . . . . . . .  . . x . . . .
+ . . . . . . .  . . . . . x .  . . . . . . .  . . . . . x .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . x . . . . .  . . . . . . .  . x . . . . .
+ . . . . . . .  . . . . x . .  . . . . . . .  . . . . x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . U . . . .
+                . . . . . U .
+                . . . . . . .
+                . U . . . . .
+                . . . . U . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+class Build777Phase5RightOblique(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-phase5-right-oblique",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Lw", "3Lw'",
+                "3Rw", "3Rw'",
+
+                # keep LR centers staged
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-phase5-right-oblique.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . . . U . .
+                . U . . . . .
+                . . . . . . .
+                . . . . . U .
+                . . U . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . x . .  . . . . . . .  . . . . x . .
+ . . . . . . .  . x . . . . .  . . . . . . .  . x . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . x .  . . . . . . .  . . . . . x .
+ . . . . . . .  . . x . . . .  . . . . . . .  . . x . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . U . .
+                . U . . . . .
+                . . . . . . .
+                . . . . . U .
+                . . U . . . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+class Build777Phase5MiddleOblique(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-phase5",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Lw", "3Lw'",
+                "3Rw", "3Rw'",
+
+                # keep LR centers staged
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-phase5-left-oblique.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . . U . . .
+                . . . . . . .
+                . U . . . U .
+                . . . . . . .
+                . . . U . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . x . . .  . . . . . . .  . . . x . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . x . . .  . . . . . . .  . . . x . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . U . . .
+                . . . . . . .
+                . U . . . U .
+                . . . . . . .
+                . . . U . . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+
+
+class StartingStates777Phase5(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-phase5",
+            (
+                # do not break an oblique edge
+                "3Uw", "3Uw'", "3Uw2",
+                "3Dw", "3Dw'", "3Dw2",
+                "3Fw", "3Fw'", "3Fw2",
+                "3Bw", "3Bw'", "3Bw2",
+                "3Lw", "3Lw'", "3Lw2",
+                "3Rw", "3Rw'", "3Rw2",
+
+                # keep LR centers staged
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "starting-states-lookup-table-7x7x7-phase5.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . U U U . .
+                . U . . . U .
+                . U . . . U .
+                . U . . . U .
+                . . U U U . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . U U U . .
+                . U . . . U .
+                . U . . . U .
+                . U . . . U .
+                . . U U U . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+
+# dwalton
+class Build777Phase5(BFS):
+    """
+    1 steps has 77,446 entries (0 percent, 0.00x previous step)
+    2 steps has 831,520 entries (8 percent, 10.74x previous step)
+    3 steps has 9,010,776 entries (90 percent, 10.84x previous step)
+    # extrapolate from here
+    4 steps has 90,468,191 entries (10.04x previous step)
+    5 steps has 835,926,084 entries (9.24x previous step)
+    6 steps has 7,055,216,148 entries (8.44x previous step)
+    7 steps has 53,901,851,370 entries (7.64x previous step)
+    8 steps has 368,688,663,370 entries (6.84x previous step)
+    9 steps has 1,701,164,858,095 entries (4.61x previous step)
+
+    Average: 8.76472660201022
+    Total  : 2,131,746,903,000
+    """
+    def __init__(self):
+        # fmt: off
+        from rubikscubelookuptables.builder777ss import phase5_ss
+        BFS.__init__(
+            self,
+            "7x7x7-phase5",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Lw", "3Lw'",
+                "3Rw", "3Rw'",
+
+                # keep LR centers staged
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-phase5.txt",
+            False,  # store_as_hex
+            phase5_ss,
+            use_c=True,
+        )
+        # fmt: on
+
+
+
+
+class StartingStates777Phase5LeftRightOblique(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-phase5-left-right-oblique",
+            (
+                # do not break an oblique edge
+                "3Uw", "3Uw'", "3Uw2",
+                "3Dw", "3Dw'", "3Dw2",
+                "3Fw", "3Fw'", "3Fw2",
+                "3Bw", "3Bw'", "3Bw2",
+                "3Lw", "3Lw'", "3Lw2",
+                "3Rw", "3Rw'", "3Rw2",
+
+                # keep LR centers staged
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "starting-states-lookup-table-7x7x7-phase5-left-right-oblique.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . U . U . .
+                . U . . . U .
+                . . . . . . .
+                . U . . . U .
+                . . U . U . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . U . U . .
+                . U . . . U .
+                . . . . . . .
+                . U . . . U .
+                . . U . U . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+class Build777Phase5LeftRightOblique(BFS):
+    def __init__(self):
+        # fmt: off
+        from rubikscubelookuptables.builder777ss import phase5_left_right_oblique_ss
+        BFS.__init__(
+            self,
+            "7x7x7-phase5",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Lw", "3Lw'",
+                "3Rw", "3Rw'",
+
+                # keep LR centers staged
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-phase5-left-right-oblique.txt",
+            False,  # store_as_hex
+            phase5_left_right_oblique_ss,
+            use_c=True,
+        )
+        # fmt: on
+
+
+
+class StartingStates777Phase5LeftMiddleOblique(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "7x7x7-phase5-left-middle-oblique",
+            (
+                # do not break an oblique edge
+                "3Uw", "3Uw'", "3Uw2",
+                "3Dw", "3Dw'", "3Dw2",
+                "3Fw", "3Fw'", "3Fw2",
+                "3Bw", "3Bw'", "3Bw2",
+                "3Lw", "3Lw'", "3Lw2",
+                "3Rw", "3Rw'", "3Rw2",
+
+                # keep LR centers staged
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "starting-states-lookup-table-7x7x7-phase5-left-middle-oblique.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+                . . . . . . .
+                . . U U . . .
+                . . . . . U .
+                . U . . . U .
+                . U . . . . .
+                . . . U U . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x x . . .  . . . . . . .  . . x x . . .
+ . . . . . . .  . . . . . x .  . . . . . . .  . . . . . x .
+ . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+ . . . . . . .  . x . . . . .  . . . . . . .  . x . . . . .
+ . . . . . . .  . . . x x . .  . . . . . . .  . . . x x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . U U . . .
+                . . . . . U .
+                . U . . . U .
+                . U . . . . .
+                . . . U U . .
+                . . . . . . . """,
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+class Build777Phase5LeftMiddleOblique(BFS):
+    def __init__(self):
+        # fmt: off
+        from rubikscubelookuptables.builder777ss import phase5_left_middle_oblique_ss
+        BFS.__init__(
+            self,
+            "7x7x7-phase5",
+            (
+                "3Uw", "3Uw'",
+                "3Dw", "3Dw'",
+                "3Fw", "3Fw'",
+                "3Bw", "3Bw'",
+                "3Lw", "3Lw'",
+                "3Rw", "3Rw'",
+
+                # keep LR centers staged
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+
+                # we are not manipulating anyting on L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            "7x7x7",
+            "lookup-table-7x7x7-phase5-left-middle-oblique.txt",
+            False,  # store_as_hex
+            phase5_left_middle_oblique_ss,
+            use_c=True,
+        )
+        # fmt: on
+
+
 # =====================================
 # phase 7 - LR centers to vertical bars
 # =====================================

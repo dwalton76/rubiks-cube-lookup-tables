@@ -304,4 +304,8 @@ wheel:
 	./utils/build-ida-graph.py Build777Step76
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step76.json
 
+777-dwalton:
+	./utils/builderui.py Build777Phase5LeftRightOblique
+	./utils/builderui.py Build777Phase5LeftMiddleOblique
+
 777: 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers
