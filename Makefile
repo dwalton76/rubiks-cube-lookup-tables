@@ -233,8 +233,20 @@ wheel:
 	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-step13-inner-centers.txt
 
 777-phase5:
-	./utils/builderui.py Build777Phase5LeftRightOblique
-	./utils/builderui.py Build777Phase5LeftMiddleOblique
+	./utils/builderui.py Build777Phase5LeftOblique
+	./utils/build-ida-graph.py Build777Phase5LeftOblique
+	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase5-left-oblique.json
+
+	./utils/builderui.py Build777Phase5RightOblique
+	./utils/build-ida-graph.py Build777Phase5RightOblique
+	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase5-right-oblique.json
+
+	./utils/builderui.py Build777Phase5MiddleOblique
+	./utils/build-ida-graph.py Build777Phase5MiddleOblique
+	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase5-middle-oblique.json
+
+	# ./utils/builderui.py Build777Phase5LeftRightOblique
+	# ./utils/builderui.py Build777Phase5LeftMiddleOblique
 
 777-phase7: clean
 	./utils/builderui.py Build777Step41

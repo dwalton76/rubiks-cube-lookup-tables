@@ -54,6 +54,9 @@ from rubikscubennnsolver.RubiksCube666 import (
     solved_666,
 )
 from rubikscubennnsolver.RubiksCube777 import (
+    LookupTable777Phase5LeftOblique,
+    LookupTable777Phase5MiddleOblique,
+    LookupTable777Phase5RightOblique,
     LookupTable777Phase45TCenters,
     LookupTable777Phase45XCenters,
     LookupTable777Step41,
@@ -231,6 +234,16 @@ elif lt_class.startswith("Build777"):
 
     elif lt_class == "Build777Phase45XCenters":
         cube.lt = LookupTable777Phase45XCenters(cube, build_state_index=True)
+
+    # phase 5
+    elif lt_class == "Build777Phase5LeftOblique":
+        cube.lt = LookupTable777Phase5LeftOblique(cube, build_state_index=True)
+
+    elif lt_class == "Build777Phase5RightOblique":
+        cube.lt = LookupTable777Phase5RightOblique(cube, build_state_index=True)
+
+    elif lt_class == "Build777Phase5MiddleOblique":
+        cube.lt = LookupTable777Phase5MiddleOblique(cube, build_state_index=True)
 
     # phase 7
     elif lt_class == "Build777Step41":

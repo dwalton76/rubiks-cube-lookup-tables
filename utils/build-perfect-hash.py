@@ -72,6 +72,23 @@ def main(file_in: str, file_out: str) -> None:
         lt_file_b = cube.lt_UD_inner_x_centers
         positions = sorted(list(UFBD_inner_t_centers_777) + list(UFBD_inner_x_centers_777))
 
+    # dwalton
+    elif file_in.endswith("lookup-table-7x7x7-phase5-left-right-oblique.txt"):
+        cube = RubiksCube777(solved_777, "URFDLB")
+        cube.lt_init()
+
+        # lt_file_a = cube.lt_UD_inner_t_centers
+        # lt_file_b = cube.lt_UD_inner_x_centers
+        # positions = sorted(list(UFBD_inner_t_centers_777) + list(UFBD_inner_x_centers_777))
+
+    elif file_in.endswith("lookup-table-7x7x7-phase5-left-middle-oblique.txt"):
+        cube = RubiksCube777(solved_777, "URFDLB")
+        cube.lt_init()
+
+        # lt_file_a = cube.lt_UD_inner_t_centers
+        # lt_file_b = cube.lt_UD_inner_x_centers
+        # positions = sorted(list(UFBD_inner_t_centers_777) + list(UFBD_inner_x_centers_777))
+
     else:
         raise NotImplementedError(file_in)
 
