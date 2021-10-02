@@ -455,7 +455,7 @@ class Build777Phase5MiddleOblique(BFS):
         # fmt: off
         BFS.__init__(
             self,
-            "7x7x7-phase5",
+            "7x7x7-phase5-middle-oblique",
             (
                 # keep inside centers staged
                 "3Uw", "3Uw'",
@@ -476,7 +476,7 @@ class Build777Phase5MiddleOblique(BFS):
                 "R", "R'", "R2",
             ),
             "7x7x7",
-            "lookup-table-7x7x7-phase5-left-oblique.txt",
+            "lookup-table-7x7x7-phase5-middle-oblique.txt",
             False,  # store_as_hex
             (
                 (
