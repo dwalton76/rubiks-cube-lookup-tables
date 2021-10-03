@@ -54,11 +54,14 @@ from rubikscubennnsolver.RubiksCube666 import (
     solved_666,
 )
 from rubikscubennnsolver.RubiksCube777 import (
+    LookupTable777Phase4LeftOblique,
+    LookupTable777Phase4MiddleOblique,
+    LookupTable777Phase4RightOblique,
+    LookupTable777Phase4TCenters,
+    LookupTable777Phase4XCenters,
     LookupTable777Phase5LeftOblique,
     LookupTable777Phase5MiddleOblique,
     LookupTable777Phase5RightOblique,
-    LookupTable777Phase45TCenters,
-    LookupTable777Phase45XCenters,
     LookupTable777Step41,
     LookupTable777Step42,
     LookupTable777Step43,
@@ -228,12 +231,21 @@ elif lt_class.startswith("Build666"):
 elif lt_class.startswith("Build777"):
     cube = RubiksCube777(solved_777, "URFDLB")
 
-    # phase 4 and 5 combined
-    if lt_class == "Build777Phase45TCenters":
-        cube.lt = LookupTable777Phase45TCenters(cube, build_state_index=True)
+    # phase 4
+    if lt_class == "Build777Phase4TCenters":
+        cube.lt = LookupTable777Phase4TCenters(cube, build_state_index=True)
 
-    elif lt_class == "Build777Phase45XCenters":
-        cube.lt = LookupTable777Phase45XCenters(cube, build_state_index=True)
+    elif lt_class == "Build777Phase4XCenters":
+        cube.lt = LookupTable777Phase4XCenters(cube, build_state_index=True)
+
+    elif lt_class == "Build777Phase4LeftOblique":
+        cube.lt = LookupTable777Phase4LeftOblique(cube, build_state_index=True)
+
+    elif lt_class == "Build777Phase4RightOblique":
+        cube.lt = LookupTable777Phase4RightOblique(cube, build_state_index=True)
+
+    elif lt_class == "Build777Phase4MiddleOblique":
+        cube.lt = LookupTable777Phase4MiddleOblique(cube, build_state_index=True)
 
     # phase 5
     elif lt_class == "Build777Phase5LeftOblique":
