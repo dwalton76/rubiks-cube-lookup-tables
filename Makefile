@@ -244,10 +244,10 @@ wheel:
 	./utils/build-ida-graph.py Build777Phase4MiddleOblique
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase4-middle-oblique.json
 
-	# ./utils/builderui.py Build777Phase4LeftRightOblique
+	./utils/builderui.py Build777Phase4LeftRightOblique
 	# ./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-left-right-oblique.txt
 
-	# ./utils/builderui.py Build777Phase4LeftMiddleOblique
+	./utils/builderui.py Build777Phase4LeftMiddleOblique
 	# ./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-left-middle-oblique.txt
 
 777-phase5:
