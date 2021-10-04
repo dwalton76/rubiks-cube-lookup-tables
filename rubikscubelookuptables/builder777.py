@@ -175,7 +175,7 @@ class Build777Phase4TCenters(BFS):
                 "R", "R'", "R2",
             ),
             "7x7x7",
-            "lookup-table-7x7x7-step11-phase4-t-centers.txt",
+            "lookup-table-7x7x7-phase4-t-centers.txt",
             False,  # store_as_hex
             (
                 (
@@ -234,7 +234,7 @@ class Build777Phase4XCenters(BFS):
                 "R", "R'", "R2",
             ),
             "7x7x7",
-            "lookup-table-7x7x7-step12-phase4-x-centers.txt",
+            "lookup-table-7x7x7-phase4-x-centers.txt",
             False,  # store_as_hex
             (
                 (
@@ -294,7 +294,7 @@ class Build777Phase4Centers(BFS):
                 "R", "R'", "R2",
             ),
             "7x7x7",
-            "lookup-table-7x7x7-step13-inner-centers.txt",
+            "lookup-table-7x7x7-phase4-inner-centers.txt",
             False,  # store_as_hex
             (
                 (

@@ -221,16 +221,16 @@ wheel:
 666: 666-phase4 666-phase5 666-phase6
 
 777-phase4: clean
-	# ./utils/builderui.py Build777Phase4TCenters
-	# ./utils/build-ida-graph.py Build777Phase4TCenters
-	# ./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step11-phase4-t-centers.json
+	./utils/builderui.py Build777Phase4TCenters
+	./utils/build-ida-graph.py Build777Phase4TCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase4-t-centers.json
 
-	# ./utils/builderui.py Build777Phase4XCenters
-	# ./utils/build-ida-graph.py Build777Phase4XCenters
-	# ./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step12-phase4-x-centers.json
+	./utils/builderui.py Build777Phase4XCenters
+	./utils/build-ida-graph.py Build777Phase4XCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase4-x-centers.json
 
-	# ./utils/builderui.py Build777Phase4Centers
-	# ./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-step13-inner-centers.txt
+	./utils/builderui.py Build777Phase4Centers
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-inner-centers.txt
 
 	./utils/builderui.py Build777Phase4LeftOblique
 	./utils/build-ida-graph.py Build777Phase4LeftOblique
@@ -245,10 +245,10 @@ wheel:
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase4-middle-oblique.json
 
 	./utils/builderui.py Build777Phase4LeftRightOblique
-	# ./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-left-right-oblique.txt
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-left-right-oblique.txt
 
 	./utils/builderui.py Build777Phase4LeftMiddleOblique
-	# ./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-left-middle-oblique.txt
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-left-middle-oblique.txt
 
 777-phase5:
 	./utils/builderui.py Build777Phase5LeftOblique

@@ -67,7 +67,7 @@ def main(file_in: str, file_out: str) -> None:
         lt_file_b = cube.lt_UD_right_oblique_edges_stage
         positions = sorted(list(UFBD_left_oblique_edges_666) + list(UFBD_right_oblique_edges_666))
 
-    elif file_in.endswith("lookup-table-7x7x7-step13-inner-centers.txt"):
+    elif file_in.endswith("lookup-table-7x7x7-phase4-inner-centers.txt"):
         cube = RubiksCube777(solved_777, "URFDLB")
         cube.lt_init()
 
