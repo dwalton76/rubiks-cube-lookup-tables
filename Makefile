@@ -195,6 +195,15 @@ wheel:
 	./utils/build-ida-graph.py Build666UDRightObliqueCentersStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step14-UD-right-oblique-centers.json
 
+	./utils/builderui.py Build666UDObliqueCentersStage
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step15-UD-oblique-centers.txt
+
+	./utils/builderui.py Build666UDLeftObliqueInnerXCentersStage
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt
+
+	./utils/builderui.py Build666UDRightObliqueInnerXCentersStage
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step17-UD-right-oblique-inner-x-centers.txt
+
 666-phase5: clean
 	./utils/builderui.py Build666Step50LRCenters
 	./utils/build-ida-graph.py Build666Step50LRCenters
