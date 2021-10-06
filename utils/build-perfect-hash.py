@@ -75,7 +75,7 @@ def main(file_in: str, file_out: str) -> None:
         lt_file_b = cube.lt_phase4_x_centers
         positions = sorted(list(UFBD_inner_t_centers_777) + list(UFBD_inner_x_centers_777))
 
-    # phase 4
+    # 777 phase 4
     elif file_in.endswith("lookup-table-7x7x7-phase4-left-right-oblique.txt"):
         cube = RubiksCube777(solved_777, "URFDLB")
         cube.lt_init()
@@ -83,6 +83,8 @@ def main(file_in: str, file_out: str) -> None:
         lt_file_a = cube.lt_phase4_left_oblique
         lt_file_b = cube.lt_phase4_right_oblique
         positions = sorted(list(UFBD_left_oblique_777) + list(UFBD_right_oblique_777))
+        # dwalton the problem is that some of the state_targets have a solution length of 1 in our lookup table
+        # this applies for all of the phase4 and phase5 perfect-hash tables we built.
 
     elif file_in.endswith("lookup-table-7x7x7-phase4-left-middle-oblique.txt"):
         cube = RubiksCube777(solved_777, "URFDLB")
@@ -92,7 +94,7 @@ def main(file_in: str, file_out: str) -> None:
         lt_file_b = cube.lt_phase4_middle_oblique
         positions = sorted(list(UFBD_left_oblique_777) + list(UFBD_middle_oblique_777))
 
-    # phase 5
+    # 777 phase 5
     elif file_in.endswith("lookup-table-7x7x7-phase5-left-right-oblique.txt"):
         cube = RubiksCube777(solved_777, "URFDLB")
         cube.lt_init()

@@ -670,7 +670,7 @@ class Build777Phase4LeftRightOblique(BFS):
         from rubikscubelookuptables.builder777ss import phase4_left_right_oblique_ss
         BFS.__init__(
             self,
-            "7x7x7-phase4",
+            "7x7x7-phase4-left-right-oblique",
             (
                 # keep LR inside centers staged
                 "3Uw", "3Uw'",
@@ -765,7 +765,7 @@ class Build777Phase4LeftMiddleOblique(BFS):
         from rubikscubelookuptables.builder777ss import phase4_left_middle_oblique_ss
         BFS.__init__(
             self,
-            "7x7x7-phase4",
+            "7x7x7-phase4-left-middle-oblique",
             (
                 # keep LR inside centers staged
                 "3Uw", "3Uw'",
