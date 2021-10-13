@@ -2,6 +2,7 @@
 max-line-length = 320
 max-complexity = 50
 ignore =
+  E124
   E203
   W503      # line break before binary operator; conflicts with black
 exclude =
@@ -14,3 +15,4 @@ exclude =
     lookup-tables
     rubikscubelookuptables/builder555ss.py
     rubikscubelookuptables/builder555ss.py.gz
+    rubikscubelookuptables/builder777ss.py

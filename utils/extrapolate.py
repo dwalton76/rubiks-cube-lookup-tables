@@ -33,14 +33,12 @@ rate = float(19)
 count_total_target = 3246670537110000 # 24!/(4!^6)
 
 # 4x4x4 centers stage
-"""
 depth = 8
 prev_count_at_depth = 1147351438
 count_total = 1261824246
 rate = float(10.84)
 count_total_target = 9465511770  # 24!/(8!*8!*8!)
 
-"""
 # 4x4x4 centers stage
 depth = 4
 prev_count_at_depth = 1948920
@@ -119,6 +117,24 @@ count_total = 690675
 rate = float(11.97)
 count_total_target = 2131746903000
 """
+
+# dwalton
+# 777 stage LR oblique edges
+depth = 2
+prev_count_at_depth = 151277968
+count_total = 158884703
+rate = float(19.88)
+count_total_target = 398267506305474021  # 735741^3
+
+"""
+# 777 stage UD oblique edges
+depth = 3
+prev_count_at_depth = 9010776
+count_total = 9919742
+rate = float(10.84)
+count_total_target = 2131746903000 # 12870^3
+"""
+
 
 move_total = 0
 

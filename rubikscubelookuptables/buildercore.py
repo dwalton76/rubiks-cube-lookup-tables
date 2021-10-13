@@ -2,7 +2,6 @@
 
 # standard libraries
 import datetime as dt
-import gc
 import glob
 import logging
 import math
@@ -493,7 +492,7 @@ class BFS(object):
                 self.starting_cubes.append(RubiksCube777(state, order))
 
         # Print all starting cubes
-        if len(self.starting_cubes) < 20000:
+        if len(self.starting_cubes) < 200:
             for cube in self.starting_cubes:
                 cube.print_cube("starting cube")
 
@@ -621,7 +620,8 @@ class BFS(object):
         else:
             pattern = ""
 
-        with open(self.workq_filename, "w") as fh:
+        # dwalton
+        with open(self.workq_filename, "w") as fh_workq, open(self.filename, "w") as fh:
             for cube in self.starting_cubes:
                 log.info(f"starting cube {''.join(cube.state).replace('.', '')[1:]}")
                 if self.use_edges_pattern:
@@ -629,11 +629,11 @@ class BFS(object):
                 else:
                     workq_line = f"{''.join(cube.state)}:"
 
-                fh.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
+                fh.write(workq_line + "\n")
+                fh_workq.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
                 self.workq_size += 1
 
         self.starting_cubes = []
-        gc.collect()
 
     def _sort_merge_state_files(self, files_to_sort, sorted_results_filename):
         log.info(f"sort {len(files_to_sort)} files created by builder-crunch-workq processes begin")
@@ -713,24 +713,19 @@ class BFS(object):
                 end += line_number_offset
 
                 if self.use_c:
+                    # fmt: off
                     cmd = [
                         "nice",
                         "./rubikscubelookuptables/builder-crunch-workq",
-                        "--size",
-                        self.size[0],
-                        "--inputfile",
-                        self.workq_filename,
-                        "--linewidth",
-                        str(self.workq_line_length + 1),
-                        "--start",
-                        str(start),
-                        "--end",
-                        str(end),
-                        "--outputfile",
-                        self.get_workq_filename_for_core(core),
-                        "--moves",
-                        f"{' '.join(self.legal_moves)}",
+                        "--size", self.size[0],
+                        "--inputfile", self.workq_filename,
+                        "--linewidth", str(self.workq_line_length + 1),
+                        "--start", str(start),
+                        "--end", str(end),
+                        "--outputfile", self.get_workq_filename_for_core(core),
+                        "--moves", f"{' '.join(self.legal_moves)}",
                     ]
+                    # fmt: on
 
                 else:
                     cmd = [
@@ -1247,7 +1242,6 @@ class BFS(object):
         (histogram, linecount, max_depth) = parse_histogram(self.filename)
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
         filename_minus_directory = self.filename.split("/")[1]
-        # dwalton
 
         print(
             '''
@@ -1256,9 +1250,11 @@ class %s(LookupTable):
 %s
     """
 
+    # fmt: off
     state_targets = (
 %s
     )
+    # fmt: on
 
     def __init__(self, parent, build_state_index: bool = False):
         LookupTable.__init__(
@@ -1269,16 +1265,18 @@ class %s(LookupTable):
             linecount=%d,
             max_depth=%d,
             all_moves=moves_%s,
+            # fmt: off
             illegal_moves=(
                 "%s"
             ),
+            # fmt: on
             use_state_index=True,
             build_state_index=build_state_index,
         )
 
     def state(self):
-        parent_state = self.parent.state
-        return "".join([parent_state[x] for x in CUBE_POSITION_LIST])
+        return "".join([self.parent.state[x] for x in CUBE_POSITION_LIST])
+        return "".join(["U" if self.parent.state[x] in ("U", "D") else "x" for x in CUBE_POSITION_LIST])
 
     def populate_cube_from_state(self, state, cube, steps_to_solve):
         state = list(state)
