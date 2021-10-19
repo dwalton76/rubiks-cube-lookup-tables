@@ -46,7 +46,23 @@ count_total = 2136760
 rate = float(11.31)
 count_total_target = 27136746291200
 
+# 5x5x5 centers stage phase2 where phase1 removes all U U' U2, etc moves
+depth = 7
+prev_count_at_depth = 23404284
+count_total = 25387009
+rate = float(12.80)
+count_total_target = 76804717230489600 # 126720*126720*2187*2187
+"""
 
+# 5x5x5 centers staging single phase
+depth = 6
+prev_count_at_depth = 33349612
+count_total = 34885969
+rate = float(22.72)
+count_total_target = 89595913068008532900  # (24!/(8!*8!*8!))^2
+
+
+"""
 # 5x5x5 centers OBTM
 depth = 5
 prev_count_at_depth = 6089454
@@ -116,9 +132,7 @@ prev_count_at_depth = 633025
 count_total = 690675
 rate = float(11.97)
 count_total_target = 2131746903000
-"""
 
-# dwalton
 # 777 stage LR oblique edges
 depth = 2
 prev_count_at_depth = 151277968
@@ -126,7 +140,6 @@ count_total = 158884703
 rate = float(19.88)
 count_total_target = 398267506305474021  # 735741^3
 
-"""
 # 777 stage UD oblique edges
 depth = 3
 prev_count_at_depth = 9010776

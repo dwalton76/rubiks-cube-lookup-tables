@@ -88,6 +88,167 @@ If we dropped phase 4 then phase 5 would become
     phase 5 is super slow if you don't use the perfect-hash
 """
 
+# ===========
+# phase 1 new
+# ===========
+
+
+class StartingStates555Phase1XCenters(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "5x5x5-phase1",
+            (
+                "U", "U'", "U2",
+                "L", "L'", "L2",
+                "F", "F'", "F2",
+                "R", "R'", "R2",
+                "B", "B'", "B2",
+                "D", "D'", "D2",
+            ),
+            "5x5x5",
+            "starting-states-lookup-table-5x5x5-phase1-x-centers.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+            . . . . .
+            . x . x .
+            . . . . .
+            . x . x .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . x . x .  . L . L .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L . L .  . x . x .  . L . L .  . x . x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . x . x .
+            . . . . .
+            . x . x .
+            . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+class Build555Phase1XCenters(BFS):
+    def __init__(self):
+        # fmt: off
+        # rubiks cube libraries
+        from rubikscubelookuptables.builder555ss import phase1_x_centers_ss
+
+        BFS.__init__(
+            self,
+            "5x5x5-phase1-x-centers",
+            (),
+            "5x5x5",
+            "lookup-table-5x5x5-phase1-x-centers.txt",
+            False,  # store_as_hex
+            phase1_x_centers_ss,
+            use_c=True,
+        )
+        # fmt: on
+
+
+class StartingStates555Phase1TCenters(BFS):
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "5x5x5-phase1",
+            (
+                "U", "U'", "U2",
+                "L", "L'", "L2",
+                "F", "F'", "F2",
+                "R", "R'", "R2",
+                "B", "B'", "B2",
+                "D", "D'", "D2",
+            ),
+            "5x5x5",
+            "starting-states-lookup-table-5x5x5-phase1-t-centers.txt",
+            False,  # store_as_hex
+            (
+                (
+                    """
+            . . . . .
+            . . x . .
+            . x . x .
+            . . x . .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . . L . .  . . x . .  . . L . .  . . x . .
+ . L . L .  . x . x .  . L . L .  . x . x .
+ . . L . .  . . x . .  . . L . .  . . x . .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . . x . .
+            . x . x .
+            . . x . .
+            . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+        # fmt: on
+
+
+class Build555Phase1TCenters(BFS):
+    def __init__(self):
+        # fmt: off
+        # rubiks cube libraries
+        from rubikscubelookuptables.builder555ss import phase1_t_centers_ss
+
+        BFS.__init__(
+            self,
+            "5x5x5-phase1-t-centers",
+            (),
+            "5x5x5",
+            "lookup-table-5x5x5-phase1-t-centers.txt",
+            False,  # store_as_hex
+            phase1_t_centers_ss,
+            use_c=True,
+        )
+        # fmt: on
+
+
+"""
+    Once U U' U2, etc have been removed the phase2 table would be
+    1 steps has 6 entries (0 percent, 0.00x previous step)
+    2 steps has 75 entries (0 percent, 12.50x previous step)
+    3 steps has 888 entries (0 percent, 11.84x previous step)
+    4 steps has 11,082 entries (0 percent, 12.48x previous step)
+    5 steps has 142,230 entries (0 percent, 12.83x previous step)
+    6 steps has 1,828,443 entries (7 percent, 12.86x previous step)
+    7 steps has 23,404,284 entries (92 percent, 12.80x previous step)
+
+    # extrapolate from here
+    8 steps has 280,851,408 entries (12.00x previous step)
+    9 steps has 3,145,535,769 entries (11.20x previous step)
+    10 steps has 32,713,571,997 entries (10.40x previous step)
+    11 steps has 314,050,291,171 entries (9.60x previous step)
+    12 steps has 2,763,642,562,304 entries (8.80x previous step)
+    13 steps has 22,109,140,498,431 entries (8.00x previous step)
+    14 steps has 159,185,811,588,703 entries (7.20x previous step)
+    15 steps has 1,018,789,194,167,698 entries (6.40x previous step)
+    16 steps has 5,705,219,487,339,107 entries (5.60x previous step)
+    17 steps has 27,385,053,539,227,704 entries (4.80x previous step)
+    18 steps has 42,511,246,199,468,299 entries (1.55x previous step)
+
+    Average: 17.445109310035612
+    Total  : 76,804,717,230,489,600 (126720 * 126720 * 2187 * 2187)
+
+    Where the original "stage centers in one phase" has:
+    Total  : 89,595,913,068,008,532,900
+"""
+
 
 # =======
 # phase 1
@@ -219,6 +380,34 @@ class Build555LRCenterStageXCenter(BFS):
 
 
 class Build555CenterStageOnePhase(BFS):
+    """
+    lookup-table-5x5x5-step14-centers-stage.txt
+    ===========================================
+    1 steps has 7 entries (0 percent, 0.00x previous step)
+    2 steps has 147 entries (0 percent, 21.00x previous step)
+    3 steps has 3,054 entries (0 percent, 20.78x previous step)
+    4 steps has 65,520 entries (0 percent, 21.45x previous step)
+    5 steps has 1,467,630 entries (4 percent, 22.40x previous step)
+    6 steps has 33,349,612 entries (95 percent, 22.72x previous step)
+
+    extrapolate frome here
+    7 steps has 731,023,495 entries (21.92x previous step)
+    8 steps has 15,439,216,214 entries (21.12x previous step)
+    9 steps has 313,724,873,468 entries (20.32x previous step)
+    10 steps has 6,123,909,530,095 entries (19.52x previous step)
+    11 steps has 114,639,586,403,378 entries (18.72x previous step)
+    12 steps has 2,054,341,388,348,533 entries (17.92x previous step)
+    13 steps has 35,170,324,568,526,872 entries (17.12x previous step)
+    14 steps has 573,979,696,958,358,336 entries (16.32x previous step)
+    15 steps has 8,908,164,896,793,716,736 entries (15.52x previous step)
+    16 steps has 80,076,422,714,873,649,803 entries (8.99x previous step)
+
+    Average: 15.886485169358519
+    Total  : 89,595,913,068,008,532,900
+
+    (24!/(8!*8!*8!))^2
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
