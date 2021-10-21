@@ -113,7 +113,7 @@ wheel:
 	./utils/build-ida-graph.py Build555Phase3LRCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage.json
 
-	# This takes a lot of RAM...run on an ec2 instance
+	# The json-to-binary.py step takes a lot of RAM...run that step on an EC2 instance
 	./utils/builderui.py Build555EdgeOrientOuterOrbit
 	./utils/build-ida-graph.py Build555EdgeOrientOuterOrbit
 	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json-1000000 lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json-2000000 lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
@@ -127,23 +127,21 @@ wheel:
 	./utils/builderui.py Build555Phase4 --depth 3
 
 555-phase5: clean
-	# This takes a lot of RAM...run on an ec2 instance
-	./utils/builderui.py Build555Phase5Centers
-	./utils/build-ida-graph.py Build555Phase5Centers
-	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-1000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-2000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
+	# The json-to-binary.py step takes a lot of RAM...run that step on an EC2 instance
+	# ./utils/builderui.py Build555Phase5Centers
+	# ./utils/build-ida-graph.py Build555Phase5Centers
+	# ./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-1000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-2000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
+	# ./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
 
-	./utils/builderui.py Build555Phase5HighEdgeMidge
+	./utils/builderui.py Build555Phase5HighEdgeMidge --cores 10
 	./utils/build-ida-graph.py Build555Phase5HighEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.json
+	# ./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.json
+	# ./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.json
 
-	./utils/builderui.py Build555Phase5LowEdgeMidge
+	./utils/builderui.py Build555Phase5LowEdgeMidge --cores 10
 	./utils/build-ida-graph.py Build555Phase5LowEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
-
-	./utils/builderui.py Build555Phase5FBCenters
-	./utils/build-ida-graph.py Build555Phase5FBCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step56-phase5-fb-centers.json
+	# ./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
+	# ./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
 
 555-phase6: clean
 	./utils/builderui.py Build555Phase6Centers

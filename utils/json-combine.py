@@ -52,5 +52,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
+    raise Exception("fix this")
     filenames = sys.argv[1:]
     json_combine_files(filenames)
