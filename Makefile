@@ -134,12 +134,12 @@ wheel:
 	# ./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
 
 	./utils/builderui.py Build555Phase5HighEdgeMidge --cores 10
-	./utils/build-ida-graph.py Build555Phase5HighEdgeMidge
+	# ./utils/build-ida-graph.py Build555Phase5HighEdgeMidge
 	# ./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.json
 	# ./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.json
 
 	./utils/builderui.py Build555Phase5LowEdgeMidge --cores 10
-	./utils/build-ida-graph.py Build555Phase5LowEdgeMidge
+	# ./utils/build-ida-graph.py Build555Phase5LowEdgeMidge
 	# ./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
 	# ./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
 
