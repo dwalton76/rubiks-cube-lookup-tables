@@ -641,7 +641,6 @@ class BFS(object):
         else:
             pattern = ""
 
-        # dwalton
         with open(self.workq_filename, "w") as fh_workq, open(self.filename, "w") as fh:
             for cube in self.starting_cubes:
                 log.info(f"starting cube {''.join(cube.state).replace('.', '')[1:]}")
@@ -832,11 +831,13 @@ class BFS(object):
 
             log.info("builder-find-new-edges-pattern-states.py begin")
             start_time = dt.datetime.now()
-            subprocess.check_output(
-                "nice ./rubikscubelookuptables/builder-find-new-edges-pattern-states.py %s %s %s.20-new-states"
-                % (self.filename, sorted_results_filename, self.workq_filename),
-                shell=True,
+            cmd = "nice ./rubikscubelookuptables/builder-find-new-edges-pattern-states.py %s %s %s.20-new-states" % (
+                self.filename,
+                sorted_results_filename,
+                self.workq_filename,
             )
+            log.info(cmd)
+            subprocess.check_output(cmd, shell=True)
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-edges-pattern-states.py end")
         else:

@@ -10,8 +10,8 @@ from rubikscubelookuptables.buildercore import WRITE_BATCH_SIZE, supported_sizes
 from rubikscubennnsolver.LookupTable import steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import rotate_222
 from rubikscubennnsolver.RubiksCube333 import rotate_333
-from rubikscubennnsolver.RubiksCube444 import centers_444, edges_recolor_pattern_444, rotate_444, wings_444
-from rubikscubennnsolver.RubiksCube555 import centers_555, edges_recolor_pattern_555, rotate_555, wings_555
+from rubikscubennnsolver.RubiksCube444 import edges_recolor_pattern_444, rotate_444, wings_444
+from rubikscubennnsolver.RubiksCube555 import edges_recolor_pattern_555, rotate_555, wings_555
 from rubikscubennnsolver.RubiksCube666 import rotate_666
 from rubikscubennnsolver.RubiksCube777 import rotate_777
 
@@ -195,15 +195,13 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                     if size == "4x4x4":
                         state_for_edges = edges_recolor_pattern_444(cube_state[:])
                         edges_pattern = "".join([state_for_edges[square_index] for square_index in wings_444])
-                        centers = "".join([cube_state[x] for x in centers_444])
                     elif size == "5x5x5":
                         state_for_edges = edges_recolor_pattern_555(cube_state[:])
                         edges_pattern = "".join([state_for_edges[square_index] for square_index in wings_555])
-                        centers = "".join([cube_state[x] for x in centers_555])
                     else:
                         raise Exception("Implement this")
 
-                    to_write.append(f"{centers}{edges_pattern}:{cube_state_string}:{' '.join(moves_to_scramble)}")
+                    to_write.append(f"{edges_pattern}:{cube_state_string}:{' '.join(moves_to_scramble)}")
                     to_write_count += 1
 
                 else:
