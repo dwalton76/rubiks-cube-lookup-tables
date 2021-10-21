@@ -614,7 +614,13 @@ class BFS(object):
             if self.size == "4x4x4":
                 pattern = "10425376a8b9ecfdhgkiljnm"
             elif self.size == "5x5x5":
-                pattern = "TBD"
+                if self.filename.endswith("lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt"):
+                    pattern = "-------------SSTT--UUVV-------------"
+                elif self.filename.endswith("lookup-table-5x5x5-step54-phase5-low-edge-and-midge.txt"):
+                    pattern = "------------sS--TtuU--Vv------------"
+                else:
+                    raise Exception(f"implement edges-pattern for {self.size} {self.filename}")
+
             else:
                 raise Exception(f"implement edges-pattern for {self.size}")
         else:
