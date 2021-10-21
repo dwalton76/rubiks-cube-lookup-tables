@@ -611,18 +611,33 @@ class BFS(object):
         self.rm_per_core_workq_results_files()
 
         if self.use_edges_pattern:
+            pattern = None
+
             if self.size == "4x4x4":
-                pattern = "10425376a8b9ecfdhgkiljnm"
+                # pattern = "10425376a8b9ecfdhgkiljnm"
+                if self.filename.endswith("lookup-table-4x4x4-step32-first-four-edges.txt"):
+                    pattern = "--------a8b9ecfd--------"
+                elif self.filename.endswith("lookup-table-4x4x4-step42-last-eight-edges.txt"):
+                    pattern = "10425376--------hgkiljnm"
+
             elif self.size == "5x5x5":
                 if self.filename.endswith("lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt"):
                     pattern = "-------------SSTT--UUVV-------------"
+
                 elif self.filename.endswith("lookup-table-5x5x5-step54-phase5-low-edge-and-midge.txt"):
                     pattern = "------------sS--TtuU--Vv------------"
-                else:
-                    raise Exception(f"implement edges-pattern for {self.size} {self.filename}")
 
-            else:
-                raise Exception(f"implement edges-pattern for {self.size}")
+                elif self.filename.endswith("lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt"):
+                    pattern = "OOopPPQQqrRR------------WWwxXXYYyzZZ"
+
+                elif self.filename.endswith("lookup-table-5x5x5-step62-phase6-high-edge-midge.txt"):
+                    pattern = "OO--PPQQ--RR------------WW--XXYY--ZZ"
+
+                elif self.filename.endswith("lookup-table-5x5x5-step63-phase6-low-edge-midge.txt"):
+                    pattern = "-OopP--QqrR--------------WwxX--YyzZ-"
+
+            if pattern is None:
+                raise Exception(f"implement edges-pattern for {self.size} {self.filename}")
         else:
             pattern = ""
 
@@ -845,29 +860,6 @@ class BFS(object):
         log.info(f"there are {new_states_count:,} new states")
         pruned = 0
         kept = 0
-
-        if self.name in ("5x5x5-edges-stage-first-four",) and not self.lt_centers:
-            self.lt_centers = {}
-
-            if self.name in ("5x5x5-edges-stage-first-four",):
-                lt_centers_filename = "lookup-table-5x5x5-step30-ULFRBD-centers-solve-unstaged.txt.4-deep"
-
-                if lt_centers_filename.endswith("5-deep"):
-                    self.lt_centers_max_depth = 5
-                elif lt_centers_filename.endswith("4-deep"):
-                    self.lt_centers_max_depth = 4
-                else:
-                    raise Exception()
-
-            else:
-                raise Exception(f"Implement this {self.name}")
-
-            log.info(f"begin loading {lt_centers_filename}")
-            with open(lt_centers_filename, "r") as fh:
-                for line in fh:
-                    (state, steps) = line.strip().split(":")
-                    self.lt_centers[state] = len(steps.split())
-            log.info(f"end loading {lt_centers_filename}")
 
         if max_depth is None or self.depth < max_depth:
             to_write = []
