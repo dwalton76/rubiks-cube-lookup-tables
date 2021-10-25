@@ -113,7 +113,7 @@ wheel:
 	./utils/build-ida-graph.py Build555Phase3LRCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage.json
 
-	# The json-to-binary.py step takes a lot of RAM...run that step on an EC2 instance
+	# The json-to-binary.py steps take ~16G of RAM
 	./utils/builderui.py Build555EdgeOrientOuterOrbit
 	./utils/build-ida-graph.py Build555EdgeOrientOuterOrbit
 	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
@@ -127,7 +127,7 @@ wheel:
 	./utils/builderui.py Build555Phase4 --depth 3
 
 555-phase5: clean
-	# The json-to-binary.py step takes ~30G of RAM...run that on an EC2 instance
+	# The json-to-binary.py steps take ~16G of RAM
 	./utils/builderui.py Build555Phase5Centers
 	./utils/build-ida-graph.py Build555Phase5Centers
 	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
