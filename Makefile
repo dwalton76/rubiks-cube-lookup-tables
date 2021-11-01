@@ -151,6 +151,10 @@ wheel:
 	./utils/build-ida-graph.py Build555Phase5LowEdge
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step57-phase5-low-edge.json
 
+	./utils/builderui.py Build555Phase5FBCenters
+	./utils/build-ida-graph.py Build555Phase5FBCenters
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step58-phase5-FB-centers.json
+
 	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step55-phase5-high-low-edge.txt
 
 555-phase6: clean
