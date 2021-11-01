@@ -8,7 +8,7 @@ import os
 import click
 
 # rubiks cube libraries
-from rubikscubennnsolver.RubiksCube555 import RubiksCube555, edges_555, solved_555
+from rubikscubennnsolver.RubiksCube555 import FB_centers_555, RubiksCube555, edges_555, high_wings_555, solved_555
 from rubikscubennnsolver.RubiksCube666 import (
     RubiksCube666,
     UFBD_inner_x_centers_666,
@@ -52,6 +52,14 @@ def main(file_in: str, file_out: str) -> None:
         lt_file_a = cube.lt_phase5_high_edge
         lt_file_b = cube.lt_phase5_low_edge
         positions = sorted(list(edges_555))
+
+    elif file_in.endswith("lookup-table-5x5x5-step59-phase5-high-edge-fb-centers.txt"):
+        cube = RubiksCube555(solved_555, "URFDLB")
+        cube.lt_init()
+
+        lt_file_a = cube.lt_phase5_high_edge
+        lt_file_b = cube.lt_phase5_fb_centers
+        positions = sorted(list(high_wings_555) + list(FB_centers_555))
 
     # 6x6x6
     elif file_in.endswith("lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt"):
