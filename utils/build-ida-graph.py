@@ -29,10 +29,7 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555Phase2LRCenterStage,
     LookupTable555Phase3LRCenterStage,
     LookupTable555Phase5Centers,
-    LookupTable555Phase5FBCenters,
-    LookupTable555Phase5HighEdge,
     LookupTable555Phase5HighEdgeMidge,
-    LookupTable555Phase5LowEdge,
     LookupTable555Phase5LowEdgeMidge,
     LookupTable555Phase6Centers,
     LookupTable555Phase6HighEdgeMidge,
@@ -163,15 +160,6 @@ elif lt_class.startswith("Build555"):
 
     elif lt_class == "Build555Phase5LowEdgeMidge":
         cube.lt = LookupTable555Phase5LowEdgeMidge(cube, build_state_index=True)
-
-    elif lt_class == "Build555Phase5HighEdge":
-        cube.lt = LookupTable555Phase5HighEdge(cube, build_state_index=True)
-
-    elif lt_class == "Build555Phase5LowEdge":
-        cube.lt = LookupTable555Phase5LowEdge(cube, build_state_index=True)
-
-    elif lt_class == "Build555Phase5FBCenters":
-        cube.lt = LookupTable555Phase5FBCenters(cube, build_state_index=True)
 
     # phase 6
     elif lt_class == "Build555Phase6Centers":

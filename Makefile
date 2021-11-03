@@ -143,20 +143,6 @@ wheel:
 	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
 
-	./utils/builderui.py Build555Phase5HighEdge
-	./utils/build-ida-graph.py Build555Phase5HighEdge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step56-phase5-high-edge.json
-
-	./utils/builderui.py Build555Phase5LowEdge
-	./utils/build-ida-graph.py Build555Phase5LowEdge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step57-phase5-low-edge.json
-
-	./utils/builderui.py Build555Phase5FBCenters
-	./utils/build-ida-graph.py Build555Phase5FBCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step58-phase5-FB-centers.json
-
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step55-phase5-high-low-edge.txt
-
 555-phase6: clean
 	./utils/builderui.py Build555Phase6Centers
 	./utils/build-ida-graph.py Build555Phase6Centers
