@@ -647,6 +647,9 @@ class BFS(object):
                 elif self.filename.endswith("lookup-table-5x5x5-step55-phase5-three-edges.txt"):
                     pattern = "------------sSSTTtuUU---------------"
 
+                elif self.filename.endswith("lookup-table-5x5x5-step56-phase5-front-two-edges.txt"):
+                    pattern = "---------------TTtuUU---------------"
+
             if pattern is None:
                 raise Exception(f"implement edges-pattern for {self.size} {self.filename}")
         else:

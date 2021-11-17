@@ -2176,13 +2176,94 @@ class Build555Phase5LowEdgeMidge(BFS):
         )
 
 
-# dwalton
+class Build555Phase5FrontTwoEdges(BFS):
+    """
+    A two-edge table would be
+        (12*11)^2 = 17,424 is how many states the wings can be in
+        12!/(10!*2!) = 66 is how many states the midges can be in
+        17,424 * 66 = 1,149,984
+
+    The average move count needs to be greater than 8.76 (the average depth of the step53 and 54 tables)
+    for this to be useful. I built it and got:
+
+    lookup-tables/lookup-table-5x5x5-step56-phase5-front-two-edges.txt
+    ==================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 5 entries (0 percent, 5.00x previous step)
+    2 steps has 38 entries (0 percent, 7.60x previous step)
+    3 steps has 259 entries (0 percent, 6.82x previous step)
+    4 steps has 1,898 entries (0 percent, 7.33x previous step)
+    5 steps has 12,288 entries (1 percent, 6.47x previous step)
+    6 steps has 62,793 entries (5 percent, 5.11x previous step)
+    7 steps has 271,688 entries (23 percent, 4.33x previous step)
+    8 steps has 598,678 entries (52 percent, 2.20x previous step)
+    9 steps has 202,044 entries (17 percent, 0.34x previous step)
+    10 steps has 292 entries (0 percent, 0.00x previous step)
+
+    Total: 1,149,984 entries
+    Average: 7.79 moves
+
+    oh well it was worth a shot
+    """
+
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-phase5-front-two-edges",
+            # fmt: off
+            (
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+            ),
+            # fmt: on
+            "5x5x5",
+            "lookup-table-5x5x5-step56-phase5-front-two-edges.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . L  F . . . F  R . . . -  - . . . -
+ - . . . L  F . . . F  R . . . -  - . . . -
+ - . . . L  F . . . F  R . . . -  - . . . -
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""",
+                    "ascii",
+                ),
+            ),
+            use_edges_pattern=True,
+        )
+
+
 class Build555Phase5ThreeEdges(BFS):
     """
     (12*11*10)^2 = 1,742,400 is how many states the wings can be in
     12!/(9!*3!) = 220 is how many states the midges can be in
     1,742,400 * 220 = 383,328,000
+
+    The average move count needs to be greater than 8.76 for this to be useful
+    This will need to be a perfect-hash.
     """
+
+    # dwalton
 
     def __init__(self):
         BFS.__init__(
