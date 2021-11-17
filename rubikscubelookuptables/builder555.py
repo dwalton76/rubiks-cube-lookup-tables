@@ -2056,11 +2056,20 @@ class Build555Phase5Centers(BFS):
         # fmt: on
 
 
-# An edges table here would be
-#    (12*11*10*9)^2 = 141,134,400 is how many states the wings can be in
-#    12!/(8!*4!) = 495 is how many states the midges can be in
-#    141,134,400 * 495 = 69,861,528,000
-# which is way too large to build
+"""
+An edges table here would be
+    (12*11*10*9)^2 = 141,134,400 is how many states the wings can be in
+    12!/(8!*4!) = 495 is how many states the midges can be in
+    141,134,400 * 495 = 69,861,528,000
+which is way too large to build
+
+A 3-edges table would be
+    (12*11*10)^2 = 1,742,400 is how many states the wings can be in
+    12!/(9!*3!) = 220 is how many states the midges can be in
+    1,742,400 * 220 = 383,328,000
+
+That is doable...
+"""
 
 
 class Build555Phase5HighEdgeMidge(BFS):
@@ -2153,6 +2162,61 @@ class Build555Phase5LowEdgeMidge(BFS):
  L . . . -  - . . . F  R . . . -  - . . . B
  L . . . L  F . . . F  R . . . R  B . . . B
  - . . . L  F . . . -  - . . . R  B . . . -
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""",
+                    "ascii",
+                ),
+            ),
+            use_edges_pattern=True,
+        )
+
+
+# dwalton
+class Build555Phase5ThreeEdges(BFS):
+    """
+    (12*11*10)^2 = 1,742,400 is how many states the wings can be in
+    12!/(9!*3!) = 220 is how many states the midges can be in
+    1,742,400 * 220 = 383,328,000
+    """
+
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-phase5-three-edges",
+            # fmt: off
+            (
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+            ),
+            # fmt: on
+            "5x5x5",
+            "lookup-table-5x5x5-step55-phase5-three-edges.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L . . . L  F . . . F  R . . . -  - . . . B
+ L . . . L  F . . . F  R . . . -  - . . . B
+ L . . . L  F . . . F  R . . . -  - . . . B
  . - - - .  . - - - .  . - - - .  . - - - .
 
             . - - - .

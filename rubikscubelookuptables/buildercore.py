@@ -621,6 +621,14 @@ class BFS(object):
                     pattern = "10425376--------hgkiljnm"
 
             elif self.size == "5x5x5":
+                """
+                000 000 000 011 111 111 112 222 222 222 333 333
+                012 345 678 901 234 567 890 123 456 789 012 345
+                OOo pPP QQq rRR sSS TTt uUU VVv WWw xXX YYy zZZ
+                 ^   ^   ^   ^   ^   ^   ^   ^   ^   ^   ^   ^
+                 UB  UL  UR  UD  LB  LF  RF  RB  DF  DL  DR  DB
+                """
+
                 if self.filename.endswith("lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt"):
                     pattern = "-------------SSTT--UUVV-------------"
 
@@ -635,6 +643,9 @@ class BFS(object):
 
                 elif self.filename.endswith("lookup-table-5x5x5-step63-phase6-low-edge-midge.txt"):
                     pattern = "-OopP--QqrR--------------WwxX--YyzZ-"
+
+                elif self.filename.endswith("lookup-table-5x5x5-step55-phase5-three-edges.txt"):
+                    pattern = "------------sSSTTtuUU---------------"
 
             if pattern is None:
                 raise Exception(f"implement edges-pattern for {self.size} {self.filename}")
