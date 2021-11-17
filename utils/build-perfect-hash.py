@@ -35,7 +35,7 @@ def main(file_in: str, file_out: str) -> None:
     """
     \b
     Example:
-        python ./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt
+        ./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt
     """
     if not os.path.exists(file_in):
         raise FileNotFoundError(file_in)
