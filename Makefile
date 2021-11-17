@@ -59,7 +59,7 @@ wheel:
 444-phase2: clean
 	./utils/builderui.py Build444HighLowEdgesEdges
 	./utils/build-ida-graph.py Build444HighLowEdgesEdges
-	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json-1000000 lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json-2000000 lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
+	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
 
 	./utils/builderui.py Build444HighLowEdgesCenters
@@ -73,7 +73,7 @@ wheel:
 
 	./utils/builderui.py Build444Reduce333FirstFourEdges
 	./utils/build-ida-graph.py Build444Reduce333FirstFourEdges
-	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-1000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-2000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-3000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-4000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json-5000000 lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
+	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
 
 	./utils/builderui.py Build444Reduce333Centers
@@ -113,10 +113,10 @@ wheel:
 	./utils/build-ida-graph.py Build555Phase3LRCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage.json
 
-	# This takes a lot of RAM...run on an ec2 instance
+	# The json-to-binary.py steps take ~16G of RAM
 	./utils/builderui.py Build555EdgeOrientOuterOrbit
 	./utils/build-ida-graph.py Build555EdgeOrientOuterOrbit
-	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json-1000000 lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json-2000000 lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
+	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
 
 	./utils/builderui.py Build555EdgeOrientInnerOrbit
@@ -130,7 +130,7 @@ wheel:
 	# This takes a lot of RAM...run on an ec2 instance
 	./utils/builderui.py Build555Phase5Centers
 	./utils/build-ida-graph.py Build555Phase5Centers
-	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-1000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json-2000000 lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
+	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
 
 	./utils/builderui.py Build555Phase5HighEdgeMidge
@@ -211,7 +211,7 @@ wheel:
 
 	./utils/builderui.py Build666Step50HighLowEdges
 	./utils/build-ida-graph.py Build666Step50HighLowEdges
-	./utils/json-combine.py lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json-1000000 lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json-2000000 lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json
+	./utils/json-combine.py lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json
 
 666-phase6: clean

@@ -22,6 +22,7 @@ moves_777 = (
 
 def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
     assert filename.endswith(".json")
+    filename_state_index = filename.replace(".json", ".state_index")
 
     if not os.path.exists(filename):
         print(f"ERROR: {filename} does not exist")
@@ -32,11 +33,14 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
         data = json.load(fh)
 
     log.info("build a dictionary that translates a state to its index among all states")
-    states = sorted(data.keys())
+    states = []
     state_to_index = {}
 
-    for (index, state) in enumerate(states):
-        state_to_index[state] = index
+    with open(filename_state_index, "r") as fh:
+        for line in fh:
+            (state, state_index) = line.rstrip().split(":")
+            state_to_index[state] = int(state_index)
+            states.append(state)
 
     binary_filename = filename.replace(".json", ".bin")
 
