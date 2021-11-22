@@ -32,8 +32,8 @@ if __name__ == "__main__":
     cube.print_cube("init")
     nuke_state = cube.state[:]
 
-    filename = "lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt"
-    filename_new = filename + ".new"
+    filename = "lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges.txt"
+    filename_new = "lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt"
 
     with open(filename, "r") as fh:
         with open(filename_new, "w") as fh_new:
@@ -62,5 +62,5 @@ if __name__ == "__main__":
                 cube.state = nuke_state[:]
                 cube.solution = []
 
-                if index % 10000 == 0:
+                if index % 100000 == 0:
                     logger.info(f"{index:,}")
