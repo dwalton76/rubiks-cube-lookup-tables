@@ -34,6 +34,7 @@ if __name__ == "__main__":
 
     filename = "lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges.txt"
     filename_new = "lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt"
+    to_write = []
 
     with open(filename, "r") as fh:
         with open(filename_new, "w") as fh_new:
@@ -56,7 +57,7 @@ if __name__ == "__main__":
                         edges_state.append(tmp_state[x])
 
                 edges_state = "".join(edges_state)
-                fh_new.write(f"{edges_state}:{steps_to_solve_str}\n")
+                to_write.append(f"{edges_state}:{steps_to_solve_str}")
 
                 # cube.print_cube(f"{index}: {steps_to_scramble} {edges_state}")
                 cube.state = nuke_state[:]
@@ -64,3 +65,9 @@ if __name__ == "__main__":
 
                 if index % 100000 == 0:
                     logger.info(f"{index:,}")
+                    fh_new.write("\n".join(to_write) + "\n")
+                    to_write = []
+
+            if to_write:
+                fh_new.write("\n".join(to_write) + "\n")
+                to_write = []
