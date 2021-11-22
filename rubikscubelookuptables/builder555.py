@@ -1866,75 +1866,7 @@ class Build555EdgeOrientInnerOrbit(BFS):
 # =======
 # phase 4
 # =======
-class StartingStatesBuild555Phase4(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "5x5x5-phase4",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
-            # fmt: on
-            "5x5x5",
-            "starting-states-lookup-table-5x5x5-step40-phase4.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-            . x x x .
-            x . . . x
-            x . . . x
-            x . . . x
-            . x x x .
-
- . x x x .  . x x x .  . x x x .  . x x x .
- L . . . L  L . . . L  L . . . L  L . . . L
- L . . . L  L . . . L  L . . . L  L . . . L
- L . . . L  L . . . L  L . . . L  L . . . L
- . x x x .  . x x x .  . x x x .  . x x x .
-
-            . x x x .
-            x . . . x
-            x . . . x
-            x . . . x
-            . x x x .""",
-                    "ascii",
-                ),
-            ),
-        )
-
-
-class Build555Phase4(BFS):
-    """
-    Move one group of 4-edges out of the z-plane
-    """
-
-    def __init__(self):
-
-        # rubiks cube libraries
-        from rubikscubelookuptables.builder555ss import starting_states_phase4
-
-        BFS.__init__(
-            self,
-            "5x5x5-phase4",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "L", "L'", "R", "R'"),
-            "5x5x5",
-            "lookup-table-5x5x5-step40-phase4.txt",
-            True,  # store_as_hex
-            starting_states_phase4,
-        )
-
+# There used to be a phase 4 but there no longer is
 
 # =======
 # phase 5
@@ -2056,22 +1988,6 @@ class Build555Phase5Centers(BFS):
         # fmt: on
 
 
-"""
-An edges table here would be
-    (12*11*10*9)^2 = 141,134,400 is how many states the wings can be in
-    12!/(8!*4!) = 495 is how many states the midges can be in
-    141,134,400 * 495 = 69,861,528,000
-which is way too large to build
-
-A 3-edges table would be
-    (12*11*10)^2 = 1,742,400 is how many states the wings can be in
-    12!/(9!*3!) = 220 is how many states the midges can be in
-    1,742,400 * 220 = 383,328,000
-
-That is doable...
-"""
-
-
 class Build555Phase5HighEdgeMidge(BFS):
     """
     (12*11*10*9)*495 = 5,880,600 states
@@ -2178,6 +2094,8 @@ class Build555Phase5LowEdgeMidge(BFS):
 
 class Build555Phase5FrontTwoEdges(BFS):
     """
+    NOT USED
+
     A two-edge table would be
         (12*11)^2 = 17,424 is how many states the wings can be in
         12!/(10!*2!) = 66 is how many states the midges can be in
@@ -2186,7 +2104,7 @@ class Build555Phase5FrontTwoEdges(BFS):
     The average move count needs to be greater than 8.76 (the average depth of the step53 and 54 tables)
     for this to be useful. I built it and got:
 
-    lookup-tables/lookup-table-5x5x5-step56-phase5-front-two-edges.txt
+    lookup-tables/lookup-table-5x5x5-step55-phase5-front-two-edges.txt
     ==================================================================
     0 steps has 1 entries (0 percent, 0.00x previous step)
     1 steps has 5 entries (0 percent, 5.00x previous step)
@@ -2223,7 +2141,7 @@ class Build555Phase5FrontTwoEdges(BFS):
             ),
             # fmt: on
             "5x5x5",
-            "lookup-table-5x5x5-step56-phase5-front-two-edges.txt",
+            "lookup-table-5x5x5-step55-phase5-front-two-edges.txt",
             False,  # store_as_hex
             # starting cubes
             (
@@ -2261,9 +2179,27 @@ class Build555Phase5ThreeEdges(BFS):
 
     The average move count needs to be greater than 8.76 for this to be useful
     This will need to be a perfect-hash.
-    """
 
-    # dwalton
+    lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges.txt
+    ==============================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 7 entries (0 percent, 7.00x previous step)
+    2 steps has 57 entries (0 percent, 8.14x previous step)
+    3 steps has 465 entries (0 percent, 8.16x previous step)
+    4 steps has 4,353 entries (0 percent, 9.36x previous step)
+    5 steps has 37,446 entries (0 percent, 8.60x previous step)
+    6 steps has 298,557 entries (0 percent, 7.97x previous step)
+    7 steps has 2,142,656 entries (0 percent, 7.18x previous step)
+    8 steps has 13,032,706 entries (3 percent, 6.08x previous step)
+    9 steps has 60,364,543 entries (15 percent, 4.63x previous step)
+    10 steps has 162,774,838 entries (42 percent, 2.70x previous step)
+    11 steps has 137,246,021 entries (35 percent, 0.84x previous step)
+    12 steps has 7,426,338 entries (1 percent, 0.05x previous step)
+    13 steps has 12 entries (0 percent, 0.00x previous step)
+
+    Total: 383,328,000 entries
+    Average: 10.15 moves
+    """
 
     def __init__(self):
         BFS.__init__(
@@ -2298,6 +2234,115 @@ class Build555Phase5ThreeEdges(BFS):
  L . . . L  F . . . F  R . . . -  - . . . B
  L . . . L  F . . . F  R . . . -  - . . . B
  L . . . L  F . . . F  R . . . -  - . . . B
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""",
+                    "ascii",
+                ),
+            ),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Phase5ThreeEdgesMidge(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-phase5-three-edges-midge",
+            # fmt: off
+            (
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+            ),
+            # fmt: on
+            "5x5x5",
+            "lookup-table-5x5x5-step55-phase5-three-edges-midge.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ - . . . -  - . . . -  - . . . -  - . . . -
+ L . . . L  F . . . F  R . . . -  - . . . B
+ - . . . -  - . . . -  - . . . -  - . . . -
+ . - - - .  . - - - .  . - - - .  . - - - .
+
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .""",
+                    "ascii",
+                ),
+            ),
+            use_edges_pattern=True,
+        )
+
+
+class Build555Phase5FourEdges(BFS):
+    """
+    NOT USED
+
+    (12*11*10*9)^2 = 141,134,400 is how many states the wings can be in
+    12!/(8!*4!) = 495 is how many states the midges can be in
+    141,134,400 * 495 = 69,861,528,000
+
+    This is muuuuuuch too large to build. The largest table I have ever built was 9 billion
+    entries and that was as huge PITA that took about a month...and that wasn't an edges
+    table which would be even slower (edges tables use builder-crunch-workq.py instead of
+    the C equivalent).
+    """
+
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-phase5-four-edges",
+            # fmt: off
+            (
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+            ),
+            # fmt: on
+            "5x5x5",
+            "lookup-table-5x5x5-step55-phase5-four-edges.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . - - - .
+            - . . . -
+            - . . . -
+            - . . . -
+            . - - - .
+
+ . - - - .  . - - - .  . - - - .  . - - - .
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
+ L . . . L  F . . . F  R . . . R  B . . . B
  . - - - .  . - - - .  . - - - .  . - - - .
 
             . - - - .

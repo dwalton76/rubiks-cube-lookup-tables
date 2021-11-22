@@ -123,9 +123,6 @@ wheel:
 	./utils/build-ida-graph.py Build555EdgeOrientInnerOrbit
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step903-EO-inner-orbit.json
 
-555-phase4: clean
-	./utils/builderui.py Build555Phase4 --depth 3
-
 555-phase5: clean
 	# The json-to-binary.py steps take ~16G of RAM
 	./utils/builderui.py Build555Phase5Centers
@@ -142,6 +139,24 @@ wheel:
 	./utils/build-ida-graph.py Build555Phase5LowEdgeMidge
 	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
+
+	# this table is 383,328,000 entries, it takes a while to build
+	./utils/builderui.py Build555Phase5ThreeEdges
+
+	# dwalton
+	./utils/build-555-phase5-three-edges-wings.py
+	./utils/pad-lines.py lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
+	LC_ALL=C nice sort --output=lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt.sort lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
+	mv lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt.sort lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
+	./utils/keep-best-solution.py lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
+	./utils/build-ida-graph.py Build555Phase5ThreeEdgesWings
+	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.json
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.json
+
+	./utils/builderui.py Build555Phase5ThreeEdgesMidge
+	./utils/build-ida-graph.py Build555Phase5ThreeEdgesMidge
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-midge.json
+
 
 555-phase6: clean
 	./utils/builderui.py Build555Phase6Centers
