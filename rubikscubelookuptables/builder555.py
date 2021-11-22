@@ -2092,113 +2092,52 @@ class Build555Phase5LowEdgeMidge(BFS):
         )
 
 
-class Build555Phase5FrontTwoEdges(BFS):
+class Build555Phase5ThreeEdges(BFS):
     """
-    NOT USED
-
-    A two-edge table would be
+    A two-edge table is:
         (12*11)^2 = 17,424 is how many states the wings can be in
         12!/(10!*2!) = 66 is how many states the midges can be in
         17,424 * 66 = 1,149,984
 
-    The average move count needs to be greater than 8.76 (the average depth of the step53 and 54 tables)
-    for this to be useful. I built it and got:
+        I build this but it only averages 7.79 moves which is lower than the step53/step54
+        tables (they average 8.76 moves)...so this table wouldn't buy us much.
 
-    lookup-tables/lookup-table-5x5x5-step55-phase5-front-two-edges.txt
-    ==================================================================
-    0 steps has 1 entries (0 percent, 0.00x previous step)
-    1 steps has 5 entries (0 percent, 5.00x previous step)
-    2 steps has 38 entries (0 percent, 7.60x previous step)
-    3 steps has 259 entries (0 percent, 6.82x previous step)
-    4 steps has 1,898 entries (0 percent, 7.33x previous step)
-    5 steps has 12,288 entries (1 percent, 6.47x previous step)
-    6 steps has 62,793 entries (5 percent, 5.11x previous step)
-    7 steps has 271,688 entries (23 percent, 4.33x previous step)
-    8 steps has 598,678 entries (52 percent, 2.20x previous step)
-    9 steps has 202,044 entries (17 percent, 0.34x previous step)
-    10 steps has 292 entries (0 percent, 0.00x previous step)
+    A three-edge table is:
+        (12*11*10)^2 = 1,742,400 is how many states the wings can be in
+        12!/(9!*3!) = 220 is how many states the midges can be in
+        1,742,400 * 220 = 383,328,000
 
-    Total: 1,149,984 entries
-    Average: 7.79 moves
+        lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges.txt
+        ==============================================================
+        0 steps has 1 entries (0 percent, 0.00x previous step)
+        1 steps has 7 entries (0 percent, 7.00x previous step)
+        2 steps has 57 entries (0 percent, 8.14x previous step)
+        3 steps has 465 entries (0 percent, 8.16x previous step)
+        4 steps has 4,353 entries (0 percent, 9.36x previous step)
+        5 steps has 37,446 entries (0 percent, 8.60x previous step)
+        6 steps has 298,557 entries (0 percent, 7.97x previous step)
+        7 steps has 2,142,656 entries (0 percent, 7.18x previous step)
+        8 steps has 13,032,706 entries (3 percent, 6.08x previous step)
+        9 steps has 60,364,543 entries (15 percent, 4.63x previous step)
+        10 steps has 162,774,838 entries (42 percent, 2.70x previous step)
+        11 steps has 137,246,021 entries (35 percent, 0.84x previous step)
+        12 steps has 7,426,338 entries (1 percent, 0.05x previous step)
+        13 steps has 12 entries (0 percent, 0.00x previous step)
 
-    oh well it was worth a shot
-    """
+        Total: 383,328,000 entries
+        Average: 10.15 moves
 
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "5x5x5-phase5-front-two-edges",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-            ),
-            # fmt: on
-            "5x5x5",
-            "lookup-table-5x5x5-step55-phase5-front-two-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
+        This is promising.  This will need to be converted to a perfect-hash.
 
- . - - - .  . - - - .  . - - - .  . - - - .
- - . . . L  F . . . F  R . . . -  - . . . -
- - . . . L  F . . . F  R . . . -  - . . . -
- - . . . L  F . . . F  R . . . -  - . . . -
- . - - - .  . - - - .  . - - - .  . - - - .
+    A four-edge table is:
+        (12*11*10*9)^2 = 141,134,400 is how many states the wings can be in
+        12!/(8!*4!) = 495 is how many states the midges can be in
+        141,134,400 * 495 = 69,861,528,000
 
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""",
-                    "ascii",
-                ),
-            ),
-            use_edges_pattern=True,
-        )
-
-
-class Build555Phase5ThreeEdges(BFS):
-    """
-    (12*11*10)^2 = 1,742,400 is how many states the wings can be in
-    12!/(9!*3!) = 220 is how many states the midges can be in
-    1,742,400 * 220 = 383,328,000
-
-    The average move count needs to be greater than 8.76 for this to be useful
-    This will need to be a perfect-hash.
-
-    lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges.txt
-    ==============================================================
-    0 steps has 1 entries (0 percent, 0.00x previous step)
-    1 steps has 7 entries (0 percent, 7.00x previous step)
-    2 steps has 57 entries (0 percent, 8.14x previous step)
-    3 steps has 465 entries (0 percent, 8.16x previous step)
-    4 steps has 4,353 entries (0 percent, 9.36x previous step)
-    5 steps has 37,446 entries (0 percent, 8.60x previous step)
-    6 steps has 298,557 entries (0 percent, 7.97x previous step)
-    7 steps has 2,142,656 entries (0 percent, 7.18x previous step)
-    8 steps has 13,032,706 entries (3 percent, 6.08x previous step)
-    9 steps has 60,364,543 entries (15 percent, 4.63x previous step)
-    10 steps has 162,774,838 entries (42 percent, 2.70x previous step)
-    11 steps has 137,246,021 entries (35 percent, 0.84x previous step)
-    12 steps has 7,426,338 entries (1 percent, 0.05x previous step)
-    13 steps has 12 entries (0 percent, 0.00x previous step)
-
-    Total: 383,328,000 entries
-    Average: 10.15 moves
+        This is muuuuuuch too large to build. The largest table I have ever built was 9 billion
+        entries and that was as huge PITA that took about a month...and that wasn't an edges
+        table which would be even slower (edges tables use builder-crunch-workq.py instead of
+        the C equivalent).
     """
 
     def __init__(self):
@@ -2296,65 +2235,14 @@ class Build555Phase5ThreeEdgesMidge(BFS):
         )
 
 
-class Build555Phase5FourEdges(BFS):
-    """
-    NOT USED
-
-    (12*11*10*9)^2 = 141,134,400 is how many states the wings can be in
-    12!/(8!*4!) = 495 is how many states the midges can be in
-    141,134,400 * 495 = 69,861,528,000
-
-    This is muuuuuuch too large to build. The largest table I have ever built was 9 billion
-    entries and that was as huge PITA that took about a month...and that wasn't an edges
-    table which would be even slower (edges tables use builder-crunch-workq.py instead of
-    the C equivalent).
-    """
-
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "5x5x5-phase5-four-edges",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-            ),
-            # fmt: on
-            "5x5x5",
-            "lookup-table-5x5x5-step55-phase5-four-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .
-
- . - - - .  . - - - .  . - - - .  . - - - .
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- L . . . L  F . . . F  R . . . R  B . . . B
- . - - - .  . - - - .  . - - - .  . - - - .
-
-            . - - - .
-            - . . . -
-            - . . . -
-            - . . . -
-            . - - - .""",
-                    "ascii",
-                ),
-            ),
-            use_edges_pattern=True,
-        )
+# Ideally here we would have a Build555Phase5ThreeEdgesWings class for the LB LF RF wings.
+# We cannot do that though because all of the 5x5x5 edges state code is designed to describe the
+# wing in terms of where it is to its corresponding midge. We could not do that for a Wings only
+# class because all of the midges would be "-".
+#
+# We can however take the lookup-table-5x5x5-step55-phase5-three-edges.txt table (all 383 million
+# entries) and use that to build a lookup-table-5x5x5-step55-phase5-three-edges-wings.txt with all
+# 1,742,400 wing states. See ./utils/build-555-phase5-three-edges-wings.py
 
 
 # =======
