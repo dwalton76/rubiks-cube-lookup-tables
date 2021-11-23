@@ -379,6 +379,15 @@ class Build555LRCenterStageXCenter(BFS):
         )
 
 
+# dwalton what if you
+# - built this table 6-deep
+# - convert the state in the table to (step11_index,step12_index)
+# - when you run ida_via_c have it write all explored (step11_index,step12_index) to a file
+# - at the end of the IDA depth, do a binary_search_multiple for all of the explored tuples
+#   vs the tuples in the 6-deep file
+#
+# You may not find the absolute shortest solution but it would still be much shorter than
+# the 20-22 length solutions we find today using two phases here.
 class Build555CenterStageOnePhase(BFS):
     """
     lookup-table-5x5x5-step14-centers-stage.txt
