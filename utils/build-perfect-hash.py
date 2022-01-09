@@ -43,6 +43,7 @@ def main(file_in: str, file_out: str) -> None:
     if file_out is None:
         file_out = file_in.replace(".txt", ".perfect-hash")
 
+    # 6x6x6
     if file_in.endswith("lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt"):
         cube = RubiksCube666(solved_666, "URFDLB")
         cube.lt_init()
@@ -67,7 +68,7 @@ def main(file_in: str, file_out: str) -> None:
         lt_file_b = cube.lt_UD_right_oblique_edges_stage
         positions = sorted(list(UFBD_left_oblique_edges_666) + list(UFBD_right_oblique_edges_666))
 
-    # 777 phase 4
+    # 7x7x7 phase 4
     elif file_in.endswith("lookup-table-7x7x7-phase4-inner-centers.txt"):
         cube = RubiksCube777(solved_777, "URFDLB")
         cube.lt_init()
@@ -92,7 +93,7 @@ def main(file_in: str, file_out: str) -> None:
         lt_file_b = cube.lt_phase4_middle_oblique
         positions = sorted(list(UFBD_left_oblique_777) + list(UFBD_middle_oblique_777))
 
-    # 777 phase 5
+    # 7x7x7 phase 5
     elif file_in.endswith("lookup-table-7x7x7-phase5-left-right-oblique.txt"):
         cube = RubiksCube777(solved_777, "URFDLB")
         cube.lt_init()

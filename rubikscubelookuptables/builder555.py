@@ -2243,6 +2243,32 @@ class Build555Phase5ThreeEdgesMidge(BFS):
 # We can however take the lookup-table-5x5x5-step55-phase5-three-edges.txt table (all 383 million
 # entries) and use that to build a lookup-table-5x5x5-step55-phase5-three-edges-wings.txt with all
 # 1,742,400 wing states. See ./utils/build-555-phase5-three-edges-wings.py
+#
+# I did the above but we have all 383 million states :( It is because the wings states are relative to the midge
+
+"""
+    lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
+    ====================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 7 entries (0 percent, 7.00x previous step)
+    2 steps has 57 entries (0 percent, 8.14x previous step)
+    3 steps has 465 entries (0 percent, 8.16x previous step)
+    4 steps has 4,353 entries (0 percent, 9.36x previous step)
+    5 steps has 37,446 entries (0 percent, 8.60x previous step)
+    6 steps has 298,557 entries (0 percent, 7.97x previous step)
+    7 steps has 2,142,656 entries (0 percent, 7.18x previous step)
+    8 steps has 13,032,706 entries (3 percent, 6.08x previous step)
+    9 steps has 60,364,543 entries (15 percent, 4.63x previous step)
+    10 steps has 162,774,838 entries (42 percent, 2.70x previous step)
+    11 steps has 137,246,021 entries (35 percent, 0.84x previous step)
+    12 steps has 7,426,338 entries (1 percent, 0.05x previous step)
+    13 steps has 12 entries (0 percent, 0.00x previous step)
+
+    Total: 383,328,000 entries
+    Average: 10.15 moves
+"""
+# I think we need to convert all entries in lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
+# to S T and U, then sort, then keep-best-solution...that should get us down to 1,742,400 states.
 
 
 # =======

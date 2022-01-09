@@ -149,6 +149,7 @@ wheel:
 	LC_ALL=C nice sort --output=lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt.sort lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
 	mv lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt.sort lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
 	./utils/keep-best-solution.py lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
+	./utils/print-histogram.py lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.txt
 	./utils/build-ida-graph.py Build555Phase5ThreeEdgesWings
 	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.json
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step55-phase5-three-edges-wings.json
