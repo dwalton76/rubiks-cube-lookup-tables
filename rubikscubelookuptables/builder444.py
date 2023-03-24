@@ -384,6 +384,7 @@ class Build444HighLowEdges(BFS):
 # pair 4 edges in the x-plane and put the LFRB centers into vertical bars
 # =======================================================================
 
+
 # We want the LFRB centers to be vertical bars, there should be 36 states
 class StartingStates444Reduce333FirstTwoCenters(BFS):
     def __init__(self):

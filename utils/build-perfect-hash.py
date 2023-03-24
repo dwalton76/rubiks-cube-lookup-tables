@@ -138,7 +138,7 @@ def main(file_in: str, file_out: str) -> None:
                 cost = hex(cost)[2:]
 
             # populate the cube.state per the state in the lookup table
-            for (pos, pos_state) in zip(positions, state):
+            for pos, pos_state in zip(positions, state):
                 cube.state[pos] = pos_state
 
             perfect_hash_index = (lt_file_a.state_index() * lt_file_b.linecount) + lt_file_b.state_index()

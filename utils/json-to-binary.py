@@ -33,22 +33,18 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
         data = json.load(fh)
 
     log.info("build a dictionary that translates a state to its index among all states")
-    states = []
     state_to_index = {}
 
     with open(filename_state_index, "r") as fh:
         for line in fh:
             (state, state_index) = line.rstrip().split(":")
             state_to_index[state] = int(state_index)
-            states.append(state)
 
     binary_filename = filename.replace(".json", ".bin")
-
     log.info(f"write {binary_filename}")
-    with open(binary_filename, "wb") as fh:
 
-        for (i, state) in enumerate(states):
-            node = data[state]
+    with open(binary_filename, "wb") as fh:
+        for state, node in data.items():
             cost = node["cost"]
             edges = node["edges"]
 
@@ -66,9 +62,6 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
                     next_node = data[next_state]
                     next_node_cost = next_node["cost"]
                     fh.write(struct.pack("B", next_node_cost))
-
-            if i % 100000 == 0:
-                log.info(f"{i:,}")
 
 
 if __name__ == "__main__":

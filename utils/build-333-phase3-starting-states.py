@@ -31,7 +31,7 @@ with open("lookup-table-3x3x3-step142-corners.txt", "r") as fh:
         (corners_state, _) = line.split(":")
         state = starting_state[:]
 
-        for (i, j) in zip(CORNERS, list(corners_state)):
+        for i, j in zip(CORNERS, list(corners_state)):
             state[i - 1] = j
 
         print("    ('" + "".join(state) + "', 'ULFRBD'),")

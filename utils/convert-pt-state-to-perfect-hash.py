@@ -16,7 +16,7 @@ result = ["0"] * pt0_max * pt1_max
 log.info(f"pt0_max {pt0_max:,}, pt1_max {pt1_max:,}, result {len(result):,} entries")
 
 with open(pt_state_filename, "r") as fh_read:
-    for (line_number, line) in enumerate(fh_read):
+    for line_number, line in enumerate(fh_read):
         (pt_state, cost) = line.rstrip().split(":")
         (pt0_state, pt1_state) = pt_state.split("-")
         pt0_state = int(pt0_state)

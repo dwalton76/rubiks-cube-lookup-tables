@@ -5,7 +5,6 @@ import sys
 
 
 def edge_count_444(state):
-
     # The facelets are numbered:
     #
     #               - 02 03 -
@@ -167,7 +166,6 @@ with open(filename, "r") as fh:
 
         # Edge stats
         if do_edges:
-
             if "4x4x4-step101" in filename:
                 (paired_count, unpaired_count) = edge_count_444(state)
             elif "5x5x5-step101" in filename:
@@ -194,7 +192,6 @@ print("    " + "=" * len(filename))
 prev = None
 total_steps = 0
 for key in sorted(stats.keys()):
-
     if not stats[key]:
         continue
 
@@ -212,7 +209,6 @@ for key in sorted(stats.keys()):
     prev = stats[key]
 
 if do_edges:
-
     print("\n\nEdge Stats")
     for key in sorted(edge_stats.keys()):
         print(
