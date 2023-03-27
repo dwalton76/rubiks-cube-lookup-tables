@@ -1,17 +1,60 @@
 #!/usr/bin/env python3
 
+"""
+./utils/json-to-binary.py will later be used to create a .bin file that contains the graph that
+is stored in the .json file. It reads in the .json file and .state_index file and uses struct.pack()
+to put the graph into a .bin file.  When the solver runs it will read that .bin into memory and will
+traverse the graph in search of a path that takes the cube to the goal state.  The .bin will be
+small enough to fit in RAM but it will be much too large to fit in the CPU cache.  If we can
+construct the .bin in a way that increases the percentage of CPU cache hits that will allow the
+solver to run faster.
+
+I tried a few different ways of sorting the node before writing the graph to the .bin but could
+never come up with anything that resulted in the solver running faster.
+"""
+
 # standard libraries
 import argparse
 import json
 import logging
 import os
 import subprocess
+from collections import deque
 from typing import Dict, List
 
 log = logging.getLogger(__name__)
 
 
+def state_order_via_breadth_first_search(data: Dict, solved_state: str) -> List[str]:
+    """
+    I tried this for optimizing the 555 phase1 tables but it didn't move the needle at all
+    """
+    in_order = []
+    visited = set()
+    queue = deque([solved_state])
+
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.add(node)
+            in_order.append(node)
+            # print(f"Visited: {node}, Cost: {graph[node]['cost']}")
+
+            # Add connected nodes to the queue
+            for edge in data[node]["edges"].values():
+                if edge not in visited:
+                    queue.append(edge)
+
+    in_order = reversed(in_order)
+    return in_order
+
+
 def state_order_via_depth_first_search(data: Dict, solved_state: str) -> List[str]:
+    """
+    I tried this for optimizing the 555 phase1 tables but it didn't move the needle at
+    all...it only reduced the cache misses by 0.5%
+    """
+
     in_order = [solved_state]
     stack = [solved_state]
     explored_nodes = set()
@@ -43,19 +86,12 @@ def main(filename_json: str, solved_state: str) -> None:
         data = json.load(fh)
         log.info(f"end load {filename_json}")
 
-    # ./utils/json-to-binary.py will later be used to create a .bin file that contains the graph that
-    # is stored in the .json file. It reads in the .json file and .state_index file and uses struct.pack()
-    # to put the graph into a .bin file.  When the solver runs it will read that .bin into memory and will
-    # traverse the graph in search of a path that takes the cube to the goal state.  The .bin will be
-    # small enough to fit in RAM but it will be much too large to fit in the CPU cache.  If we can
-    # construct the .bin in a way that increases the percentage of CPU cache hits that will allow the
-    # solver to run faster.
-    #
     # There isn't a definative optimal way to arrange the nodes in the .bin file, you could be starting
     # from any node so what would be optimal for one starting node would be sub-optimal for another.
     # Experiment with some different strategies here to see what works best.
     states_abc_order = sorted(data.keys())
-    states_new_order = state_order_via_depth_first_search(data, solved_state)
+    states_new_order = state_order_via_breadth_first_search(data, solved_state)
+    # states_new_order = state_order_via_depth_first_search(data, solved_state)
     state_to_index = {}
     new_data = {}
 
