@@ -26,6 +26,8 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555LRCenterSolve,
     LookupTable555LRTCenterStage,
     LookupTable555LRXCenterStage,
+    LookupTable555UDTCenterStage,
+    LookupTable555UDXCenterStage,
     LookupTable555Phase2LRCenterStage,
     LookupTable555Phase3LRCenterStage,
     LookupTable555Phase5Centers,
@@ -131,6 +133,12 @@ elif lt_class.startswith("Build555"):
 
     elif lt_class == "Build555LRCenterStageXCenter":
         cube.lt = LookupTable555LRXCenterStage(cube, build_state_index=True)
+
+    elif lt_class == "Build555UDCenterStageTCenter":
+        cube.lt = LookupTable555UDTCenterStage(cube, build_state_index=True)
+
+    elif lt_class == "Build555UDCenterStageXCenter":
+        cube.lt = LookupTable555UDXCenterStage(cube, build_state_index=True)
 
     # phase 2
     elif lt_class == "Build555FBTCenterStage":

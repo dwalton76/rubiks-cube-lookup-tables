@@ -12,7 +12,6 @@ init: clean
 	@./venv/bin/python3 -m pip install -U pip==20.3.1
 	@./venv/bin/python3 -m pip install -r requirements.dev.txt
 	@./venv/bin/python3 -m pip install -r requirements.txt
-	@./venv/bin/python3 -m pre_commit install --install-hooks --overwrite
 	@./venv/bin/python3 -m pip check
 
 gdb:
@@ -94,6 +93,15 @@ wheel:
 	./utils/builderui.py Build555LRCenterStageXCenter
 	./utils/build-ida-graph.py Build555LRCenterStageXCenter
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
+
+	./utils/builderui.py Build555UDCenterStageTCenter
+	./utils/build-ida-graph.py Build555UDCenterStageTCenter
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step13-UD-centers-stage-t-center-only.json
+
+	./utils/builderui.py Build555UDCenterStageXCenter
+	./utils/build-ida-graph.py Build555UDCenterStageXCenter
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step14-UD-centers-stage-x-center-only.json
+
 
 555-phase2: clean
 	./utils/builderui.py Build555FBTCenterStage
