@@ -81,14 +81,16 @@ prev_count_at_depth = 312556
 count_total = 399143
 rate = float(4.38)
 count_total_target = 479001600 # 12!
+"""
 
-# 5x5x5 solve centers with staging
+# 5x5x5 stage centers in one phase
 depth = 6
-prev_count_at_depth = 1291295
-count_total = 1433448
-rate = float(10)
-count_total_target = 117649000000 # ((8!/(4!*4!))^2)^3
+prev_count_at_depth = 33349612
+count_total = 34885969
+rate = float(22.7)
+count_total_target = 89595913068008532900  # (24!/(8!*8!*8!))^2
 
+"""
 # 555 LR stage 432 and EO both orbits
 depth = 5
 prev_count_at_depth = 24348560
@@ -116,9 +118,7 @@ prev_count_at_depth = 633025
 count_total = 690675
 rate = float(11.97)
 count_total_target = 2131746903000
-"""
 
-# dwalton
 # 777 stage LR oblique edges
 depth = 2
 prev_count_at_depth = 151277968
@@ -126,7 +126,6 @@ count_total = 158884703
 rate = float(19.88)
 count_total_target = 398267506305474021  # 735741^3
 
-"""
 # 777 stage UD oblique edges
 depth = 3
 prev_count_at_depth = 9010776

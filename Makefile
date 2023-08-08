@@ -9,7 +9,7 @@ init: clean
 	rm -rf venv rubikscubelookuptables/builder-crunch-workq
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	python3 -m venv venv
-	@./venv/bin/python3 -m pip install -U pip==20.3.1
+	@./venv/bin/python3 -m pip install -U pip
 	@./venv/bin/python3 -m pip install -r requirements.dev.txt
 	@./venv/bin/python3 -m pip install -r requirements.txt
 	@./venv/bin/python3 -m pip check

@@ -289,6 +289,64 @@ class Build555UDCenterStageXCenter(BFS):
         )
 
 
+class Build555CenterStageOnePhase(BFS):
+    """
+    1 steps has 6 entries (0 percent, 0.00x previous step)
+    2 steps has 147 entries (0 percent, 24.50x previous step)
+    3 steps has 3,054 entries (0 percent, 20.78x previous step)
+    4 steps has 65,520 entries (0 percent, 21.45x previous step)
+    5 steps has 1,467,630 entries (4 percent, 22.40x previous step)
+    6 steps has 33,349,612 entries (95 percent, 22.72x previous step)
+    extrapolate from here
+    7 steps has 730,356,502 entries (21.90x previous step)
+    8 steps has 15,410,522,192 entries (21.10x previous step)
+    9 steps has 312,833,600,497 entries (20.30x previous step)
+    10 steps has 6,100,255,209,691 entries (19.50x previous step)
+    11 steps has 114,074,772,421,221 entries (18.70x previous step)
+    12 steps has 2,041,938,426,339,855 entries (17.90x previous step)
+    13 steps has 34,917,147,090,411,508 entries (17.10x previous step)
+    14 steps has 569,149,497,573,707,328 entries (16.30x previous step)
+    15 steps has 8,821,817,212,392,459,264 entries (15.50x previous step)
+    16 steps has 80,167,866,768,488,618,873 entries (9.09x previous step)
+
+    Average: 15.887565801237896
+    Total  : 89,595,913,068,008,532,900
+    """
+
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "5x5x5-center-stage-one-phase",
+            (),
+            "5x5x5",
+            "lookup-table-5x5x5-step15-centers-stage-one-phase.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .
+
+ . . . . .  . . . . .  . . . . .  . . . . .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . L L L .  . x x x .  . L L L .  . x x x .
+ . . . . .  . . . . .  . . . . .  . . . . .
+
+            . . . . .
+            . U U U .
+            . U U U .
+            . U U U .
+            . . . . .""",
+                    "ascii",
+                ),
+            ),
+        )
+
 
 # =======
 # phase 2

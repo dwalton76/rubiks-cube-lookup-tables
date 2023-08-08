@@ -26,8 +26,6 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555LRCenterSolve,
     LookupTable555LRTCenterStage,
     LookupTable555LRXCenterStage,
-    LookupTable555UDTCenterStage,
-    LookupTable555UDXCenterStage,
     LookupTable555Phase2LRCenterStage,
     LookupTable555Phase3LRCenterStage,
     LookupTable555Phase5Centers,
@@ -38,6 +36,8 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555Phase6HighEdgeMidge,
     LookupTable555Phase6LowEdgeMidge,
     LookupTable555UDCenterSolve,
+    LookupTable555UDTCenterStage,
+    LookupTable555UDXCenterStage,
     RubiksCube555,
     solved_555,
 )
