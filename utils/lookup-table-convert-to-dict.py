@@ -18,7 +18,7 @@ def convert_to_dict(filename):
         first = True
 
         with open(filename, "r") as fh:
-            for (line_number, line) in enumerate(fh):
+            for line_number, line in enumerate(fh):
                 (state, steps) = line.strip().split(":")
 
                 if first:
@@ -32,7 +32,6 @@ def convert_to_dict(filename):
 
 
 if __name__ == "__main__":
-
     if len(sys.argv) != 2:
         print("ERROR: To use './convert-to-dict.py FILENAME'")
         sys.exit(1)

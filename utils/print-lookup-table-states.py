@@ -21,7 +21,6 @@ log = logging.getLogger(__name__)
 filename = sys.argv[1]
 
 with open(filename, "r") as fh:
-
     if "2x2x2" in filename:
         cube = RubiksCube222(solved_222, "URFDLB")
     elif "3x3x3" in filename:

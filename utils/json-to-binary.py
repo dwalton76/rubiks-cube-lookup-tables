@@ -46,8 +46,7 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
 
     log.info(f"write {binary_filename}")
     with open(binary_filename, "wb") as fh:
-
-        for (i, state) in enumerate(states):
+        for i, state in enumerate(states):
             node = data[state]
             cost = node["cost"]
             edges = node["edges"]

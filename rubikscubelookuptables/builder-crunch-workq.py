@@ -43,7 +43,6 @@ r_midges_555 = [15, 78, 65, 86, 90, 111, 98, 140]
 
 
 def apply_333_phase_binary(cube_state, positions):
-
     for x in positions:
         if cube_state[x] == "1":
             cube_state[x] = "0"
@@ -54,7 +53,6 @@ def apply_333_phase_binary(cube_state, positions):
 
 
 def apply_555_phase_binary(cube_state, positions):
-
     for x in positions:
         if cube_state[x] == "U":
             cube_state[x] = "D"
@@ -106,7 +104,6 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
     legal_moves.insert(0, None)
 
     with open(inputfile, "r") as fh_input:
-
         # We add 1 here to account for the newline character
         fh_input.seek(start * (linewidth + 1))
         is_333_phase1 = "3x3x3-phase1" in inputfile

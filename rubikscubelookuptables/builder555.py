@@ -1920,7 +1920,6 @@ class Build555Phase4(BFS):
     """
 
     def __init__(self):
-
         # rubiks cube libraries
         from rubikscubelookuptables.builder555ss import starting_states_phase4
 
@@ -3440,4 +3439,3 @@ class Build555ULFRBDTCenterDaisySolve(BFS):
                 ),
             ),
         )
-

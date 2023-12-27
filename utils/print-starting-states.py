@@ -20,7 +20,6 @@ logging.addLevelName(logging.WARNING, f"[91m {logging.getLevelName(logging.WARN
 
 filename = sys.argv[1]
 with open(filename, "r") as fh:
-
     if "4x4x4" in filename:
         cube = RubiksCube444(solved_444, "URFDLB")
     elif "5x5x5" in filename:

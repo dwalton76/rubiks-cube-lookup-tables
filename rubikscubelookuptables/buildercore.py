@@ -102,7 +102,6 @@ def get_line_number_splits(lines: int, cores: int) -> Tuple:
 
     else:
         for core in range(cores):
-
             # The last core ends at linecount
             if core == cores - 1:
                 end = lines - 1
@@ -169,7 +168,7 @@ def convert_to_cost_only(filename: str) -> None:
 
     with open(filename, "r") as fh:
         with open(filename_new, "w") as fh_new:
-            for (line_number, line) in enumerate(fh):
+            for line_number, line in enumerate(fh):
                 (state, steps) = line.strip().split(":")
                 steps = steps.split()
                 state_int = int(state, 16)
@@ -210,7 +209,7 @@ def convert_to_hash_cost_only(filename: str, bucketcount: int) -> None:
     collisions = 0
 
     with open(filename, "r") as fh:
-        for (line_number, line) in enumerate(fh):
+        for line_number, line in enumerate(fh):
             (state, steps) = line.strip().split(":")
             steps = steps.split()
 
@@ -243,7 +242,7 @@ def convert_to_hash_cost_only(filename: str, bucketcount: int) -> None:
     with open(filename_new, "w") as fh_new:
         to_write = []
 
-        for (index, x) in enumerate(bucket):
+        for index, x in enumerate(bucket):
             if x > 15:
                 to_write.append("f")
             else:
@@ -262,7 +261,6 @@ def convert_to_hash_cost_only(filename: str, bucketcount: int) -> None:
 
 
 def parse_histogram(filename: str) -> str:
-
     if not os.path.exists("histogram.txt"):
         print("\n\nERROR: histogram.txt does not exist")
         sys.exit(1)
@@ -430,7 +428,7 @@ class BFS(object):
             self.rotate_xxx = rotate_222
             self.cube = RubiksCube222(solved_222, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_222(state)
                     order = "ULFRBD"
@@ -441,7 +439,7 @@ class BFS(object):
             self.rotate_xxx = rotate_333
             self.cube = RubiksCube333(solved_333, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_333(state)
                     order = "ULFRBD"
@@ -452,7 +450,7 @@ class BFS(object):
             self.rotate_xxx = rotate_444
             self.cube = RubiksCube444(solved_444, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_444(state)
                     order = "ULFRBD"
@@ -463,7 +461,7 @@ class BFS(object):
             self.rotate_xxx = rotate_555
             self.cube = RubiksCube555(solved_555, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_555(state)
                     order = "ULFRBD"
@@ -474,7 +472,7 @@ class BFS(object):
             self.rotate_xxx = rotate_666
             self.cube = RubiksCube666(solved_666, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_666(state)
                     order = "ULFRBD"
@@ -485,7 +483,7 @@ class BFS(object):
             self.rotate_xxx = rotate_777
             self.cube = RubiksCube777(solved_777, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_777(state)
                     order = "ULFRBD"
@@ -869,9 +867,7 @@ class BFS(object):
             with open(self.workq_filename + ".20-new-states", "r") as fh_new_states, open(
                 self.workq_filename_next, "w"
             ) as fh_workq_next:
-
                 for line in fh_new_states:
-
                     # Find the state and steps_to_solve
                     if self.use_edges_pattern:
                         (pattern, state, steps_to_solve) = line.rstrip().split(":")
@@ -927,7 +923,6 @@ class BFS(object):
                     to_write_count = 0
 
         else:
-
             with open(self.workq_filename_next, "w") as fh_workq_next:
                 pass
 
@@ -1195,13 +1190,11 @@ class BFS(object):
         self.time_in_save = (dt.datetime.now() - start_time).total_seconds()
 
     def get_starting_states(self, use_hex, use_edges_pattern):
-
         if self.starting_cube_states:
             foo = []
 
-            for (state, state_type) in self.starting_cube_states:
+            for state, state_type in self.starting_cube_states:
                 if state_type == "ULFRBD":
-
                     if use_edges_pattern:
                         self.cube.state = ["x"] + list(state)
 

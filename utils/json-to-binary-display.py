@@ -44,7 +44,6 @@ def print_node(
     print("=" * len(title))
 
     for step in legal_moves:
-
         # the next state_index takes 4 bytes
         next_state_index = struct.unpack("<L", bindata[i : i + 4])[0]
         next_state = states[next_state_index]
@@ -79,7 +78,7 @@ def main(json_filename: str, binary_filename: str, to_display: str) -> None:
         if not os.path.exists(filename):
             raise FileNotFoundError(f"{filename} does not exist")
 
-    log.info(f"load the JSON contents")
+    log.info("load the JSON contents")
     with open(json_filename, "r") as fh:
         data = json.load(fh)
 

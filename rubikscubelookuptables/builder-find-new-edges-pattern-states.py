@@ -44,7 +44,6 @@ def advance_filehandle_to_edges_pattern_change(pattern, fh):
 
 
 def diff_states(filenameA, filenameB, outputfile):
-
     if not os.path.isfile(filenameA):
         # touch the file so the while loop below can do its magic
         with open(filenameA, "w") as fhA:
@@ -70,7 +69,6 @@ def diff_states(filenameA, filenameB, outputfile):
             stateA = None
 
         while lineB:
-
             # We have hit the end of filenameA so everything left in filenameB is missing from filenameA
             if lineA is None:
                 fh.write(f"{patternB}:{stateB}:{' '.join(reverse_steps(steps_to_scrambleB.split()))}\n")

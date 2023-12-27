@@ -24,7 +24,6 @@ def advance_filehandle(fh):
 
 
 def advance_filehandle_to_state_change(state_length, current_state, fh):
-
     while True:
         try:
             line = next(fh)
@@ -39,7 +38,6 @@ def advance_filehandle_to_state_change(state_length, current_state, fh):
 
 
 def diff_states(filenameA, filenameB, outputfile):
-
     if not os.path.isfile(filenameA):
         # touch the file so the while loop below can do its magic
         with open(filenameA, "w") as fhA:
@@ -75,7 +73,6 @@ def diff_states(filenameA, filenameB, outputfile):
             raise Exception("should not be here")
 
         while lineB:
-
             # We have hit the end of filenameA so everything left in filenameB is missing from filenameA
             if lineA is None:
                 steps_to_solve = " ".join(reverse_steps(steps_to_scrambleB.split()))

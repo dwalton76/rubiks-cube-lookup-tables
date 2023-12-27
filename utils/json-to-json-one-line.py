@@ -9,7 +9,6 @@ log = logging.getLogger(__name__)
 
 
 def convert_json_to_json_one_line(filename: str) -> None:
-
     if not os.path.exists(filename):
         print(f"ERROR: {filename} does not exist")
         sys.exit(1)

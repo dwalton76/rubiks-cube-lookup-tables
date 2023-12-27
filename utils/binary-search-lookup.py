@@ -71,8 +71,7 @@ def find_first_last(linecount, cache, b_state_to_find):
     to_delete = 0
     # log.info("find_first_last for %s with cache\n%s" % (b_state_to_find, pformat(cache)))
 
-    for (offset, state) in cache:
-
+    for offset, state in cache:
         if state < b_state_to_find:
             to_delete += 1
             first = offset
@@ -190,7 +189,6 @@ def get_file_vitals(filename):
 
 
 if __name__ == "__main__":
-
     if len(sys.argv) != 3:
         print("ERROR: To use './binary-search-lookup.py FILENAME KEY'")
         sys.exit(1)
@@ -234,7 +232,7 @@ if __name__ == "__main__":
             # log.info("keys: %s" % pformat(keys))
             # log.info("values: %s" % pformat(values))
 
-            for (key, value) in zip(keys, values):
+            for key, value in zip(keys, values):
                 # if value is not None:
                 #    print("key %s value is %s" % (key, value))
                 log.info(f"key {key} value is {value}")

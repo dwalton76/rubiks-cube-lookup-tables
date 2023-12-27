@@ -38,7 +38,6 @@ def permutation_rank(word):
         myCounter[permutationContainer] += 1
 
         for j in myCounter:
-
             if j < permutationContainer:
                 rank += permutations * myCounter[j] // myCounter[permutationContainer]
 
@@ -54,7 +53,7 @@ def convert_to_cost_only(filename, use_permutation_rank, state_targets):
 
     with open(filename, "r") as fh:
         with open(filename_new, "w") as fh_new:
-            for (line_number, line) in enumerate(fh):
+            for line_number, line in enumerate(fh):
                 (state, steps) = line.strip().split(":")
                 steps = steps.split()
 
@@ -105,7 +104,6 @@ def convert_to_cost_only(filename, use_permutation_rank, state_targets):
 
 
 if __name__ == "__main__":
-
     # setup logging
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)16s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
