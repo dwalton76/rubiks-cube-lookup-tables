@@ -16,7 +16,7 @@ line_number = 0
 with open(filename_new, "w") as fh_new:
     with open(filename, "r") as fh:
         for line in fh:
-            (state, steps) = line.strip().split(":")
+            state, steps = line.strip().split(":")
 
             if len(steps.split()) == step_limit:
                 fh_new.write(f"{state}:{steps}\n")

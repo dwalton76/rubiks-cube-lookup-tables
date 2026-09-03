@@ -4,7 +4,7 @@ max-complexity = 50
 ignore =
   E124
   E203
-  W503      # line break before binary operator; conflicts with black
+  W503
 exclude =
     .eggs
     .git

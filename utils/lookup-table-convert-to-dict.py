@@ -18,8 +18,8 @@ def convert_to_dict(filename):
         first = True
 
         with open(filename, "r") as fh:
-            for (line_number, line) in enumerate(fh):
-                (state, steps) = line.strip().split(":")
+            for line_number, line in enumerate(fh):
+                state, steps = line.strip().split(":")
 
                 if first:
                     first = False

@@ -79,7 +79,7 @@ def main(json_filename: str, binary_filename: str, to_display: str) -> None:
         if not os.path.exists(filename):
             raise FileNotFoundError(f"{filename} does not exist")
 
-    log.info(f"load the JSON contents")
+    log.info("load the JSON contents")
     with open(json_filename, "r") as fh:
         data = json.load(fh)
 

@@ -19,7 +19,7 @@ def json_combine_files(json_filename: str) -> None:
         # start with a {
         fh_final.write("{\n")
 
-        for (index, filename) in enumerate(filenames):
+        for index, filename in enumerate(filenames):
             # count the number of lines in the file without reading the entire file into memory at once
             line_count = sum(1 for line in open(filename))
 
@@ -45,7 +45,7 @@ def json_combine_files(json_filename: str) -> None:
         fh_final.write("\n}\n")
 
     # delete the .json files, we no longer need them
-    for (index, filename) in enumerate(filenames):
+    for index, filename in enumerate(filenames):
         os.unlink(filename)
 
     # save all output to the last filename

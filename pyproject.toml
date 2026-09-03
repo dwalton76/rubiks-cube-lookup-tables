@@ -6,8 +6,8 @@ exclude = '''
 
 (
   /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
+      \.eggs
+    | \.git
     | \.hg
     | \.mypy_cache
     | \.tox
@@ -28,4 +28,4 @@ exclude = '''
 
 # packages that are required for setup.py to run must be listed here
 [build-system]
-requires=["setuptools==49.2.0", "wheel==0.34.2"]
+requires=["setuptools==84.0.0", "wheel==0.48.0"]

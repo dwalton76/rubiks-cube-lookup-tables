@@ -169,8 +169,8 @@ def convert_to_cost_only(filename: str) -> None:
 
     with open(filename, "r") as fh:
         with open(filename_new, "w") as fh_new:
-            for (line_number, line) in enumerate(fh):
-                (state, steps) = line.strip().split(":")
+            for line_number, line in enumerate(fh):
+                state, steps = line.strip().split(":")
                 steps = steps.split()
                 state_int = int(state, 16)
                 # log.info("%s: state_int %d" % (state, state_int))
@@ -210,8 +210,8 @@ def convert_to_hash_cost_only(filename: str, bucketcount: int) -> None:
     collisions = 0
 
     with open(filename, "r") as fh:
-        for (line_number, line) in enumerate(fh):
-            (state, steps) = line.strip().split(":")
+        for line_number, line in enumerate(fh):
+            state, steps = line.strip().split(":")
             steps = steps.split()
 
             hash_raw = hashxx(state.encode("utf-8"))
@@ -243,7 +243,7 @@ def convert_to_hash_cost_only(filename: str, bucketcount: int) -> None:
     with open(filename_new, "w") as fh_new:
         to_write = []
 
-        for (index, x) in enumerate(bucket):
+        for index, x in enumerate(bucket):
             if x > 15:
                 to_write.append("f")
             else:
@@ -430,7 +430,7 @@ class BFS(object):
             self.rotate_xxx = rotate_222
             self.cube = RubiksCube222(solved_222, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_222(state)
                     order = "ULFRBD"
@@ -441,7 +441,7 @@ class BFS(object):
             self.rotate_xxx = rotate_333
             self.cube = RubiksCube333(solved_333, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_333(state)
                     order = "ULFRBD"
@@ -452,7 +452,7 @@ class BFS(object):
             self.rotate_xxx = rotate_444
             self.cube = RubiksCube444(solved_444, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_444(state)
                     order = "ULFRBD"
@@ -463,7 +463,7 @@ class BFS(object):
             self.rotate_xxx = rotate_555
             self.cube = RubiksCube555(solved_555, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_555(state)
                     order = "ULFRBD"
@@ -474,7 +474,7 @@ class BFS(object):
             self.rotate_xxx = rotate_666
             self.cube = RubiksCube666(solved_666, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_666(state)
                     order = "ULFRBD"
@@ -485,7 +485,7 @@ class BFS(object):
             self.rotate_xxx = rotate_777
             self.cube = RubiksCube777(solved_777, order="URFDLB")
 
-            for (state, order) in starting_cube_states:
+            for state, order in starting_cube_states:
                 if order == "ascii":
                     state = parse_ascii_777(state)
                     order = "ULFRBD"
@@ -673,7 +673,7 @@ class BFS(object):
             if line.count(":") == 1:
                 state = line.split(":")[0]
             elif line.count(":") == 2:
-                (state1, state2, steps) = line.split(":")
+                state1, state2, steps = line.split(":")
                 state = ":".join([state1, state2])
             else:
                 raise Exception(f"Found {line.count(':')} :s in line:\n{line}")
@@ -715,7 +715,7 @@ class BFS(object):
         workq_size = self.workq_size
 
         for batch_index in range(batch_count):
-            log.info(f"builder-crunch-workq begin batch {batch_index+1}/{batch_count}")
+            log.info(f"builder-crunch-workq begin batch {batch_index + 1}/{batch_count}")
             threads = []
             line_numbers_for_cores = get_line_number_splits(min(workq_size, BATCH_SIZE), self.cores)
             line_number_offset = batch_index * BATCH_SIZE
@@ -724,7 +724,7 @@ class BFS(object):
             # - each one will process a subsection of workq_filename_next
             # - wait for all of them to finish before we move on
             for core in range(self.cores):
-                (start, end) = line_numbers_for_cores[core]
+                start, end = line_numbers_for_cores[core]
 
                 if start is None:
                     continue
@@ -788,7 +788,7 @@ class BFS(object):
             else:
                 workq_size = 0
 
-            log.info(f"builder-crunch-workq end batch {batch_index+1}/{batch_count}")
+            log.info(f"builder-crunch-workq end batch {batch_index + 1}/{batch_count}")
 
             sorted_results_filename = f"{self.filename}-batch-{batch_index}"
             core_files = sorted(glob.glob(f"{FAST_TMP}/*core*"))
@@ -874,11 +874,11 @@ class BFS(object):
 
                     # Find the state and steps_to_solve
                     if self.use_edges_pattern:
-                        (pattern, state, steps_to_solve) = line.rstrip().split(":")
+                        pattern, state, steps_to_solve = line.rstrip().split(":")
                         self.cube.state = list(state)
 
                     else:
-                        (state, steps_to_solve) = line.rstrip().split(":")
+                        state, steps_to_solve = line.rstrip().split(":")
                         self.cube.state = list(state)
 
                     if self.lt_centers_max_depth:
@@ -997,10 +997,10 @@ class BFS(object):
         with open(self.filename, "r") as fh_read:
             for line in fh_read:
                 if self.use_edges_pattern:
-                    (pattern, cube_state_string, steps) = line.rstrip().split(":")
+                    pattern, cube_state_string, steps = line.rstrip().split(":")
                     self.cube.state = list(cube_state_string)
                 else:
-                    (cube_state_string, steps) = line.rstrip().split(":")
+                    cube_state_string, steps = line.rstrip().split(":")
                     self.cube.state = list(cube_state_string)
 
                 if self.use_edges_pattern:
@@ -1031,7 +1031,7 @@ class BFS(object):
         to_write = []
         with open(f"{self.filename}.starting-states", "r") as fh_read:
             for line in fh_read:
-                (state, order) = line.strip().split("', '")
+                state, order = line.strip().split("', '")
 
                 # remove the leading ('
                 state = state[2:]
@@ -1065,7 +1065,7 @@ class BFS(object):
             with open(self.filename, "r") as fh_read:
                 if self.use_edges_pattern:
                     for line in fh_read:
-                        (pattern, cube_state_string, steps) = line.rstrip().split(":")
+                        pattern, cube_state_string, steps = line.rstrip().split(":")
                         pattern = pattern.replace(".", "")
                         self.cube.state = list(cube_state_string)
 
@@ -1088,7 +1088,7 @@ class BFS(object):
 
                 elif self.use_centers_then_edges:
                     for line in fh_read:
-                        (cube_state_string, steps) = line.rstrip().split(":")
+                        cube_state_string, steps = line.rstrip().split(":")
                         self.cube.state = list(cube_state_string)
 
                         if self.size == "4x4x4":
@@ -1127,7 +1127,7 @@ class BFS(object):
                     store_as_hex = self.store_as_hex
 
                     for line in fh_read:
-                        (cube_state_string, steps) = line.rstrip().split(":")
+                        cube_state_string, steps = line.rstrip().split(":")
 
                         if lt_centers_max_depth:
                             self.cube.state = list(cube_state_string)
@@ -1199,7 +1199,7 @@ class BFS(object):
         if self.starting_cube_states:
             foo = []
 
-            for (state, state_type) in self.starting_cube_states:
+            for state, state_type in self.starting_cube_states:
                 if state_type == "ULFRBD":
 
                     if use_edges_pattern:
@@ -1238,7 +1238,7 @@ class BFS(object):
 
     def _code_gen_lookup_table(self):
         class_name = type(self).__name__.replace("Build", "LookupTable")
-        (histogram, linecount, max_depth) = parse_histogram(self.filename)
+        histogram, linecount, max_depth = parse_histogram(self.filename)
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
         filename_minus_directory = self.filename.split("/")[1]
 
@@ -1297,7 +1297,7 @@ class %s(LookupTable):
 
     def _code_gen_lookup_table_ida(self):
         class_name = type(self).__name__.replace("Build", "LookupTableIDA")
-        (histogram, linecount, max_depth) = parse_histogram(self.filename)
+        histogram, linecount, max_depth = parse_histogram(self.filename)
         starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
 
         print(
@@ -1393,7 +1393,7 @@ class %s(LookupTableIDA):
         log.info(f"max_depth {max_depth}")
 
         while workq:
-            (state, steps_to_scramble) = workq.popleft()
+            state, steps_to_scramble = workq.popleft()
             # log.info(f"{index}: {state}, {steps_to_scramble}")
 
             debug = False

@@ -32,7 +32,7 @@ def binary_search(fh, width, state_width, linecount, state_to_find):
         elif b_state_to_find == b_state:
             fh.seek(midpoint * width)
             line = fh.read(width)
-            (_, value) = line.decode("utf-8").rstrip().split(":")
+            _, value = line.decode("utf-8").rstrip().split(":")
             return value, midpoint
 
         else:
@@ -71,7 +71,7 @@ def find_first_last(linecount, cache, b_state_to_find):
     to_delete = 0
     # log.info("find_first_last for %s with cache\n%s" % (b_state_to_find, pformat(cache)))
 
-    for (offset, state) in cache:
+    for offset, state in cache:
 
         if state < b_state_to_find:
             to_delete += 1
@@ -115,7 +115,7 @@ def binary_search_multiple(fh, width, state_width, linecount, states_to_find):
     fh.seek((linecount - 1) * width)
     b_state_last = fh.read(state_width)
 
-    (_, starting_index) = binary_search_list(states_to_find, b_state_first)
+    _, starting_index = binary_search_list(states_to_find, b_state_first)
     log.info("start at index %d" % starting_index)
 
     for state_to_find in states_to_find[starting_index:]:
@@ -131,7 +131,7 @@ def binary_search_multiple(fh, width, state_width, linecount, states_to_find):
             break
 
         if cache:
-            (cache, first, last) = find_first_last(linecount, cache, b_state_to_find)
+            cache, first, last = find_first_last(linecount, cache, b_state_to_find)
         else:
             first = 0
             last = linecount - 1
@@ -158,7 +158,7 @@ def binary_search_multiple(fh, width, state_width, linecount, states_to_find):
             elif b_state_to_find == b_state:
                 fh.seek(midpoint * width)
                 line = fh.read(width)
-                (_, value) = line.decode("utf-8").rstrip().split(":")
+                _, value = line.decode("utf-8").rstrip().split(":")
                 results.append(value)
                 break
 
@@ -183,7 +183,7 @@ def get_file_vitals(filename):
     with open(filename, "r") as fh:
         first_line = next(fh)
         width = len(first_line)
-        (state, steps) = first_line.split(":")
+        state, steps = first_line.split(":")
         state_width = len(state)
         linecount = int(size / width)
         return (width, state_width, linecount)
@@ -218,7 +218,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)16s %(levelname)8s: %(message)s")
     log = logging.getLogger(__name__)
 
-    (width, state_width, linecount) = get_file_vitals(filename)
+    width, state_width, linecount = get_file_vitals(filename)
 
     with open(filename, "rb") as fh:
         log.info("search start")
@@ -234,7 +234,7 @@ if __name__ == "__main__":
             # log.info("keys: %s" % pformat(keys))
             # log.info("values: %s" % pformat(values))
 
-            for (key, value) in zip(keys, values):
+            for key, value in zip(keys, values):
                 # if value is not None:
                 #    print("key %s value is %s" % (key, value))
                 log.info(f"key {key} value is {value}")
@@ -242,7 +242,7 @@ if __name__ == "__main__":
 
         else:
             start_time = dt.datetime.now()
-            (value, line_number) = binary_search(fh, width, state_width, linecount, key)
+            value, line_number = binary_search(fh, width, state_width, linecount, key)
             log.info(
                 f"key {key} value is {value} on line {line_number:,} {seek_count} seeks, took {dt.datetime.now() - start_time} "
             )

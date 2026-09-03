@@ -56,13 +56,13 @@ def diff_states(filenameA, filenameB, outputfile):
         lineB = advance_filehandle(fhB)
 
         if lineB:
-            (stateB, steps_to_scrambleB) = lineB.split(":")
+            stateB, steps_to_scrambleB = lineB.split(":")
         # filenameB is empty
         else:
             return
 
         if lineA:
-            (stateA, steps_to_scrambleA) = lineA.split(":")
+            stateA, steps_to_scrambleA = lineA.split(":")
         # filenameA is empty
         else:
             stateA = None
@@ -91,7 +91,7 @@ def diff_states(filenameA, filenameB, outputfile):
                 lineB = advance_filehandle_to_state_change(state_length, stateB, fhB)
 
                 if lineB:
-                    (stateB, steps_to_scrambleB) = lineB.split(":")
+                    stateB, steps_to_scrambleB = lineB.split(":")
                 else:
                     break
 
@@ -104,7 +104,7 @@ def diff_states(filenameA, filenameB, outputfile):
                     lineA = None
 
                 if lineA:
-                    (stateA, steps_to_scrambleA) = lineA.split(":")
+                    stateA, steps_to_scrambleA = lineA.split(":")
                 else:
                     stateA = None
 
@@ -121,12 +121,12 @@ def diff_states(filenameA, filenameB, outputfile):
                 lineB = advance_filehandle_to_state_change(state_length, stateB, fhB)
 
                 if lineA:
-                    (stateA, steps_to_scrambleA) = lineA.split(":")
+                    stateA, steps_to_scrambleA = lineA.split(":")
                 else:
                     stateA = None
 
                 if lineB:
-                    (stateB, steps_to_scrambleB) = lineB.split(":")
+                    stateB, steps_to_scrambleB = lineB.split(":")
                 else:
                     stateB = None
 
@@ -147,7 +147,7 @@ def diff_states(filenameA, filenameB, outputfile):
                     lineB = advance_filehandle_to_state_change(state_length, stateB, fhB)
 
                     if lineB:
-                        (stateB, steps_to_scrambleB) = lineB.split(":")
+                        stateB, steps_to_scrambleB = lineB.split(":")
                     else:
                         stateB = None
                         break

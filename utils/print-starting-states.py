@@ -35,7 +35,7 @@ with open(filename, "r") as fh:
     # cube.print_cube()
 
     for line in fh:
-        (state, order, _) = line.strip().split(",")
+        state, order, _ = line.strip().split(",")
         state = state.replace("('", "").replace("'", "")
         cube.state = ["x"] + list(state)
         # pprint(cube.state)

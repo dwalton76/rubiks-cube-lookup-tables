@@ -38,7 +38,7 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
 
     with open(filename_state_index, "r") as fh:
         for line in fh:
-            (state, state_index) = line.rstrip().split(":")
+            state, state_index = line.rstrip().split(":")
             state_to_index[state] = int(state_index)
             states.append(state)
 
@@ -47,7 +47,7 @@ def convert_json_to_binary(filename: str, state_is_hex: bool) -> None:
     log.info(f"write {binary_filename}")
     with open(binary_filename, "wb") as fh:
 
-        for (i, state) in enumerate(states):
+        for i, state in enumerate(states):
             node = data[state]
             cost = node["cost"]
             edges = node["edges"]

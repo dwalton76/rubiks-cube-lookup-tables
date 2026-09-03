@@ -38,7 +38,7 @@ with open(filename, "r") as fh:
         raise Exception("What size cube?")
 
     for line in fh:
-        (state, steps_to_solve) = line.strip().split(":")
+        state, steps_to_solve = line.strip().split(":")
         cube.re_init()
         cube.nuke_corners()
         # cube.nuke_edges()
