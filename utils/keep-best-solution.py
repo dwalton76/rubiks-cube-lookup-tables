@@ -39,7 +39,7 @@ def keep_best_solutions(filename):
                     state = match.group(1)
                     steps_to_solve = match.group(2)
                 else:
-                    (state, steps_to_solve) = line.rstrip().split(":")
+                    state, steps_to_solve = line.rstrip().split(":")
 
                 # solution_len = len(steps_to_solve.split())
                 solution_len = steps_to_solve.count(" ") + 1

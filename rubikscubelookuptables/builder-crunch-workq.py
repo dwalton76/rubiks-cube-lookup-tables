@@ -124,13 +124,13 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
             if use_edges_pattern:
                 try:
-                    (_, cube_state, moves_to_scramble) = line.rstrip().split(":")
+                    _, cube_state, moves_to_scramble = line.rstrip().split(":")
                 except Exception:
                     log.warning("ERROR on %d: %s" % (linenumber, line))
                     raise
             else:
                 try:
-                    (cube_state, moves_to_scramble) = line.rstrip().split(":")
+                    cube_state, moves_to_scramble = line.rstrip().split(":")
                 except Exception:
                     log.warning("ERROR on %d: %s" % (linenumber, line))
                     raise

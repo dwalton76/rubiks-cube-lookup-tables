@@ -33,7 +33,7 @@ def advance_filehandle_to_edges_pattern_change(pattern, fh):
         if line is None:
             break
         else:
-            (pattern, state, moves) = line.strip().split(":")
+            pattern, state, moves = line.strip().split(":")
 
             if pattern != prev_pattern:
                 break
@@ -59,13 +59,13 @@ def diff_states(filenameA, filenameB, outputfile):
 
         # filenameB is emtpy
         if lineB:
-            (patternB, stateB, steps_to_scrambleB) = lineB.split(":")
+            patternB, stateB, steps_to_scrambleB = lineB.split(":")
         else:
             return
 
         # filenameA is emtpy
         if lineA:
-            (patternA, stateA, steps_to_scrambleA) = lineA.split(":")
+            patternA, stateA, steps_to_scrambleA = lineA.split(":")
         else:
             stateA = None
 
@@ -77,7 +77,7 @@ def diff_states(filenameA, filenameB, outputfile):
                 lineB = advance_filehandle_to_edges_pattern_change(patternB, fhB)
 
                 if lineB:
-                    (patternB, stateB, steps_to_scrambleB) = lineB.split(":")
+                    patternB, stateB, steps_to_scrambleB = lineB.split(":")
                 else:
                     break
 
@@ -85,7 +85,7 @@ def diff_states(filenameA, filenameB, outputfile):
                 lineA = advance_filehandle(fhA)
 
                 if lineA:
-                    (patternA, stateA, steps_to_scrambleA) = lineA.split(":")
+                    patternA, stateA, steps_to_scrambleA = lineA.split(":")
                 else:
                     patternA = None
                     stateA = None
@@ -95,13 +95,13 @@ def diff_states(filenameA, filenameB, outputfile):
                 lineB = advance_filehandle_to_edges_pattern_change(patternB, fhB)
 
                 if lineA:
-                    (patternA, stateA, steps_to_scrambleA) = lineA.split(":")
+                    patternA, stateA, steps_to_scrambleA = lineA.split(":")
                 else:
                     patternA = None
                     stateA = None  # noqa: F841
 
                 if lineB:
-                    (patternB, stateB, steps_to_scrambleB) = lineB.split(":")
+                    patternB, stateB, steps_to_scrambleB = lineB.split(":")
                 else:
                     patternB = None
                     stateB = None
@@ -113,7 +113,7 @@ def diff_states(filenameA, filenameB, outputfile):
                     lineB = advance_filehandle_to_edges_pattern_change(patternB, fhB)
 
                     if lineB:
-                        (patternB, stateB, steps_to_scrambleB) = lineB.split(":")
+                        patternB, stateB, steps_to_scrambleB = lineB.split(":")
                     else:
                         patternB = None
                         stateB = None

@@ -146,7 +146,7 @@ with open(filename, "r") as fh:
         line = line.rstrip()
 
         try:
-            (state, steps) = line.split(":")
+            state, steps = line.split(":")
         except Exception:
             state = None
             steps = line
@@ -169,9 +169,9 @@ with open(filename, "r") as fh:
         if do_edges:
 
             if "4x4x4-step101" in filename:
-                (paired_count, unpaired_count) = edge_count_444(state)
+                paired_count, unpaired_count = edge_count_444(state)
             elif "5x5x5-step101" in filename:
-                (paired_count, unpaired_count) = edge_count_555(state)
+                paired_count, unpaired_count = edge_count_555(state)
             else:
                 raise Exception("We should not be here")
 

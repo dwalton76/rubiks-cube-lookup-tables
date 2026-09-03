@@ -5,14 +5,13 @@ clean:
 	find . -name __pycache__ | xargs rm -rf
 
 init: clean
-	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
+	export PYTHONPATH=/home/dwalton76/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton76/rubiks-cube/rubiks-cube-lookup-tables/
 	rm -rf venv rubikscubelookuptables/builder-crunch-workq
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	python3 -m venv venv
-	@./venv/bin/python3 -m pip install -U pip==20.3.1
+	@./venv/bin/python3 -m pip install -U pip==26.2.1
 	@./venv/bin/python3 -m pip install -r requirements.dev.txt
 	@./venv/bin/python3 -m pip install -r requirements.txt
-	@./venv/bin/python3 -m pre_commit install --install-hooks --overwrite
 	@./venv/bin/python3 -m pip check
 
 gdb:

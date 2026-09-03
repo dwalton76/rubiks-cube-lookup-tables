@@ -54,8 +54,8 @@ def convert_to_cost_only(filename, use_permutation_rank, state_targets):
 
     with open(filename, "r") as fh:
         with open(filename_new, "w") as fh_new:
-            for (line_number, line) in enumerate(fh):
-                (state, steps) = line.strip().split(":")
+            for line_number, line in enumerate(fh):
+                state, steps = line.strip().split(":")
                 steps = steps.split()
 
                 if use_permutation_rank:

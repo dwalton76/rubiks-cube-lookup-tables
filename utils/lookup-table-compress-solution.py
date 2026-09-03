@@ -20,7 +20,7 @@ with open(filename_new, "w") as fh_new:
     line_number = 0
     with open(filename, "r") as fh:
         for line in fh:
-            (state, steps) = line.rstrip().split(":")
+            state, steps = line.rstrip().split(":")
             cube.solution = steps.split()
             cube.compress_solution()
             fh_new.write(f"{state}:{' '.join(cube.solution)}\n")

@@ -8,3 +8,10 @@ have already been built and are stored in an Amazon S3 bucket. It took hundreds
 of hours to build these tables, you should never build them. When you run
 the rubiks-cube-NxNxN-solver solver the first time it will download these tables
 automatically.
+
+```
+sudo apt-get update
+sudo apt install build-essential make python3-venv python3-dev
+make init
+source venv/bin/activate
+```
