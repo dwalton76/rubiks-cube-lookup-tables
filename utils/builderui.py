@@ -81,49 +81,36 @@ else:
 
     end_time = dt.datetime.now()
 
-    total_time = int((end_time - start_time).total_seconds())
+    # Keep this as a float. Truncating it to a whole second used to make the report look
+    # like it was missing up to a second of work.
+    total_time = (end_time - start_time).total_seconds()
 
-    # Avoid divide by 0 if this ran in less than 1s
+    # Avoid divide by 0 if this ran in almost no time at all
     if total_time == 0:
         total_time = 1
 
-    accounted_time = (
-        builder.time_in_sort
-        + builder.time_in_file_delete
-        + builder.time_in_building_workq
-        + builder.time_in_crunching_workq
-        + builder.time_in_save
-        + builder.time_in_find_new_states
-        + builder.time_in_keep_best_solution
-    )
-    unaccounted_time = total_time - accounted_time
-
-    print("")
-    print(
-        "Time in crunching workq    : %ds (%d%%)"
-        % (builder.time_in_crunching_workq, (builder.time_in_crunching_workq / total_time) * 100)
-    )
-    print("Time in sort               : %ds (%d%%)" % (builder.time_in_sort, (builder.time_in_sort / total_time) * 100))
-    print(
-        "Time in file delete        : %ds (%d%%)"
-        % (builder.time_in_file_delete, (builder.time_in_file_delete / total_time) * 100)
-    )
+    # Each of these covers a section of the build that does not overlap any of the others,
+    # so they add up to the time we can account for
+    rows = [
+        ("Time in crunching workq", builder.time_in_crunching_workq),
+        ("Time in sort", builder.time_in_sort),
+        ("Time in file delete", builder.time_in_file_delete),
+    ]
 
     if builder.time_in_keep_best_solution:
-        print(
-            "Time in keep-best-solution : %ds (%d%%)"
-            % (builder.time_in_keep_best_solution, (builder.time_in_keep_best_solution / total_time) * 100)
-        )
+        rows.append(("Time in keep-best-solution", builder.time_in_keep_best_solution))
 
-    print(
-        "Time in find-new-states    : %ds (%d%%)"
-        % (builder.time_in_find_new_states, (builder.time_in_find_new_states / total_time) * 100)
-    )
-    print(
-        "Time in building workq     : %ds (%d%%)"
-        % (builder.time_in_building_workq, (builder.time_in_building_workq / total_time) * 100)
-    )
-    print("Time in save               : %ds (%d%%)" % (builder.time_in_save, (builder.time_in_save / total_time) * 100))
-    print("Time not accounted for     : %ds (%d%%)" % (unaccounted_time, (unaccounted_time / total_time) * 100))
-    print("Time total                 : %ds" % total_time)
+    rows.append(("Time in find-new-states", builder.time_in_find_new_states))
+    rows.append(("Time in building workq", builder.time_in_building_workq))
+    rows.append(("Time in save", builder.time_in_save))
+
+    accounted_time = sum(seconds for (_, seconds) in rows)
+    rows.append(("Time not accounted for", total_time - accounted_time))
+
+    print("")
+
+    for label, seconds in rows:
+        print("%-27s: %6.1fs (%d%%)" % (label, seconds, (seconds / total_time) * 100))
+
+    print("%-27s: %6.1fs" % ("Time total", total_time))
     print("")
