@@ -12,21 +12,33 @@
 // then we will need to increase this constant
 #define MAX_MOVE_LENGTH 20
 
-// add 1 for the leading "x"
-// add 294 for a 7x7x7 cube (7 * 7 * 6)
-// add 1 for the ":" delimiter
-// add (MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH) or 100
-// add 1 for the newline
-// add 1 for the '\0'
-// That brings us to 398
-// add 2 to make evenly divisble by 8
-#define MAX_LINE_LENGTH 400
+#define MEGABYTE (1024 * 1024)
+
+/*
+ * How wide a "<state>:<moves>\n\0" line can get for a state of state_bytes squares.
+ *
+ * Our input already carries up to MAX_MOVE_LENGTH moves and we append one more, so the
+ * moves field has to hold MAX_MOVE_LENGTH + 1 of them. Rounding the result up to a
+ * multiple of 8 keeps every line in to_write aligned.
+ *
+ * This is deliberately a function of the table in front of us rather than a worst-case
+ * constant. A compact 5x5x5 x-centers line needs 136 bytes where a full 7x7x7 needs 408,
+ * so using the actual stride avoids wasting memory without changing batch boundaries.
+ */
+#define LINE_WIDTH_FOR_STATE(state_bytes) \
+    ((((state_bytes) + 1 + (MAX_MOVE_STR_SIZE * (MAX_MOVE_LENGTH + 1)) + 2) + 7) & ~7)
 
 // The workq lines we read are padded out to --linewidth, which get_workq_line_length()
 // in buildercore.py caps at 512 before adding one for the newline. We build our output
-// lines in the same buffer, so it has to hold MAX_LINE_LENGTH as well.
+// lines in the same buffer, so it has to hold a full output line as well.
 #define MAX_WORKQ_LINE_LENGTH 1024
 
+/*
+ * This is part of the lookup-table file format in practice, not just a performance
+ * setting. GNU sort --uniq --key keeps the first equal-state line it sees, so changing
+ * batch boundaries changes which equally short solution is stored and therefore changes
+ * the table byte-for-byte. Keep the historical boundary for reproducible tables.
+ */
 #define BATCH_SIZE 2000000
 
 #define MAX_FILENAME_SIZE 128
@@ -34,11 +46,17 @@
 #define MAX_SQUARES_ARG 2048
 
 
-char to_write[BATCH_SIZE][MAX_LINE_LENGTH];
+// to_write holds batch_size lines, each line_width bytes from the last. process_workq()
+// sizes all three once it knows how wide a line is for this table.
+char *to_write = NULL;
+unsigned int line_width = 0;
+unsigned int batch_size = 0;
 
 // deduplicate_to_write_buffer() sorts these pointers into to_write instead of moving the
 // rows around, which makes every swap 8 bytes instead of a couple hundred
-char *to_write_ptr[BATCH_SIZE];
+char **to_write_ptr = NULL;
+
+#define TO_WRITE_LINE(i) (to_write + ((size_t) (i) * line_width))
 
 // The number of bytes of state at the front of every line, set once by process_workq()
 unsigned int state_width = 0;
@@ -141,7 +159,6 @@ quicksort(
  */
 size_t
 deduplicate_to_write_buffer(
-    char to_write[][MAX_LINE_LENGTH],
     char *to_write_dedup,
     unsigned int array_size,
     unsigned int to_write_count)
@@ -151,7 +168,7 @@ deduplicate_to_write_buffer(
 
     // quicksort the contents of to_write
     for (unsigned int i = 0; i < to_write_count; i++) {
-        to_write_ptr[i] = to_write[i];
+        to_write_ptr[i] = TO_WRITE_LINE(i);
     }
 
     quicksort(to_write_ptr, to_write_count);
@@ -182,7 +199,6 @@ deduplicate_to_write_buffer(
  */
 unsigned int
 write_to_write_buffer(
-    char to_write[][MAX_LINE_LENGTH],
     char *to_write_dedup,
     unsigned int array_size,
     unsigned int to_write_count,
@@ -191,7 +207,7 @@ write_to_write_buffer(
 {
     char tmp_outputfile[MAX_FILENAME_SIZE];
     FILE *fh_write = NULL;
-    size_t dedup_length = deduplicate_to_write_buffer(to_write, to_write_dedup, array_size, to_write_count);
+    size_t dedup_length = deduplicate_to_write_buffer(to_write_dedup, array_size, to_write_count);
 
     snprintf(tmp_outputfile, MAX_FILENAME_SIZE, "%s-%07d", outputfile, file_count);
     fh_write = fopen(tmp_outputfile, "w");
@@ -393,8 +409,7 @@ process_workq(
     int steps_to_scramble_length = 0;
     unsigned int full_size = (cube_size * cube_size * 6) + 1; // add 1 for the leading "x"
     unsigned int array_size = square_count ? square_count : full_size;
-    size_t BUFFER_SIZE = (size_t) MAX_LINE_LENGTH * BATCH_SIZE;
-    unsigned int MEGABYTE = 1024 * 1024;
+    size_t BUFFER_SIZE = 0;
     unsigned int line_length = 0;
     unsigned int sizeof_array_size = sizeof(char) * array_size;
     unsigned int to_write_count = 0;
@@ -414,9 +429,18 @@ process_workq(
 
     move_type move = MOVE_NONE;
     move_type prev_move = MOVE_NONE;
+
+    // The stride is table-specific to save memory, but BATCH_SIZE stays fixed because its
+    // historical boundaries determine which equally short solution survives deduplication.
+    line_width = LINE_WIDTH_FOR_STATE(array_size);
+    batch_size = BATCH_SIZE;
+    BUFFER_SIZE = (size_t) line_width * batch_size;
+
+    to_write = malloc(BUFFER_SIZE);
+    to_write_ptr = malloc((size_t) batch_size * sizeof(char *));
     to_write_dedup = malloc(BUFFER_SIZE);
 
-    if (to_write_dedup == NULL) {
+    if (to_write == NULL || to_write_ptr == NULL || to_write_dedup == NULL) {
         printf("ERROR: process_workq could not allocate %zu bytes\n", BUFFER_SIZE);
         exit(1);
     }
@@ -442,9 +466,9 @@ process_workq(
     unsigned long seek_target = (unsigned long) start * (unsigned long) linewidth;
     fseek(fh_read, seek_target, SEEK_SET);
 
-    LOG("read %dx%dx%d inputfile %s from line %d to %d, MAX_LINE_LENGTH %d, BUFFER_SIZE %d MB\n",
+    LOG("read %dx%dx%d inputfile %s from line %d to %d, line width %d, batch %d lines, BUFFER_SIZE %zu MB\n",
         cube_size, cube_size, cube_size,
-        inputfile, start, end, MAX_LINE_LENGTH, (BUFFER_SIZE * 2)/ MEGABYTE);
+        inputfile, start, end, line_width, batch_size, (BUFFER_SIZE * 2) / MEGABYTE);
 
     for (unsigned int line_number = start; line_number <= end; line_number++) {
         read_result = fread(line, linewidth, 1, fh_read);
@@ -457,9 +481,11 @@ process_workq(
         strstrip(line);
         line_length = strlen(line);
 
-        // we append a "\n" and a "\0" to every line we buffer, so we need room for both
-        if (line_length + 2 > MAX_LINE_LENGTH) {
-            printf("ERROR: line %d is %d bytes, max supported is %d bytes\n", line_number, line_length, MAX_LINE_LENGTH - 2);
+        // We append one more move plus a "\n" and a "\0" to every line we buffer, so the
+        // line we read has to leave room for all of that
+        if (line_length + MAX_MOVE_STR_SIZE + 2 > line_width) {
+            printf("ERROR: line %d is %d bytes, max supported is %d bytes\n",
+                line_number, line_length, line_width - MAX_MOVE_STR_SIZE - 2);
             printf("%s\n", line);
             exit(1);
         }
@@ -523,12 +549,12 @@ process_workq(
             line[line_length+1] = '\0';
 
             // copy the '\0' too, so that to_write does not have to be pre-zeroed
-            memcpy(to_write[to_write_count], line, strlen(line) + 1);
+            memcpy(TO_WRITE_LINE(to_write_count), line, strlen(line) + 1);
             to_write_count++;
 
-            if (to_write_count == BATCH_SIZE) {
+            if (to_write_count == batch_size) {
                 file_count = write_to_write_buffer(
-                    to_write, to_write_dedup, array_size, to_write_count, outputfile, file_count);
+                    to_write_dedup, array_size, to_write_count, outputfile, file_count);
                 to_write_count = 0;
             }
 
@@ -581,12 +607,12 @@ process_workq(
 
             // copy the "line" we just contructed to our to_write buffer, including the
             // '\0' so that to_write does not have to be pre-zeroed
-            memcpy(to_write[to_write_count], line, strlen(line) + 1);
+            memcpy(TO_WRITE_LINE(to_write_count), line, strlen(line) + 1);
             to_write_count++;
 
-            if (to_write_count == BATCH_SIZE) {
+            if (to_write_count == batch_size) {
                 file_count = write_to_write_buffer(
-                    to_write, to_write_dedup, array_size, to_write_count, outputfile, file_count);
+                    to_write_dedup, array_size, to_write_count, outputfile, file_count);
                 to_write_count = 0;
             }
         }
@@ -594,11 +620,13 @@ process_workq(
 
     if (to_write_count) {
         file_count = write_to_write_buffer(
-            to_write, to_write_dedup, array_size, to_write_count, outputfile, file_count);
+            to_write_dedup, array_size, to_write_count, outputfile, file_count);
         to_write_count = 0;
     }
 
     fclose(fh_read);
+    free(to_write);
+    free(to_write_ptr);
     free(to_write_dedup);
 
     if (perm) {
