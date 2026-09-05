@@ -744,43 +744,164 @@ class BFS(object):
         self.starting_state_count = self.workq_size
         self.starting_cubes = []
 
-    def _sort_merge_state_files(self, files_to_sort, sorted_results_filename):
+    def _sort_buffer_for_jobs(self, jobs: int) -> str:
+        """
+        Split SORT_BUFFER_SIZE across parallel GNU sort processes so they do not each
+        try to take the full 16G at once.
+        """
+        if jobs <= 1:
+            return SORT_BUFFER_SIZE
+
+        size = SORT_BUFFER_SIZE.strip()
+        unit = size[-1]
+        amount = int(size[:-1])
+        return f"{max(1, amount // jobs)}{unit}"
+
+    def _state_width_from_file(self, filename: str) -> int:
+        with open(filename, "r") as fh:
+            line = next(fh)
+
+        if line.count(":") == 1:
+            state = line.split(":")[0]
+        elif line.count(":") == 2:
+            state1, state2, steps = line.split(":")
+            state = ":".join([state1, state2])
+        else:
+            raise Exception(f"Found {line.count(':')} :s in line:\n{line}")
+
+        return len(state)
+
+    def _sort_merge_state_files(
+        self,
+        files_to_sort,
+        sorted_results_filename,
+        buffer_size=None,
+        parallel=None,
+        files_list_tag="sort",
+    ):
         log.info(f"sort {len(files_to_sort)} files created by builder-crunch-workq processes begin")
         start_time = dt.datetime.now()
+        self._run_sort_merge(
+            files_to_sort,
+            sorted_results_filename,
+            buffer_size=buffer_size,
+            parallel=parallel,
+            files_list_tag=files_list_tag,
+        )
+        self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
+        log.info(f"sort {len(files_to_sort)} files created by builder-crunch-workq processes end")
 
-        # create a file with the list of the filenames to sort
-        files_to_sort_filename = f"{TMPDIR}/files_to_sort.txt"
+    def _run_sort_merge(
+        self,
+        files_to_sort,
+        sorted_results_filename,
+        buffer_size=None,
+        parallel=None,
+        files_list_tag="sort",
+    ):
+        """
+        Merge already-sorted cruncher files, keeping the first line of each state. File
+        order is the uniqueness rule, so callers must pass files in the same order that
+        sorted(glob) used to.
+        """
+        if buffer_size is None:
+            buffer_size = SORT_BUFFER_SIZE
+
+        if parallel is None:
+            parallel = self.cores
+
+        files_to_sort_filename = f"{TMPDIR}/files_to_sort.{files_list_tag}.txt"
         with open(files_to_sort_filename, "w") as fh:
             fh.write("\0".join(files_to_sort))
 
-        # find state_width by reading the first line of the first file
-        first_file = files_to_sort[0]
-
-        with open(first_file, "r") as fh:
-            line = next(fh)
-
-            if line.count(":") == 1:
-                state = line.split(":")[0]
-            elif line.count(":") == 2:
-                state1, state2, steps = line.split(":")
-                state = ":".join([state1, state2])
-            else:
-                raise Exception(f"Found {line.count(':')} :s in line:\n{line}")
-
-            state_width = len(state)
-
+        state_width = self._state_width_from_file(files_to_sort[0])
         cmd = (
             "LC_ALL=C nice sort --batch-size=1000 --parallel=%d --buffer-size=%s --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
-            % (self.cores, SORT_BUFFER_SIZE, state_width, TMPDIR, sorted_results_filename, files_to_sort_filename)
+            % (parallel, buffer_size, state_width, TMPDIR, sorted_results_filename, files_to_sort_filename)
         )
-        # log.info(cmd)
-
         subprocess.check_output(cmd, shell=True)
-        self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
         os.unlink(files_to_sort_filename)
-        # linecount = int(subprocess.check_output("wc -l %s" % sorted_results_filename, shell=True).decode("ascii").strip().split()[0])
-        # log.info("sort all of the files created by builder-crunch-workq processes end ({:,} lines)".format(linecount))
-        log.info(f"sort {len(files_to_sort)} files created by builder-crunch-workq processes end")
+
+    def _sort_merge_core_files(self, core_files, sorted_results_filename):
+        """
+        The cruncher writes one sorted file per BATCH_SIZE per core. GNU sort --uniq --key
+        keeps the leftmost equal-state line, so a 132-way merge and "merge each core, then
+        merge those results in core order" keep the same winner as long as file order inside
+        each core and core order itself match sorted(glob).
+
+        Merging the per-core files in parallel is the part GNU --parallel does not do for
+        --merge.
+        """
+        groups = []
+        grouped = {}
+
+        for filename in core_files:
+            prefix = filename.rsplit("-", 1)[0]
+            if prefix not in grouped:
+                grouped[prefix] = []
+                groups.append(grouped[prefix])
+            grouped[prefix].append(filename)
+
+        if len(groups) <= 1:
+            self._sort_merge_state_files(core_files, sorted_results_filename)
+            return
+
+        log.info(
+            f"sort {len(core_files)} files created by builder-crunch-workq processes begin "
+            f"({len(groups)} core groups in parallel)"
+        )
+        start_time = dt.datetime.now()
+        buffer_size = self._sort_buffer_for_jobs(len(groups))
+        intermediates = []
+        created = []
+        threads = []
+
+        for index, filenames in enumerate(groups):
+            if len(filenames) == 1:
+                intermediates.append(filenames[0])
+                continue
+
+            merged = f"{TMPDIR}/{Path(sorted_results_filename).name}.mergegroup-{index}"
+            intermediates.append(merged)
+            created.append(merged)
+            cmd = (
+                "LC_ALL=C nice sort --batch-size=1000 --parallel=1 --buffer-size=%s --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
+                % (
+                    buffer_size,
+                    self._state_width_from_file(filenames[0]),
+                    TMPDIR,
+                    merged,
+                    f"{TMPDIR}/files_to_sort.group-{index}.txt",
+                )
+            )
+            with open(f"{TMPDIR}/files_to_sort.group-{index}.txt", "w") as fh:
+                fh.write("\0".join(filenames))
+
+            thread = BackgroundProcess(["bash", "-c", cmd], f"sort core group {index}")
+            thread.start()
+            threads.append((thread, f"{TMPDIR}/files_to_sort.group-{index}.txt"))
+
+        hit_error = False
+        for thread, list_filename in threads:
+            thread.join()
+            os.unlink(list_filename)
+
+            if thread.ok:
+                log.info(f"{thread}: finished")
+            else:
+                hit_error = True
+                log.info(f"{thread}: finished but with an error\n{thread.result}\n")
+
+        if hit_error:
+            log.error("parallel sort of builder-crunch-workq core groups hit an error")
+            sys.exit(1)
+
+        self._run_sort_merge(intermediates, sorted_results_filename, files_list_tag="coregroups")
+        self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
+        log.info(f"sort {len(core_files)} files created by builder-crunch-workq processes end")
+
+        for filename in created:
+            os.unlink(filename)
 
     def rm_files(self, filenames: List[str]):
         log.info("rm builder-crunch-workq output files begin")
@@ -889,7 +1010,7 @@ class BFS(object):
 
             sorted_results_filename = f"{self.filename}-batch-{batch_index}"
             core_files = sorted(glob.glob(f"{TMPDIR}/*core*"))
-            self._sort_merge_state_files(core_files, sorted_results_filename)
+            self._sort_merge_core_files(core_files, sorted_results_filename)
             self.rm_files(core_files)
 
     def _build_edges_pattern_workq(self, new_states_filename: str, build_workq: bool) -> int:
