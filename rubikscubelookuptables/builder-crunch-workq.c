@@ -30,6 +30,8 @@
 #define BATCH_SIZE 2000000
 
 #define MAX_FILENAME_SIZE 128
+#define MAX_COMPACT_SQUARES 255
+#define MAX_SQUARES_ARG 2048
 
 
 char to_write[BATCH_SIZE][MAX_LINE_LENGTH];
@@ -208,6 +210,170 @@ write_to_write_buffer(
 
 
 void
+rotate_full_cube(
+    char *dest,
+    char *src,
+    unsigned int full_size,
+    unsigned char cube_size,
+    move_type move)
+{
+    memcpy(dest, src, full_size);
+
+    switch (cube_size) {
+    case 2:
+        rotate_222(dest, src, full_size, move);
+        break;
+    case 3:
+        rotate_333(dest, src, full_size, move);
+        break;
+    case 4:
+        rotate_444(dest, src, full_size, move);
+        break;
+    case 5:
+        rotate_555(dest, src, full_size, move);
+        break;
+    case 6:
+        rotate_666(dest, src, full_size, move);
+        break;
+    case 7:
+        rotate_777(dest, src, full_size, move);
+        break;
+    default:
+        printf("ERROR: add support for %dx%dx%d cubes\n", cube_size, cube_size, cube_size);
+        exit(1);
+    }
+}
+
+
+unsigned int
+parse_squares(char *arg, unsigned int *squares)
+{
+    unsigned int count = 0;
+    char *ptr = strtok(arg, ",");
+
+    while (ptr != NULL) {
+        int index = atoi(ptr);
+
+        if (count >= MAX_COMPACT_SQUARES) {
+            printf("ERROR: --squares has more than %d entries\n", MAX_COMPACT_SQUARES);
+            exit(1);
+        }
+
+        if (index < 1) {
+            printf("ERROR: --squares entry '%s' is not a valid cube index\n", ptr);
+            exit(1);
+        }
+
+        squares[count++] = (unsigned int) index;
+        ptr = strtok(NULL, ",");
+    }
+
+    return count;
+}
+
+
+/*
+ * For each legal move, find where every interesting square lands after rotate_xxx().
+ * perm[move * square_count + src] is the compact index that square src maps to.
+ *
+ * If any interesting square maps onto a placeholder, compact states would drop that
+ * information, so we refuse to continue.
+ */
+unsigned int *
+build_compact_permutations(
+    unsigned char cube_size,
+    unsigned int *squares,
+    unsigned int square_count,
+    move_type *moves,
+    unsigned int moves_count)
+{
+    unsigned int full_size = (cube_size * cube_size * 6) + 1;
+    unsigned int *perm = malloc(sizeof(unsigned int) * moves_count * square_count);
+    unsigned int *index_of = calloc(full_size, sizeof(unsigned int));
+    unsigned char *seen = malloc(square_count);
+    char *probe = malloc(full_size);
+    char *dest = malloc(full_size);
+
+    if (perm == NULL || index_of == NULL || seen == NULL || probe == NULL || dest == NULL) {
+        printf("ERROR: could not allocate compact-state permutation tables\n");
+        exit(1);
+    }
+
+    for (unsigned int i = 0; i < square_count; i++) {
+        if (squares[i] >= full_size) {
+            printf("ERROR: --squares %u is outside a %dx%dx%d cube\n",
+                squares[i], cube_size, cube_size, cube_size);
+            exit(1);
+        }
+
+        if (index_of[squares[i]]) {
+            printf("ERROR: --squares lists %u more than once\n", squares[i]);
+            exit(1);
+        }
+
+        index_of[squares[i]] = i + 1;
+    }
+
+    for (unsigned int move_index = 0; move_index < moves_count; move_index++) {
+        memset(probe, '.', full_size);
+        probe[0] = 'x';
+
+        for (unsigned int i = 0; i < square_count; i++) {
+            probe[squares[i]] = (char) (i + 1);
+        }
+
+        rotate_full_cube(dest, probe, full_size, cube_size, moves[move_index]);
+        memset(seen, 0, square_count);
+
+        for (unsigned int k = 0; k < full_size; k++) {
+            unsigned char marker = (unsigned char) dest[k];
+
+            if (marker == 0 || marker == '.' || marker == 'x') {
+                continue;
+            }
+
+            if (marker < 1 || marker > square_count) {
+                printf("ERROR: unexpected marker %u at square %u under %s\n",
+                    marker, k, move2str[moves[move_index]]);
+                exit(1);
+            }
+
+            unsigned int src = marker - 1;
+
+            if (!index_of[k]) {
+                printf("ERROR: square %u maps to %u under %s, which is not in --squares\n",
+                    squares[src], k, move2str[moves[move_index]]);
+                exit(1);
+            }
+
+            if (seen[src]) {
+                printf("ERROR: square %u mapped twice under %s\n",
+                    squares[src], move2str[moves[move_index]]);
+                exit(1);
+            }
+
+            seen[src] = 1;
+            perm[(move_index * square_count) + src] = index_of[k] - 1;
+        }
+
+        for (unsigned int i = 0; i < square_count; i++) {
+            if (!seen[i]) {
+                printf("ERROR: square %u did not map to another --squares entry under %s\n",
+                    squares[i], move2str[moves[move_index]]);
+                exit(1);
+            }
+        }
+    }
+
+    free(index_of);
+    free(seen);
+    free(probe);
+    free(dest);
+    return perm;
+}
+
+
+void
 process_workq(
     char *inputfile,
     char *outputfile,
@@ -216,20 +382,24 @@ process_workq(
     unsigned int end,
     unsigned char cube_size,
     move_type moves[MOVE_MAX],
-    unsigned int moves_count)
+    unsigned int moves_count,
+    unsigned int *squares,
+    unsigned int square_count)
 {
     FILE *fh_read = NULL;
     char *move_ptr = NULL;
     char *prev_move_ptr = NULL;
 
     int steps_to_scramble_length = 0;
-    unsigned int array_size = (cube_size * cube_size * 6) + 1; // add 1 for the leading "x"
+    unsigned int full_size = (cube_size * cube_size * 6) + 1; // add 1 for the leading "x"
+    unsigned int array_size = square_count ? square_count : full_size;
     size_t BUFFER_SIZE = (size_t) MAX_LINE_LENGTH * BATCH_SIZE;
     unsigned int MEGABYTE = 1024 * 1024;
     unsigned int line_length = 0;
     unsigned int sizeof_array_size = sizeof(char) * array_size;
     unsigned int to_write_count = 0;
     unsigned int file_count = 0;
+    unsigned int *perm = NULL;
 
     unsigned char cube[array_size];
     unsigned char cube_tmp[array_size];
@@ -249,6 +419,11 @@ process_workq(
     if (to_write_dedup == NULL) {
         printf("ERROR: process_workq could not allocate %zu bytes\n", BUFFER_SIZE);
         exit(1);
+    }
+
+    if (square_count) {
+        perm = build_compact_permutations(cube_size, squares, square_count, moves, moves_count);
+        LOG("compact states: %u of %u squares\n", square_count, full_size - 1);
     }
 
     // line_compare() needs this to know how much of each line is the state
@@ -373,30 +548,13 @@ process_workq(
             }
 
             // copy cube to cube_tmp and apply "move" to cube_tmp
-            memcpy(cube_tmp, cube, sizeof_array_size);
-
-            switch(cube_size) {
-            case 2:
-                rotate_222(cube_tmp, cube, array_size, move);
-                break;
-            case 3:
-                rotate_333(cube_tmp, cube, array_size, move);
-                break;
-            case 4:
-                rotate_444(cube_tmp, cube, array_size, move);
-                break;
-            case 5:
-                rotate_555(cube_tmp, cube, array_size, move);
-                break;
-            case 6:
-                rotate_666(cube_tmp, cube, array_size, move);
-                break;
-            case 7:
-                rotate_777(cube_tmp, cube, array_size, move);
-                break;
-            default:
-                printf("ERROR: add support for %dx%dx%d cubes\n\n", cube_size, cube_size, cube_size);
-                exit(1);
+            if (perm) {
+                for (unsigned int i = 0; i < square_count; i++) {
+                    cube_tmp[perm[(move_index * square_count) + i]] = cube[i];
+                }
+            } else {
+                memcpy(cube_tmp, cube, sizeof_array_size);
+                rotate_full_cube((char *) cube_tmp, (char *) cube, array_size, cube_size, move);
             }
 
             // if nothing changed, do not bother writing this result to the file
@@ -442,6 +600,10 @@ process_workq(
 
     fclose(fh_read);
     free(to_write_dedup);
+
+    if (perm) {
+        free(perm);
+    }
 }
 
 
@@ -455,8 +617,12 @@ main (int argc, char *argv[])
     char inputfile[MAX_FILENAME_SIZE];
     char outputfile[MAX_FILENAME_SIZE];
     char moves_buffer[512];
+    char squares_buffer[MAX_SQUARES_ARG];
+    unsigned int squares[MAX_COMPACT_SQUARES];
+    unsigned int square_count = 0;
     memset(inputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
     memset(outputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
+    memset(squares_buffer, '\0', sizeof(squares_buffer));
 
     for (int i = 1; i < argc; i++) {
         if (strmatch(argv[i], "--inputfile")) {
@@ -486,6 +652,10 @@ main (int argc, char *argv[])
         } else if (strmatch(argv[i], "--moves")) {
             i++;
             strcpy(moves_buffer, argv[i]);
+
+        } else if (strmatch(argv[i], "--squares")) {
+            i++;
+            strncpy(squares_buffer, argv[i], MAX_SQUARES_ARG - 1);
 
         } else if (strmatch(argv[i], "-h") || strmatch(argv[i], "--help")) {
             printf("\nTODO\n\n");
@@ -530,14 +700,9 @@ main (int argc, char *argv[])
         moves_index++;
     }
 
-    /*
-    LOG("inputfile %s from %d -> %d, cube size %d, moves_index %d\n", inputfile, start, end, cube_size, moves_index);
-    LOG("outputfile %s\n", outputfile);
-
-    for (unsigned int i = 0; i < moves_index; i++) {
-        LOG("moves[%d] is %s\n", i, move2str[moves[i]]);
+    if (squares_buffer[0]) {
+        square_count = parse_squares(squares_buffer, squares);
     }
-     */
 
-    process_workq(inputfile, outputfile, linewidth, start, end, cube_size, moves, moves_index);
+    process_workq(inputfile, outputfile, linewidth, start, end, cube_size, moves, moves_index, squares, square_count);
 }

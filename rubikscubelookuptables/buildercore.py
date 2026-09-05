@@ -374,6 +374,9 @@ class BFS(object):
         self.use_centers_then_edges = use_centers_then_edges
         self.lt_centers = {}
         self.use_c = use_c
+        # Cube-state indexes (matching cube.state / rotate_xxx) that this table actually
+        # cares about. Empty means we carry the full cube, including the "." placeholders.
+        self.compact_squares = ()
 
         # builder-crunch-workq.c only applies legal turns to a full cube state.
         # The Python cruncher also recolors edges-pattern keys, and it flips a
@@ -490,7 +493,9 @@ class BFS(object):
         self.size_number = int(self.size[0])
         self.starting_state_count = 0
         self.stats = {0: 0}
+        self.compact_squares = self._compact_squares_for_table()
         self.workq_line_length = self.get_workq_line_length()
+        log.info(f"workq line length {self.workq_line_length}")
 
         self.time_in_sort = 0
         self.time_in_file_delete = 0
@@ -502,6 +507,104 @@ class BFS(object):
 
     def __str__(self):
         return self.name
+
+    def _interesting_squares(self) -> List[int]:
+        """
+        Indexes of stickers that are not placeholders on any starting cube. cube.state[0]
+        is the leading "x" and is never a real square.
+        """
+        squares = set()
+
+        for cube in self.starting_cubes:
+            for index, char in enumerate(cube.state):
+                if index and char != ".":
+                    squares.add(index)
+
+        return sorted(squares)
+
+    def _squares_are_closed_orbit(self, squares: List[int]) -> bool:
+        """
+        True if every legal move permutes `squares` among themselves. If a move would
+        send one of them onto a placeholder (or a placeholder onto one of them) then
+        compact states would silently drop that information.
+        """
+        square_set = set(squares)
+        square_count = len(squares)
+        array_size = (6 * self.size_number * self.size_number) + 1
+
+        for move in self.legal_moves:
+            probe = ["."] * array_size
+            probe[0] = "x"
+
+            for compact_index, cube_index in enumerate(squares):
+                probe[cube_index] = chr(compact_index + 1)
+
+            rotated = self.rotate_xxx(probe[:], move)
+            seen = [False] * square_count
+
+            for dest_index, marker in enumerate(rotated):
+                if marker in (0, ".", "x", None, "\x00"):
+                    continue
+
+                if isinstance(marker, str):
+                    marker = ord(marker)
+
+                if not isinstance(marker, int) or marker <= 0:
+                    continue
+
+                src = marker - 1
+
+                if src >= square_count or dest_index not in square_set:
+                    log.info(
+                        f"compact states: square {squares[src] if 0 <= src < square_count else '?'} "
+                        f"maps to {dest_index} under {move}, which is outside the interesting set"
+                    )
+                    return False
+
+                if seen[src]:
+                    log.info(f"compact states: square {squares[src]} mapped twice under {move}")
+                    return False
+
+                seen[src] = True
+
+            if not all(seen):
+                missing = [squares[i] for i, was_seen in enumerate(seen) if not was_seen]
+                log.info(f"compact states: squares {missing} did not stay in the set under {move}")
+                return False
+
+        return True
+
+    def _compact_squares_for_table(self) -> Tuple[int, ...]:
+        """
+        When the squares this table cares about form a closed orbit, we can store and
+        crunch just those squares instead of a full cube of mostly "." placeholders.
+        """
+        if not self.use_c:
+            return ()
+
+        if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
+            return ()
+
+        squares = self._interesting_squares()
+        full_squares = 6 * self.size_number * self.size_number
+
+        # Markers in the C cruncher are stored in a char, and there is nothing to gain
+        # if every square is already interesting.
+        if not squares or len(squares) >= full_squares or len(squares) > 255:
+            return ()
+
+        if not self._squares_are_closed_orbit(squares):
+            log.info(f"compact states: {len(squares)} interesting squares are not a closed orbit, using the full cube")
+            return ()
+
+        log.info(f"compact states: {len(squares)} of {full_squares} squares")
+        return tuple(squares)
+
+    def _state_for_workq(self, cube) -> str:
+        if self.compact_squares:
+            return "".join(cube.state[index] for index in self.compact_squares)
+
+        return "".join(cube.state)
 
     def get_workq_line_length(self):
         """
@@ -525,6 +628,9 @@ class BFS(object):
 
         if self.name.startswith("5x5x5-edges"):
             return 512
+
+        if self.compact_squares:
+            return len(self.compact_squares) + 1 + (CHARS_PER_STEP * MAX_STEPS) + WIGGLE_ROOM
         else:
             return (
                 LEADING_X
@@ -625,7 +731,7 @@ class BFS(object):
                 if self.use_edges_pattern:
                     workq_line = f"{pattern}:{''.join(cube.state)}:"
                 else:
-                    workq_line = f"{''.join(cube.state)}:"
+                    workq_line = f"{self._state_for_workq(cube)}:"
 
                 fh.write(workq_line + "\n")
                 fh_workq.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
@@ -728,6 +834,9 @@ class BFS(object):
                         "--moves", f"{' '.join(self.legal_moves)}",
                     ]
                     # fmt: on
+
+                    if self.compact_squares:
+                        cmd.extend(["--squares", ",".join(str(index) for index in self.compact_squares)])
 
                 else:
                     cmd = [
@@ -1167,6 +1276,14 @@ class BFS(object):
 
         if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
             max_line_length = self._convert_state_to_smaller_format()
+            shutil.move(f"{self.filename}.small", self.filename)
+        elif self.compact_squares:
+            # The table is already just the interesting squares, which is the same format
+            # cut | tr used to produce at the end. Measuring the width here is a read of
+            # that small file, not a conversion of a full-cube table.
+            log.info(f"{self}: states already compact ({len(self.compact_squares)} squares)")
+            output = subprocess.check_output(f"LC_ALL=C nice wc --max-line-length {self.filename}", shell=True)
+            max_line_length = int(output.decode("utf-8").strip().split()[0])
         else:
             # The leading "x" and the "."s only ever appear in the state, never in the
             # steps, so coreutils can do this entire pass for us. "tee" shows the converted
@@ -1184,13 +1301,13 @@ class BFS(object):
                 executable="/bin/bash",
             )
             max_line_length = int(output.decode("utf-8").strip().split()[0])
+            shutil.move(f"{self.filename}.small", self.filename)
 
         # Padding to 0 would truncate every line in the table. An empty conversion is a
         # much more likely explanation than a table with nothing in it.
         if not max_line_length:
             raise Exception(f"{self}: converting {self.filename} produced a max line length of 0")
 
-        shutil.move(f"{self.filename}.small", self.filename)
         files_to_pad = (self.filename,)
 
         for filename in files_to_pad:
