@@ -22,12 +22,45 @@
 // add 2 to make evenly divisble by 8
 #define MAX_LINE_LENGTH 400
 
+// The workq lines we read are padded out to --linewidth, which get_workq_line_length()
+// in buildercore.py caps at 512 before adding one for the newline. We build our output
+// lines in the same buffer, so it has to hold MAX_LINE_LENGTH as well.
+#define MAX_WORKQ_LINE_LENGTH 1024
+
 #define BATCH_SIZE 2000000
 
 #define MAX_FILENAME_SIZE 128
 
 
 char to_write[BATCH_SIZE][MAX_LINE_LENGTH];
+
+// deduplicate_to_write_buffer() sorts these pointers into to_write instead of moving the
+// rows around, which makes every swap 8 bytes instead of a couple hundred
+char *to_write_ptr[BATCH_SIZE];
+
+// The number of bytes of state at the front of every line, set once by process_workq()
+unsigned int state_width = 0;
+
+
+/*
+ * Order two "<state>:<moves>\n" lines.
+ *
+ * Only the state matters to the "sort --uniq --key=1.1,1.<state_width>" that merges our
+ * output files, but we break ties on the moves so that our ordering stays total. Byte
+ * <state_width> is the ":" on both lines, so this gives the same answer that strcmp() on
+ * the whole line does while stopping as soon as the states differ.
+ */
+int
+line_compare(const char *a, const char *b)
+{
+    int result = memcmp(a, b, state_width);
+
+    if (result) {
+        return result;
+    }
+
+    return strcmp(&a[state_width], &b[state_width]);
+}
 
 /* Remove leading and trailing whitespaces */
 char *
@@ -59,36 +92,35 @@ strstrip (char *s)
 // https://github.com/codyryanwright/QuicksortStrings/blob/master/2dStringQuicksort.c
 void
 quicksort(
-    char A[][MAX_LINE_LENGTH],
+    char **A,
     unsigned int len)
 {
     if (len < 2) {
         return;
     }
 
-    char pivot[MAX_LINE_LENGTH]; // pivot is comparator
-    strcpy(pivot, A[len / 2]);
+    char *pivot = A[len / 2]; // pivot is comparator
 
     int i = 0;
     int j = len - 1;
-    char temp[MAX_LINE_LENGTH];
+    char *temp = NULL;
 
     while (1) {
         // find first to the left of pivot that is larger than pivot
-        while (strcmp(A[i], pivot) < 0) {
+        while (line_compare(A[i], pivot) < 0) {
             ++i;
         }
 
         // find first to the right of pivot that is smaller than pivot
-        while (strcmp(A[j], pivot) > 0) {
+        while (line_compare(A[j], pivot) > 0) {
             --j;
         }
 
         // Swap if i (larger than pivot) is left of j (smaller than pivot)
         if (i < j) {
-            strcpy(temp, A[i]);
-            strcpy(A[i], A[j]);
-            strcpy(A[j], temp);
+            temp = A[i];
+            A[i] = A[j];
+            A[j] = temp;
         } else {
             break;
         }
@@ -101,42 +133,77 @@ quicksort(
     quicksort(A + i, len - i); // right half
 }
 
-void
+/*
+ * Sort to_write and copy one line per unique state into to_write_dedup. Returns how many
+ * bytes we put there.
+ */
+size_t
 deduplicate_to_write_buffer(
     char to_write[][MAX_LINE_LENGTH],
     char *to_write_dedup,
-    unsigned int BUFFER_SIZE,
     unsigned int array_size,
     unsigned int to_write_count)
 {
     unsigned int line_length = 0;
     char *to_write_dedup_ptr = to_write_dedup;
 
-    memset(to_write_dedup, '\0', BUFFER_SIZE);
-
     // quicksort the contents of to_write
-    quicksort(to_write, to_write_count);
-
-    line_length = strlen(to_write[0]);
-    memcpy(to_write_dedup_ptr, to_write[0], line_length);
-    to_write_dedup_ptr += line_length;
-
-    if (to_write_count == 1) {
-        return;
+    for (unsigned int i = 0; i < to_write_count; i++) {
+        to_write_ptr[i] = to_write[i];
     }
+
+    quicksort(to_write_ptr, to_write_count);
+
+    line_length = strlen(to_write_ptr[0]);
+    memcpy(to_write_dedup_ptr, to_write_ptr[0], line_length);
+    to_write_dedup_ptr += line_length;
 
     // loop over to_write and write all unique states to to_write_dedup
     for (unsigned int i = 1; i < to_write_count; i++) {
 
-        if (memcmp(to_write[i], to_write[i-1], array_size) != 0) {
-            line_length = strlen(to_write[i]);
-            memcpy(to_write_dedup_ptr, to_write[i], line_length);
-            // printf("KEEP %s", to_write[i]);
+        if (memcmp(to_write_ptr[i], to_write_ptr[i-1], array_size) != 0) {
+            line_length = strlen(to_write_ptr[i]);
+            memcpy(to_write_dedup_ptr, to_write_ptr[i], line_length);
+            // printf("KEEP %s", to_write_ptr[i]);
             to_write_dedup_ptr += line_length;
         // } else {
-        //     printf("SKIP %s", to_write[i]);
+        //     printf("SKIP %s", to_write_ptr[i]);
         }
     }
+
+    return (size_t) (to_write_dedup_ptr - to_write_dedup);
+}
+
+/*
+ * Deduplicate everything we have buffered and write it to the next output file. Returns
+ * the file_count to use for the file after this one.
+ */
+unsigned int
+write_to_write_buffer(
+    char to_write[][MAX_LINE_LENGTH],
+    char *to_write_dedup,
+    unsigned int array_size,
+    unsigned int to_write_count,
+    char *outputfile,
+    unsigned int file_count)
+{
+    char tmp_outputfile[MAX_FILENAME_SIZE];
+    FILE *fh_write = NULL;
+    size_t dedup_length = deduplicate_to_write_buffer(to_write, to_write_dedup, array_size, to_write_count);
+
+    snprintf(tmp_outputfile, MAX_FILENAME_SIZE, "%s-%07d", outputfile, file_count);
+    fh_write = fopen(tmp_outputfile, "w");
+
+    if (fh_write == NULL) {
+        printf("ERROR: could not open %s for writing\n", tmp_outputfile);
+        exit(1);
+    }
+
+    // fwrite with the length we just computed, so we do not have to zero out the
+    // hundreds of MB of to_write_dedup that fputs() would need to find its terminator
+    fwrite(to_write_dedup, 1, dedup_length, fh_write);
+    fclose(fh_write);
+    return file_count + 1;
 }
 
 
@@ -152,13 +219,12 @@ process_workq(
     unsigned int moves_count)
 {
     FILE *fh_read = NULL;
-    FILE *fh_write = NULL;
     char *move_ptr = NULL;
     char *prev_move_ptr = NULL;
 
     int steps_to_scramble_length = 0;
     unsigned int array_size = (cube_size * cube_size * 6) + 1; // add 1 for the leading "x"
-    size_t BUFFER_SIZE = MAX_LINE_LENGTH * BATCH_SIZE;
+    size_t BUFFER_SIZE = (size_t) MAX_LINE_LENGTH * BATCH_SIZE;
     unsigned int MEGABYTE = 1024 * 1024;
     unsigned int line_length = 0;
     unsigned int sizeof_array_size = sizeof(char) * array_size;
@@ -167,13 +233,12 @@ process_workq(
 
     unsigned char cube[array_size];
     unsigned char cube_tmp[array_size];
-    unsigned char line[512];
+    unsigned char line[MAX_WORKQ_LINE_LENGTH];
     unsigned char move_index = 0;
     unsigned char move_str_length = 0;
     unsigned char read_result = 0;
     unsigned char steps_to_scramble[MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH];
-    unsigned char *to_write_dedup = NULL;
-    char tmp_outputfile[MAX_FILENAME_SIZE];
+    char *to_write_dedup = NULL;
 
     char space_delim[] = " ";
 
@@ -181,11 +246,17 @@ process_workq(
     move_type prev_move = MOVE_NONE;
     to_write_dedup = malloc(BUFFER_SIZE);
 
-    memset(line, '\0', sizeof(char) * 512);
-    memset(to_write, '\0',  BUFFER_SIZE);
+    if (to_write_dedup == NULL) {
+        printf("ERROR: process_workq could not allocate %zu bytes\n", BUFFER_SIZE);
+        exit(1);
+    }
+
+    // line_compare() needs this to know how much of each line is the state
+    state_width = array_size;
+
+    memset(line, '\0', sizeof(line));
     memset(cube, 0, sizeof_array_size);
     memset(cube_tmp, 0, sizeof_array_size);
-    memset(tmp_outputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
     fh_read = fopen(inputfile, "r");
 
     if (fh_read == NULL) {
@@ -211,8 +282,20 @@ process_workq(
         strstrip(line);
         line_length = strlen(line);
 
-        if (line_length > MAX_LINE_LENGTH) {
-            printf("ERROR: line %d is %d bytes, max supported is %d bytes\n", line_number, line_length, MAX_LINE_LENGTH);
+        // we append a "\n" and a "\0" to every line we buffer, so we need room for both
+        if (line_length + 2 > MAX_LINE_LENGTH) {
+            printf("ERROR: line %d is %d bytes, max supported is %d bytes\n", line_number, line_length, MAX_LINE_LENGTH - 2);
+            printf("%s\n", line);
+            exit(1);
+        }
+
+        // Every line is "<state>:<moves>", so a missing ":" means our reads are not
+        // landing on line boundaries. That happens when --linewidth disagrees with the
+        // file we were handed, and without this check the misread bytes flow downstream
+        // and abort() somewhere far less obvious.
+        if (line_length <= array_size || line[array_size] != ':') {
+            printf("ERROR: line %d has no ':' at offset %d, is --linewidth %d correct?\n",
+                line_number, array_size, linewidth);
             printf("%s\n", line);
             exit(1);
         }
@@ -230,7 +313,18 @@ process_workq(
             // printf("line_length %d\n", line_length);
             // printf("steps_to_scramble_length %d\n", steps_to_scramble_length);
 
-            memset(steps_to_scramble, '\0', sizeof(char) * MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH);
+            // strtok() below needs a terminator, so the steps have to leave room for one.
+            // Without this check an oversized steps field is a silent stack smash, and it
+            // does not take a corrupt workq to get one: if --linewidth disagrees with the
+            // file then every fread() lands mid-line and steps_to_scramble_length is junk.
+            if ((size_t) steps_to_scramble_length >= sizeof(steps_to_scramble)) {
+                printf("ERROR: line %d has %d bytes of steps, max supported is %zu bytes\n",
+                    line_number, steps_to_scramble_length, sizeof(steps_to_scramble) - 1);
+                printf("%s\n", line);
+                exit(1);
+            }
+
+            memset(steps_to_scramble, '\0', sizeof(steps_to_scramble));
             memcpy(steps_to_scramble, &line[array_size+1], steps_to_scramble_length);
             move_ptr = strtok(steps_to_scramble, space_delim);
 
@@ -252,8 +346,16 @@ process_workq(
         } else if (steps_to_scramble_length == 0) {
             line[line_length] = '\n';
             line[line_length+1] = '\0';
-            memcpy(to_write[to_write_count], line, strlen(line));
+
+            // copy the '\0' too, so that to_write does not have to be pre-zeroed
+            memcpy(to_write[to_write_count], line, strlen(line) + 1);
             to_write_count++;
+
+            if (to_write_count == BATCH_SIZE) {
+                file_count = write_to_write_buffer(
+                    to_write, to_write_dedup, array_size, to_write_count, outputfile, file_count);
+                to_write_count = 0;
+            }
 
         } else {
             printf("ERROR: invalid steps_to_scramble_length %d, line_length %d, array_size %d",
@@ -319,34 +421,23 @@ process_workq(
                 line[line_length + 1 + move_str_length + 1] = '\0';
             }
 
-            // copy the "line" we just contructed to our to_write buffer
-            memcpy(to_write[to_write_count], line, strlen(line));
+            // copy the "line" we just contructed to our to_write buffer, including the
+            // '\0' so that to_write does not have to be pre-zeroed
+            memcpy(to_write[to_write_count], line, strlen(line) + 1);
             to_write_count++;
 
             if (to_write_count == BATCH_SIZE) {
-                deduplicate_to_write_buffer(to_write, to_write_dedup, BUFFER_SIZE, array_size, to_write_count);
-                sprintf(tmp_outputfile, "%s-%07d", outputfile, file_count);
-                fh_write = fopen(tmp_outputfile, "w");
-                fputs(to_write_dedup, fh_write);
-                fclose(fh_write);
-                fh_write = NULL;
-                memset(to_write, '\0', BUFFER_SIZE);
+                file_count = write_to_write_buffer(
+                    to_write, to_write_dedup, array_size, to_write_count, outputfile, file_count);
                 to_write_count = 0;
-                file_count++;
             }
         }
     }
 
     if (to_write_count) {
-        deduplicate_to_write_buffer(to_write, to_write_dedup, BUFFER_SIZE, array_size, to_write_count);
-        sprintf(tmp_outputfile, "%s-%07d", outputfile, file_count);
-        fh_write = fopen(tmp_outputfile, "w");
-        fputs(to_write_dedup, fh_write);
-        fclose(fh_write);
-        fh_write = NULL;
-        memset(to_write, '\0', BUFFER_SIZE);
+        file_count = write_to_write_buffer(
+            to_write, to_write_dedup, array_size, to_write_count, outputfile, file_count);
         to_write_count = 0;
-        file_count++;
     }
 
     fclose(fh_read);
@@ -413,6 +504,11 @@ main (int argc, char *argv[])
 
     if (linewidth == 0) {
         printf("ERROR: must specify --linewidth\n");
+        exit(1);
+    }
+
+    if (linewidth > MAX_WORKQ_LINE_LENGTH) {
+        printf("ERROR: --linewidth %d is larger than our %d byte line buffer\n", linewidth, MAX_WORKQ_LINE_LENGTH);
         exit(1);
     }
 
