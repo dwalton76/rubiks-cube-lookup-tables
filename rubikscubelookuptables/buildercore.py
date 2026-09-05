@@ -772,14 +772,57 @@ class BFS(object):
 
         self.time_in_crunching_workq += (dt.datetime.now() - start_time).total_seconds()
 
+    def _build_edges_pattern_workq(self, new_states_filename: str, build_workq: bool) -> int:
+        """
+        Build the workq for the next depth from the new states we just found and return
+        how many new states there were.
+
+        Only the edges-pattern tables need this. For everything else builder-find-new-states
+        writes the workq itself.
+        """
+        log.info("building next workq file begin")
+        start_time = dt.datetime.now()
+        workq_line_length = self.workq_line_length
+        new_states_count = int(subprocess.check_output(f"wc -l {new_states_filename}", shell=True).strip().split()[0])
+
+        if build_workq:
+            to_write = []
+            to_write_count = 0
+
+            with open(new_states_filename, "r") as fh_new_states, open(
+                self.workq_filename_next, "w"
+            ) as fh_workq_next:
+
+                for line in fh_new_states:
+                    pattern, state, steps_to_solve = line.rstrip().split(":", maxsplit=2)
+                    steps_to_scramble = " ".join(reverse_steps(steps_to_solve.split()))
+                    workq_line = f"{pattern}:{state}:{steps_to_scramble}"
+
+                    to_write.append(f"{workq_line:<{workq_line_length}}\n")
+                    to_write_count += 1
+                    self.workq_size += 1
+
+                    if to_write_count >= WRITE_BATCH_SIZE:
+                        fh_workq_next.write("".join(to_write))
+                        to_write = []
+                        to_write_count = 0
+
+                if to_write_count:
+                    fh_workq_next.write("".join(to_write))
+
+        else:
+            with open(self.workq_filename_next, "w"):
+                pass
+
+        self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
+        log.info("building next workq file end")
+        return new_states_count
+
     def _search_process_builder_crunch_workq_results(self, max_depth):
         """
         Process the results from all of the builder-crunch-workq processes
         and build a new workq_filename_next
         """
-        to_write = []
-        to_write_count = 0
-        workq_line_length = self.workq_line_length
         self.workq_size = 0
         sorted_results_filename = f"{self.workq_filename}.10-results"
 
@@ -795,8 +838,13 @@ class BFS(object):
             self._sort_merge_state_files(batch_files, sorted_results_filename)
             self.rm_files(batch_files)
 
-        # Use "builder-find-new-states.py" to find the entries in the .results file that are not
-        # in our current lookup-table.txt file. Save these in a .new_states file.
+        # Find the entries in the .results file that are not in our current lookup-table.txt
+        # file. Save these in a .20-new-states file.
+        new_states_filename = f"{self.workq_filename}.20-new-states"
+
+        # The last depth we explore does not need a workq for the depth after it
+        build_workq = max_depth is None or self.depth < max_depth
+
         if self.use_edges_pattern:
             log.info("keep-best-solution.py begin")
             start_time = dt.datetime.now()
@@ -806,85 +854,56 @@ class BFS(object):
 
             log.info("builder-find-new-edges-pattern-states.py begin")
             start_time = dt.datetime.now()
-            cmd = "nice ./rubikscubelookuptables/builder-find-new-edges-pattern-states.py %s %s %s.20-new-states" % (
+            cmd = "nice ./rubikscubelookuptables/builder-find-new-edges-pattern-states.py %s %s %s" % (
                 self.filename,
                 sorted_results_filename,
-                self.workq_filename,
+                new_states_filename,
             )
             log.info(cmd)
             subprocess.check_output(cmd, shell=True)
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-edges-pattern-states.py end")
+
+            os.remove(sorted_results_filename)
+            new_states_count = self._build_edges_pattern_workq(new_states_filename, build_workq)
+
         else:
-            log.info("builder-find-new-states.py begin")
+            log.info("builder-find-new-states begin")
             start_time = dt.datetime.now()
-            cmd = "nice ./rubikscubelookuptables/builder-find-new-states.py %s %s %s.20-new-states" % (
-                self.filename,
-                sorted_results_filename,
-                self.workq_filename,
-            )
-            log.info(cmd)
-            subprocess.check_output(cmd, shell=True)
+
+            # fmt: off
+            cmd = [
+                "nice",
+                "./rubikscubelookuptables/builder-find-new-states",
+                "--table", self.filename,
+                "--results", sorted_results_filename,
+                "--new-states", new_states_filename,
+            ]
+            # fmt: on
+
+            # builder-find-new-states writes the next workq for us. It already holds the
+            # moves that scrambled each new state, so letting it do both saves reading the
+            # new states back off disk and reversing every move sequence twice.
+            if build_workq:
+                cmd.extend(["--workq", self.workq_filename_next, "--linewidth", str(self.workq_line_length)])
+
+            log.info(" ".join(cmd))
+
+            # It reports the number of new states on stdout, which saves us a "wc -l" pass
+            new_states_count = int(subprocess.check_output(cmd))
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
-            log.info("builder-find-new-states.py end")
+            log.info("builder-find-new-states end")
 
-        os.remove(sorted_results_filename)
-        log.info("building next workq file begin")
-        start_time = dt.datetime.now()
-        new_states_count = int(
-            subprocess.check_output(f"wc -l {self.workq_filename}.20-new-states", shell=True).strip().split()[0]
-        )
+            os.remove(sorted_results_filename)
+
+            if build_workq:
+                self.workq_size = new_states_count
+            else:
+                # search() stops once the workq is empty
+                with open(self.workq_filename_next, "w"):
+                    pass
+
         log.info(f"there are {new_states_count:,} new states")
-        pruned = 0
-        kept = 0
-
-        if max_depth is None or self.depth < max_depth:
-            to_write = []
-            to_write_count = 0
-
-            with open(self.workq_filename + ".20-new-states", "r") as fh_new_states, open(
-                self.workq_filename_next, "w"
-            ) as fh_workq_next:
-
-                for line in fh_new_states:
-                    # Find the state and steps_to_solve
-                    if self.use_edges_pattern:
-                        pattern, state, steps_to_solve = line.rstrip().split(":", maxsplit=2)
-                    else:
-                        state, steps_to_solve = line.rstrip().split(":", maxsplit=1)
-
-                    # Add entries to the next workq file
-                    steps_to_scramble = " ".join(reverse_steps(steps_to_solve.split()))
-
-                    if self.use_edges_pattern:
-                        workq_line = f"{pattern}:{state}:{steps_to_scramble}"
-                    else:
-                        workq_line = f"{state}:{steps_to_scramble}"
-
-                    to_write.append(f"{workq_line:<{workq_line_length}}\n")
-                    to_write_count += 1
-                    self.workq_size += 1
-
-                    if to_write_count >= WRITE_BATCH_SIZE:
-                        fh_workq_next.write("".join(to_write))
-                        to_write = []
-                        to_write_count = 0
-
-                if to_write_count:
-                    fh_workq_next.write("".join(to_write))
-                    to_write = []
-                    to_write_count = 0
-
-        else:
-
-            with open(self.workq_filename_next, "w") as fh_workq_next:
-                pass
-
-        if pruned:
-            log.warning(f"kept {kept:,}, pruned {pruned:,}")
-
-        self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
-        log.info("building next workq file end")
 
         # Now merge the lookup-table.txt we built in the previous levels with the .new file
         # Both are sorted so we can use the --merge option
