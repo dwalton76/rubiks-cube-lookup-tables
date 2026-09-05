@@ -1292,12 +1292,12 @@ class BFS(object):
             max_line_length = self._convert_state_to_smaller_format()
             shutil.move(f"{self.filename}.small", self.filename)
         elif self.compact_squares:
-            # The table is already just the interesting squares, which is the same format
-            # cut | tr used to produce at the end. Measuring the width here is a read of
-            # that small file, not a conversion of a full-cube table.
+            # The table is already just the interesting squares, which is the format cut | tr
+            # used to produce at the end, so there is nothing to convert. Every line was written
+            # either by _search_setup or by builder-find-new-states, both of which told us how
+            # wide their longest line was, so there is nothing to measure either.
             log.info(f"{self}: states already compact ({len(self.compact_squares)} squares)")
-            output = subprocess.check_output(f"LC_ALL=C nice wc --max-line-length {self.filename}", shell=True)
-            max_line_length = int(output.decode("utf-8").strip().split()[0])
+            max_line_length = self.max_table_line_length
         else:
             # The leading "x" and the "."s only ever appear in the state, never in the
             # steps, so coreutils can do this entire pass for us. "tee" shows the converted
