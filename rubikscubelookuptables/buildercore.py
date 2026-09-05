@@ -1065,9 +1065,15 @@ class BFS(object):
         with open("histogram.txt", "a") as fh:
             fh.write("\n".join(report) + "\n")
 
-    def _convert_state_to_smaller_format(self):
+    def _convert_state_to_smaller_format(self) -> int:
+        """
+        Rewrite the table with the states in their smaller format and return the length of
+        the longest line we wrote. save() needs that to pad the file and measuring it here
+        saves a separate pass over a table that can run to tens of GB.
+        """
         to_write = []
         to_write_count = 0
+        max_line_length = 0
 
         with open(f"{self.filename}.small", "w") as fh_final:
             with open(self.filename, "r") as fh_read:
@@ -1080,6 +1086,7 @@ class BFS(object):
                         to_write_count += 1
 
                         if to_write_count >= WRITE_BATCH_SIZE:
+                            max_line_length = max(max_line_length, max(map(len, to_write)))
                             fh_final.write("\n".join(to_write) + "\n")
                             to_write = []
                             to_write_count = 0
@@ -1116,6 +1123,7 @@ class BFS(object):
                         to_write_count += 1
 
                         if to_write_count >= WRITE_BATCH_SIZE:
+                            max_line_length = max(max_line_length, max(map(len, to_write)))
                             fh_final.write("\n".join(to_write) + "\n")
                             to_write = []
                             to_write_count = 0
@@ -1134,16 +1142,20 @@ class BFS(object):
                         to_write_count += 1
 
                         if to_write_count >= WRITE_BATCH_SIZE:
+                            max_line_length = max(max_line_length, max(map(len, to_write)))
                             fh_final.write("\n".join(to_write))
                             fh_final.write("\n")
                             to_write = []
                             to_write_count = 0
 
             if to_write_count:
+                max_line_length = max(max_line_length, max(map(len, to_write)))
                 fh_final.write("\n".join(to_write))
                 fh_final.write("\n")
                 to_write = []
                 to_write_count = 0
+
+        return max_line_length
 
     def save(self):
         start_time = dt.datetime.now()
@@ -1154,21 +1166,36 @@ class BFS(object):
         log.info(f"{self}: convert state to smaller format, file {self.filename}")
 
         if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
-            self._convert_state_to_smaller_format()
+            max_line_length = self._convert_state_to_smaller_format()
         else:
             # The leading "x" and the "."s only ever appear in the state, never in the
-            # steps, so coreutils can do this entire pass for us
-            subprocess.check_output(
-                f"export LC_ALL=C; nice cut -c2- {self.filename} | nice tr -d '.' > {self.filename}.small",
+            # steps, so coreutils can do this entire pass for us. "tee" shows the converted
+            # lines to wc on their way past, so we learn the width to pad to here rather
+            # than making pad-lines.py read the whole table again just to find it.
+            #
+            # pipefail matters here: without it a failure in cut or tr would be hidden by
+            # wc exiting 0, and we would pad the table to whatever width the partial output
+            # happened to have.
+            output = subprocess.check_output(
+                "set -o pipefail; export LC_ALL=C;"
+                f" nice cut -c2- {self.filename} | nice tr -d '.'"
+                f" | tee {self.filename}.small | nice wc --max-line-length",
                 shell=True,
+                executable="/bin/bash",
             )
+            max_line_length = int(output.decode("utf-8").strip().split()[0])
+
+        # Padding to 0 would truncate every line in the table. An empty conversion is a
+        # much more likely explanation than a table with nothing in it.
+        if not max_line_length:
+            raise Exception(f"{self}: converting {self.filename} produced a max line length of 0")
 
         shutil.move(f"{self.filename}.small", self.filename)
         files_to_pad = (self.filename,)
 
         for filename in files_to_pad:
-            log.info(f"{self}: pad the file")
-            subprocess.check_output(f"nice ./utils/pad-lines {filename}", shell=True)
+            log.info(f"{self}: pad the file to {max_line_length} bytes")
+            subprocess.check_output(f"nice ./utils/pad-lines {filename} --width {max_line_length}", shell=True)
 
             # Check to see if the file is already sorted before we spend the cycles to sort it
             try:
