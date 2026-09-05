@@ -8,7 +8,7 @@ import logging
 import shutil
 
 # rubiks cube libraries
-from rubikscubelookuptables.buildercore import FAST_TMP, SLOW_TMP
+from rubikscubelookuptables.buildercore import LOOKUP_TABLE_DIR, TMPDIR
 
 
 def get_class(kls):
@@ -53,17 +53,13 @@ parser.add_argument("--code-gen", default=False, action="store_true", help="Prin
 args = parser.parse_args()
 builder = get_class(args.type)()
 
-if SLOW_TMP == FAST_TMP:
-    if not FAST_TMP.exists():
-        FAST_TMP.mkdir(parents=True, exist_ok=False)
-else:
-    if FAST_TMP:
-        if FAST_TMP.exists():
-            shutil.rmtree(FAST_TMP)
-        FAST_TMP.mkdir(parents=True, exist_ok=False)
+# Start every build with an empty tmp directory
+if TMPDIR.exists():
+    shutil.rmtree(TMPDIR)
+TMPDIR.mkdir(parents=True, exist_ok=False)
 
-    if not SLOW_TMP.exists():
-        SLOW_TMP.mkdir(parents=True, exist_ok=False)
+if not LOOKUP_TABLE_DIR.exists():
+    LOOKUP_TABLE_DIR.mkdir(parents=True, exist_ok=False)
 
 log.info("")
 log.info("")

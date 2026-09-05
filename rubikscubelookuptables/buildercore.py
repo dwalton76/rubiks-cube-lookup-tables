@@ -56,8 +56,8 @@ supported_sizes = ("2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7")
 
 # 10 million
 WRITE_BATCH_SIZE = 10000000
-SLOW_TMP = Path("lookup-tables")
-FAST_TMP = Path("./tmp/")
+LOOKUP_TABLE_DIR = Path("lookup-tables")
+TMPDIR = Path("./tmp/")
 
 
 def get_line_number_splits(lines: int, cores: int) -> Tuple:
@@ -359,12 +359,7 @@ class BFS(object):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
-
-        if SLOW_TMP:
-            self.filename = str(SLOW_TMP / filename)
-        else:
-            self.filename = filename
-
+        self.filename = str(LOOKUP_TABLE_DIR / filename)
         self.store_as_hex = store_as_hex
         self.starting_cubes = []
         self.use_cost_only = use_cost_only
@@ -489,6 +484,8 @@ class BFS(object):
         log.info(f"legal moves   : {' '.join(self.legal_moves)}")
         self.bucketcount = 0
         self.size_number = int(self.size[0])
+        self.starting_state_count = 0
+        self.stats = {0: 0}
         self.workq_line_length = self.get_workq_line_length()
 
         self.time_in_sort = 0
@@ -571,7 +568,7 @@ class BFS(object):
         Prep work needed before we start our BFS
         """
         # We will write the workq to a file in a local tmp directory
-        self.workq_filename = os.path.join(FAST_TMP, f"{self}.workq.txt")
+        self.workq_filename = os.path.join(TMPDIR, f"{self}.workq.txt")
         self.workq_filename_next = self.workq_filename + ".next"
         self.workq_size = 0
         self.depth = 1
@@ -630,6 +627,7 @@ class BFS(object):
                 fh_workq.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
                 self.workq_size += 1
 
+        self.starting_state_count = self.workq_size
         self.starting_cubes = []
 
     def _sort_merge_state_files(self, files_to_sort, sorted_results_filename):
@@ -637,7 +635,7 @@ class BFS(object):
         start_time = dt.datetime.now()
 
         # create a file with the list of the filenames to sort
-        files_to_sort_filename = f"{FAST_TMP}/files_to_sort.txt"
+        files_to_sort_filename = f"{TMPDIR}/files_to_sort.txt"
         with open(files_to_sort_filename, "w") as fh:
             fh.write("\0".join(files_to_sort))
 
@@ -659,7 +657,7 @@ class BFS(object):
 
         cmd = (
             "LC_ALL=C nice sort --batch-size=1000 --parallel=%d --buffer-size=48G --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
-            % (self.cores, state_width, FAST_TMP, sorted_results_filename, files_to_sort_filename)
+            % (self.cores, state_width, TMPDIR, sorted_results_filename, files_to_sort_filename)
         )
         # log.info(cmd)
 
@@ -768,7 +766,7 @@ class BFS(object):
             log.info(f"builder-crunch-workq end batch {batch_index + 1}/{batch_count}")
 
             sorted_results_filename = f"{self.filename}-batch-{batch_index}"
-            core_files = sorted(glob.glob(f"{FAST_TMP}/*core*"))
+            core_files = sorted(glob.glob(f"{TMPDIR}/*core*"))
             self._sort_merge_state_files(core_files, sorted_results_filename)
             self.rm_files(core_files)
 
@@ -895,7 +893,7 @@ class BFS(object):
             start_time = dt.datetime.now()
             subprocess.check_output(
                 "LC_ALL=C nice sort --parallel=%d --buffer-size=48G --merge --temporary-directory=%s --output %s.30-final %s %s.20-new-states"
-                % (self.cores, FAST_TMP, self.workq_filename, self.filename, self.workq_filename),
+                % (self.cores, TMPDIR, self.workq_filename, self.filename, self.workq_filename),
                 shell=True,
             )
             self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
@@ -1001,16 +999,52 @@ class BFS(object):
 
         shutil.move(f"{self.filename}.starting-states", self.filename)
 
-    def save(self):
-        start_time = dt.datetime.now()
+    def write_histogram(self, filename: str) -> None:
+        """
+        Append the report that utils/print-histogram.py produces, but build it from the
+        per-depth counts that search() already collected instead of making another full
+        pass over a table that can run to billions of lines.
+        """
+        stats = {depth: count for (depth, count) in self.stats.items() if count}
 
+        # search() only counts the states it discovered. The starting states went
+        # straight into the table with an empty solution.
+        if self.starting_state_count:
+            stats[0] = self.starting_state_count
+
+        linecount = sum(stats.values())
+        report = ["", f"    {filename}", "    " + "=" * len(filename)]
+        prev = None
+        total_steps = 0
+
+        for depth in sorted(stats.keys()):
+            count = stats[depth]
+
+            if prev:
+                delta = float(count / prev)
+            else:
+                delta = float(0)
+
+            report.append(
+                "    {} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(
+                    depth, count, int(float(count / linecount) * 100), delta
+                )
+            )
+            total_steps += depth * count
+            prev = count
+
+        report.append(f"\n    Total: {linecount:,} entries")
+
+        if linecount:
+            report.append(f"    Average: {float(total_steps / linecount):.2f} moves\n\n")
+
+        with open("histogram.txt", "a") as fh:
+            fh.write("\n".join(report) + "\n")
+
+    def _convert_state_to_smaller_format(self):
         to_write = []
         to_write_count = 0
 
-        # Convert the states in our lookup-table to their smaller format...basically
-        # remove all of the '.'s and if convert to hex (if requested).
-        log.info(f"{self}: save() begin")
-        log.info(f"{self}: convert state to smaller format, file {self.filename}")
         with open(f"{self.filename}.small", "w") as fh_final:
             with open(self.filename, "r") as fh_read:
                 if self.use_edges_pattern:
@@ -1087,6 +1121,24 @@ class BFS(object):
                 to_write = []
                 to_write_count = 0
 
+    def save(self):
+        start_time = dt.datetime.now()
+
+        # Convert the states in our lookup-table to their smaller format...basically
+        # remove all of the '.'s and if convert to hex (if requested).
+        log.info(f"{self}: save() begin")
+        log.info(f"{self}: convert state to smaller format, file {self.filename}")
+
+        if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
+            self._convert_state_to_smaller_format()
+        else:
+            # The leading "x" and the "."s only ever appear in the state, never in the
+            # steps, so coreutils can do this entire pass for us
+            subprocess.check_output(
+                f"export LC_ALL=C; nice cut -c2- {self.filename} | nice tr -d '.' > {self.filename}.small",
+                shell=True,
+            )
+
         shutil.move(f"{self.filename}.small", self.filename)
         files_to_pad = (self.filename,)
 
@@ -1102,12 +1154,12 @@ class BFS(object):
                 log.info(f"{self}: sort the file")
                 subprocess.check_output(
                     "LC_ALL=C nice sort --parallel=%d --buffer-size=48G --temporary-directory=%s --output=%s %s"
-                    % (self.cores, FAST_TMP, filename, filename),
+                    % (self.cores, TMPDIR, filename, filename),
                     shell=True,
                 )
 
             log.info(f"{self}: build histogram")
-            subprocess.check_output(f"nice ./utils/print-histogram.py {filename} >> histogram.txt", shell=True)
+            self.write_histogram(filename)
 
             if self.use_cost_only:
                 log.info(f"{self}: build cost-only copy of file")

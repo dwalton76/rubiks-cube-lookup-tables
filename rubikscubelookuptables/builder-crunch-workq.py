@@ -6,7 +6,7 @@ import logging
 import subprocess
 
 # rubiks cube libraries
-from rubikscubelookuptables.buildercore import WRITE_BATCH_SIZE, supported_sizes
+from rubikscubelookuptables.buildercore import TMPDIR, WRITE_BATCH_SIZE, supported_sizes
 from rubikscubennnsolver.LookupTable import steps_on_same_face_and_layer
 from rubikscubennnsolver.RubiksCube222 import rotate_222
 from rubikscubennnsolver.RubiksCube333 import rotate_333
@@ -234,8 +234,8 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 if lines_since_last_merge >= 100000000:
                     # log.info("sort --merge all of the files created so far")
                     subprocess.check_output(
-                        "LC_ALL=C nice sort --merge --buffer-size=4G --temporary-directory=./tmp/ --output %s.all %s.*"
-                        % (outputfilebase, outputfilebase),
+                        "LC_ALL=C nice sort --merge --buffer-size=4G --temporary-directory=%s --output %s.all %s.*"
+                        % (TMPDIR, outputfilebase, outputfilebase),
                         shell=True,
                     )
                     # log.info("rm %s.0*" % outputfilebase)
