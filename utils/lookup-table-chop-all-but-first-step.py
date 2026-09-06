@@ -29,4 +29,4 @@ with open(filename, "r") as fh_read:
                 print(count)
 
 shutil.move(filename_small, filename)
-subprocess.check_output(f"./utils/pad-lines.py {filename}", shell=True)
+subprocess.check_output(f"./utils/pad-lines {filename}", shell=True)

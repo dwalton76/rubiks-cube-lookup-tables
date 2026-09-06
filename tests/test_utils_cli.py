@@ -64,7 +64,6 @@ class ScriptInventoryTests(unittest.TestCase):
                 "lookup-table-convert-steps-to-step-count.py",
                 "lookup-table-convert-to-cost-only.py",
                 "lookup-table-convert-to-dict.py",
-                "pad-lines.py",
                 "print-histogram.py",
                 "print-lookup-table-states.py",
                 "print-starting-states.py",

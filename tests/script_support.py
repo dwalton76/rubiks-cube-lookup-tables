@@ -21,7 +21,7 @@ from types import ModuleType
 from typing import Iterable, Sequence
 
 # rubiks cube libraries
-from tests.builder_support import REPO_ROOT, builder_environment, ensure_importable
+from tests.builder_support import PAD_LINES, REPO_ROOT, builder_environment, ensure_importable, ensure_pad_lines
 
 UTILS = REPO_ROOT / "utils"
 LOOKUP_TABLES = REPO_ROOT / "rubikscubelookuptables"
@@ -77,7 +77,7 @@ def run_utils_script(
 ) -> subprocess.CompletedProcess:
     """Run a utils script the way the Makefile does, from the repo root.
 
-    The scripts shell out to each other with paths like ./utils/pad-lines.py, so the
+    The scripts shell out to each other with paths like ./utils/keep-best-solution.py, so the
     working directory defaults to the repo root. They are invoked through the current
     interpreter because several of them have no shebang line.
     """
@@ -93,6 +93,31 @@ def run_utils_script(
     if expect_success and completed.returncode:
         raise AssertionError(
             f"utils/{name} {' '.join(arguments)} exited {completed.returncode}\n"
+            f"stdout:\n{completed.stdout}\nstderr:\n{completed.stderr}"
+        )
+
+    return completed
+
+
+def run_pad_lines(
+    *arguments: str,
+    expect_success: bool = True,
+    cwd: Path = REPO_ROOT,
+) -> subprocess.CompletedProcess:
+    """Run the C pad-lines helper the way save() and the keep-* scripts do."""
+    ensure_pad_lines()
+    completed = subprocess.run(
+        [str(PAD_LINES), *arguments],
+        cwd=cwd,
+        env=builder_environment(),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    if expect_success and completed.returncode:
+        raise AssertionError(
+            f"utils/pad-lines {' '.join(arguments)} exited {completed.returncode}\n"
             f"stdout:\n{completed.stdout}\nstderr:\n{completed.stderr}"
         )
 
