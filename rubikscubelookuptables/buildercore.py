@@ -1092,7 +1092,7 @@ class BFS(object):
 
         for filename in files_to_pad:
             log.info(f"{self}: pad the file")
-            subprocess.check_output(f"nice ./utils/pad-lines.py {filename}", shell=True)
+            subprocess.check_output(f"nice ./utils/pad-lines {filename}", shell=True)
 
             # Check to see if the file is already sorted before we spend the cycles to sort it
             try:

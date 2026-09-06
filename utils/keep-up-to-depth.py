@@ -31,4 +31,4 @@ with open(filename_new, "w") as fh_new:
             if line_number % 1000000 == 0:
                 print("WRITE: %d" % line_number)
 
-subprocess.check_output(f"./utils/pad-lines.py {filename_new}", shell=True)
+subprocess.check_output(f"./utils/pad-lines {filename_new}", shell=True)

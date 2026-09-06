@@ -6,8 +6,9 @@ clean:
 
 init: clean
 	export PYTHONPATH=/home/dwalton76/rubiks-cube-NxNxN-solver/:/home/dwalton76/rubiks-cube-lookup-tables/
-	rm -rf venv rubikscubelookuptables/builder-crunch-workq
+	rm -rf venv rubikscubelookuptables/builder-crunch-workq utils/pad-lines
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
+	gcc -O3 -o utils/pad-lines utils/pad-lines.c
 	python3 -m venv venv
 	@./venv/bin/python3 -m pip install -U pip==26.2.1
 	@./venv/bin/python3 -m pip install -r requirements.dev.txt

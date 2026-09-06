@@ -27,6 +27,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 MAKEFILE = REPO_ROOT / "Makefile"
 BUILDER_UI = REPO_ROOT / "utils" / "builderui.py"
 CRUNCHER = REPO_ROOT / "rubikscubelookuptables" / "builder-crunch-workq"
+PAD_LINES = REPO_ROOT / "utils" / "pad-lines"
 BASELINES_PATH = Path(__file__).with_name("builder_table_baselines.json")
 BUILDER_CALL = re.compile(r"^\s*\./utils/builderui\.py\s+(Build\w+)(?:\s+.*)?$")
 
@@ -245,6 +246,24 @@ def ensure_cruncher() -> None:
         raise RuntimeError(f"could not build {CRUNCHER}:\n{result.stdout}{result.stderr}")
 
 
+def ensure_pad_lines() -> None:
+    """Build the C pad-lines helper that save() and a few utils scripts call."""
+    source = REPO_ROOT / "utils" / "pad-lines.c"
+
+    if PAD_LINES.exists() and PAD_LINES.stat().st_mtime >= source.stat().st_mtime:
+        return
+
+    result = subprocess.run(
+        ["gcc", "-O3", "-o", str(PAD_LINES), str(source)],
+        cwd=REPO_ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode:
+        raise RuntimeError(f"could not build {PAD_LINES}:\n{result.stdout}{result.stderr}")
+
+
 def build_table(
     name: str,
     depth: int = BASE_DEPTH,
@@ -257,6 +276,7 @@ def build_table(
     """
     ensure_starting_state_modules()
     ensure_cruncher()
+    ensure_pad_lines()
 
     # builderui spawns crunchers of its own, so give the build its own process group
     # and signal the whole group. Killing only builderui would orphan those children
