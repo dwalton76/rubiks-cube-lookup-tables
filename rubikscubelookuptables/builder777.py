@@ -89,6 +89,7 @@ class StartingStates777Phase2(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -206,6 +207,7 @@ class Build777Phase4TCenters(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -265,6 +267,7 @@ class Build777Phase4XCenters(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -325,6 +328,7 @@ class Build777Phase4Centers(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -385,6 +389,7 @@ class Build777Phase4LeftOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -444,6 +449,7 @@ class Build777Phase4RightOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -503,6 +509,7 @@ class Build777Phase4MiddleOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -564,6 +571,7 @@ class StartingStates777Phase4(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -659,6 +667,7 @@ class StartingStates777Phase4LeftRightOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -754,6 +763,7 @@ class StartingStates777Phase4LeftMiddleOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -852,6 +862,7 @@ class Build777Phase5LeftOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -913,6 +924,7 @@ class Build777Phase5RightOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -974,6 +986,7 @@ class Build777Phase5MiddleOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -1035,6 +1048,7 @@ class StartingStates777Phase5(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -1152,6 +1166,7 @@ class StartingStates777Phase5LeftRightOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -1249,6 +1264,7 @@ class StartingStates777Phase5LeftMiddleOblique(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -1373,6 +1389,7 @@ class StartingStates777Step41(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -1695,6 +1712,7 @@ class Build777Step41(BFS):
                     "ULFRBD",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -1753,6 +1771,7 @@ class StartingStates777Step42(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -1931,6 +1950,7 @@ class Build777Step42(BFS):
                     "ULFRBD",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -1989,6 +2009,7 @@ class StartingStates777Step43(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -2167,6 +2188,7 @@ class Build777Step43(BFS):
                     "ULFRBD",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -2225,6 +2247,7 @@ class StartingStates777Step44(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -2403,6 +2426,7 @@ class Build777Step44(BFS):
                     "ULFRBD",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -2491,6 +2515,7 @@ class StartingStates777Step51(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -2817,6 +2842,7 @@ class Build777Step51(BFS):
                     "ULFRBD",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -2875,6 +2901,7 @@ class StartingStates777Step52(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -3057,6 +3084,7 @@ class Build777Step52(BFS):
                     "ULFRBD",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -3115,6 +3143,7 @@ class StartingStates777Step53(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -3297,6 +3326,7 @@ class Build777Step53(BFS):
                     "ULFRBD",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -3355,6 +3385,7 @@ class StartingStates777Step54(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -3537,6 +3568,7 @@ class Build777Step54(BFS):
                     "ULFRBD",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -3631,6 +3663,7 @@ class Build777Step55(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -3730,6 +3763,7 @@ class Build777Step61(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -3826,6 +3860,7 @@ class Build777Step62(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -3922,6 +3957,7 @@ class Build777Step65(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -4018,6 +4054,7 @@ class Build777Step66(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -4090,6 +4127,7 @@ class Build777Step71(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -4159,6 +4197,7 @@ class Build777Step72(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -4228,6 +4267,7 @@ class Build777Step75(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -4297,5 +4337,6 @@ class Build777Step76(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on

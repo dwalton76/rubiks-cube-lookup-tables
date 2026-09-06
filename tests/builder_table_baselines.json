@@ -489,6 +489,32 @@
     "states_md5": "57190ae626c41f1d96493e29ad643be9",
     "depth": 4
   },
+  "Build555UDCenterStageTCenter": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step13-UD-centers-stage-t-center-only.txt",
+    "lines": 10597,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 66,
+      "3": 900,
+      "4": 9626
+    },
+    "states_md5": "9b969710207101ee4d16192b4378dce6",
+    "depth": 4
+  },
+  "Build555UDCenterStageXCenter": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step14-UD-centers-stage-x-center-only.txt",
+    "lines": 15409,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 82,
+      "3": 1206,
+      "4": 14116
+    },
+    "states_md5": "330fa8097e8c27eca0c47d85b405df08",
+    "depth": 4
+  },
   "Build666FBInnerXCenterAndObliqueEdges": {
     "filename": "lookup-tables/lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.txt",
     "lines": 1582,

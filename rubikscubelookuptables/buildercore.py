@@ -380,6 +380,22 @@ class BFS(object):
         self.lt_centers_max_depth = None
         self.use_c = use_c
 
+        # builder-crunch-workq.c only applies legal turns to a full cube state.
+        # The Python cruncher also recolors edges-pattern keys, and it flips a
+        # handful of stickers after L/R (or F/B) for a few 3x3x3/5x5x5 tables.
+        if self.use_c:
+            assert not self.use_edges_pattern, f"{name} cannot use the C cruncher with use_edges_pattern"
+            python_only_markers = (
+                "3x3x3-phase1",
+                "3x3x3-phase2",
+                "5x5x5-LR-center-stage-EO-inner-orbit",
+                "5x5x5-LR-center-stage-EO-both-orbits",
+                "5x5x5-EO-inner-orbit",
+                "5x5x5-EO-both-orbits",
+            )
+            for marker in python_only_markers:
+                assert marker not in name, f"{name} needs the Python cruncher ({marker})"
+
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
         assert self.size in supported_sizes, f"{self.size} not supported"

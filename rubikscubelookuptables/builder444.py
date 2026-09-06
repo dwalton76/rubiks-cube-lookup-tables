@@ -135,6 +135,7 @@ class StartingStates444LCentersStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -250,6 +251,7 @@ class StartingStates444HighLowEdges(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -283,6 +285,7 @@ class StartingStates444HighLowEdgesCenters(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -345,6 +348,7 @@ class Build444HighLowEdgesCenters(BFS):
                 ('.....UU..UU..........RR..LL..........xx..xx..........RR..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
                 ('.....UU..UU..........RR..RR..........xx..xx..........LL..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -375,6 +379,7 @@ class Build444HighLowEdges(BFS):
                 ('.UD.DUUUUUUD.DU..DU.DRRUURRD.UD..DU.UxxDDxxU.UD..DU.DLLUULLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
             ),
             use_centers_then_edges=True,
+            use_c=True,
         )
         # fmt: on
 
@@ -430,6 +435,7 @@ class StartingStates444Reduce333FirstTwoCenters(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -482,7 +488,8 @@ class Build444Reduce333FirstTwoCenters(BFS):
                 ('.....................RR..RR..........FB..FB..........LL..LL..........FB..FB.....................', 'ULFRBD'),
                 ('.....................RR..RR..........FF..FF..........LL..LL..........BB..BB.....................', 'ULFRBD'),
             ),
-            # fmt: on
+            # fmt: on,
+            use_c=True,
         )
 
 
@@ -566,6 +573,7 @@ class Build444Reduce333Centers(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
