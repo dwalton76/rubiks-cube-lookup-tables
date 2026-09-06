@@ -6,6 +6,8 @@
  * and writes the updated table plus next workq without a .10-results file.
  */
 
+#define _FILE_OFFSET_BITS 64
+
 #include <errno.h>
 #include <stdarg.h>
 #include <stdint.h>
@@ -13,13 +15,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/resource.h>
+#include <sys/types.h>
 
 #define MAX_LINE_LENGTH 4096
 #define MAX_MOVES 64
 #define DEFAULT_BUFFER_SIZE ((size_t) 1024 * 1024 * 1024)
 #define MIN_INPUT_BUFFER ((size_t) 64 * 1024)
 #define MAX_INPUT_BUFFER ((size_t) 8 * 1024 * 1024)
-#define OUTPUT_BUFFER_SIZE ((size_t) 4 * 1024 * 1024)
+#define OUTPUT_BUFFER_SIZE ((size_t) 32 * 1024 * 1024)
+#define DEFAULT_OFFSET_STRIDE 65536
 
 typedef enum {
     FORMAT_REGULAR,
@@ -602,56 +606,6 @@ reverse_steps(const char *steps, unsigned int steps_length, char *result)
     return (unsigned int) (cursor - result);
 }
 
-static int
-read_table(
-    FILE *fh,
-    const char *filename,
-    record_format format,
-    record *value,
-    char *previous_key,
-    unsigned int *previous_key_length,
-    int *have_previous,
-    unsigned long *line_number)
-{
-    if (fgets(value->line, sizeof(value->line), fh) == NULL) {
-        if (ferror(fh)) {
-            die("could not read table %s", filename);
-        }
-        return 0;
-    }
-    (*line_number)++;
-    unsigned int raw_length = (unsigned int) strlen(value->line);
-    if (raw_length == sizeof(value->line) - 1 &&
-        value->line[raw_length - 1] != '\n' &&
-        !feof(fh)) {
-        die("line %lu in table %s exceeds %d bytes",
-            *line_number, filename, MAX_LINE_LENGTH - 1);
-    }
-    value->length = strip_line(value->line);
-    parse_record(
-        value->line,
-        value->length,
-        format,
-        &value->merge_key_length,
-        &value->join_key_length,
-        &value->moves_offset,
-        filename,
-        *line_number);
-
-    if (*have_previous &&
-        key_compare(
-            previous_key,
-            *previous_key_length,
-            value->line,
-            value->join_key_length) >= 0) {
-        die("table %s is not strictly sorted/unique at line %lu", filename, *line_number);
-    }
-    memcpy(previous_key, value->line, value->join_key_length);
-    *previous_key_length = value->join_key_length;
-    *have_previous = 1;
-    return 1;
-}
-
 static unsigned int
 write_new_table_line(FILE *fh, const char *filename, const record *value, char *out)
 {
@@ -667,21 +621,38 @@ write_new_table_line(FILE *fh, const char *filename, const record *value, char *
 }
 
 static void
-write_workq(
-    FILE *fh,
+write_offsets_file(
     const char *filename,
-    const record *value,
-    unsigned int linewidth,
-    char *out)
+    unsigned int stride,
+    unsigned long line_count,
+    const off_t *offsets,
+    size_t offset_count)
 {
-    if (value->length > linewidth) {
-        die("workq line '%s' is %u bytes, --linewidth is %u",
-            value->line, value->length, linewidth);
+    FILE *fh = fopen(filename, "w");
+    if (fh == NULL) {
+        die("could not open %s for writing: %s", filename, strerror(errno));
     }
-    memcpy(out, value->line, value->length);
-    memset(out + value->length, ' ', linewidth - value->length);
-    out[linewidth] = '\n';
-    write_all(fh, out, linewidth + 1, filename);
+    fprintf(fh, "%u %lu\n", stride, line_count);
+    for (size_t i = 0; i < offset_count; i++) {
+        fprintf(fh, "%lld\n", (long long) offsets[i]);
+    }
+    if (fclose(fh)) {
+        die("could not finish %s", filename);
+    }
+}
+
+static void
+record_offset(off_t **offsets, size_t *count, size_t *capacity, off_t value)
+{
+    if (*count == *capacity) {
+        *capacity = *capacity ? *capacity * 2 : 64;
+        off_t *grown = realloc(*offsets, *capacity * sizeof(off_t));
+        if (grown == NULL) {
+            die("could not grow offset index");
+        }
+        *offsets = grown;
+    }
+    (*offsets)[(*count)++] = value;
 }
 
 static void
@@ -702,113 +673,96 @@ run_merge_only(merge_state *state, const char *output_filename)
 }
 
 static void
-run_process(
-    merge_state *state,
-    record_format format,
-    const char *table_filename,
+run_layer(
+    merge_state *shards,
+    merge_state *tables,
     const char *output_filename,
-    const char *workq_filename,
-    unsigned int linewidth)
+    const char *offsets_filename,
+    unsigned int offset_stride)
 {
-    FILE *table = fopen(table_filename, "r");
-    if (table == NULL && errno != ENOENT) {
-        die("could not open table %s: %s", table_filename, strerror(errno));
-    }
-
     char *output_buffer = NULL;
-    char *workq_buffer = NULL;
     FILE *output = open_output(output_filename, &output_buffer);
-    FILE *workq = workq_filename ? open_output(workq_filename, &workq_buffer) : NULL;
-    char *out = xmalloc(
-        linewidth + 1 > MAX_LINE_LENGTH * 2
-            ? linewidth + 1
-            : MAX_LINE_LENGTH * 2);
-
-    record table_value;
+    char reverse_buf[MAX_LINE_LENGTH];
+    record seen;
     record candidate;
-    char previous_table_key[MAX_LINE_LENGTH];
-    unsigned int previous_table_key_length = 0;
-    int have_previous_table_key = 0;
-    unsigned long table_line_number = 0;
-    int have_table = table ? read_table(
-        table,
-        table_filename,
-        format,
-        &table_value,
-        previous_table_key,
-        &previous_table_key_length,
-        &have_previous_table_key,
-        &table_line_number) : 0;
-    int have_candidate = next_join_record(state, &candidate);
+    int have_seen = next_join_record(tables, &seen);
+    int have_candidate = next_join_record(shards, &candidate);
     unsigned long new_count = 0;
-    unsigned int max_new_length = 0;
+    unsigned int max_reversed_length = 0;
+    off_t *offsets = NULL;
+    size_t offset_count = 0;
+    size_t offset_capacity = 0;
 
-    while (have_table || have_candidate) {
-        int compare;
-        if (!have_candidate) {
-            compare = -1;
-        } else if (!have_table) {
-            compare = 1;
-        } else {
+    while (have_candidate) {
+        int compare = 1;
+        if (have_seen) {
             compare = key_compare(
-                table_value.line,
-                table_value.join_key_length,
+                seen.line,
+                seen.join_key_length,
                 candidate.line,
                 candidate.join_key_length);
         }
 
         if (compare < 0) {
-            write_all(output, table_value.line, table_value.length, output_filename);
-            write_all(output, "\n", 1, output_filename);
-            have_table = read_table(
-                table,
-                table_filename,
-                format,
-                &table_value,
-                previous_table_key,
-                &previous_table_key_length,
-                &have_previous_table_key,
-                &table_line_number);
+            have_seen = next_join_record(tables, &seen);
         } else if (compare == 0) {
-            write_all(output, table_value.line, table_value.length, output_filename);
-            write_all(output, "\n", 1, output_filename);
-            have_table = read_table(
-                table,
-                table_filename,
-                format,
-                &table_value,
-                previous_table_key,
-                &previous_table_key_length,
-                &have_previous_table_key,
-                &table_line_number);
-            have_candidate = next_join_record(state, &candidate);
+            have_seen = next_join_record(tables, &seen);
+            have_candidate = next_join_record(shards, &candidate);
         } else {
-            unsigned int new_length = write_new_table_line(
-                output, output_filename, &candidate, out);
-            if (new_length > max_new_length) {
-                max_new_length = new_length;
+            if (offsets_filename && new_count % offset_stride == 0) {
+                record_offset(&offsets, &offset_count, &offset_capacity, ftello(output));
             }
-            if (workq) {
-                write_workq(workq, workq_filename, &candidate, linewidth, out);
+            write_all(output, candidate.line, candidate.length, output_filename);
+            write_all(output, "\n", 1, output_filename);
+
+            unsigned int reversed = candidate.moves_offset + reverse_steps(
+                candidate.line + candidate.moves_offset,
+                candidate.length - candidate.moves_offset,
+                reverse_buf);
+            if (reversed > max_reversed_length) {
+                max_reversed_length = reversed;
             }
             new_count++;
-            have_candidate = next_join_record(state, &candidate);
+            have_candidate = next_join_record(shards, &candidate);
         }
     }
 
-    if (table && fclose(table)) {
-        die("could not close table %s", table_filename);
-    }
     if (fclose(output)) {
-        die("could not finish output table %s", output_filename);
-    }
-    if (workq && fclose(workq)) {
-        die("could not finish workq %s", workq_filename);
+        die("could not finish layer %s", output_filename);
     }
     free(output_buffer);
-    free(workq_buffer);
+    if (offsets_filename) {
+        write_offsets_file(
+            offsets_filename, offset_stride, new_count, offsets, offset_count);
+    }
+    free(offsets);
+    printf("%lu %u\n", new_count, max_reversed_length);
+}
+
+static void
+run_finalize(merge_state *state, const char *output_filename)
+{
+    char *output_buffer = NULL;
+    FILE *output = open_output(output_filename, &output_buffer);
+    char *out = xmalloc(MAX_LINE_LENGTH * 2);
+    record value;
+    unsigned long count = 0;
+    unsigned int max_length = 0;
+
+    while (next_merge_record(state, &value)) {
+        unsigned int length = write_new_table_line(output, output_filename, &value, out);
+        if (length > max_length) {
+            max_length = length;
+        }
+        count++;
+    }
+
+    if (fclose(output)) {
+        die("could not finish %s", output_filename);
+    }
+    free(output_buffer);
     free(out);
-    printf("%lu %u\n", new_count, max_new_length);
+    printf("%lu %u\n", count, max_length);
 }
 
 static void
@@ -816,8 +770,10 @@ usage(const char *program)
 {
     printf(
         "usage: %s --format regular|edges --files0-from FILE [--buffer-size SIZE]\n"
-        "          (--merge-only-output FILE | --table FILE --output-table FILE\n"
-        "           [--workq FILE --linewidth N])\n",
+        "          (--merge-only-output FILE |\n"
+        "           --output-layer FILE [--tables0-from FILE] [--offsets FILE]\n"
+        "            [--offset-stride N] |\n"
+        "           --finalize --output-table FILE)\n",
         program);
 }
 
@@ -825,33 +781,39 @@ int
 main(int argc, char *argv[])
 {
     const char *format_arg = NULL;
-    const char *table_filename = NULL;
     const char *manifest_filename = NULL;
+    const char *tables_manifest = NULL;
     const char *output_filename = NULL;
     const char *merge_only_filename = NULL;
-    const char *workq_filename = NULL;
-    unsigned int linewidth = 0;
+    const char *layer_filename = NULL;
+    const char *offsets_filename = NULL;
+    unsigned int offset_stride = DEFAULT_OFFSET_STRIDE;
+    int finalize = 0;
     size_t buffer_size = DEFAULT_BUFFER_SIZE;
 
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--format") && i + 1 < argc) {
             format_arg = argv[++i];
-        } else if (!strcmp(argv[i], "--table") && i + 1 < argc) {
-            table_filename = argv[++i];
         } else if (!strcmp(argv[i], "--files0-from") && i + 1 < argc) {
             manifest_filename = argv[++i];
+        } else if (!strcmp(argv[i], "--tables0-from") && i + 1 < argc) {
+            tables_manifest = argv[++i];
         } else if (!strcmp(argv[i], "--output-table") && i + 1 < argc) {
             output_filename = argv[++i];
+        } else if (!strcmp(argv[i], "--output-layer") && i + 1 < argc) {
+            layer_filename = argv[++i];
         } else if (!strcmp(argv[i], "--merge-only-output") && i + 1 < argc) {
             merge_only_filename = argv[++i];
-        } else if (!strcmp(argv[i], "--workq") && i + 1 < argc) {
-            workq_filename = argv[++i];
-        } else if (!strcmp(argv[i], "--linewidth") && i + 1 < argc) {
+        } else if (!strcmp(argv[i], "--offsets") && i + 1 < argc) {
+            offsets_filename = argv[++i];
+        } else if (!strcmp(argv[i], "--offset-stride") && i + 1 < argc) {
             unsigned long value = strtoul(argv[++i], NULL, 10);
             if (!value || value > UINT32_MAX) {
-                die("invalid --linewidth");
+                die("invalid --offset-stride");
             }
-            linewidth = (unsigned int) value;
+            offset_stride = (unsigned int) value;
+        } else if (!strcmp(argv[i], "--finalize")) {
+            finalize = 1;
         } else if (!strcmp(argv[i], "--buffer-size") && i + 1 < argc) {
             buffer_size = parse_size(argv[++i]);
         } else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
@@ -874,35 +836,44 @@ main(int argc, char *argv[])
         die("--format must be regular or edges");
     }
 
-    if (merge_only_filename) {
-        if (table_filename || output_filename || workq_filename || linewidth) {
-            die("--merge-only-output cannot be combined with table/workq output options");
-        }
-    } else if (!table_filename || !output_filename) {
-        die("--table and --output-table are required");
+    int mode_count = (merge_only_filename != NULL) + (layer_filename != NULL) + finalize;
+    if (mode_count != 1) {
+        die("choose exactly one of --merge-only-output, --output-layer, or --finalize");
     }
-    if ((workq_filename == NULL) != (linewidth == 0)) {
-        die("--workq and a nonzero --linewidth must be supplied together");
+    if (finalize && output_filename == NULL) {
+        die("--finalize requires --output-table");
     }
 
     unsigned int filename_count = 0;
     char **filenames = read_manifest(manifest_filename, &filename_count);
-    merge_state state;
-    open_merger(&state, filenames, filename_count, format, buffer_size);
+    size_t shard_budget = buffer_size;
+    unsigned int table_count = 0;
+    char **table_files = NULL;
 
-    if (merge_only_filename) {
-        run_merge_only(&state, merge_only_filename);
-    } else {
-        run_process(
-            &state,
-            format,
-            table_filename,
-            output_filename,
-            workq_filename,
-            linewidth);
+    if (tables_manifest) {
+        table_files = read_manifest(tables_manifest, &table_count);
+        shard_budget = buffer_size / 2;
     }
 
-    close_merger(&state);
+    merge_state shards;
+    open_merger(&shards, filenames, filename_count, format, shard_budget);
+
+    if (merge_only_filename) {
+        run_merge_only(&shards, merge_only_filename);
+    } else if (finalize) {
+        run_finalize(&shards, output_filename);
+    } else {
+        merge_state tables;
+        open_merger(&tables, table_files, table_count, format, buffer_size - shard_budget);
+        run_layer(&shards, &tables, layer_filename, offsets_filename, offset_stride);
+        close_merger(&tables);
+        for (unsigned int i = 0; i < table_count; i++) {
+            free(table_files[i]);
+        }
+        free(table_files);
+    }
+
+    close_merger(&shards);
     for (unsigned int i = 0; i < filename_count; i++) {
         free(filenames[i]);
     }

@@ -67,6 +67,8 @@ RESULT_PROCESSOR = os.environ.get(
     "./rubikscubelookuptables/builder-process-results",
 )
 WORKQ_BATCH_SIZE = int(os.environ.get("RUBIKS_WORKQ_BATCH_SIZE", "1000000000"))
+OFFSET_STRIDE = 65536
+CRUNCH_BATCH_BYTES = os.environ.get("RUBIKS_CRUNCH_BATCH_BYTES", "512M")
 
 
 def get_line_number_splits(lines: int, cores: int) -> Tuple:
@@ -509,6 +511,8 @@ class BFS(object):
         self.time_in_file_delete = 0
         self.time_in_building_workq = 0
         self.time_in_crunching_workq = 0
+        self.layer_files = []
+        self.workq_offsets_filename = None
         self.time_in_save = 0
         self.time_in_find_new_states = 0
         self.time_in_keep_best_solution = 0
@@ -665,6 +669,19 @@ class BFS(object):
         result.extend(glob.glob(f"{outputfile_base}.*"))
         return sorted(set(result))
 
+    def _layer_filename(self, depth: int) -> str:
+        return os.path.join(TMPDIR, f"{self}.layer-{depth}")
+
+    def _write_offsets_file(self, offsets_filename: str, line_count: int, offsets) -> None:
+        with open(offsets_filename, "w") as fh:
+            fh.write(f"{OFFSET_STRIDE} {line_count}\n")
+            fh.write("\n".join(str(offset) for offset in offsets))
+            if offsets:
+                fh.write("\n")
+
+    def _use_layered_bfs(self) -> bool:
+        return os.path.isfile(RESULT_PROCESSOR)
+
     def rm_per_core_workq_results_files(self):
         # These are the per-core files in tmp where the results of builder-crunch-workq are written
         for core in range(self.cores):
@@ -706,6 +723,9 @@ class BFS(object):
         self.workq_filename_next = self.workq_filename + ".next"
         self.workq_size = 0
         self.depth = 1
+        self.layer_files = []
+        self.workq_offsets_filename = None
+        use_layers = self._use_layered_bfs()
 
         # We are starting from scratch so for each starting_cube loop over all legal moves
         # and add that tuple to the workq
@@ -726,6 +746,7 @@ class BFS(object):
             glob.glob(f"{self.workq_filename}.batch-*.core-*")
             + glob.glob(f"{self.filename}-batch-*")
             + glob.glob(f"{TMPDIR}/builder-results-*.files0")
+            + glob.glob(str(TMPDIR / f"{self}.layer-*"))
         )
         for filename in stale_files:
             if os.path.isfile(filename):
@@ -762,18 +783,39 @@ class BFS(object):
         else:
             pattern = ""
 
-        with open(self.workq_filename, "w") as fh_workq, open(self.filename, "w") as fh:
-            for cube in self.starting_cubes:
-                log.info(f"starting cube {''.join(cube.state).replace('.', '')[1:]}")
-                if self.use_edges_pattern:
-                    workq_line = f"{pattern}:{''.join(cube.state)}:"
-                else:
-                    workq_line = f"{self._state_for_workq(cube)}:"
+        if use_layers:
+            self.workq_filename = self._layer_filename(0)
+            self.workq_offsets_filename = f"{self.workq_filename}.offsets"
+            offsets = []
+            with open(self.workq_filename, "w") as fh:
+                for cube in self.starting_cubes:
+                    log.info(f"starting cube {''.join(cube.state).replace('.', '')[1:]}")
+                    if self.use_edges_pattern:
+                        workq_line = f"{pattern}:{''.join(cube.state)}:"
+                    else:
+                        workq_line = f"{self._state_for_workq(cube)}:"
 
-                fh.write(workq_line + "\n")
-                fh_workq.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
-                self.max_table_line_length = max(self.max_table_line_length, len(workq_line))
-                self.workq_size += 1
+                    if self.workq_size % OFFSET_STRIDE == 0:
+                        offsets.append(fh.tell())
+                    fh.write(workq_line + "\n")
+                    self.max_table_line_length = max(self.max_table_line_length, len(workq_line))
+                    self.workq_size += 1
+
+            self._write_offsets_file(self.workq_offsets_filename, self.workq_size, offsets)
+            self.layer_files.append(self.workq_filename)
+        else:
+            with open(self.workq_filename, "w") as fh_workq, open(self.filename, "w") as fh:
+                for cube in self.starting_cubes:
+                    log.info(f"starting cube {''.join(cube.state).replace('.', '')[1:]}")
+                    if self.use_edges_pattern:
+                        workq_line = f"{pattern}:{''.join(cube.state)}:"
+                    else:
+                        workq_line = f"{self._state_for_workq(cube)}:"
+
+                    fh.write(workq_line + "\n")
+                    fh_workq.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
+                    self.max_table_line_length = max(self.max_table_line_length, len(workq_line))
+                    self.workq_size += 1
 
         self.starting_state_count = self.workq_size
         self.starting_cubes = []
@@ -983,29 +1025,32 @@ class BFS(object):
 
     def _process_result_shards(self, filenames, max_depth):
         """
-        K-way merge sorted cruncher shards, remove states already in the table, and
-        write both the updated table and next workq in one streaming pass.
+        K-way merge sorted cruncher shards, drop states already in earlier layers,
+        and write only the new layer. That layer is the next workq.
         """
-        manifest = self._write_result_manifest(filenames, f"depth-{self.depth}")
-        output_table = f"{self.workq_filename}.30-final"
+        shard_manifest = self._write_result_manifest(filenames, f"depth-{self.depth}-shards")
+        tables_manifest = self._write_result_manifest(self.layer_files, f"depth-{self.depth}-tables")
+        layer_filename = self._layer_filename(self.depth)
+        offsets_filename = f"{layer_filename}.offsets"
         build_workq = max_depth is None or self.depth < max_depth
         cmd = [
             "nice",
             RESULT_PROCESSOR,
             "--format",
             "edges" if self.use_edges_pattern else "regular",
-            "--table",
-            self.filename,
             "--files0-from",
-            manifest,
-            "--output-table",
-            output_table,
+            shard_manifest,
+            "--tables0-from",
+            tables_manifest,
+            "--output-layer",
+            layer_filename,
+            "--offsets",
+            offsets_filename,
+            "--offset-stride",
+            str(OFFSET_STRIDE),
             "--buffer-size",
             SORT_BUFFER_SIZE,
         ]
-
-        if build_workq:
-            cmd.extend(["--workq", self.workq_filename_next, "--linewidth", str(self.workq_line_length)])
 
         log.info(" ".join(cmd))
         start_time = dt.datetime.now()
@@ -1013,19 +1058,29 @@ class BFS(object):
         try:
             count, longest_line = subprocess.check_output(cmd).split()
         finally:
-            os.remove(manifest)
+            os.remove(shard_manifest)
+            os.remove(tables_manifest)
 
         self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
         new_states_count = int(count)
         self.max_table_line_length = max(self.max_table_line_length, int(longest_line))
 
-        if build_workq:
+        if new_states_count:
+            self.layer_files.append(layer_filename)
+
+        if build_workq and new_states_count:
+            self.workq_filename = layer_filename
+            self.workq_offsets_filename = offsets_filename
             self.workq_size = new_states_count
         else:
-            with open(self.workq_filename_next, "w"):
+            empty = os.path.join(TMPDIR, f"{self}.workq.empty")
+            with open(empty, "w"):
                 pass
+            self.workq_filename = empty
+            self.workq_offsets_filename = None
+            self.workq_size = 0
 
-        return new_states_count, output_table
+        return new_states_count, layer_filename
 
     def _search_launch_builder_crunch_workq_per_core(self):
         """
@@ -1073,16 +1128,20 @@ class BFS(object):
                         "./rubikscubelookuptables/builder-crunch-workq",
                         "--size", self.size[0],
                         "--inputfile", self.workq_filename,
-                        "--linewidth", str(self.workq_line_length + 1),
+                        "--linewidth", "0" if use_streaming_processor else str(self.workq_line_length + 1),
                         "--start", str(start),
                         "--end", str(end),
                         "--outputfile", outputfile_base,
                         "--moves", f"{' '.join(self.legal_moves)}",
+                        "--batch-bytes", CRUNCH_BATCH_BYTES,
                     ]
                     # fmt: on
 
                     if self.compact_squares:
                         cmd.extend(["--squares", ",".join(str(index) for index in self.compact_squares)])
+
+                    if use_streaming_processor and self.workq_offsets_filename:
+                        cmd.extend(["--offsets", self.workq_offsets_filename])
 
                 else:
                     cmd = [
@@ -1090,12 +1149,15 @@ class BFS(object):
                         "./rubikscubelookuptables/builder-crunch-workq.py",
                         self.size,
                         self.workq_filename,
-                        str(self.workq_line_length),
+                        "0" if use_streaming_processor else str(self.workq_line_length),
                         str(start),
                         str(end),
                         outputfile_base,
                         f"{' '.join(self.legal_moves)}",
                     ]
+
+                    if use_streaming_processor and self.workq_offsets_filename:
+                        cmd.extend(["--offsets", self.workq_offsets_filename])
 
                 if self.use_edges_pattern:
                     cmd.append("--use-edges-pattern")
@@ -1203,27 +1265,20 @@ class BFS(object):
         self.workq_size = 0
         sorted_results_filename = f"{self.workq_filename}.10-results"
 
-        # Remove the workq file to save some disk space
-        if os.path.exists(self.workq_filename):
-            os.remove(self.workq_filename)
-
         if result_files is not None:
             log.info(f"builder-process-results begin ({len(result_files)} sorted shards)")
-            new_states_count, output_table = self._process_result_shards(result_files, max_depth)
+            new_states_count, _layer_filename = self._process_result_shards(result_files, max_depth)
             log.info("builder-process-results end")
             self.rm_files(result_files)
-
-            log.info("move files begin")
-            start_time = dt.datetime.now()
-            shutil.move(output_table, self.filename)
-            shutil.move(self.workq_filename_next, self.workq_filename)
-            self.time_in_file_delete += (dt.datetime.now() - start_time).total_seconds()
-            log.info("move files end")
 
             log.info(f"there are {new_states_count:,} new states")
             self.stats[self.depth] = new_states_count
             log.warning(f"{self.index}: finished depth {self.depth}, workq size {self.workq_size:,}")
             return
+
+        # Remove the workq file to save some disk space
+        if os.path.exists(self.workq_filename):
+            os.remove(self.workq_filename)
 
         batch_files = sorted(glob.glob(f"{self.filename}-batch*"))
 
@@ -1357,6 +1412,9 @@ class BFS(object):
                 break
 
     def save_starting_states(self):
+        if self.layer_files and not os.path.isfile(self.filename):
+            self._finalize_layers()
+
         patterns = []
         to_write = []
         with open(self.filename, "r") as fh_read:
@@ -1415,6 +1473,38 @@ class BFS(object):
             print("state_target patterns:\n%s\n\n" % "\n".join(patterns))
 
         shutil.move(f"{self.filename}.starting-states", self.filename)
+
+    def _finalize_layers(self) -> int:
+        """
+        Merge every depth layer into the lookup-table, reversing scramble moves into
+        solutions. This is the only time old states are rewritten.
+        """
+        if not self.layer_files:
+            return self.max_table_line_length
+
+        manifest = self._write_result_manifest(self.layer_files, "finalize")
+        cmd = [
+            "nice",
+            RESULT_PROCESSOR,
+            "--format",
+            "edges" if self.use_edges_pattern else "regular",
+            "--files0-from",
+            manifest,
+            "--finalize",
+            "--output-table",
+            self.filename,
+            "--buffer-size",
+            SORT_BUFFER_SIZE,
+        ]
+        log.info(" ".join(cmd))
+
+        try:
+            _count, longest_line = subprocess.check_output(cmd).split()
+        finally:
+            os.remove(manifest)
+
+        self.max_table_line_length = max(self.max_table_line_length, int(longest_line))
+        return self.max_table_line_length
 
     def _table_linecount(self) -> int:
         """
@@ -1564,6 +1654,10 @@ class BFS(object):
         # remove all of the '.'s and if convert to hex (if requested).
         log.info(f"{self}: save() begin")
         log.info(f"{self}: convert state to smaller format, file {self.filename}")
+
+        if self.layer_files:
+            log.info(f"{self}: finalize {len(self.layer_files)} depth layers")
+            self._finalize_layers()
 
         if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
             max_line_length = self._convert_state_to_smaller_format()

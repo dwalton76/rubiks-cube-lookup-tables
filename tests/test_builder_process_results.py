@@ -19,8 +19,8 @@ class ProcessorFixture:
         path.write_text(contents, encoding="ascii")
         return path
 
-    def manifest(self, *paths: Path) -> Path:
-        path = self.root / "files0"
+    def manifest(self, *paths: Path, name: str = "files0") -> Path:
+        path = self.root / name
         path.write_bytes(b"\0".join(os.fsencode(item) for item in paths))
         return path
 
@@ -43,60 +43,56 @@ class BuilderProcessResultsTests(unittest.TestCase):
     def tearDown(self):
         self.tempdir.cleanup()
 
-    def test_regular_merge_join_and_workq(self):
-        table = self.fixture.write("table", "AAA:D\nCCC:F\nGGG:R\n")
+    def test_regular_layer_keeps_only_new_scramble_lines(self):
+        previous = self.fixture.write("layer0", "AAA:D\nCCC:F\nGGG:R\n")
         shard_a = self.fixture.write("a", "AAA:U\nBBB:U2\nDDD:L F'\n")
         shard_b = self.fixture.write("b", "BBB:D\nCCC:R\nEEE:Uw2\n")
-        manifest = self.fixture.manifest(shard_a, shard_b)
-        output = self.root / "output"
-        workq = self.root / "workq"
+        shards = self.fixture.manifest(shard_a, shard_b)
+        tables = self.fixture.manifest(previous, name="tables0")
+        output = self.root / "layer1"
+        offsets = self.root / "layer1.offsets"
 
         result = self.fixture.run(
             "--format",
             "regular",
-            "--table",
-            table,
             "--files0-from",
-            manifest,
-            "--output-table",
+            shards,
+            "--tables0-from",
+            tables,
+            "--output-layer",
             output,
-            "--workq",
-            workq,
-            "--linewidth",
-            20,
+            "--offsets",
+            offsets,
+            "--offset-stride",
+            2,
             "--buffer-size",
             "16M",
         )
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "3 8")
-        self.assertEqual(
-            output.read_text(encoding="ascii"),
-            "AAA:D\nBBB:D'\nCCC:F\nDDD:F L'\nEEE:Uw2\nGGG:R\n",
-        )
-        self.assertEqual(
-            workq.read_text(encoding="ascii"),
-            "BBB:D               \nDDD:L F'            \nEEE:Uw2             \n",
-        )
+        self.assertEqual(output.read_text(encoding="ascii"), "BBB:D\nDDD:L F'\nEEE:Uw2\n")
+        self.assertEqual(offsets.read_text(encoding="ascii").splitlines()[0], "2 3")
+        self.assertEqual(int(offsets.read_text(encoding="ascii").splitlines()[1]), 0)
 
     def test_regular_winner_is_deterministic_across_manifest_order(self):
-        table = self.fixture.write("table", "")
+        tables = self.fixture.manifest(name="tables0")
         shard_a = self.fixture.write("a", "AAA:U2\n")
         shard_b = self.fixture.write("b", "AAA:D\n")
 
         outputs = []
         for index, paths in enumerate(((shard_a, shard_b), (shard_b, shard_a))):
-            manifest = self.root / f"files{index}"
-            manifest.write_bytes(b"\0".join(os.fsencode(item) for item in paths))
-            output = self.root / f"output{index}"
+            shards = self.root / f"files{index}"
+            shards.write_bytes(b"\0".join(os.fsencode(item) for item in paths))
+            output = self.root / f"layer{index}"
             result = self.fixture.run(
                 "--format",
                 "regular",
-                "--table",
-                table,
                 "--files0-from",
-                manifest,
-                "--output-table",
+                shards,
+                "--tables0-from",
+                tables,
+                "--output-layer",
                 output,
                 "--buffer-size",
                 "16M",
@@ -105,10 +101,10 @@ class BuilderProcessResultsTests(unittest.TestCase):
             outputs.append(output.read_bytes())
 
         self.assertEqual(outputs[0], outputs[1])
-        self.assertEqual(outputs[0], b"AAA:D'\n")
+        self.assertEqual(outputs[0], b"AAA:D\n")
 
     def test_edges_use_pattern_membership_and_one_representative(self):
-        table = self.fixture.write("table", "P1:OLDSTATE:U\nP4:LASTSTATE:F\n")
+        previous = self.fixture.write("layer0", "P1:OLDSTATE:U\nP4:LASTSTATE:F\n")
         shard_a = self.fixture.write(
             "a",
             "P1:NEWSTATE:D\nP2:AAASTATE:U L\nP2:BBBSTATE:F\nP3:CCCSTATE:Uw2\n",
@@ -117,37 +113,26 @@ class BuilderProcessResultsTests(unittest.TestCase):
             "b",
             "P2:AAASTATE:R\nP2:BBBSTATE:D L\nP3:DDDSTATE:U F\n",
         )
-        manifest = self.fixture.manifest(shard_a, shard_b)
-        output = self.root / "output"
-        workq = self.root / "workq"
+        shards = self.fixture.manifest(shard_a, shard_b)
+        tables = self.fixture.manifest(previous, name="tables0")
+        output = self.root / "layer1"
 
         result = self.fixture.run(
             "--format",
             "edges",
-            "--table",
-            table,
             "--files0-from",
-            manifest,
-            "--output-table",
+            shards,
+            "--tables0-from",
+            tables,
+            "--output-layer",
             output,
-            "--workq",
-            workq,
-            "--linewidth",
-            24,
             "--buffer-size",
             "16M",
         )
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "2 15")
-        self.assertEqual(
-            output.read_text(encoding="ascii"),
-            "P1:OLDSTATE:U\nP2:AAASTATE:R'\nP3:CCCSTATE:Uw2\nP4:LASTSTATE:F\n",
-        )
-        self.assertEqual(
-            workq.read_text(encoding="ascii"),
-            "P2:AAASTATE:R           \nP3:CCCSTATE:Uw2         \n",
-        )
+        self.assertEqual(output.read_text(encoding="ascii"), "P2:AAASTATE:R\nP3:CCCSTATE:Uw2\n")
 
     def test_merge_only_deduplicates_without_reversing_moves(self):
         shard_a = self.fixture.write("a", "AAA:U2\nBBB:F\n")
@@ -169,19 +154,20 @@ class BuilderProcessResultsTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(output.read_text(encoding="ascii"), "AAA:D\nBBB:F\nCCC:R\n")
 
-    def test_empty_manifest_copies_table(self):
-        table = self.fixture.write("table", "AAA:U\nBBB:D\n")
-        manifest = self.fixture.manifest()
-        output = self.root / "output"
+    def test_empty_shards_write_empty_layer(self):
+        previous = self.fixture.write("layer0", "AAA:U\nBBB:D\n")
+        shards = self.fixture.manifest()
+        tables = self.fixture.manifest(previous, name="tables0")
+        output = self.root / "layer1"
 
         result = self.fixture.run(
             "--format",
             "regular",
-            "--table",
-            table,
             "--files0-from",
-            manifest,
-            "--output-table",
+            shards,
+            "--tables0-from",
+            tables,
+            "--output-layer",
             output,
             "--buffer-size",
             "16M",
@@ -189,22 +175,43 @@ class BuilderProcessResultsTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(result.stdout.strip(), "0 0")
-        self.assertEqual(output.read_bytes(), table.read_bytes())
+        self.assertEqual(output.read_bytes(), b"")
 
-    def test_rejects_unsorted_shard(self):
-        table = self.fixture.write("table", "")
-        shard = self.fixture.write("shard", "BBB:U\nAAA:D\n")
-        manifest = self.fixture.manifest(shard)
+    def test_finalize_merges_layers_and_reverses_moves(self):
+        layer0 = self.fixture.write("layer0", "AAA:\nCCC:F\n")
+        layer1 = self.fixture.write("layer1", "BBB:D\nDDD:L F'\n")
+        manifest = self.fixture.manifest(layer0, layer1)
+        output = self.root / "table"
 
         result = self.fixture.run(
             "--format",
             "regular",
-            "--table",
-            table,
             "--files0-from",
             manifest,
+            "--finalize",
             "--output-table",
-            self.root / "output",
+            output,
+            "--buffer-size",
+            "16M",
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(output.read_text(encoding="ascii"), "AAA:\nBBB:D'\nCCC:F'\nDDD:F L'\n")
+
+    def test_rejects_unsorted_shard(self):
+        shard = self.fixture.write("shard", "BBB:U\nAAA:D\n")
+        shards = self.fixture.manifest(shard)
+        tables = self.fixture.manifest(name="tables0")
+
+        result = self.fixture.run(
+            "--format",
+            "regular",
+            "--files0-from",
+            shards,
+            "--tables0-from",
+            tables,
+            "--output-layer",
+            self.root / "layer1",
             "--buffer-size",
             "16M",
         )
