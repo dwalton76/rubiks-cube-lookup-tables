@@ -683,8 +683,6 @@ class BFS(object):
         Launch one builder-crunch-workq process per core. Wait for all of them
         to complete before returning.
         """
-        start_time = dt.datetime.now()
-
         MILLION = 1000000
         BILLION = 1000 * MILLION
         BATCH_SIZE = BILLION
@@ -693,6 +691,11 @@ class BFS(object):
 
         for batch_index in range(batch_count):
             log.info(f"builder-crunch-workq begin batch {batch_index + 1}/{batch_count}")
+
+            # Time only the crunching here. _sort_merge_state_files() and rm_files() run
+            # inside this loop and keep their own timers, so covering them from here too
+            # would report their seconds twice and leave the report unable to add up.
+            start_time = dt.datetime.now()
             threads = []
             line_numbers_for_cores = get_line_number_splits(min(workq_size, BATCH_SIZE), self.cores)
             line_number_offset = batch_index * BATCH_SIZE
@@ -760,6 +763,8 @@ class BFS(object):
                 log.error("builder-crunch-workq hit an error")
                 sys.exit(1)
 
+            self.time_in_crunching_workq += (dt.datetime.now() - start_time).total_seconds()
+
             if workq_size > BATCH_SIZE:
                 workq_size -= BATCH_SIZE
             else:
@@ -771,8 +776,6 @@ class BFS(object):
             core_files = sorted(glob.glob(f"{FAST_TMP}/*core*"))
             self._sort_merge_state_files(core_files, sorted_results_filename)
             self.rm_files(core_files)
-
-        self.time_in_crunching_workq += (dt.datetime.now() - start_time).total_seconds()
 
     def _search_process_builder_crunch_workq_results(self, max_depth):
         """
@@ -1119,7 +1122,7 @@ class BFS(object):
 
             log.info(f"{self}: save() end")
 
-        self.time_in_save = (dt.datetime.now() - start_time).total_seconds()
+        self.time_in_save += (dt.datetime.now() - start_time).total_seconds()
 
     def get_starting_states(self, use_hex, use_edges_pattern):
 
