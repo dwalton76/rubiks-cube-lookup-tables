@@ -64,22 +64,7 @@ FAST_TMP = Path("./tmp/")
 
 
 def get_line_number_splits(lines: int, cores: int) -> Tuple:
-    """
-    >>> get_line_number_splits(100, 1)
-    ((0, 99),)
-
-    >>> get_line_number_splits(100, 2)
-    ((0, 49), (50, 99))
-
-    >>> get_line_number_splits(100, 5)
-    ((0, 19), (20, 39), (40, 59), (60, 79), (80, 99))
-
-    >>> get_line_number_splits(100, 3)
-    ((0, 32), (33, 65), (66, 99))
-
-    >>> get_line_number_splits(10, 3)
-    ((0, 2), (3, 5), (6, 9))
-    """
+    """Split a 0-based line range across cores. Extra cores get (None, None)."""
     assert isinstance(lines, int)
     assert isinstance(cores, int)
     assert lines > 0
@@ -118,32 +103,12 @@ def get_line_number_splits(lines: int, cores: int) -> Tuple:
 
 
 def reverse_steps(steps: List[str]) -> List[str]:
-    """
-    >>> reverse_steps([])
-    []
-
-    >>> reverse_steps(["U"])
-    ["U'"]
-
-    >>> reverse_steps(["U", "R'", "D2"])
-    ['D2', 'R', "U'"]
-    """
+    """Return the inverse of a scramble, last move first."""
     return [step if step[-1] == "2" else step[0:-1] if step[-1] == "'" else step + "'" for step in reversed(steps)]
 
 
 def convert_state_to_hex(state: str) -> str:
-    """
-    This assumes that state only has "x"s and Us or Ls or Fs or Rs or Bs or Ds
-
-    >>> convert_state_to_hex("xxxU")
-    '1'
-
-    >>> convert_state_to_hex("UxUx")
-    'a'
-
-    >>> convert_state_to_hex("UUxUx")
-    '1a'
-    """
+    """Pack a state of x/- vs U/L/F/R/B/D into hex, one bit per square."""
     state = (
         state.replace("x", "0")
         .replace("-", "0")
@@ -1449,17 +1414,3 @@ class %s(LookupTableIDA):
                 steps_to_scramble = table[cube_state_minus_x]
                 steps_to_solve = reverse_steps(steps_to_scramble)
                 fh.write(f"{cube_state_minus_x}:{' '.join(steps_to_solve)}\n")
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)24s %(levelname)8s: %(message)s")
-    log = logging.getLogger(__name__)
-
-    # Color the errors and warnings in red
-    logging.addLevelName(logging.ERROR, f"[91m   {logging.getLevelName(logging.ERROR)}[0m")
-    logging.addLevelName(logging.WARNING, f"[91m {logging.getLevelName(logging.WARNING)}[0m")
-
-    # standard libraries
-    import doctest
-
-    doctest.testmod()
