@@ -64,7 +64,9 @@ def apply_555_phase_binary(cube_state, positions):
     return cube_state
 
 
-def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern, legal_moves):
+def crunch_workq(
+    size, inputfile, linewidth, start, end, outputfilebase, use_edges_pattern, legal_moves, offsets_file=None
+):
     assert isinstance(size, str)
     assert size in supported_sizes
     assert isinstance(inputfile, str)
@@ -107,8 +109,25 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
 
     with open(inputfile, "r") as fh_input:
 
-        # We add 1 here to account for the newline character
-        fh_input.seek(start * (linewidth + 1))
+        if linewidth:
+            # We add 1 here to account for the newline character
+            fh_input.seek(start * (linewidth + 1))
+        elif start:
+            if offsets_file:
+                with open(offsets_file, "r") as fh_offsets:
+                    header = fh_offsets.readline().split()
+                    stride = int(header[0])
+                    index = start // stride
+                    extra = start % stride
+                    offset = 0
+                    for _ in range(index + 1):
+                        offset = int(fh_offsets.readline())
+                fh_input.seek(offset)
+                for _ in range(extra):
+                    fh_input.readline()
+            else:
+                for _ in range(start):
+                    fh_input.readline()
         is_333_phase1 = "3x3x3-phase1" in inputfile
         is_333_phase2 = "3x3x3-phase2" in inputfile
 
@@ -273,6 +292,7 @@ if __name__ == "__main__":
     parser.add_argument("outputfile", type=str, help="The file to write results")
     parser.add_argument("legalmoves", type=str, help="List of legal moves")
     parser.add_argument("--use-edges-pattern", default=False, action="store_true", help="use edges patterns")
+    parser.add_argument("--offsets", default=None, help="Line-offset index for an unpadded workq")
     args = parser.parse_args()
 
     crunch_workq(
@@ -284,4 +304,5 @@ if __name__ == "__main__":
         args.outputfile,
         args.use_edges_pattern,
         args.legalmoves.split(),
+        args.offsets,
     )

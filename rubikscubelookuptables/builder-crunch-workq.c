@@ -1,4 +1,6 @@
 
+#define _FILE_OFFSET_BITS 64
+
 #include <ctype.h>
 #include <locale.h>
 #include <math.h>
@@ -6,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
 #include "ida_search_core.h"
 
 // If by some miracle we ever start building lookup-tables deeper than 20 moves
@@ -34,12 +37,10 @@
 #define MAX_WORKQ_LINE_LENGTH 1024
 
 /*
- * This is part of the lookup-table file format in practice, not just a performance
- * setting. GNU sort --uniq --key keeps the first equal-state line it sees, so changing
- * batch boundaries changes which equally short solution is stored and therefore changes
- * the table byte-for-byte. Keep the historical boundary for reproducible tables.
+ * Flush size is a memory budget, not a line count. Larger batches mean fewer sorted
+ * shards for builder-process-results to k-way merge, which matters on HDDs.
  */
-#define BATCH_SIZE 2000000
+#define DEFAULT_BATCH_BYTES (512UL * 1024 * 1024)
 
 #define MAX_FILENAME_SIZE 128
 #define MAX_COMPACT_SQUARES 255
@@ -389,6 +390,98 @@ build_compact_permutations(
 }
 
 
+static unsigned long
+parse_batch_bytes(const char *text)
+{
+    char *end = NULL;
+    unsigned long long amount = strtoull(text, &end, 10);
+
+    if (end == text || !amount) {
+        printf("ERROR: invalid --batch-bytes %s\n", text);
+        exit(1);
+    }
+    if (*end == 'K' || *end == 'k') {
+        amount *= 1024ULL;
+        end++;
+    } else if (*end == 'M' || *end == 'm') {
+        amount *= 1024ULL * 1024ULL;
+        end++;
+    } else if (*end == 'G' || *end == 'g') {
+        amount *= 1024ULL * 1024ULL * 1024ULL;
+        end++;
+    }
+    if (*end) {
+        printf("ERROR: invalid --batch-bytes %s\n", text);
+        exit(1);
+    }
+    return (unsigned long) amount;
+}
+
+
+static void
+seek_to_line(FILE *fh, unsigned int start, unsigned int linewidth, const char *offsets_file)
+{
+    char skip[MAX_WORKQ_LINE_LENGTH];
+
+    if (start == 0) {
+        return;
+    }
+
+    if (linewidth) {
+        if (fseeko(fh, (off_t) start * (off_t) linewidth, SEEK_SET)) {
+            printf("ERROR: could not seek to line %u\n", start);
+            exit(1);
+        }
+        return;
+    }
+
+    if (offsets_file[0]) {
+        FILE *offsets = fopen(offsets_file, "r");
+        unsigned int stride = 0;
+        unsigned long count = 0;
+        unsigned int index = 0;
+        unsigned int extra = 0;
+        unsigned long offset = 0;
+
+        if (offsets == NULL) {
+            printf("ERROR: could not open offsets file %s\n", offsets_file);
+            exit(1);
+        }
+        if (fscanf(offsets, "%u %lu", &stride, &count) != 2 || stride == 0) {
+            printf("ERROR: invalid offsets header in %s\n", offsets_file);
+            exit(1);
+        }
+        index = start / stride;
+        extra = start % stride;
+        for (unsigned int i = 0; i <= index; i++) {
+            if (fscanf(offsets, "%lu", &offset) != 1) {
+                printf("ERROR: offsets file %s is too short for line %u\n", offsets_file, start);
+                exit(1);
+            }
+        }
+        fclose(offsets);
+        if (fseeko(fh, (off_t) offset, SEEK_SET)) {
+            printf("ERROR: could not seek to offset %lu for line %u\n", offset, start);
+            exit(1);
+        }
+        for (unsigned int i = 0; i < extra; i++) {
+            if (fgets(skip, sizeof(skip), fh) == NULL) {
+                printf("ERROR: could not skip from offset index to line %u\n", start);
+                exit(1);
+            }
+        }
+        return;
+    }
+
+    for (unsigned int i = 0; i < start; i++) {
+        if (fgets(skip, sizeof(skip), fh) == NULL) {
+            printf("ERROR: could not skip to line %u\n", start);
+            exit(1);
+        }
+    }
+}
+
+
 void
 process_workq(
     char *inputfile,
@@ -400,7 +493,9 @@ process_workq(
     move_type moves[MOVE_MAX],
     unsigned int moves_count,
     unsigned int *squares,
-    unsigned int square_count)
+    unsigned int square_count,
+    const char *offsets_file,
+    unsigned long batch_bytes)
 {
     FILE *fh_read = NULL;
     char *move_ptr = NULL;
@@ -421,7 +516,6 @@ process_workq(
     unsigned char line[MAX_WORKQ_LINE_LENGTH];
     unsigned char move_index = 0;
     unsigned char move_str_length = 0;
-    unsigned char read_result = 0;
     unsigned char steps_to_scramble[MAX_MOVE_STR_SIZE * MAX_MOVE_LENGTH];
     char *to_write_dedup = NULL;
 
@@ -430,10 +524,11 @@ process_workq(
     move_type move = MOVE_NONE;
     move_type prev_move = MOVE_NONE;
 
-    // The stride is table-specific to save memory, but BATCH_SIZE stays fixed because its
-    // historical boundaries determine which equally short solution survives deduplication.
     line_width = LINE_WIDTH_FOR_STATE(array_size);
-    batch_size = BATCH_SIZE;
+    batch_size = (unsigned int) (batch_bytes / line_width);
+    if (batch_size < 1) {
+        batch_size = 1;
+    }
     BUFFER_SIZE = (size_t) line_width * batch_size;
 
     to_write = malloc(BUFFER_SIZE);
@@ -463,17 +558,14 @@ process_workq(
         exit(1);
     }
 
-    unsigned long seek_target = (unsigned long) start * (unsigned long) linewidth;
-    fseek(fh_read, seek_target, SEEK_SET);
+    seek_to_line(fh_read, start, linewidth, offsets_file);
 
     LOG("read %dx%dx%d inputfile %s from line %d to %d, line width %d, batch %d lines, BUFFER_SIZE %zu MB\n",
         cube_size, cube_size, cube_size,
         inputfile, start, end, line_width, batch_size, (BUFFER_SIZE * 2) / MEGABYTE);
 
     for (unsigned int line_number = start; line_number <= end; line_number++) {
-        read_result = fread(line, linewidth, 1, fh_read);
-
-        if (!read_result) {
+        if (fgets((char *) line, MAX_WORKQ_LINE_LENGTH, fh_read) == NULL) {
             printf("ERROR: process_workq read for line %d failed for %s\n", line_number, inputfile);
             exit(1);
         }
@@ -642,15 +734,18 @@ main (int argc, char *argv[])
     unsigned int start = 0;
     unsigned int end = 0;
     unsigned char cube_size = 0;
+    unsigned long batch_bytes = DEFAULT_BATCH_BYTES;
     char inputfile[MAX_FILENAME_SIZE];
     char outputfile[MAX_FILENAME_SIZE];
     char moves_buffer[512];
     char squares_buffer[MAX_SQUARES_ARG];
+    char offsets_file[MAX_FILENAME_SIZE];
     unsigned int squares[MAX_COMPACT_SQUARES];
     unsigned int square_count = 0;
     memset(inputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
     memset(outputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
     memset(squares_buffer, '\0', sizeof(squares_buffer));
+    memset(offsets_file, '\0', sizeof(offsets_file));
 
     for (int i = 1; i < argc; i++) {
         if (strmatch(argv[i], "--inputfile")) {
@@ -685,6 +780,14 @@ main (int argc, char *argv[])
             i++;
             strncpy(squares_buffer, argv[i], MAX_SQUARES_ARG - 1);
 
+        } else if (strmatch(argv[i], "--offsets")) {
+            i++;
+            strcpy(offsets_file, argv[i]);
+
+        } else if (strmatch(argv[i], "--batch-bytes")) {
+            i++;
+            batch_bytes = parse_batch_bytes(argv[i]);
+
         } else if (strmatch(argv[i], "-h") || strmatch(argv[i], "--help")) {
             printf("\nTODO\n\n");
             exit(0);
@@ -697,11 +800,6 @@ main (int argc, char *argv[])
 
     if (cube_size < 2 || cube_size > 7) {
         printf("ERROR: only 2x2x2 through 7x7x7 cubes are supported, yours is %dx%dx%d\n", cube_size, cube_size, cube_size);
-        exit(1);
-    }
-
-    if (linewidth == 0) {
-        printf("ERROR: must specify --linewidth\n");
         exit(1);
     }
 
@@ -732,5 +830,7 @@ main (int argc, char *argv[])
         square_count = parse_squares(squares_buffer, squares);
     }
 
-    process_workq(inputfile, outputfile, linewidth, start, end, cube_size, moves, moves_index, squares, square_count);
+    process_workq(
+        inputfile, outputfile, linewidth, start, end, cube_size, moves, moves_index,
+        squares, square_count, offsets_file, batch_bytes);
 }
