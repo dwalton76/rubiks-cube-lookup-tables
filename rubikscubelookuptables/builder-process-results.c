@@ -607,7 +607,12 @@ reverse_steps(const char *steps, unsigned int steps_length, char *result)
 }
 
 static unsigned int
-write_new_table_line(FILE *fh, const char *filename, const record *value, char *out)
+write_new_table_line(
+    FILE *fh,
+    const char *filename,
+    const record *value,
+    char *out,
+    unsigned int pad_width)
 {
     memcpy(out, value->line, value->moves_offset);
     unsigned int length = value->moves_offset;
@@ -615,8 +620,23 @@ write_new_table_line(FILE *fh, const char *filename, const record *value, char *
         value->line + value->moves_offset,
         value->length - value->moves_offset,
         out + length);
-    out[length] = '\n';
-    write_all(fh, out, length + 1, filename);
+
+    unsigned int written = length;
+
+    if (pad_width) {
+        // The callers that ask for padding already know the widest line every layer
+        // will produce, so a line wider than that means their width is wrong and the
+        // table would sort fine while quietly breaking the solver's binary search.
+        if (length > pad_width) {
+            die("line '%.*s' is %u bytes, wider than --pad-width %u",
+                length, out, length, pad_width);
+        }
+        memset(out + length, ' ', pad_width - length);
+        written = pad_width;
+    }
+
+    out[written] = '\n';
+    write_all(fh, out, written + 1, filename);
     return length;
 }
 
@@ -740,7 +760,7 @@ run_layer(
 }
 
 static void
-run_finalize(merge_state *state, const char *output_filename)
+run_finalize(merge_state *state, const char *output_filename, unsigned int pad_width)
 {
     char *output_buffer = NULL;
     FILE *output = open_output(output_filename, &output_buffer);
@@ -750,7 +770,8 @@ run_finalize(merge_state *state, const char *output_filename)
     unsigned int max_length = 0;
 
     while (next_merge_record(state, &value)) {
-        unsigned int length = write_new_table_line(output, output_filename, &value, out);
+        unsigned int length = write_new_table_line(
+            output, output_filename, &value, out, pad_width);
         if (length > max_length) {
             max_length = length;
         }
@@ -773,7 +794,7 @@ usage(const char *program)
         "          (--merge-only-output FILE |\n"
         "           --output-layer FILE [--tables0-from FILE] [--offsets FILE]\n"
         "            [--offset-stride N] |\n"
-        "           --finalize --output-table FILE)\n",
+        "           --finalize --output-table FILE [--pad-width N])\n",
         program);
 }
 
@@ -788,6 +809,7 @@ main(int argc, char *argv[])
     const char *layer_filename = NULL;
     const char *offsets_filename = NULL;
     unsigned int offset_stride = DEFAULT_OFFSET_STRIDE;
+    unsigned int pad_width = 0;
     int finalize = 0;
     size_t buffer_size = DEFAULT_BUFFER_SIZE;
 
@@ -812,6 +834,12 @@ main(int argc, char *argv[])
                 die("invalid --offset-stride");
             }
             offset_stride = (unsigned int) value;
+        } else if (!strcmp(argv[i], "--pad-width") && i + 1 < argc) {
+            unsigned long value = strtoul(argv[++i], NULL, 10);
+            if (!value || value >= MAX_LINE_LENGTH * 2) {
+                die("invalid --pad-width");
+            }
+            pad_width = (unsigned int) value;
         } else if (!strcmp(argv[i], "--finalize")) {
             finalize = 1;
         } else if (!strcmp(argv[i], "--buffer-size") && i + 1 < argc) {
@@ -843,6 +871,9 @@ main(int argc, char *argv[])
     if (finalize && output_filename == NULL) {
         die("--finalize requires --output-table");
     }
+    if (pad_width && !finalize) {
+        die("--pad-width only applies to --finalize");
+    }
 
     unsigned int filename_count = 0;
     char **filenames = read_manifest(manifest_filename, &filename_count);
@@ -861,7 +892,7 @@ main(int argc, char *argv[])
     if (merge_only_filename) {
         run_merge_only(&shards, merge_only_filename);
     } else if (finalize) {
-        run_finalize(&shards, output_filename);
+        run_finalize(&shards, output_filename, pad_width);
     } else {
         merge_state tables;
         open_merger(&tables, table_files, table_count, format, buffer_size - shard_budget);
