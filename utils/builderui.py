@@ -38,7 +38,7 @@ def get_class(kls):
 
 
 start_time = dt.datetime.now()
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)24s %(levelname)8s: %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)24s:%(lineno)-4d %(levelname)8s: %(message)s")
 log = logging.getLogger(__name__)
 
 # Color the errors and warnings in red

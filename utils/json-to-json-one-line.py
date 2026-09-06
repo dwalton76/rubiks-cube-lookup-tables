@@ -5,6 +5,9 @@ import logging
 import os
 import sys
 
+# rubiks cube libraries
+from rubikscubelookuptables.buildercore import WRITE_BATCH_SIZE
+
 log = logging.getLogger(__name__)
 
 
@@ -16,7 +19,6 @@ def convert_json_to_json_one_line(filename: str) -> None:
 
     to_write = []
     to_write_count = 0
-    BATCH_SIZE = 1000000
     one_line_filename = filename.replace(".json", ".json-one-line")
 
     with open(one_line_filename, "w") as fh_one_line:
@@ -30,7 +32,7 @@ def convert_json_to_json_one_line(filename: str) -> None:
                 to_write.append(line)
                 to_write_count += 1
 
-                if to_write_count >= BATCH_SIZE:
+                if to_write_count >= WRITE_BATCH_SIZE:
                     log.info(f"{line_index:,}")
                     fh_one_line.write("".join(to_write))
                     to_write = []
