@@ -68,6 +68,7 @@ class Build333MicroPythonPhase1(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -99,6 +100,7 @@ class Build333MicroPythonPhase2(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -130,6 +132,7 @@ class Build333MicroPythonPhase2Edges(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -161,6 +164,7 @@ class Build333MicroPythonPhase2Corners(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -306,6 +310,7 @@ class Build333MicroPythonPhase3Edges(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -418,6 +423,7 @@ class Build333MicroPythonPhase3Corners(BFS):
                 ("U.U...U.UR.R...L.LB.B...F.FL.L...R.RF.F...B.BD.D...D.D", "ULFRBD"),
                 ("U.U...U.UR.R...R.RB.B...B.BL.L...L.LF.F...F.FD.D...D.D", "ULFRBD"),
             ),
+            use_c=True,
         )
 
 
@@ -449,6 +455,7 @@ class Build333MicroPythonPhase4(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -480,6 +487,7 @@ class Build333MicroPythonPhase4Edges(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -511,6 +519,7 @@ class Build333MicroPythonPhase4Corners(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 

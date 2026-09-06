@@ -69,6 +69,7 @@ class Build666LRInnerXCentersStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -124,6 +125,7 @@ class Build666UDInnerXCentersStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -176,6 +178,7 @@ class Build666UDXCentersStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -228,6 +231,7 @@ class Build666UDLeftObliqueCentersStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -280,6 +284,7 @@ class Build666UDRightObliqueCentersStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -502,6 +507,7 @@ class StartingStates666Step50LRCenters(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -715,6 +721,7 @@ class Build666UDInnerXCenterAndObliqueEdges(BFS):
               . . . . . .""", "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -806,6 +813,7 @@ class Build666FBInnerXCenterAndObliqueEdges(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -898,5 +906,6 @@ class Build666LRObliqueEdges(BFS):
                 ),
 
             ),
+            use_c=True,
         )
         # fmt: on

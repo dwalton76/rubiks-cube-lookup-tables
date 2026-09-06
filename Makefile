@@ -5,7 +5,7 @@ clean:
 	find . -name __pycache__ | xargs rm -rf
 
 init: clean
-	export PYTHONPATH=/home/dwalton76/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton76/rubiks-cube/rubiks-cube-lookup-tables/
+	export PYTHONPATH=/home/dwalton76/rubiks-cube-NxNxN-solver/:/home/dwalton76/rubiks-cube-lookup-tables/
 	rm -rf venv rubikscubelookuptables/builder-crunch-workq
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	python3 -m venv venv
@@ -105,6 +105,18 @@ wheel:
 	./utils/builderui.py Build555LRCenterStageXCenter
 	./utils/build-ida-graph.py Build555LRCenterStageXCenter
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
+
+	./utils/builderui.py Build555UDCenterStageTCenter
+	./utils/build-ida-graph.py Build555UDCenterStageTCenter
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step13-UD-centers-stage-t-center-only.json
+
+	./utils/builderui.py Build555UDCenterStageXCenter
+	./utils/build-ida-graph.py Build555UDCenterStageXCenter
+	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step14-UD-centers-stage-x-center-only.json
+
+	# ./utils/builderui.py Build555XCenterStageOnePhase
+	# ./utils/builderui.py Build555TCenterStageOnePhase
+
 
 555-phase2: clean
 	./utils/builderui.py Build555FBTCenterStage

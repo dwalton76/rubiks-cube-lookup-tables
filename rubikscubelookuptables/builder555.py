@@ -143,6 +143,7 @@ class Build555LRCenterStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -179,6 +180,7 @@ class Build555LRCenterStageTCenter(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -215,6 +217,7 @@ class Build555LRCenterStageXCenter(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -251,6 +254,7 @@ class Build555UDCenterStageTCenter(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -287,6 +291,7 @@ class Build555UDCenterStageXCenter(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -340,6 +345,7 @@ class Build555XCenterStageOnePhase(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -378,6 +384,7 @@ class Build555TCenterStageOnePhase(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -437,6 +444,7 @@ class Build555CenterStageOnePhase(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -476,6 +484,7 @@ class Build555FBCenterStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -512,6 +521,7 @@ class Build555FBTCenterStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -548,6 +558,7 @@ class Build555FBXCenterStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -996,6 +1007,7 @@ class Build555Phase2LRCenterStage(BFS):
                 ('...............................RRR..RLR..RLR.....................................LRL..LRL..LLL........................................................', 'ULFRBD'),
                 ('...............................RRR..RLR..RRR.....................................LLL..LRL..LLL........................................................', 'ULFRBD'),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -1560,6 +1572,7 @@ class StartingStates555Phase3LRCenterStage(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -2008,6 +2021,7 @@ class Build555Phase3LRCenterStage(BFS):
                 ('...............................RRR..RLR..RLR.....................................LRL..LRL..LLL........................................................', 'ULFRBD'),
                 ('...............................RRR..RLR..RRR.....................................LLL..LRL..LLL........................................................', 'ULFRBD'),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -2045,6 +2059,7 @@ class Build555EdgeOrientOuterOrbit(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -2133,6 +2148,7 @@ class StartingStatesBuild555Phase4(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -2154,6 +2170,7 @@ class Build555Phase4(BFS):
             "lookup-table-5x5x5-step40-phase4.txt",
             True,  # store_as_hex
             starting_states_phase4,
+            use_c=True,
         )
 
 
@@ -2208,6 +2225,7 @@ class StartingStatesBuild555Phase5Centers(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -2275,6 +2293,7 @@ class Build555Phase5Centers(BFS):
                 ("...............................RLR..RLR..RLR............FFB..FFB..FFB............LRL..LRL..LRL............FBB..FBB..FBB...............................", "ULFRBD",),
                 ("...............................RLR..RLR..RLR............FFF..FFF..FFF............LRL..LRL..LRL............BBB..BBB..BBB...............................", "ULFRBD",),
             ),
+            use_c=True,
         )
         # fmt: on
 
@@ -2920,6 +2939,7 @@ class Build555Phase5FBCenters(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -3034,6 +3054,7 @@ class Build555PairLastEightEdgesCentersOnly(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -3134,6 +3155,7 @@ class Build555Phase6Centers(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -3361,6 +3383,7 @@ class Build555UDCenterSolve(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -3397,6 +3420,7 @@ class Build555LRCenterSolve(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -3433,6 +3457,7 @@ class Build555FBCenterSolve(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -3470,6 +3495,7 @@ class Build555ULFRBDTCenterSolve(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
 
 
@@ -3661,4 +3687,5 @@ class Build555ULFRBDTCenterDaisySolve(BFS):
                     "ascii",
                 ),
             ),
+            use_c=True,
         )
