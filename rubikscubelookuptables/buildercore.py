@@ -504,6 +504,9 @@ class BFS(object):
         # Width of the longest line we have written to the lookup-table. builder-find-new-states
         # reports this as it writes, so save() can pad a compact table without reading it again.
         self.max_table_line_length = 0
+        # Set when _finalize_layers padded the table on its way out, so save() can skip
+        # its own pass over the table.
+        self.table_is_padded = False
         self.workq_line_length = self.get_workq_line_length()
         log.info(f"workq line length {self.workq_line_length}")
 
@@ -1496,6 +1499,17 @@ class BFS(object):
             "--buffer-size",
             SORT_BUFFER_SIZE,
         ]
+
+        # Every layer told us how wide its widest line would be once its scramble moves
+        # were reversed, so the width save() needs to pad to is already known and finalize
+        # can write the padded table directly. That is only worth doing when nothing
+        # rewrites the table afterwards; the conversion passes in save() would just have
+        # to read the padding back in and strip it.
+        pad_width = self.max_table_line_length if self._finalize_can_pad() else 0
+
+        if pad_width:
+            cmd.extend(["--pad-width", str(pad_width)])
+
         log.info(" ".join(cmd))
 
         try:
@@ -1504,7 +1518,17 @@ class BFS(object):
             os.remove(manifest)
 
         self.max_table_line_length = max(self.max_table_line_length, int(longest_line))
+        self.table_is_padded = bool(pad_width)
         return self.max_table_line_length
+
+    def _finalize_can_pad(self) -> bool:
+        """
+        Whether the table that _finalize_layers writes is the final table. save() rewrites
+        it whenever the states still have to be converted to a smaller format.
+        """
+        if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
+            return False
+        return bool(self.compact_squares)
 
     def _table_linecount(self) -> int:
         """
@@ -1696,8 +1720,11 @@ class BFS(object):
         files_to_pad = (self.filename,)
 
         for filename in files_to_pad:
-            log.info(f"{self}: pad the file to {max_line_length} bytes")
-            subprocess.check_output(f"nice ./utils/pad-lines {filename} --width {max_line_length}", shell=True)
+            if self.table_is_padded:
+                log.info(f"{self}: already padded to {max_line_length} bytes by finalize")
+            else:
+                log.info(f"{self}: pad the file to {max_line_length} bytes")
+                subprocess.check_output(f"nice ./utils/pad-lines {filename} --width {max_line_length}", shell=True)
 
             # Every line is now the same width, so the file has to be exactly
             # linecount * (max_line_length + 1) bytes. This is a stat() rather than another

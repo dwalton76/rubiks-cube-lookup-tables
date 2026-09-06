@@ -198,6 +198,80 @@ class BuilderProcessResultsTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(output.read_text(encoding="ascii"), "AAA:\nBBB:D'\nCCC:F'\nDDD:F L'\n")
 
+    def test_finalize_pads_every_line_to_pad_width(self):
+        layer0 = self.fixture.write("layer0", "AAA:\nCCC:F\n")
+        layer1 = self.fixture.write("layer1", "BBB:D\nDDD:L F'\n")
+        manifest = self.fixture.manifest(layer0, layer1)
+        output = self.root / "table"
+
+        result = self.fixture.run(
+            "--format",
+            "regular",
+            "--files0-from",
+            manifest,
+            "--finalize",
+            "--output-table",
+            output,
+            "--pad-width",
+            8,
+            "--buffer-size",
+            "16M",
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        # The reported width stays the width of the widest real line, not the padding,
+        # so save() can still check the table's size against it.
+        self.assertEqual(result.stdout.strip(), "4 8")
+        self.assertEqual(
+            output.read_text(encoding="ascii"),
+            "AAA:    \nBBB:D'  \nCCC:F'  \nDDD:F L'\n",
+        )
+        self.assertEqual(output.stat().st_size, 4 * 9)
+
+    def test_finalize_rejects_pad_width_narrower_than_a_line(self):
+        layer0 = self.fixture.write("layer0", "AAA:\nDDD:L F'\n")
+        manifest = self.fixture.manifest(layer0)
+
+        result = self.fixture.run(
+            "--format",
+            "regular",
+            "--files0-from",
+            manifest,
+            "--finalize",
+            "--output-table",
+            self.root / "table",
+            "--pad-width",
+            7,
+            "--buffer-size",
+            "16M",
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("pad-width", result.stderr)
+
+    def test_pad_width_is_rejected_outside_finalize(self):
+        shard = self.fixture.write("shard", "AAA:U\n")
+        shards = self.fixture.manifest(shard)
+        tables = self.fixture.manifest(name="tables0")
+
+        result = self.fixture.run(
+            "--format",
+            "regular",
+            "--files0-from",
+            shards,
+            "--tables0-from",
+            tables,
+            "--output-layer",
+            self.root / "layer1",
+            "--pad-width",
+            8,
+            "--buffer-size",
+            "16M",
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("pad-width", result.stderr)
+
     def test_rejects_unsorted_shard(self):
         shard = self.fixture.write("shard", "BBB:U\nAAA:D\n")
         shards = self.fixture.manifest(shard)
