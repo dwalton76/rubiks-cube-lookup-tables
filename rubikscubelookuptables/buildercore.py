@@ -62,6 +62,11 @@ TMPDIR = Path("./tmp/")
 # How much memory we let each "sort" use. Setting this above what the machine actually has
 # does not make sort faster, it just gets us into swap.
 SORT_BUFFER_SIZE = "16G"
+RESULT_PROCESSOR = os.environ.get(
+    "RUBIKS_RESULT_PROCESSOR",
+    "./rubikscubelookuptables/builder-process-results",
+)
+WORKQ_BATCH_SIZE = int(os.environ.get("RUBIKS_WORKQ_BATCH_SIZE", "1000000000"))
 
 
 def get_line_number_splits(lines: int, cores: int) -> Tuple:
@@ -644,8 +649,21 @@ class BFS(object):
                 + WIGGLE_ROOM
             )
 
-    def get_workq_filename_for_core(self, core):
-        return "%s.core-%d" % (self.workq_filename, core)
+    def get_workq_filename_for_core(self, core, batch_index=None):
+        if batch_index is None:
+            return "%s.core-%d" % (self.workq_filename, core)
+
+        return "%s.batch-%d.core-%d" % (self.workq_filename, batch_index, core)
+
+    def get_result_files_for_base(self, outputfile_base):
+        """
+        The C cruncher uses a "-0000000" suffix while the Python cruncher uses
+        ".00000" and can also produce ".all". Use the exact output base instead of a
+        broad tmp/*core* glob so unrelated files can never enter the merge.
+        """
+        result = glob.glob(f"{outputfile_base}-*")
+        result.extend(glob.glob(f"{outputfile_base}.*"))
+        return sorted(set(result))
 
     def rm_per_core_workq_results_files(self):
         # These are the per-core files in tmp where the results of builder-crunch-workq are written
@@ -654,6 +672,9 @@ class BFS(object):
 
             if os.path.isfile(filename):
                 os.remove(filename)
+
+            for result_filename in self.get_result_files_for_base(filename):
+                os.remove(result_filename)
 
     def log_table_stats(self):
         states_per_depth = ""
@@ -691,11 +712,24 @@ class BFS(object):
         log.info("setup: starting from scratch")
 
         # If we crashed delete all of the files we had created
-        for filename in (self.workq_filename_next, self.workq_filename, self.filename):
+        for filename in (
+            self.workq_filename_next,
+            self.workq_filename,
+            f"{self.workq_filename}.30-final",
+            self.filename,
+        ):
             if os.path.isfile(filename):
                 os.remove(filename)
 
         self.rm_per_core_workq_results_files()
+        stale_files = (
+            glob.glob(f"{self.workq_filename}.batch-*.core-*")
+            + glob.glob(f"{self.filename}-batch-*")
+            + glob.glob(f"{TMPDIR}/builder-results-*.files0")
+        )
+        for filename in stale_files:
+            if os.path.isfile(filename):
+                os.remove(filename)
 
         if self.use_edges_pattern:
             pattern = None
@@ -911,16 +945,98 @@ class BFS(object):
         self.time_in_file_delete += (dt.datetime.now() - start_time).total_seconds()
         log.info("rm builder-crunch-workq output files end")
 
+    def _write_result_manifest(self, filenames, tag):
+        manifest = f"{TMPDIR}/builder-results-{tag}.files0"
+        with open(manifest, "wb") as fh:
+            fh.write(b"\0".join(os.fsencode(filename) for filename in filenames))
+        return manifest
+
+    def _merge_result_shards(self, filenames, output_filename, tag):
+        """
+        Merge and deduplicate one outer workq batch without materializing the raw
+        shards for later batches. This is only needed when a depth exceeds the
+        one-billion-line outer batch; the common case feeds raw shards directly to
+        builder-process-results.
+        """
+        manifest = self._write_result_manifest(filenames, tag)
+        cmd = [
+            "nice",
+            RESULT_PROCESSOR,
+            "--format",
+            "edges" if self.use_edges_pattern else "regular",
+            "--files0-from",
+            manifest,
+            "--merge-only-output",
+            output_filename,
+            "--buffer-size",
+            SORT_BUFFER_SIZE,
+        ]
+        log.info(" ".join(cmd))
+        start_time = dt.datetime.now()
+
+        try:
+            subprocess.check_output(cmd)
+        finally:
+            os.remove(manifest)
+
+        self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
+
+    def _process_result_shards(self, filenames, max_depth):
+        """
+        K-way merge sorted cruncher shards, remove states already in the table, and
+        write both the updated table and next workq in one streaming pass.
+        """
+        manifest = self._write_result_manifest(filenames, f"depth-{self.depth}")
+        output_table = f"{self.workq_filename}.30-final"
+        build_workq = max_depth is None or self.depth < max_depth
+        cmd = [
+            "nice",
+            RESULT_PROCESSOR,
+            "--format",
+            "edges" if self.use_edges_pattern else "regular",
+            "--table",
+            self.filename,
+            "--files0-from",
+            manifest,
+            "--output-table",
+            output_table,
+            "--buffer-size",
+            SORT_BUFFER_SIZE,
+        ]
+
+        if build_workq:
+            cmd.extend(["--workq", self.workq_filename_next, "--linewidth", str(self.workq_line_length)])
+
+        log.info(" ".join(cmd))
+        start_time = dt.datetime.now()
+
+        try:
+            count, longest_line = subprocess.check_output(cmd).split()
+        finally:
+            os.remove(manifest)
+
+        self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
+        new_states_count = int(count)
+        self.max_table_line_length = max(self.max_table_line_length, int(longest_line))
+
+        if build_workq:
+            self.workq_size = new_states_count
+        else:
+            with open(self.workq_filename_next, "w"):
+                pass
+
+        return new_states_count, output_table
+
     def _search_launch_builder_crunch_workq_per_core(self):
         """
         Launch one builder-crunch-workq process per core. Wait for all of them
-        to complete before returning.
+        to complete before returning. When builder-process-results is available,
+        return the exact sorted shard paths it should stream.
         """
-        MILLION = 1000000
-        BILLION = 1000 * MILLION
-        BATCH_SIZE = BILLION
-        batch_count = int(self.workq_size / BATCH_SIZE) + 1
+        batch_count = max(1, (self.workq_size + WORKQ_BATCH_SIZE - 1) // WORKQ_BATCH_SIZE)
         workq_size = self.workq_size
+        use_streaming_processor = os.path.isfile(RESULT_PROCESSOR)
+        result_files = []
 
         for batch_index in range(batch_count):
             log.info(f"builder-crunch-workq begin batch {batch_index + 1}/{batch_count}")
@@ -930,8 +1046,9 @@ class BFS(object):
             # would report their seconds twice and leave the report unable to add up.
             start_time = dt.datetime.now()
             threads = []
-            line_numbers_for_cores = get_line_number_splits(min(workq_size, BATCH_SIZE), self.cores)
-            line_number_offset = batch_index * BATCH_SIZE
+            outputfile_bases = []
+            line_numbers_for_cores = get_line_number_splits(min(workq_size, WORKQ_BATCH_SIZE), self.cores)
+            line_number_offset = batch_index * WORKQ_BATCH_SIZE
 
             # Launch one builder-crunch-workq process per core
             # - each one will process a subsection of workq_filename_next
@@ -944,6 +1061,10 @@ class BFS(object):
 
                 start += line_number_offset
                 end += line_number_offset
+                outputfile_base = self.get_workq_filename_for_core(
+                    core, batch_index if use_streaming_processor else None
+                )
+                outputfile_bases.append(outputfile_base)
 
                 if self.use_c:
                     # fmt: off
@@ -955,7 +1076,7 @@ class BFS(object):
                         "--linewidth", str(self.workq_line_length + 1),
                         "--start", str(start),
                         "--end", str(end),
-                        "--outputfile", self.get_workq_filename_for_core(core),
+                        "--outputfile", outputfile_base,
                         "--moves", f"{' '.join(self.legal_moves)}",
                     ]
                     # fmt: on
@@ -972,7 +1093,7 @@ class BFS(object):
                         str(self.workq_line_length),
                         str(start),
                         str(end),
-                        self.get_workq_filename_for_core(core),
+                        outputfile_base,
                         f"{' '.join(self.legal_moves)}",
                     ]
 
@@ -1001,17 +1122,34 @@ class BFS(object):
 
             self.time_in_crunching_workq += (dt.datetime.now() - start_time).total_seconds()
 
-            if workq_size > BATCH_SIZE:
-                workq_size -= BATCH_SIZE
+            if workq_size > WORKQ_BATCH_SIZE:
+                workq_size -= WORKQ_BATCH_SIZE
             else:
                 workq_size = 0
 
             log.info(f"builder-crunch-workq end batch {batch_index + 1}/{batch_count}")
 
-            sorted_results_filename = f"{self.filename}-batch-{batch_index}"
-            core_files = sorted(glob.glob(f"{TMPDIR}/*core*"))
-            self._sort_merge_core_files(core_files, sorted_results_filename)
-            self.rm_files(core_files)
+            core_files = []
+            for outputfile_base in outputfile_bases:
+                core_files.extend(self.get_result_files_for_base(outputfile_base))
+
+            if use_streaming_processor:
+                if batch_count == 1:
+                    result_files.extend(core_files)
+                else:
+                    batch_result = f"{self.filename}-batch-{batch_index}"
+                    self._merge_result_shards(core_files, batch_result, f"outer-{batch_index}")
+                    self.rm_files(core_files)
+                    result_files.append(batch_result)
+            else:
+                sorted_results_filename = f"{self.filename}-batch-{batch_index}"
+                self._sort_merge_core_files(core_files, sorted_results_filename)
+                self.rm_files(core_files)
+
+        if use_streaming_processor:
+            return result_files
+
+        return None
 
     def _build_edges_pattern_workq(self, new_states_filename: str, build_workq: bool) -> int:
         """
@@ -1057,7 +1195,7 @@ class BFS(object):
         log.info("building next workq file end")
         return new_states_count
 
-    def _search_process_builder_crunch_workq_results(self, max_depth):
+    def _search_process_builder_crunch_workq_results(self, max_depth, result_files=None):
         """
         Process the results from all of the builder-crunch-workq processes
         and build a new workq_filename_next
@@ -1068,6 +1206,24 @@ class BFS(object):
         # Remove the workq file to save some disk space
         if os.path.exists(self.workq_filename):
             os.remove(self.workq_filename)
+
+        if result_files is not None:
+            log.info(f"builder-process-results begin ({len(result_files)} sorted shards)")
+            new_states_count, output_table = self._process_result_shards(result_files, max_depth)
+            log.info("builder-process-results end")
+            self.rm_files(result_files)
+
+            log.info("move files begin")
+            start_time = dt.datetime.now()
+            shutil.move(output_table, self.filename)
+            shutil.move(self.workq_filename_next, self.workq_filename)
+            self.time_in_file_delete += (dt.datetime.now() - start_time).total_seconds()
+            log.info("move files end")
+
+            log.info(f"there are {new_states_count:,} new states")
+            self.stats[self.depth] = new_states_count
+            log.warning(f"{self.index}: finished depth {self.depth}, workq size {self.workq_size:,}")
+            return
 
         batch_files = sorted(glob.glob(f"{self.filename}-batch*"))
 
@@ -1189,8 +1345,8 @@ class BFS(object):
         self._search_setup()
 
         while True:
-            self._search_launch_builder_crunch_workq_per_core()
-            self._search_process_builder_crunch_workq_results(max_depth)
+            result_files = self._search_launch_builder_crunch_workq_per_core()
+            self._search_process_builder_crunch_workq_results(max_depth, result_files)
 
             self.depth += 1
             self.log_table_stats()
