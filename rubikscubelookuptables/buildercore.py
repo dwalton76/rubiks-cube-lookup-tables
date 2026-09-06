@@ -54,11 +54,8 @@ from rubikscubennnsolver.RubiksCube777 import RubiksCube777, moves_777, rotate_7
 log = logging.getLogger(__name__)
 supported_sizes = ("2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7")
 
-WRITE_BATCH_SIZE = 1000000
-LOG_BATCH_SIZE = 1000000
-
-# SLOW_TMP = Path("/storage/dwalton76/tmp/")
-# FAST_TMP = Path("/bigssd/lz4/tmp/")
+# 10 million
+WRITE_BATCH_SIZE = 10000000
 SLOW_TMP = Path("lookup-tables")
 FAST_TMP = Path("./tmp/")
 
@@ -377,7 +374,6 @@ class BFS(object):
         self.rotations = rotations
         self.use_centers_then_edges = use_centers_then_edges
         self.lt_centers = {}
-        self.lt_centers_max_depth = None
         self.use_c = use_c
 
         # builder-crunch-workq.c only applies legal turns to a full cube state.
@@ -662,7 +658,7 @@ class BFS(object):
             state_width = len(state)
 
         cmd = (
-            "LC_ALL=C nice sort --batch-size=1000 --parallel=%d --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
+            "LC_ALL=C nice sort --batch-size=1000 --parallel=%d --buffer-size=48G --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
             % (self.cores, state_width, FAST_TMP, sorted_results_filename, files_to_sort_filename)
         )
         # log.info(cmd)
@@ -834,6 +830,7 @@ class BFS(object):
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-states.py end")
 
+        os.remove(sorted_results_filename)
         log.info("building next workq file begin")
         start_time = dt.datetime.now()
         new_states_count = int(
@@ -852,38 +849,11 @@ class BFS(object):
             ) as fh_workq_next:
 
                 for line in fh_new_states:
-
                     # Find the state and steps_to_solve
                     if self.use_edges_pattern:
-                        pattern, state, steps_to_solve = line.rstrip().split(":")
-                        self.cube.state = list(state)
-
+                        pattern, state, steps_to_solve = line.rstrip().split(":", maxsplit=2)
                     else:
-                        state, steps_to_solve = line.rstrip().split(":")
-                        self.cube.state = list(state)
-
-                    if self.lt_centers_max_depth:
-                        if max_depth is None:
-                            move_budget = 999
-                        else:
-                            move_budget = max_depth - self.depth + 1
-
-                        centers = "".join([self.cube.state[x] for x in centers_555])
-                        centers_cost = self.lt_centers.get(centers, self.lt_centers_max_depth + 1)
-
-                        # Are the centers so scrambled that we cannot solve them in the steps
-                        # budget we have left? If so prune this branch.
-                        if centers_cost > move_budget:
-                            pruned += 1
-                            continue
-
-                        # Or if the centers are back to solved we can prune this branch
-                        elif centers == "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-                            pruned += 1
-                            continue
-
-                        else:
-                            kept += 1
+                        state, steps_to_solve = line.rstrip().split(":", maxsplit=1)
 
                     # Add entries to the next workq file
                     steps_to_scramble = " ".join(reverse_steps(steps_to_solve.split()))
@@ -893,11 +863,11 @@ class BFS(object):
                     else:
                         workq_line = f"{state}:{steps_to_scramble}"
 
-                    to_write.append(workq_line + " " * (workq_line_length - len(workq_line)) + "\n")
+                    to_write.append(f"{workq_line:<{workq_line_length}}\n")
                     to_write_count += 1
                     self.workq_size += 1
 
-                    if to_write_count >= 10000:
+                    if to_write_count >= WRITE_BATCH_SIZE:
                         fh_workq_next.write("".join(to_write))
                         to_write = []
                         to_write_count = 0
@@ -924,7 +894,7 @@ class BFS(object):
             log.info("sort --merge our current lookup-table.txt file with the .20-new-states file begin")
             start_time = dt.datetime.now()
             subprocess.check_output(
-                "LC_ALL=C nice sort --parallel=%d --merge --temporary-directory=%s --output %s.30-final %s %s.20-new-states"
+                "LC_ALL=C nice sort --parallel=%d --buffer-size=48G --merge --temporary-directory=%s --output %s.30-final %s %s.20-new-states"
                 % (self.cores, FAST_TMP, self.workq_filename, self.filename, self.workq_filename),
                 shell=True,
             )
@@ -937,7 +907,6 @@ class BFS(object):
 
         log.info("move files begin")
         start_time = dt.datetime.now()
-        os.remove(f"{self.workq_filename}.10-results")
         os.remove(f"{self.workq_filename}.20-new-states")
         shutil.move(f"{self.workq_filename}.30-final", self.filename)
 
@@ -1049,16 +1018,6 @@ class BFS(object):
                         pattern, cube_state_string, steps = line.rstrip().split(":")
                         pattern = pattern.replace(".", "")
                         self.cube.state = list(cube_state_string)
-
-                        if self.lt_centers_max_depth:
-                            centers = "".join([self.cube.state[x] for x in centers_555])
-
-                            # Only keep the entries where centers are solved
-                            if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-                                continue
-
-                            pattern = pattern.replace("UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD", "")
-
                         to_write.append(f"{pattern}:{steps}")
                         to_write_count += 1
 
@@ -1104,24 +1063,11 @@ class BFS(object):
                             to_write_count = 0
 
                 else:
-                    lt_centers_max_depth = self.lt_centers_max_depth
                     store_as_hex = self.store_as_hex
 
                     for line in fh_read:
                         cube_state_string, steps = line.rstrip().split(":")
-
-                        if lt_centers_max_depth:
-                            self.cube.state = list(cube_state_string)
-                            edges = "".join([self.cube.state[x] for x in edges_555])
-                            edges = edges.replace("-", "x")
-                            centers = "".join([self.cube.state[x] for x in centers_555])
-
-                            if centers != "UUUUUUUUULLLLLLLLLFFFFFFFFFRRRRRRRRRBBBBBBBBBDDDDDDDDD":
-                                continue
-
-                            cube_state_string_small = edges
-                        else:
-                            cube_state_string_small = cube_state_string[1:].replace(".", "")
+                        cube_state_string_small = cube_state_string[1:].replace(".", "")
 
                         if store_as_hex:
                             cube_state_string_small = convert_state_to_hex(cube_state_string_small)
@@ -1155,7 +1101,7 @@ class BFS(object):
             except subprocess.CalledProcessError:
                 log.info(f"{self}: sort the file")
                 subprocess.check_output(
-                    "LC_ALL=C nice sort --parallel=%d --temporary-directory=%s --output=%s %s"
+                    "LC_ALL=C nice sort --parallel=%d --buffer-size=48G --temporary-directory=%s --output=%s %s"
                     % (self.cores, FAST_TMP, filename, filename),
                     shell=True,
                 )

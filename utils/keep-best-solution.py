@@ -6,6 +6,9 @@ import re
 import shutil
 import sys
 
+# rubiks cube libraries
+from rubikscubelookuptables.buildercore import WRITE_BATCH_SIZE
+
 log = logging.getLogger(__name__)
 
 
@@ -50,7 +53,7 @@ def keep_best_solutions(filename):
                     state_min_solution_len = 99
                     state_min_solution = None
 
-                    if to_write_count >= 100000:
+                    if to_write_count >= WRITE_BATCH_SIZE:
                         fh_final.write("".join(to_write))
                         to_write = []
                         to_write_count = 0

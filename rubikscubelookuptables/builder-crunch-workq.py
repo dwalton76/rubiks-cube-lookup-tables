@@ -234,7 +234,7 @@ def crunch_workq(size, inputfile, linewidth, start, end, outputfilebase, use_edg
                 if lines_since_last_merge >= 100000000:
                     # log.info("sort --merge all of the files created so far")
                     subprocess.check_output(
-                        "LC_ALL=C nice sort --merge --temporary-directory=./tmp/ --output %s.all %s.*"
+                        "LC_ALL=C nice sort --merge --buffer-size=4G --temporary-directory=./tmp/ --output %s.all %s.*"
                         % (outputfilebase, outputfilebase),
                         shell=True,
                     )
