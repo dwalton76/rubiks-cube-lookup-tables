@@ -13,6 +13,3 @@ exclude =
     dist
     venv
     lookup-tables
-    rubikscubelookuptables/builder555ss.py
-    rubikscubelookuptables/builder555ss.py.gz
-    rubikscubelookuptables/builder777ss.py

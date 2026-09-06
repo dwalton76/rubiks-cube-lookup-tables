@@ -9,4 +9,7 @@ flake8==7.3.0
 isort==8.0.1
 click==8.4.2
 
+# make test
+pytest==9.1.1
+
 -e .

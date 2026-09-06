@@ -1,0 +1,1021 @@
+{
+  "Build222Ultimate": {
+    "filename": "lookup-tables/lookup-table-2x2x2-step00-ultimate.txt",
+    "lines": 53568,
+    "states_per_depth": {
+      "0": 24,
+      "1": 216,
+      "2": 1296,
+      "3": 7704,
+      "4": 44328
+    },
+    "states_md5": "0f45c9a4c8d1eb448ac9d121eb747ca1",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase1": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step110.txt",
+    "lines": 1,
+    "states_per_depth": {
+      "0": 1
+    },
+    "states_md5": "6e73a2a921c50ecf0d3ba2d8b8430cce",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase2": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step120.txt",
+    "lines": 1219,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 17,
+      "3": 134,
+      "4": 1065
+    },
+    "states_md5": "70d6b6f4595df21808fdabef2b56937f",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase2Corners": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step122-corners.txt",
+    "lines": 421,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 13,
+      "3": 70,
+      "4": 335
+    },
+    "states_md5": "1819447f509e16a4926803f6a759cd72",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase2Edges": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step121-edges.txt",
+    "lines": 345,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 17,
+      "3": 104,
+      "4": 221
+    },
+    "states_md5": "a3ca6897afc8b99458bb791a4582ed1b",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase3": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step130.txt",
+    "lines": 16512,
+    "states_per_depth": {
+      "0": 96,
+      "1": 192,
+      "2": 864,
+      "3": 3456,
+      "4": 11904
+    },
+    "states_md5": "c32dfe81e9b70e3d90ccbf0610c24716",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase3Corners": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step132-corners.txt",
+    "lines": 3648,
+    "states_per_depth": {
+      "0": 96,
+      "1": 192,
+      "2": 480,
+      "3": 1152,
+      "4": 1728
+    },
+    "states_md5": "ba4e1d90b24c1b5e4cd5beaf942bc93c",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase3Edges": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step131-edges.txt",
+    "lines": 70,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 9,
+      "3": 30,
+      "4": 28
+    },
+    "states_md5": "8895a4f5c1d29c9acdf6bbabba6ad611",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase4": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step140.txt",
+    "lines": 673,
+    "states_per_depth": {
+      "0": 1,
+      "1": 6,
+      "2": 27,
+      "3": 120,
+      "4": 519
+    },
+    "states_md5": "3578e3ff5f6d359bdab616769f9f3bb6",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase4Corners": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step142-corners.txt",
+    "lines": 96,
+    "states_per_depth": {
+      "0": 1,
+      "1": 6,
+      "2": 27,
+      "3": 42,
+      "4": 20
+    },
+    "states_md5": "ee5d92f0eef7acc9c3cd633f8c1a1568",
+    "depth": 4
+  },
+  "Build333MicroPythonPhase4Edges": {
+    "filename": "lookup-tables/lookup-table-3x3x3-step141-edges.txt",
+    "lines": 673,
+    "states_per_depth": {
+      "0": 1,
+      "1": 6,
+      "2": 27,
+      "3": 120,
+      "4": 519
+    },
+    "states_md5": "1b97162f1a7486f3e406f90b4a7e5eac",
+    "depth": 4
+  },
+  "Build444HighLowEdgesCenters": {
+    "filename": "lookup-tables/lookup-table-4x4x4-step22-highlow-edges-centers.txt",
+    "lines": 26108,
+    "states_per_depth": {
+      "0": 12,
+      "1": 34,
+      "2": 384,
+      "3": 3354,
+      "4": 22324
+    },
+    "states_md5": "7e105aa99704ccd8d7b4b7c5da2d3ed9",
+    "depth": 4
+  },
+  "Build444HighLowEdgesEdges": {
+    "filename": "lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.txt",
+    "lines": 12136,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 62,
+      "3": 906,
+      "4": 11163
+    },
+    "states_md5": "1657770a581fbaf97dc103f7eb33c4ec",
+    "depth": 4
+  },
+  "Build444LCentersStage": {
+    "filename": "lookup-tables/lookup-table-4x4x4-step13-L-centers-stage.txt",
+    "lines": 10490,
+    "states_per_depth": {
+      "0": 12,
+      "1": 54,
+      "2": 660,
+      "3": 4688,
+      "4": 5076
+    },
+    "states_md5": "913e824d7f86a774d9f5552438958781",
+    "depth": 4
+  },
+  "Build444LRCentersStage": {
+    "filename": "lookup-tables/lookup-table-4x4x4-step12-LR-centers-stage.txt",
+    "lines": 15409,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 82,
+      "3": 1206,
+      "4": 14116
+    },
+    "states_md5": "476419dccfa3380bedfff5fc72bea91d",
+    "depth": 4
+  },
+  "Build444Reduce333Centers": {
+    "filename": "lookup-tables/lookup-table-4x4x4-step41-centers.txt",
+    "lines": 1065,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 42,
+      "3": 244,
+      "4": 774
+    },
+    "states_md5": "7ec0df315e76e92b3459925c929efdee",
+    "depth": 4
+  },
+  "Build444Reduce333FirstFourEdges": {
+    "filename": "lookup-tables/lookup-table-4x4x4-step32-first-four-edges.txt",
+    "lines": 1665,
+    "states_per_depth": {
+      "0": 1,
+      "1": 3,
+      "2": 27,
+      "3": 216,
+      "4": 1418
+    },
+    "states_md5": "51b3290aca89e365ffd6534ab0cae101",
+    "depth": 4
+  },
+  "Build444Reduce333FirstTwoCenters": {
+    "filename": "lookup-tables/lookup-table-4x4x4-step31-centers.txt",
+    "lines": 808,
+    "states_per_depth": {
+      "0": 36,
+      "1": 80,
+      "2": 212,
+      "3": 288,
+      "4": 192
+    },
+    "states_md5": "1c9d3ac96c4e019d50d6b4707b084408",
+    "depth": 4
+  },
+  "Build444Reduce333LastEightEdges": {
+    "filename": "lookup-tables/lookup-table-4x4x4-step42-last-eight-edges.txt",
+    "lines": 214,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 10,
+      "3": 36,
+      "4": 165
+    },
+    "states_md5": "fba04af00402e05cbabc082f60db00a9",
+    "depth": 4
+  },
+  "Build444UDCentersStage": {
+    "filename": "lookup-tables/lookup-table-4x4x4-step11-UD-centers-stage.txt",
+    "lines": 15409,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 82,
+      "3": 1206,
+      "4": 14116
+    },
+    "states_md5": "345d99225b939ff44ba35b74062d1abf",
+    "depth": 4
+  },
+  "Build555EdgeOrientInnerOrbit": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step903-EO-inner-orbit.txt",
+    "lines": 850,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 25,
+      "3": 202,
+      "4": 620
+    },
+    "states_md5": "a37915724ad156cb13d98c6326e0da6f",
+    "depth": 4
+  },
+  "Build555EdgeOrientOuterOrbit": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.txt",
+    "lines": 2244,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 29,
+      "3": 278,
+      "4": 1934
+    },
+    "states_md5": "c9c9f0f580a367a843ff866e97642946",
+    "depth": 4
+  },
+  "Build555FBCenterSolve": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step36-FB-centers-solve.txt",
+    "lines": 3774,
+    "states_per_depth": {
+      "0": 1,
+      "1": 6,
+      "2": 71,
+      "3": 560,
+      "4": 3136
+    },
+    "states_md5": "700b8205e099adc1d9e61bb816d2b8b0",
+    "depth": 4
+  },
+  "Build555FBTCenterStage": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step21-FB-t-centers-stage.txt",
+    "lines": 960,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 25,
+      "3": 210,
+      "4": 722
+    },
+    "states_md5": "ef21534f3beea37fd27ae114d043fad4",
+    "depth": 4
+  },
+  "Build555FBXCenterStage": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step22-FB-x-centers-stage.txt",
+    "lines": 1512,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 29,
+      "3": 234,
+      "4": 1246
+    },
+    "states_md5": "b83dcf325a8c00cd2c57380be1cb8ff6",
+    "depth": 4
+  },
+  "Build555LRCenterSolve": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step35-LR-centers-solve.txt",
+    "lines": 3121,
+    "states_per_depth": {
+      "0": 1,
+      "1": 6,
+      "2": 67,
+      "3": 476,
+      "4": 2571
+    },
+    "states_md5": "7d62e143d96f425fb20eae4f50a9d781",
+    "depth": 4
+  },
+  "Build555LRCenterStageTCenter": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.txt",
+    "lines": 10597,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 66,
+      "3": 900,
+      "4": 9626
+    },
+    "states_md5": "10dbbc942f80a97e157ae936b5b90e70",
+    "depth": 4
+  },
+  "Build555LRCenterStageXCenter": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.txt",
+    "lines": 15409,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 82,
+      "3": 1206,
+      "4": 14116
+    },
+    "states_md5": "0d7dec29156e2fe2c9a4c5a46b6ebda3",
+    "depth": 4
+  },
+  "Build555Phase2LRCenterStage": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step23-LR-center-stage.txt",
+    "lines": 4804,
+    "states_per_depth": {
+      "0": 432,
+      "1": 396,
+      "2": 1064,
+      "3": 1692,
+      "4": 1220
+    },
+    "states_md5": "b018c1743b7ab6544c6ee1ec1a81ab4a",
+    "depth": 4
+  },
+  "Build555Phase3LRCenterStage": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step901-LR-center-stage.txt",
+    "lines": 4804,
+    "states_per_depth": {
+      "0": 432,
+      "1": 396,
+      "2": 1064,
+      "3": 1692,
+      "4": 1220
+    },
+    "states_md5": "b018c1743b7ab6544c6ee1ec1a81ab4a",
+    "depth": 4
+  },
+  "Build555Phase5Centers": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step51-phase5-centers.txt",
+    "lines": 45326,
+    "states_per_depth": {
+      "0": 36,
+      "1": 132,
+      "2": 1146,
+      "3": 7176,
+      "4": 36836
+    },
+    "states_md5": "40d19d1e65d61c43695cafa8fdc034d3",
+    "depth": 4
+  },
+  "Build555Phase5FBCenters": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step56-phase5-fb-centers.txt",
+    "lines": 1730,
+    "states_per_depth": {
+      "0": 6,
+      "1": 22,
+      "2": 110,
+      "3": 396,
+      "4": 1196
+    },
+    "states_md5": "bc8a5b0b2e950f8f95de6b6610e5b1bd",
+    "depth": 4
+  },
+  "Build555Phase5HighEdgeMidge": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt",
+    "lines": 1211,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 30,
+      "3": 184,
+      "4": 992
+    },
+    "states_md5": "e99a21529e1ab9014438ca648de59fba",
+    "depth": 4
+  },
+  "Build555Phase5LowEdgeMidge": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.txt",
+    "lines": 1211,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 30,
+      "3": 184,
+      "4": 992
+    },
+    "states_md5": "ccc23e408c86aacdfde5ac238b15338d",
+    "depth": 4
+  },
+  "Build555Phase6Centers": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step61-phase6-centers.txt",
+    "lines": 2018,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 42,
+      "3": 280,
+      "4": 1691
+    },
+    "states_md5": "c920f22a0bb6baf741a45665cae3ad7f",
+    "depth": 4
+  },
+  "Build555Phase6HighEdgeMidge": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step62-phase6-high-edge-midge.txt",
+    "lines": 670,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 26,
+      "3": 128,
+      "4": 511
+    },
+    "states_md5": "950f1669b8e456a7c3de55be592b7fdb",
+    "depth": 4
+  },
+  "Build555Phase6LowEdgeMidge": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step63-phase6-low-edge-midge.txt",
+    "lines": 670,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 26,
+      "3": 128,
+      "4": 511
+    },
+    "states_md5": "fcc1dbf6659a3a23220e6e04214fcba4",
+    "depth": 4
+  },
+  "Build555UDCenterSolve": {
+    "filename": "lookup-tables/lookup-table-5x5x5-step34-UD-centers-solve.txt",
+    "lines": 3774,
+    "states_per_depth": {
+      "0": 1,
+      "1": 6,
+      "2": 71,
+      "3": 560,
+      "4": 3136
+    },
+    "states_md5": "57190ae626c41f1d96493e29ad643be9",
+    "depth": 4
+  },
+  "Build666FBInnerXCenterAndObliqueEdges": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.txt",
+    "lines": 1582,
+    "states_per_depth": {
+      "0": 2,
+      "1": 12,
+      "2": 68,
+      "3": 282,
+      "4": 1218
+    },
+    "states_md5": "9ceb50863492348615e5d034fd45eadb",
+    "depth": 4
+  },
+  "Build666LRInnerXCentersStage": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step00-inner-x-centers-stage.txt",
+    "lines": 15409,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 82,
+      "3": 1206,
+      "4": 14116
+    },
+    "states_md5": "476419dccfa3380bedfff5fc72bea91d",
+    "depth": 4
+  },
+  "Build666LRObliqueEdges": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step63-LR-oblique-edges.txt",
+    "lines": 4284,
+    "states_per_depth": {
+      "0": 2,
+      "1": 12,
+      "2": 96,
+      "3": 728,
+      "4": 3446
+    },
+    "states_md5": "5f675083896c730f3de6b2dd4a8db667",
+    "depth": 4
+  },
+  "Build666Step50HighLowEdges": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step51-highlow-edges.txt",
+    "lines": 2244,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 29,
+      "3": 278,
+      "4": 1934
+    },
+    "states_md5": "c9c9f0f580a367a843ff866e97642946",
+    "depth": 4
+  },
+  "Build666Step50LRCenters": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step50-LR-solve-inner-x-center-and-oblique-edges.txt",
+    "lines": 16248,
+    "states_per_depth": {
+      "0": 36,
+      "1": 162,
+      "2": 748,
+      "3": 2914,
+      "4": 12388
+    },
+    "states_md5": "e95e51f8463fee58dbadbb2b6c42f73a",
+    "depth": 4
+  },
+  "Build666UDInnerXCenterAndObliqueEdges": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step61-UD-solve-inner-x-center-and-oblique-edges.txt",
+    "lines": 1583,
+    "states_per_depth": {
+      "0": 3,
+      "1": 12,
+      "2": 68,
+      "3": 282,
+      "4": 1218
+    },
+    "states_md5": "90f7ad3f01f572b36c78d8d48587505e",
+    "depth": 4
+  },
+  "Build666UDInnerXCentersStage": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step11-UD-inner-x-centers-stage.txt",
+    "lines": 1512,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 29,
+      "3": 234,
+      "4": 1246
+    },
+    "states_md5": "02bbe88281b35c8bd82005e95db436dd",
+    "depth": 4
+  },
+  "Build666UDLeftObliqueCentersStage": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step13-UD-left-oblique-centers.txt",
+    "lines": 5494,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 70,
+      "3": 804,
+      "4": 4615
+    },
+    "states_md5": "c2f068674b63e3410645ced8caad8bba",
+    "depth": 4
+  },
+  "Build666UDLeftObliqueInnerXCentersStage": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt",
+    "lines": 11816,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 70,
+      "3": 968,
+      "4": 10773
+    },
+    "states_md5": "bf910c43070bbee6aaf45c6f3a3cedfe",
+    "depth": 4
+  },
+  "Build666UDObliqueCentersStage": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step15-UD-oblique-centers.txt",
+    "lines": 15656,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 70,
+      "3": 1064,
+      "4": 14517
+    },
+    "states_md5": "ec6c9b6efa307425613c4587b4202a2e",
+    "depth": 4
+  },
+  "Build666UDRightObliqueCentersStage": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step14-UD-right-oblique-centers.txt",
+    "lines": 5494,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 70,
+      "3": 804,
+      "4": 4615
+    },
+    "states_md5": "c2f068674b63e3410645ced8caad8bba",
+    "depth": 4
+  },
+  "Build666UDRightObliqueInnerXCentersStage": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step17-UD-right-oblique-inner-x-centers.txt",
+    "lines": 11816,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 70,
+      "3": 968,
+      "4": 10773
+    },
+    "states_md5": "5e689d2067c0c9ffb6b5ae86a0b00df1",
+    "depth": 4
+  },
+  "Build666UDXCentersStage": {
+    "filename": "lookup-tables/lookup-table-6x6x6-step12-UD-x-centers.txt",
+    "lines": 1512,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 29,
+      "3": 234,
+      "4": 1246
+    },
+    "states_md5": "02bbe88281b35c8bd82005e95db436dd",
+    "depth": 4
+  },
+  "Build777Phase4Centers": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase4-inner-centers.txt",
+    "lines": 4248,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 33,
+      "3": 374,
+      "4": 3838
+    },
+    "states_md5": "b084a3c468ab03eed3316e831c30608b",
+    "depth": 4
+  },
+  "Build777Phase4LeftOblique": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase4-left-oblique.txt",
+    "lines": 5494,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 70,
+      "3": 804,
+      "4": 4615
+    },
+    "states_md5": "c2f068674b63e3410645ced8caad8bba",
+    "depth": 4
+  },
+  "Build777Phase4MiddleOblique": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase4-middle-oblique.txt",
+    "lines": 960,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 25,
+      "3": 210,
+      "4": 722
+    },
+    "states_md5": "f1ec398e55be850556645e50d9fe24aa",
+    "depth": 4
+  },
+  "Build777Phase4RightOblique": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase4-right-oblique.txt",
+    "lines": 5494,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 70,
+      "3": 804,
+      "4": 4615
+    },
+    "states_md5": "c2f068674b63e3410645ced8caad8bba",
+    "depth": 4
+  },
+  "Build777Phase4TCenters": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase4-t-centers.txt",
+    "lines": 960,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 25,
+      "3": 210,
+      "4": 722
+    },
+    "states_md5": "f1ec398e55be850556645e50d9fe24aa",
+    "depth": 4
+  },
+  "Build777Phase4XCenters": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase4-x-centers.txt",
+    "lines": 1512,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 29,
+      "3": 234,
+      "4": 1246
+    },
+    "states_md5": "02bbe88281b35c8bd82005e95db436dd",
+    "depth": 4
+  },
+  "Build777Phase5LeftMiddleOblique": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase5-left-middle-oblique.txt",
+    "lines": 564902,
+    "states_per_depth": {
+      "0": 12870,
+      "1": 47520,
+      "2": 504512
+    },
+    "states_md5": "fd472d65fc9c9e1c343263a59662f6e5",
+    "depth": 2
+  },
+  "Build777Phase5LeftOblique": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase5-left-oblique.txt",
+    "lines": 1012,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 29,
+      "3": 238,
+      "4": 742
+    },
+    "states_md5": "334df625da9913d31dbc2f7948fefcb0",
+    "depth": 4
+  },
+  "Build777Phase5LeftRightOblique": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase5-left-right-oblique.txt",
+    "lines": 338214,
+    "states_per_depth": {
+      "0": 12870,
+      "1": 32288,
+      "2": 293056
+    },
+    "states_md5": "966ec6621db0d5ea92d4bfb79856b48f",
+    "depth": 2
+  },
+  "Build777Phase5MiddleOblique": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase5-middle-oblique.txt",
+    "lines": 960,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 25,
+      "3": 210,
+      "4": 722
+    },
+    "states_md5": "f1ec398e55be850556645e50d9fe24aa",
+    "depth": 4
+  },
+  "Build777Phase5RightOblique": {
+    "filename": "lookup-tables/lookup-table-7x7x7-phase5-right-oblique.txt",
+    "lines": 1012,
+    "states_per_depth": {
+      "0": 1,
+      "1": 2,
+      "2": 29,
+      "3": 238,
+      "4": 742
+    },
+    "states_md5": "334df625da9913d31dbc2f7948fefcb0",
+    "depth": 4
+  },
+  "Build777Step41": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step41.txt",
+    "lines": 55860,
+    "states_per_depth": {
+      "0": 72,
+      "1": 306,
+      "2": 2000,
+      "3": 10166,
+      "4": 43316
+    },
+    "states_md5": "973de022ebe0c9c6c41371e2d087fc68",
+    "depth": 4
+  },
+  "Build777Step42": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step42.txt",
+    "lines": 32149,
+    "states_per_depth": {
+      "0": 36,
+      "1": 190,
+      "2": 1289,
+      "3": 6178,
+      "4": 24456
+    },
+    "states_md5": "c26d63eb236191f02320c7717c72e5d5",
+    "depth": 4
+  },
+  "Build777Step43": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step43.txt",
+    "lines": 33252,
+    "states_per_depth": {
+      "0": 36,
+      "1": 214,
+      "2": 1405,
+      "3": 6372,
+      "4": 25225
+    },
+    "states_md5": "3268840d94982d0868cd85ef01651f56",
+    "depth": 4
+  },
+  "Build777Step44": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step44.txt",
+    "lines": 32149,
+    "states_per_depth": {
+      "0": 36,
+      "1": 190,
+      "2": 1289,
+      "3": 6178,
+      "4": 24456
+    },
+    "states_md5": "6491a497f27eba60e6413b1c59bfd075",
+    "depth": 4
+  },
+  "Build777Step51": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step51.txt",
+    "lines": 40780,
+    "states_per_depth": {
+      "0": 72,
+      "1": 238,
+      "2": 1328,
+      "3": 6846,
+      "4": 32296
+    },
+    "states_md5": "931c893515e79e5c7e552eb6c3c778d6",
+    "depth": 4
+  },
+  "Build777Step52": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step52.txt",
+    "lines": 21693,
+    "states_per_depth": {
+      "0": 36,
+      "1": 155,
+      "2": 876,
+      "3": 4080,
+      "4": 16546
+    },
+    "states_md5": "b3f5708175479688dcb02da4f4c47dde",
+    "depth": 4
+  },
+  "Build777Step53": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step53.txt",
+    "lines": 21443,
+    "states_per_depth": {
+      "0": 36,
+      "1": 179,
+      "2": 960,
+      "3": 4061,
+      "4": 16207
+    },
+    "states_md5": "5b91d0fbc410aeb1510a8cbede8a8d02",
+    "depth": 4
+  },
+  "Build777Step54": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step54.txt",
+    "lines": 21693,
+    "states_per_depth": {
+      "0": 36,
+      "1": 155,
+      "2": 876,
+      "3": 4080,
+      "4": 16546
+    },
+    "states_md5": "0948ec88df0a747202fa39be1326bd81",
+    "depth": 4
+  },
+  "Build777Step55": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step55.txt",
+    "lines": 72,
+    "states_per_depth": {
+      "0": 2,
+      "1": 8,
+      "2": 20,
+      "3": 24,
+      "4": 18
+    },
+    "states_md5": "a57bbf7d066bb03d47b46d3ed3d49a8f",
+    "depth": 4
+  },
+  "Build777Step61": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step61.txt",
+    "lines": 73,
+    "states_per_depth": {
+      "0": 3,
+      "1": 8,
+      "2": 20,
+      "3": 24,
+      "4": 18
+    },
+    "states_md5": "45a7b17ea2876ee555883f0a7342868c",
+    "depth": 4
+  },
+  "Build777Step62": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step62.txt",
+    "lines": 72,
+    "states_per_depth": {
+      "0": 2,
+      "1": 8,
+      "2": 20,
+      "3": 24,
+      "4": 18
+    },
+    "states_md5": "4361d9cc2e78ef4d3b4c2e9d8796ce4a",
+    "depth": 4
+  },
+  "Build777Step65": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step65.txt",
+    "lines": 2971,
+    "states_per_depth": {
+      "0": 3,
+      "1": 16,
+      "2": 106,
+      "3": 538,
+      "4": 2308
+    },
+    "states_md5": "eb40f25a071174367e0e37e3865d5776",
+    "depth": 4
+  },
+  "Build777Step66": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step66.txt",
+    "lines": 2957,
+    "states_per_depth": {
+      "0": 3,
+      "1": 16,
+      "2": 82,
+      "3": 450,
+      "4": 2406
+    },
+    "states_md5": "d024a444368351df3450c2c5d9ec594f",
+    "depth": 4
+  },
+  "Build777Step71": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step71.txt",
+    "lines": 36,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 10,
+      "3": 12,
+      "4": 9
+    },
+    "states_md5": "83ec8110b14020ead3d617fc2a55bba7",
+    "depth": 4
+  },
+  "Build777Step72": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step72.txt",
+    "lines": 36,
+    "states_per_depth": {
+      "0": 1,
+      "1": 4,
+      "2": 10,
+      "3": 12,
+      "4": 9
+    },
+    "states_md5": "75fa91634228d5be5a374ae443dc745f",
+    "depth": 4
+  },
+  "Build777Step75": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step75.txt",
+    "lines": 1682,
+    "states_per_depth": {
+      "0": 1,
+      "1": 8,
+      "2": 56,
+      "3": 300,
+      "4": 1317
+    },
+    "states_md5": "b4541ae339feee2b3d842dd6018d7194",
+    "depth": 4
+  },
+  "Build777Step76": {
+    "filename": "lookup-tables/lookup-table-7x7x7-step76.txt",
+    "lines": 1905,
+    "states_per_depth": {
+      "0": 1,
+      "1": 8,
+      "2": 48,
+      "3": 276,
+      "4": 1572
+    },
+    "states_md5": "dec621cc445a7772056c4ae830c72648",
+    "depth": 4
+  }
+}

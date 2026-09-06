@@ -18,11 +18,23 @@ gdb:
 	ulimit -c unlimited
 	gcc -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm --ggdb
 
+# Every python file git knows about: tracked, plus new files that are not ignored.
+# This honors .gitignore at every level, which keeps the generated modules named in
+# rubikscubelookuptables/.gitignore (builder555ss.py is 61MB) away from the formatters.
+FORMAT_FILES = $(shell git ls-files --cached --others --exclude-standard -- '*.py' '*.pyi')
+
 format:
-	@./venv/bin/isort rubikscubelookuptables/
-	@./venv/bin/isort utils/
-	@./venv/bin/python3 -m black --config=pyproject.toml .
-	@./venv/bin/python3 -m flake8 --config=.flake8
+	@./venv/bin/isort $(FORMAT_FILES)
+	@./venv/bin/python3 -m black --config=pyproject.toml $(FORMAT_FILES)
+	@./venv/bin/python3 -m flake8 --config=.flake8 $(FORMAT_FILES)
+
+# The builder tests all stage intermediate files in ./tmp, so they have to run one
+# at a time. Do not add -n/xdist here.
+test:
+	@./venv/bin/python3 -m pytest -vv tests/
+
+test-lite:
+	@./venv/bin/python3 -m pytest -vv tests/ -k "not test_build_" --ignore=tests/test_builder_determinism.py
 
 wheel:
 	@./venv/bin/python3 setup.py bdist_wheel

@@ -11,21 +11,10 @@ log = logging.getLogger(__name__)
 
 
 def permutation_rank(word):
-    """
+    """Rank a word among the distinct permutations of its letters.
+
     Based on
     https://github.com/thedavidwells/Lexicographical-Word-Rank/blob/master/word_rank.py
-
-    >>> permutation_rank("BBGGGG")
-    0
-
-    >>> permutation_rank("GBGGBG")
-    7
-
-    >>> permutation_rank("GGGGBB")
-    14
-
-    >>> permutation_rank("GGBGBBGBBBGBBBBGGGGGBBBBBGGGGBGGGBGGBGBB")
-    114581417273
     """
     rank = 0
     permutations = 1

@@ -19,10 +19,15 @@ exclude = '''
     | dist
     | venv
     | lookup-tables
-    | rubikscubelookuptables/builder555ss.py
-    | rubikscubelookuptables/builder777ss.py
-    | rubikscubelookuptables/.*.gz
   )/
+)
+'''
+# "make format" feeds black an explicit git-derived file list, which already honors
+# rubikscubelookuptables/.gitignore. This only guards a bare "black ." run, where the
+# generated modules would otherwise cost minutes (builder555ss.py is 61MB).
+force-exclude = '''
+(
+  /rubikscubelookuptables/(builder555ss|builder777ss)\.py$
 )
 '''
 
