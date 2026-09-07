@@ -20,6 +20,9 @@ from rubikscubelookuptables.buildercore import (
     convert_to_cost_only,
     convert_to_hash_cost_only,
     get_line_number_splits,
+    multiset_rank,
+    multiset_size,
+    multiset_unrank,
     reverse_steps,
 )
 
@@ -99,6 +102,40 @@ class ConvertStateToHexTests(unittest.TestCase):
 
     def test_an_all_unset_state_is_zero(self):
         self.assertEqual(convert_state_to_hex("xxxx"), "0")
+
+
+class MultisetRankTests(unittest.TestCase):
+    """Dense lexicographic ranks for states with repeated symbols."""
+
+    def test_small_multiset_has_the_expected_size(self):
+        self.assertEqual(multiset_size((2, 1)), 3)
+
+    def test_x_center_universe_has_the_expected_size(self):
+        self.assertEqual(multiset_size((8, 8, 8)), 9_465_511_770)
+
+    def test_known_ranks(self):
+        self.assertEqual(multiset_rank("AAB", "AB", (2, 1)), 0)
+        self.assertEqual(multiset_rank("ABA", "AB", (2, 1)), 1)
+        self.assertEqual(multiset_rank("BAA", "AB", (2, 1)), 2)
+
+    def test_every_small_rank_round_trips(self):
+        symbols = "ABC"
+        counts = (2, 1, 1)
+        for rank in range(multiset_size(counts)):
+            state = multiset_unrank(rank, symbols, counts)
+            self.assertEqual(multiset_rank(state, symbols, counts), rank)
+
+    def test_rejects_an_out_of_range_rank(self):
+        with self.assertRaises(ValueError):
+            multiset_unrank(3, "AB", (2, 1))
+
+    def test_rejects_the_wrong_symbol_counts(self):
+        with self.assertRaises(ValueError):
+            multiset_rank("ABB", "AB", (2, 1))
+
+    def test_rejects_unsorted_symbols(self):
+        with self.assertRaises(ValueError):
+            multiset_rank("AAB", "BA", (1, 2))
 
 
 class ConvertToCostOnlyTests(unittest.TestCase):

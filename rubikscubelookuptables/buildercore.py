@@ -3,13 +3,15 @@
 # standard libraries
 import datetime as dt
 import glob
+import json
 import logging
 import math
 import os
 import shutil
+import struct
 import subprocess
 import sys
-from collections import deque
+from collections import Counter, deque
 from pathlib import Path
 from threading import Thread
 from typing import List, Tuple
@@ -62,6 +64,82 @@ TMPDIR = Path("./tmp/")
 # How much memory we let each "sort" use. Setting this above what the machine actually has
 # does not make sort faster, it just gets us into swap.
 SORT_BUFFER_SIZE = "16G"
+RANKED_WORKQ_RECORD = struct.Struct("<QB")
+RANKED_COST_TMPFS = Path("/dev/shm")
+
+
+def multiset_size(counts: Tuple[int, ...]) -> int:
+    """Return the number of distinct permutations for the supplied multiplicities."""
+    remaining = sum(counts)
+    result = 1
+
+    for count in counts:
+        if count < 0:
+            raise ValueError("multiset counts cannot be negative")
+        result *= math.comb(remaining, count)
+        remaining -= count
+
+    return result
+
+
+def multiset_rank(state: str, symbols: str, counts: Tuple[int, ...]) -> int:
+    """Return the zero-based lexicographic rank of a multiset permutation."""
+    if tuple(sorted(symbols)) != tuple(symbols) or len(set(symbols)) != len(symbols):
+        raise ValueError("symbols must be unique and sorted")
+    if len(symbols) != len(counts) or len(state) != sum(counts):
+        raise ValueError("state length and multiset counts do not agree")
+
+    remaining = list(counts)
+    permutations = multiset_size(counts)
+    rank = 0
+
+    for position, char in enumerate(state):
+        slots = len(state) - position
+        try:
+            symbol_index = symbols.index(char)
+        except ValueError as error:
+            raise ValueError(f"state contains unknown symbol {char!r}") from error
+
+        if remaining[symbol_index] == 0:
+            raise ValueError(f"state contains too many {char!r} symbols")
+
+        for smaller in range(symbol_index):
+            rank += permutations * remaining[smaller] // slots
+
+        permutations = permutations * remaining[symbol_index] // slots
+        remaining[symbol_index] -= 1
+
+    if any(remaining):
+        raise ValueError("state does not contain the expected symbol counts")
+    return rank
+
+
+def multiset_unrank(rank: int, symbols: str, counts: Tuple[int, ...]) -> str:
+    """Return the multiset permutation at a zero-based lexicographic rank."""
+    if tuple(sorted(symbols)) != tuple(symbols) or len(set(symbols)) != len(symbols):
+        raise ValueError("symbols must be unique and sorted")
+    if len(symbols) != len(counts):
+        raise ValueError("symbols and counts do not agree")
+
+    remaining = list(counts)
+    permutations = multiset_size(counts)
+    if rank < 0 or rank >= permutations:
+        raise ValueError(f"rank {rank} is outside 0..{permutations - 1}")
+
+    result = []
+    for slots in range(sum(counts), 0, -1):
+        for symbol_index, char in enumerate(symbols):
+            if remaining[symbol_index] == 0:
+                continue
+            block = permutations * remaining[symbol_index] // slots
+            if rank < block:
+                result.append(char)
+                permutations = block
+                remaining[symbol_index] -= 1
+                break
+            rank -= block
+
+    return "".join(result)
 
 
 def get_line_number_splits(lines: int, cores: int) -> Tuple:
@@ -359,6 +437,7 @@ class BFS(object):
         rotations=[],
         use_centers_then_edges=False,
         use_c=False,
+        use_ranked_cost=False,
     ):
         self.name = name
         self.illegal_moves = illegal_moves
@@ -374,6 +453,7 @@ class BFS(object):
         self.use_centers_then_edges = use_centers_then_edges
         self.lt_centers = {}
         self.use_c = use_c
+        self.use_ranked_cost = use_ranked_cost
         # Cube-state indexes (matching cube.state / rotate_xxx) that this table actually
         # cares about. Empty means we carry the full cube, including the "." placeholders.
         self.compact_squares = ()
@@ -402,6 +482,7 @@ class BFS(object):
         assert isinstance(starting_cube_states, tuple)
         assert isinstance(self.use_cost_only, bool)
         assert isinstance(self.use_hash_cost_only, bool)
+        assert isinstance(self.use_ranked_cost, bool)
         assert not (self.use_cost_only and self.use_hash_cost_only), "Both cannot be true"
 
         if size == "2x2x2":
@@ -494,6 +575,8 @@ class BFS(object):
         self.starting_state_count = 0
         self.stats = {0: 0}
         self.compact_squares = self._compact_squares_for_table()
+        if self.use_ranked_cost:
+            self._configure_ranked_cost()
         # Width of the longest line we have written to the lookup-table. builder-find-new-states
         # reports this as it writes, so save() can pad a compact table without reading it again.
         self.max_table_line_length = 0
@@ -608,6 +691,98 @@ class BFS(object):
             return "".join(cube.state[index] for index in self.compact_squares)
 
         return "".join(cube.state)
+
+    def _configure_ranked_cost(self) -> None:
+        """Validate and describe the dense multiset-ranked state space."""
+        if not self.use_c:
+            raise ValueError(f"{self}: ranked costs require use_c=True")
+        if not self.compact_squares:
+            raise ValueError(f"{self}: ranked costs require a compact closed-orbit state")
+        if self.use_cost_only or self.use_hash_cost_only or self.store_as_hex:
+            raise ValueError(f"{self}: ranked costs cannot be combined with another output encoding")
+
+        states = [self._state_for_workq(cube) for cube in self.starting_cubes]
+        if not states:
+            raise ValueError(f"{self}: ranked costs require at least one starting state")
+        expected = Counter(states[0])
+        if any(Counter(state) != expected for state in states[1:]):
+            raise ValueError(f"{self}: all ranked starting states must have the same multiset")
+        if len(expected) > 32:
+            raise ValueError(f"{self}: ranked costs support at most 32 distinct symbols")
+
+        self.rank_symbols = "".join(sorted(expected))
+        self.rank_counts = tuple(expected[symbol] for symbol in self.rank_symbols)
+        self.rank_universe = multiset_size(self.rank_counts)
+        if self.rank_universe >= (1 << 64) or self.rank_universe > sys.maxsize:
+            raise ValueError(f"{self}: ranked state space does not fit in uint64")
+
+        output = Path(self.filename)
+        self.ranked_cost_filename = str(output.with_suffix(".cost-only.bin"))
+        self.ranked_metadata_filename = f"{self.ranked_cost_filename}.json"
+        cost_dir = self._ranked_cost_dir()
+        self.ranked_cost_live_filename = str(cost_dir / f"{self.name}.cost-only.bin.live")
+        # The frontier is only ever read and appended to sequentially, so it belongs on
+        # disk. It outgrows tmpfs long before the cost array does.
+        self.ranked_workq_filename = str(TMPDIR / f"{self}.ranked-workq.bin")
+
+        if cost_dir == RANKED_COST_TMPFS:
+            log.info(f"ranked cost array in {cost_dir}")
+        else:
+            log.warning(
+                f"ranked cost array in {cost_dir}, not {RANKED_COST_TMPFS}: random CAS on a "
+                f"disk-backed mmap will stall the crunchers waiting on dirty-page writeback"
+            )
+
+    def _write_ranked_metadata(self) -> None:
+        metadata = {
+            "format": "dense-multiset-cost-v1",
+            "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+            "record_format": "<QB",
+            "symbols": self.rank_symbols,
+            "counts": list(self.rank_counts),
+            "universe_size": self.rank_universe,
+            "completed_depth": max(self.stats),
+            "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+        }
+        temporary = f"{self.ranked_metadata_filename}.tmp"
+        with open(temporary, "w") as fh:
+            json.dump(metadata, fh, indent=2, sort_keys=True)
+            fh.write("\n")
+        os.replace(temporary, self.ranked_metadata_filename)
+
+    def _ranked_cost_dir(self) -> Path:
+        """
+        Prefer tmpfs for the cost array. Claiming a cost is a 1-byte CAS at a random
+        rank, which dirties nearly every page of the mmap. On a disk-backed file the
+        kernel then has to write all of it back and every cruncher blocks in D.
+        """
+        TMPDIR.mkdir(parents=True, exist_ok=True)
+        need = self.rank_universe + (256 * 1024 * 1024)
+        live_name = f"{self.name}.cost-only.bin.live"
+        candidates = [directory for directory in (RANKED_COST_TMPFS, TMPDIR) if directory.is_dir()]
+
+        # A run that died before save() left its array behind. Reclaim that space before
+        # measuring, otherwise a stale tmpfs copy pushes us onto disk.
+        for directory in candidates:
+            leftover = directory / live_name
+            if leftover.exists():
+                leftover.unlink()
+
+        for directory in candidates:
+            if shutil.disk_usage(directory).free >= need:
+                return directory
+
+        return TMPDIR
+
+    def _publish_ranked_cost_file(self) -> None:
+        live = self.ranked_cost_live_filename
+        dest = self.ranked_cost_filename
+        if os.path.abspath(live) == os.path.abspath(dest):
+            return
+        Path(dest).parent.mkdir(parents=True, exist_ok=True)
+        log.info(f"{self}: copy ranked cost table {live} -> {dest}")
+        subprocess.check_call(["cp", "--sparse=always", live, dest])
+        os.remove(live)
 
     def get_workq_line_length(self):
         """
@@ -1057,6 +1232,145 @@ class BFS(object):
         self.stats[self.depth] = new_states_count
         log.warning(f"{self.index}: finished depth {self.depth}, workq size {self.workq_size:,}")
 
+    def _ranked_search_setup(self) -> None:
+        """Create a sparse zero-filled cost array and the depth-zero binary frontier."""
+        self.depth = 1
+        self.workq_size = 0
+        Path(self.ranked_cost_filename).parent.mkdir(parents=True, exist_ok=True)
+        Path(self.ranked_cost_live_filename).parent.mkdir(parents=True, exist_ok=True)
+
+        for filename in glob.glob(f"{self.ranked_workq_filename}*"):
+            os.remove(filename)
+        for filename in (
+            self.ranked_cost_live_filename,
+            self.ranked_cost_filename,
+            self.ranked_metadata_filename,
+        ):
+            if os.path.exists(filename):
+                os.remove(filename)
+
+        with open(self.ranked_cost_live_filename, "wb") as costs:
+            costs.truncate(self.rank_universe)
+
+        starting_records = {}
+        for cube in self.starting_cubes:
+            state = self._state_for_workq(cube)
+            rank = multiset_rank(state, self.rank_symbols, self.rank_counts)
+            starting_records[rank] = RANKED_WORKQ_RECORD.pack(rank, 0)
+
+        with open(self.ranked_cost_live_filename, "r+b", buffering=0) as costs, open(
+            self.ranked_workq_filename, "wb"
+        ) as workq:
+            for rank in sorted(starting_records):
+                costs.seek(rank)
+                costs.write(b"\x01")
+                workq.write(starting_records[rank])
+
+        self.workq_size = len(starting_records)
+        self.starting_state_count = self.workq_size
+        self.stats = {0: self.workq_size}
+        self.starting_cubes = []
+        self._write_ranked_metadata()
+
+    def _ranked_core_filename(self, core: int) -> str:
+        return f"{self.ranked_workq_filename}.next.core-{core}"
+
+    def _ranked_launch_crunchers(self, build_workq: bool) -> int:
+        """Expand one ranked frontier and return the number of successful cost claims."""
+        start_time = dt.datetime.now()
+        threads = []
+
+        for core, (start, end) in enumerate(get_line_number_splits(self.workq_size, self.cores)):
+            if start is None:
+                continue
+
+            output = self._ranked_core_filename(core)
+            cmd = [
+                "nice",
+                "./rubikscubelookuptables/builder-crunch-workq",
+                "--ranked-cost",
+                self.ranked_cost_live_filename,
+                "--ranked-input",
+                self.ranked_workq_filename,
+                "--ranked-output",
+                output,
+                "--ranked-depth",
+                str(self.depth),
+                "--rank-symbols",
+                self.rank_symbols,
+                "--rank-counts",
+                ",".join(str(count) for count in self.rank_counts),
+                "--rank-universe",
+                str(self.rank_universe),
+                "--size",
+                self.size[0],
+                "--start",
+                str(start),
+                "--end",
+                str(end),
+                "--moves",
+                " ".join(self.legal_moves),
+                "--squares",
+                ",".join(str(index) for index in self.compact_squares),
+            ]
+            if not build_workq:
+                cmd.append("--ranked-no-workq")
+
+            log.info(" ".join(cmd))
+            thread = BackgroundProcess(cmd, f"ranked builder-crunch-workq core {core}")
+            thread.start()
+            threads.append(thread)
+
+        new_states_count = 0
+        for thread in threads:
+            thread.join()
+            if not thread.ok:
+                log.error("depth %d %s failed\n%s", self.depth, thread, thread.result)
+                raise RuntimeError(f"{thread} failed")
+            new_states_count += int(thread.result)
+
+        self.time_in_crunching_workq += (dt.datetime.now() - start_time).total_seconds()
+        return new_states_count
+
+    def _ranked_finish_depth(self, new_states_count: int, build_workq: bool) -> None:
+        """Replace the current frontier with the successful per-core claim records."""
+        start_time = dt.datetime.now()
+        next_workq = f"{self.ranked_workq_filename}.next"
+        core_files = sorted(glob.glob(f"{self.ranked_workq_filename}.next.core-*"))
+
+        with open(next_workq, "wb") as destination:
+            if build_workq:
+                for filename in core_files:
+                    with open(filename, "rb") as source:
+                        shutil.copyfileobj(source, destination, 16 * 1024 * 1024)
+
+        if os.path.exists(self.ranked_workq_filename):
+            os.remove(self.ranked_workq_filename)
+        for filename in core_files:
+            os.remove(filename)
+        os.replace(next_workq, self.ranked_workq_filename)
+
+        self.workq_size = new_states_count if build_workq else 0
+        self.stats[self.depth] = new_states_count
+        self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
+        self._write_ranked_metadata()
+        log.warning(f"{self.index}: finished ranked depth {self.depth}, workq size {self.workq_size:,}")
+
+    def _ranked_search(self, max_depth: int) -> None:
+        if max_depth is not None and max_depth > 254:
+            raise ValueError("ranked cost tables support a maximum depth of 254")
+        self._ranked_search_setup()
+
+        while self.workq_size:
+            build_workq = max_depth is None or self.depth < max_depth
+            new_states_count = self._ranked_launch_crunchers(build_workq)
+            self._ranked_finish_depth(new_states_count, build_workq)
+            self.depth += 1
+            self.log_table_stats()
+
+            if not build_workq:
+                break
+
     def search(self, max_depth, cores):
         """
         This is where the magic happens
@@ -1064,6 +1378,10 @@ class BFS(object):
         self.index = 0
         self.stats = {0: 0}
         self.cores = cores
+
+        if self.use_ranked_cost:
+            self._ranked_search(max_depth)
+            return
 
         self._search_setup()
 
@@ -1282,6 +1600,13 @@ class BFS(object):
 
     def save(self):
         start_time = dt.datetime.now()
+
+        if self.use_ranked_cost:
+            self._publish_ranked_cost_file()
+            self._write_ranked_metadata()
+            self.time_in_save += (dt.datetime.now() - start_time).total_seconds()
+            log.info(f"{self}: ranked cost table is {self.ranked_cost_filename}")
+            return
 
         # Convert the states in our lookup-table to their smaller format...basically
         # remove all of the '.'s and if convert to hex (if requested).
