@@ -792,9 +792,7 @@ class BFS(object):
             to_write = []
             to_write_count = 0
 
-            with open(new_states_filename, "r") as fh_new_states, open(
-                self.workq_filename_next, "w"
-            ) as fh_workq_next:
+            with open(new_states_filename, "r") as fh_new_states, open(self.workq_filename_next, "w") as fh_workq_next:
 
                 for line in fh_new_states:
                     pattern, state, steps_to_solve = line.rstrip().split(":", maxsplit=2)
