@@ -177,6 +177,7 @@ main(int argc, char *argv[])
     unsigned int state_width = 0;
     unsigned int steps_offset = 0;
     unsigned long new_states_count = 0;
+    unsigned int max_new_states_line_length = 0;
     int have_table = 0;
     int have_results = 0;
 
@@ -309,6 +310,10 @@ main(int argc, char *argv[])
             memcpy(out, line_results, steps_offset);
             out_length = steps_offset;
             out_length += reverse_steps(&line_results[steps_offset], steps_length, &out[out_length]);
+            if (out_length > max_new_states_line_length) {
+                max_new_states_line_length = out_length;
+            }
+
             out[out_length++] = '\n';
             fwrite(out, 1, out_length, fh_new_states);
 
@@ -343,6 +348,8 @@ main(int argc, char *argv[])
         fclose(fh_workq);
     }
 
-    printf("%lu\n", new_states_count);
+    // The caller needs the width of the longest line we wrote so that it can pad the
+    // finished table without re-reading it via "wc --max-line-length"
+    printf("%lu %u\n", new_states_count, max_new_states_line_length);
     return 0;
 }

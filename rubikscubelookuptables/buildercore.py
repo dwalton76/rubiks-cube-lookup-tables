@@ -490,6 +490,9 @@ class BFS(object):
         self.size_number = int(self.size[0])
         self.starting_state_count = 0
         self.stats = {0: 0}
+        # Width of the longest line we have written to the lookup-table. builder-find-new-states
+        # reports this as it writes, so save() can pad a compact table without reading it again.
+        self.max_table_line_length = 0
         self.workq_line_length = self.get_workq_line_length()
 
         self.time_in_sort = 0
@@ -629,6 +632,7 @@ class BFS(object):
 
                 fh.write(workq_line + "\n")
                 fh_workq.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
+                self.max_table_line_length = max(self.max_table_line_length, len(workq_line))
                 self.workq_size += 1
 
         self.starting_state_count = self.workq_size
@@ -894,8 +898,11 @@ class BFS(object):
 
             log.info(" ".join(cmd))
 
-            # It reports the number of new states on stdout, which saves us a "wc -l" pass
-            new_states_count = int(subprocess.check_output(cmd))
+            # It reports the number of new states and the width of the longest one it wrote,
+            # which saves us a "wc -l" pass here and a "wc --max-line-length" pass in save()
+            count, longest_line = subprocess.check_output(cmd).split()
+            new_states_count = int(count)
+            self.max_table_line_length = max(self.max_table_line_length, int(longest_line))
             self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
             log.info("builder-find-new-states end")
 
@@ -1023,6 +1030,13 @@ class BFS(object):
 
         shutil.move(f"{self.filename}.starting-states", self.filename)
 
+    def _table_linecount(self) -> int:
+        """
+        How many lines the finished lookup-table holds, from the per-depth counts that
+        search() collected. The starting states went into the table at depth 0.
+        """
+        return sum(count for count in self.stats.values() if count) + self.starting_state_count
+
     def write_histogram(self, filename: str) -> None:
         """
         Append the report that utils/print-histogram.py produces, but build it from the
@@ -1036,7 +1050,7 @@ class BFS(object):
         if self.starting_state_count:
             stats[0] = self.starting_state_count
 
-        linecount = sum(stats.values())
+        linecount = self._table_linecount()
         report = ["", f"    {filename}", "    " + "=" * len(filename)]
         prev = None
         total_steps = 0
@@ -1196,6 +1210,23 @@ class BFS(object):
         for filename in files_to_pad:
             log.info(f"{self}: pad the file to {max_line_length} bytes")
             subprocess.check_output(f"nice ./utils/pad-lines {filename} {max_line_length}", shell=True)
+
+            # Every line is now the same width, so the file has to be exactly
+            # linecount * (max_line_length + 1) bytes. This is a stat() rather than another
+            # pass over the table, and it is what catches a max_line_length that came out too
+            # small: awk's "%-*s" pads short lines but leaves long ones long, so the table
+            # would still sort fine while quietly breaking the solver's binary search.
+            linecount = self._table_linecount()
+
+            if linecount:
+                expected_size = linecount * (max_line_length + 1)
+                actual_size = os.path.getsize(filename)
+
+                if actual_size != expected_size:
+                    raise Exception(
+                        f"{self}: {filename} is {actual_size} bytes, expected {expected_size}"
+                        f" ({linecount} lines padded to {max_line_length})"
+                    )
 
             # Check to see if the file is already sorted before we spend the cycles to sort it
             try:
