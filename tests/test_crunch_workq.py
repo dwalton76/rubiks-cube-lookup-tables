@@ -9,6 +9,7 @@ the tests compare the (state, moves) pairs rather than the raw files.
 from __future__ import annotations
 
 # standard libraries
+import struct
 import subprocess
 import tempfile
 import unittest
@@ -23,6 +24,7 @@ SOLVED_222 = "xUUUURRRRFFFFDDDDLLLLBBBB"
 # cruncher counts as part of --linewidth.
 WORKQ_WIDTH = 40
 LEGAL_MOVES = ["U", "R", "F"]
+RANKED_RECORD = struct.Struct("<QB")
 
 
 class ScratchTestCase(unittest.TestCase):
@@ -212,6 +214,95 @@ class CCruncherCliTests(ScratchTestCase):
         )
         self.assertNotEqual(completed.returncode, 0)
         self.assertIn("only 2x2x2 through 7x7x7", completed.stdout)
+
+
+class RankedCrunchWorkqTests(ScratchTestCase):
+    """Dense-cost claims and binary frontiers in the C cruncher."""
+
+    def setUp(self):
+        super().setUp()
+        ensure_cruncher()
+
+    def ranked_files(self):
+        cost = self.scratch / "cost.bin"
+        cost.write_bytes(b"\0" * 6)  # AABB has 4!/(2!2!) states.
+        with cost.open("r+b") as fh:
+            fh.write(b"\1")  # rank zero is the depth-zero starting state
+        workq = self.scratch / "ranked-workq.bin"
+        workq.write_bytes(RANKED_RECORD.pack(0, 0))
+        return cost, workq
+
+    def ranked_command(self, cost: Path, workq: Path, output: Path) -> list[str]:
+        return [
+            str(CRUNCHER),
+            "--ranked-cost",
+            str(cost),
+            "--ranked-input",
+            str(workq),
+            "--ranked-output",
+            str(output),
+            "--ranked-depth",
+            "1",
+            "--rank-symbols",
+            "AB",
+            "--rank-counts",
+            "2,2",
+            "--rank-universe",
+            "6",
+            "--size",
+            "2",
+            "--start",
+            "0",
+            "--end",
+            "0",
+            "--moves",
+            "U U' U2",
+            "--squares",
+            "1,2,3,4",
+        ]
+
+    def read_records(self, path: Path) -> list[tuple[int, int]]:
+        data = path.read_bytes()
+        self.assertEqual(len(data) % RANKED_RECORD.size, 0)
+        return list(RANKED_RECORD.iter_unpack(data))
+
+    def test_ranked_mode_claims_costs_and_writes_unique_records(self):
+        cost, workq = self.ranked_files()
+        output = self.scratch / "next.bin"
+        completed = subprocess.run(
+            self.ranked_command(cost, workq, output),
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        records = self.read_records(output)
+        self.assertEqual(int(completed.stdout), len(records))
+        self.assertEqual(len({rank for rank, _ in records}), len(records))
+        costs = cost.read_bytes()
+        self.assertEqual(costs[0], 1)
+        self.assertTrue(all(costs[rank] == 2 for rank, _ in records))
+
+    def test_two_processes_cannot_both_claim_the_same_rank(self):
+        cost, workq = self.ranked_files()
+        outputs = [self.scratch / "next-0.bin", self.scratch / "next-1.bin"]
+        processes = [
+            subprocess.Popen(
+                self.ranked_command(cost, workq, output),
+                cwd=REPO_ROOT,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            for output in outputs
+        ]
+        results = [process.communicate(timeout=30) for process in processes]
+        self.assertTrue(all(process.returncode == 0 for process in processes), results)
+        records = [record for output in outputs for record in self.read_records(output)]
+        ranks = [rank for rank, _ in records]
+        self.assertEqual(len(ranks), len(set(ranks)))
+        self.assertEqual(sum(int(stdout) for stdout, _ in results), len(records))
 
 
 if __name__ == "__main__":

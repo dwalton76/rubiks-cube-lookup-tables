@@ -346,6 +346,7 @@ class Build555XCenterStageOnePhase(BFS):
                 ),
             ),
             use_c=True,
+            use_ranked_cost=True,
         )
 
 
@@ -385,6 +386,7 @@ class Build555TCenterStageOnePhase(BFS):
                 ),
             ),
             use_c=True,
+            use_ranked_cost=True,
         )
 
 
