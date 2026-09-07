@@ -775,8 +775,6 @@ class BFS(object):
             self._sort_merge_state_files(core_files, sorted_results_filename)
             self.rm_files(core_files)
 
-        self.time_in_crunching_workq += (dt.datetime.now() - start_time).total_seconds()
-
     def _build_edges_pattern_workq(self, new_states_filename: str, build_workq: bool) -> int:
         """
         Build the workq for the next depth from the new states we just found and return
