@@ -59,6 +59,10 @@ WRITE_BATCH_SIZE = 10000000
 LOOKUP_TABLE_DIR = Path("lookup-tables")
 TMPDIR = Path("./tmp/")
 
+# How much memory we let each "sort" use. Setting this above what the machine actually has
+# does not make sort faster, it just gets us into swap.
+SORT_BUFFER_SIZE = "16G"
+
 
 def get_line_number_splits(lines: int, cores: int) -> Tuple:
     """Split a 0-based line range across cores. Extra cores get (None, None)."""
@@ -656,8 +660,8 @@ class BFS(object):
             state_width = len(state)
 
         cmd = (
-            "LC_ALL=C nice sort --batch-size=1000 --parallel=%d --buffer-size=48G --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
-            % (self.cores, state_width, TMPDIR, sorted_results_filename, files_to_sort_filename)
+            "LC_ALL=C nice sort --batch-size=1000 --parallel=%d --buffer-size=%s --uniq --key=1.1,1.%d  --merge --temporary-directory=%s --output %s --files0-from=%s"
+            % (self.cores, SORT_BUFFER_SIZE, state_width, TMPDIR, sorted_results_filename, files_to_sort_filename)
         )
         # log.info(cmd)
 
@@ -912,8 +916,8 @@ class BFS(object):
             log.info("sort --merge our current lookup-table.txt file with the .20-new-states file begin")
             start_time = dt.datetime.now()
             subprocess.check_output(
-                "LC_ALL=C nice sort --parallel=%d --buffer-size=48G --merge --temporary-directory=%s --output %s.30-final %s %s.20-new-states"
-                % (self.cores, TMPDIR, self.workq_filename, self.filename, self.workq_filename),
+                "LC_ALL=C nice sort --parallel=%d --buffer-size=%s --merge --temporary-directory=%s --output %s.30-final %s %s.20-new-states"
+                % (self.cores, SORT_BUFFER_SIZE, TMPDIR, self.workq_filename, self.filename, self.workq_filename),
                 shell=True,
             )
             self.time_in_sort += (dt.datetime.now() - start_time).total_seconds()
@@ -1173,8 +1177,8 @@ class BFS(object):
             except subprocess.CalledProcessError:
                 log.info(f"{self}: sort the file")
                 subprocess.check_output(
-                    "LC_ALL=C nice sort --parallel=%d --buffer-size=48G --temporary-directory=%s --output=%s %s"
-                    % (self.cores, TMPDIR, filename, filename),
+                    "LC_ALL=C nice sort --parallel=%d --buffer-size=%s --temporary-directory=%s --output=%s %s"
+                    % (self.cores, SORT_BUFFER_SIZE, TMPDIR, filename, filename),
                     shell=True,
                 )
 
