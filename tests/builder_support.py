@@ -49,6 +49,10 @@ SKIPPED_BUILDERS = {
     "Build555Phase4": "starting states are too large to build at a test depth",
     "Build555XCenterStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build555TCenterStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666InnerXCentersStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase3UDLeftRightObliqueCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase3UDLeftObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase3UDRightObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build555Phase5FBCentersHighEdgeMidge": "576 million states; used only to build a perfect-hash file",
     "Build555Phase5FBCentersLowEdgeMidge": "576 million states; used only to build a perfect-hash file",
     "Build555PairLastEightEdgesEdgesOnly": "813 million states; used only to build a perfect-hash file",
@@ -119,7 +123,10 @@ def builder_output_path(name: str) -> Path:
         builder = builder_class(name)()
     finally:
         logging.disable(previous_disable_level)
-    return REPO_ROOT / builder.filename
+    path = Path(builder.filename)
+    if path.is_absolute():
+        return path
+    return REPO_ROOT / path
 
 
 @dataclass
@@ -205,7 +212,7 @@ def read_table(path: Path, depth: Optional[int] = None) -> TableFacts:
                 solution_over_depth = line.decode("ascii", "replace")
 
     return TableFacts(
-        filename=str(path.relative_to(REPO_ROOT)).replace(os.sep, "/"),
+        filename="lookup-tables/" + path.name,
         lines=line_count,
         # Keyed by string because this round-trips through JSON. Depth 0 is the
         # starting states, which reach themselves in no moves.

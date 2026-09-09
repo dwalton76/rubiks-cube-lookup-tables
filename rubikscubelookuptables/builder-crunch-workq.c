@@ -52,12 +52,22 @@
 #define MAX_COMPACT_SQUARES 255
 #define MAX_SQUARES_ARG 2048
 #define MAX_RANK_SYMBOLS 32
+#define MAX_RANK_GROUPS 32
 #define RANKED_RECORD_SIZE 9
 #define MAX_BINOM 64
 #define RANKED_IO_BUFFER (8 * 1024 * 1024)
 
 static uint64_t binom_table[MAX_BINOM + 1][MAX_BINOM + 1];
 static unsigned int binom_ready_n = 0;
+
+typedef struct {
+    unsigned int offset;
+    unsigned int length;
+    unsigned int symbol_count;
+    unsigned char symbols[MAX_RANK_SYMBOLS + 1];
+    unsigned int counts[MAX_RANK_SYMBOLS];
+    uint64_t universe;
+} rank_group_type;
 
 
 // to_write holds batch_size lines, each line_width bytes from the last. process_workq()
@@ -322,6 +332,78 @@ parse_rank_counts(char *arg, unsigned int *counts)
     return count;
 }
 
+/*
+ * Parse "length:symbols:count,count:universe[;...]" into contiguous compact-state
+ * groups. A single group continues to use the historical command-line options.
+ */
+static unsigned int
+parse_rank_groups(char *arg, rank_group_type *groups)
+{
+    unsigned int group_count = 0;
+    unsigned int offset = 0;
+    char *group_save = NULL;
+    char *group_arg = strtok_r(arg, ";", &group_save);
+
+    while (group_arg != NULL) {
+        char *field_save = NULL;
+        char *length_arg;
+        char *symbols_arg;
+        char *counts_arg;
+        char *universe_arg;
+        rank_group_type *group;
+
+        if (group_count >= MAX_RANK_GROUPS) {
+            fprintf(stderr, "ERROR: too many --rank-groups entries\n");
+            exit(1);
+        }
+        length_arg = strtok_r(group_arg, ":", &field_save);
+        symbols_arg = strtok_r(NULL, ":", &field_save);
+        counts_arg = strtok_r(NULL, ":", &field_save);
+        universe_arg = strtok_r(NULL, ":", &field_save);
+        if (!length_arg || !symbols_arg || !counts_arg || !universe_arg ||
+                strtok_r(NULL, ":", &field_save) != NULL) {
+            fprintf(stderr, "ERROR: invalid --rank-groups entry\n");
+            exit(1);
+        }
+
+        group = &groups[group_count];
+        memset(group, 0, sizeof(*group));
+        group->offset = offset;
+        group->length = (unsigned int) strtoul(length_arg, NULL, 10);
+        group->symbol_count = strlen(symbols_arg);
+        group->universe = strtoull(universe_arg, NULL, 10);
+        if (!group->length || !group->symbol_count ||
+                group->symbol_count > MAX_RANK_SYMBOLS || !group->universe) {
+            fprintf(stderr, "ERROR: invalid --rank-groups values\n");
+            exit(1);
+        }
+        memcpy(group->symbols, symbols_arg, group->symbol_count);
+        if (parse_rank_counts(counts_arg, group->counts) != group->symbol_count) {
+            fprintf(stderr, "ERROR: --rank-groups symbols and counts do not agree\n");
+            exit(1);
+        }
+        for (unsigned int i = 1; i < group->symbol_count; i++) {
+            if (group->symbols[i - 1] >= group->symbols[i]) {
+                fprintf(stderr, "ERROR: rank group symbols must be unique and sorted\n");
+                exit(1);
+            }
+        }
+        unsigned int count_total = 0;
+        for (unsigned int i = 0; i < group->symbol_count; i++) {
+            count_total += group->counts[i];
+        }
+        if (count_total != group->length) {
+            fprintf(stderr, "ERROR: rank group length and counts do not agree\n");
+            exit(1);
+        }
+
+        offset += group->length;
+        group_count++;
+        group_arg = strtok_r(NULL, ";", &group_save);
+    }
+    return group_count;
+}
+
 
 /*
  * For each legal move, find where every interesting square lands after rotate_xxx().
@@ -557,6 +639,57 @@ multiset_rank(
     return rank;
 }
 
+static void
+grouped_multiset_unrank(
+    uint64_t rank,
+    unsigned char *state,
+    const rank_group_type *groups,
+    unsigned int group_count,
+    uint64_t universe)
+{
+    uint64_t component_ranks[MAX_RANK_GROUPS];
+
+    if (rank >= universe) {
+        fprintf(stderr, "ERROR: rank %" PRIu64 " is outside universe %" PRIu64 "\n", rank, universe);
+        exit(1);
+    }
+    for (unsigned int i = group_count; i-- > 0;) {
+        component_ranks[i] = rank % groups[i].universe;
+        rank /= groups[i].universe;
+    }
+    if (rank) {
+        fprintf(stderr, "ERROR: grouped rank universes do not cover the configured universe\n");
+        exit(1);
+    }
+    for (unsigned int i = 0; i < group_count; i++) {
+        multiset_unrank(
+            component_ranks[i], state + groups[i].offset, groups[i].symbols,
+            groups[i].counts, groups[i].symbol_count, groups[i].length, groups[i].universe);
+    }
+}
+
+static uint64_t
+grouped_multiset_rank(
+    const unsigned char *state,
+    const int symbol_of[MAX_RANK_GROUPS][256],
+    const rank_group_type *groups,
+    unsigned int group_count)
+{
+    uint64_t rank = 0;
+
+    for (unsigned int i = 0; i < group_count; i++) {
+        uint64_t component = multiset_rank(
+            state + groups[i].offset, symbol_of[i], groups[i].counts,
+            groups[i].symbol_count, groups[i].length);
+        if (rank > (UINT64_MAX - component) / groups[i].universe) {
+            fprintf(stderr, "ERROR: grouped ranked multiset arithmetic overflow\n");
+            exit(1);
+        }
+        rank = (rank * groups[i].universe) + component;
+    }
+    return rank;
+}
+
 
 static uint64_t
 read_rank(FILE *fh)
@@ -602,18 +735,36 @@ process_ranked_workq(
     unsigned int moves_count,
     unsigned int *squares,
     unsigned int square_count,
-    const unsigned char *symbols,
-    const unsigned int *counts,
-    unsigned int symbol_count,
+    const rank_group_type *groups,
+    unsigned int group_count,
     uint64_t universe,
     int write_workq)
 {
     unsigned int state_length = 0;
-    for (unsigned int i = 0; i < symbol_count; i++) {
-        state_length += counts[i];
+    uint64_t configured_universe = 1;
+    for (unsigned int i = 0; i < group_count; i++) {
+        state_length += groups[i].length;
+        ensure_binom(groups[i].length);
+        uint64_t group_universe = multiset_perms(
+            groups[i].counts, groups[i].symbol_count, groups[i].length);
+        if (group_universe != groups[i].universe) {
+            fprintf(stderr, "ERROR: rank group %u universe is %" PRIu64 ", expected %" PRIu64 "\n",
+                i, group_universe, groups[i].universe);
+            exit(1);
+        }
+        if (configured_universe > UINT64_MAX / groups[i].universe) {
+            fprintf(stderr, "ERROR: grouped ranked universe overflow\n");
+            exit(1);
+        }
+        configured_universe *= groups[i].universe;
     }
-    if (!square_count || square_count != state_length) {
+    if (!group_count || !square_count || square_count != state_length) {
         fprintf(stderr, "ERROR: ranked mode requires --squares matching --rank-counts\n");
+        exit(1);
+    }
+    if (configured_universe != universe) {
+        fprintf(stderr, "ERROR: rank group universes multiply to %" PRIu64 ", expected %" PRIu64 "\n",
+            configured_universe, universe);
         exit(1);
     }
     if (depth > 254) {
@@ -633,7 +784,7 @@ process_ranked_workq(
     FILE *output = write_workq ? fopen(outputfile, "wb") : NULL;
     int cost_fd = open(cost_filename, O_RDWR);
     struct stat cost_stat;
-    int symbol_of[256];
+    int symbol_of[MAX_RANK_GROUPS][256];
     if (!input || (write_workq && !output) || cost_fd < 0 || fstat(cost_fd, &cost_stat) != 0) {
         fprintf(stderr, "ERROR: could not open ranked input/output files\n");
         exit(1);
@@ -669,10 +820,11 @@ process_ranked_workq(
         exit(1);
     }
 
-    ensure_binom(square_count);
     memset(symbol_of, 0xff, sizeof(symbol_of));
-    for (unsigned int symbol = 0; symbol < symbol_count; symbol++) {
-        symbol_of[symbols[symbol]] = (int) symbol;
+    for (unsigned int group = 0; group < group_count; group++) {
+        for (unsigned int symbol = 0; symbol < groups[group].symbol_count; symbol++) {
+            symbol_of[group][groups[group].symbols[symbol]] = (int) symbol;
+        }
     }
 
     unsigned int *perm = build_compact_permutations(cube_size, squares, square_count, moves, moves_count);
@@ -692,7 +844,7 @@ process_ranked_workq(
             fprintf(stderr, "ERROR: truncated ranked workq\n");
             exit(1);
         }
-        multiset_unrank(parent_rank, state, symbols, counts, symbol_count, square_count, universe);
+        grouped_multiset_unrank(parent_rank, state, groups, group_count, universe);
 
         for (unsigned int move_index = 0; move_index < moves_count; move_index++) {
             move_type move = moves[move_index];
@@ -708,7 +860,7 @@ process_ranked_workq(
                 continue;
             }
 
-            child_rank = multiset_rank(child, symbol_of, counts, symbol_count, square_count);
+            child_rank = grouped_multiset_rank(child, symbol_of, groups, group_count);
             if (__atomic_load_n(&costs[child_rank], __ATOMIC_RELAXED)) {
                 continue;
             }
@@ -1001,10 +1153,13 @@ main (int argc, char *argv[])
     char squares_buffer[MAX_SQUARES_ARG];
     char rank_symbols[MAX_RANK_SYMBOLS + 1];
     char rank_counts_buffer[MAX_SQUARES_ARG];
+    char rank_groups_buffer[MAX_SQUARES_ARG];
     unsigned int squares[MAX_COMPACT_SQUARES];
     unsigned int rank_counts[MAX_RANK_SYMBOLS];
+    rank_group_type rank_groups[MAX_RANK_GROUPS];
     unsigned int square_count = 0;
     unsigned int rank_symbol_count = 0;
+    unsigned int rank_group_count = 0;
     int ranked_no_workq = 0;
     memset(inputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
     memset(outputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
@@ -1014,6 +1169,8 @@ main (int argc, char *argv[])
     memset(squares_buffer, '\0', sizeof(squares_buffer));
     memset(rank_symbols, '\0', sizeof(rank_symbols));
     memset(rank_counts_buffer, '\0', sizeof(rank_counts_buffer));
+    memset(rank_groups_buffer, '\0', sizeof(rank_groups_buffer));
+    memset(rank_groups, 0, sizeof(rank_groups));
 
     for (int i = 1; i < argc; i++) {
         if (strmatch(argv[i], "--inputfile")) {
@@ -1072,6 +1229,10 @@ main (int argc, char *argv[])
             i++;
             strncpy(rank_counts_buffer, argv[i], MAX_SQUARES_ARG - 1);
 
+        } else if (strmatch(argv[i], "--rank-groups")) {
+            i++;
+            strncpy(rank_groups_buffer, argv[i], MAX_SQUARES_ARG - 1);
+
         } else if (strmatch(argv[i], "--rank-universe")) {
             i++;
             rank_universe = strtoull(argv[i], NULL, 10);
@@ -1127,17 +1288,40 @@ main (int argc, char *argv[])
     }
 
     if (ranked_cost[0]) {
-        rank_symbol_count = strlen(rank_symbols);
-        unsigned int rank_count_count = parse_rank_counts(rank_counts_buffer, rank_counts);
+        if (rank_groups_buffer[0]) {
+            if (rank_symbols[0] || rank_counts_buffer[0]) {
+                fprintf(stderr, "ERROR: --rank-groups cannot be combined with --rank-symbols/--rank-counts\n");
+                exit(1);
+            }
+            rank_group_count = parse_rank_groups(rank_groups_buffer, rank_groups);
+        } else {
+            rank_symbol_count = strlen(rank_symbols);
+            unsigned int rank_count_count = parse_rank_counts(rank_counts_buffer, rank_counts);
+            if (!rank_symbol_count || rank_symbol_count != rank_count_count) {
+                fprintf(stderr, "ERROR: ranked mode requires matching symbols and counts\n");
+                exit(1);
+            }
+            rank_group_count = 1;
+            rank_groups[0].offset = 0;
+            rank_groups[0].symbol_count = rank_symbol_count;
+            memcpy(rank_groups[0].symbols, rank_symbols, rank_symbol_count);
+            memcpy(rank_groups[0].counts, rank_counts, rank_symbol_count * sizeof(unsigned int));
+            for (unsigned int i = 0; i < rank_symbol_count; i++) {
+                rank_groups[0].length += rank_counts[i];
+            }
+            rank_groups[0].universe = rank_universe;
+        }
         if (!ranked_input[0] || (!ranked_no_workq && !ranked_output[0]) ||
-                !rank_symbol_count || rank_symbol_count != rank_count_count || !rank_universe) {
+                !rank_group_count || !rank_universe) {
             fprintf(stderr, "ERROR: ranked mode requires input/output, symbols, counts and universe\n");
             exit(1);
         }
-        for (unsigned int i = 1; i < rank_symbol_count; i++) {
-            if ((unsigned char) rank_symbols[i - 1] >= (unsigned char) rank_symbols[i]) {
-                fprintf(stderr, "ERROR: --rank-symbols must be unique and sorted\n");
-                exit(1);
+        if (!rank_groups_buffer[0]) {
+            for (unsigned int i = 1; i < rank_symbol_count; i++) {
+                if ((unsigned char) rank_symbols[i - 1] >= (unsigned char) rank_symbols[i]) {
+                    fprintf(stderr, "ERROR: --rank-symbols must be unique and sorted\n");
+                    exit(1);
+                }
             }
         }
         if (ranked_depth > 254) {
@@ -1147,7 +1331,7 @@ main (int argc, char *argv[])
         process_ranked_workq(
             ranked_input, ranked_output, ranked_cost, start, end, (unsigned char) ranked_depth,
             cube_size, moves, moves_index, squares, square_count,
-            (unsigned char *) rank_symbols, rank_counts, rank_symbol_count,
+            rank_groups, rank_group_count,
             rank_universe, !ranked_no_workq);
     } else {
         if (start > UINT_MAX || end > UINT_MAX) {

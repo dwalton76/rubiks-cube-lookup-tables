@@ -5,7 +5,7 @@ clean:
 	find . -name __pycache__ | xargs rm -rf
 
 init: clean
-	export PYTHONPATH=/home/dwalton76/rubiks-cube-NxNxN-solver/:/home/dwalton76/rubiks-cube-lookup-tables/
+	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
 	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-find-new-states utils/pad-lines
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	gcc -O3 -o rubikscubelookuptables/builder-find-new-states rubikscubelookuptables/builder-find-new-states.c
@@ -31,13 +31,13 @@ format:
 	@./venv/bin/python3 -m flake8 --config=.flake8 $(FORMAT_FILES)
 
 # The builder tests all stage intermediate files in ./tmp, so they have to run one
-# at a time. Do not add -n/xdist here.
+# at a time. Do not add -n/xdist here. Test builds write tables under
+# tmp/test-lookup-tables and do not append histogram.txt.
 test:
-	@./venv/bin/python3 -m pytest -vv tests/
-	rm histogram.txt || true
+	RUBIKS_LOOKUP_TABLE_DIR=tmp/test-lookup-tables RUBIKS_SKIP_HISTOGRAM=1 ./venv/bin/python3 -m pytest -vv tests/
 
 test-lite:
-	@./venv/bin/python3 -m pytest -vv tests/ -k "not test_build_" --ignore=tests/test_builder_determinism.py
+	RUBIKS_LOOKUP_TABLE_DIR=tmp/test-lookup-tables RUBIKS_SKIP_HISTOGRAM=1 ./venv/bin/python3 -m pytest -vv tests/ -k "not test_build_" --ignore=tests/test_builder_determinism.py
 
 wheel:
 	@./venv/bin/python3 setup.py bdist_wheel
@@ -195,6 +195,13 @@ wheel:
 	./utils/builderui.py Build666LRInnerXCentersStage
 	./utils/build-ida-graph.py Build666LRInnerXCentersStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step00-inner-x-centers-stage.json
+
+	./utils/builderui.py Build666InnerXCentersStageOnePhase
+
+666-phase3-preserve-inner-x: clean
+	./utils/builderui.py Build666Phase3UDLeftRightObliqueCentersStage
+	./utils/builderui.py Build666Phase3UDLeftObliqueOuterXCentersStage
+	./utils/builderui.py Build666Phase3UDRightObliqueOuterXCentersStage
 
 666-phase3: clean
 	./utils/builderui.py Build666UDInnerXCentersStage

@@ -6,10 +6,16 @@ from __future__ import annotations
 import json
 import os
 import unittest
+from pathlib import Path
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import multiset_rank
 from tests.builder_support import REPO_ROOT, build_table, builder_class
+
+
+def output_path(filename: str):
+    path = Path(filename)
+    return path if path.is_absolute() else REPO_ROOT / path
 
 
 class RankedBuilderTests(unittest.TestCase):
@@ -17,8 +23,8 @@ class RankedBuilderTests(unittest.TestCase):
 
     def setUp(self):
         self.builder = builder_class("Build555XCenterStageOnePhase")()
-        self.cost_path = REPO_ROOT / self.builder.ranked_cost_filename
-        self.metadata_path = REPO_ROOT / self.builder.ranked_metadata_filename
+        self.cost_path = output_path(self.builder.ranked_cost_filename)
+        self.metadata_path = output_path(self.builder.ranked_metadata_filename)
         self.addCleanup(self._remove_outputs)
 
     def _remove_outputs(self):

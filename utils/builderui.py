@@ -8,7 +8,7 @@ import logging
 import shutil
 
 # rubiks cube libraries
-from rubikscubelookuptables.buildercore import LOOKUP_TABLE_DIR, TMPDIR
+from rubikscubelookuptables.buildercore import TMPDIR, lookup_table_dir
 
 
 def get_class(kls):
@@ -56,8 +56,9 @@ if TMPDIR.exists():
     shutil.rmtree(TMPDIR)
 TMPDIR.mkdir(parents=True, exist_ok=False)
 
-if not LOOKUP_TABLE_DIR.exists():
-    LOOKUP_TABLE_DIR.mkdir(parents=True, exist_ok=False)
+table_dir = lookup_table_dir()
+if not table_dir.exists():
+    table_dir.mkdir(parents=True, exist_ok=True)
 
 log.info("")
 log.info("")

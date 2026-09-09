@@ -74,9 +74,241 @@ class Build666LRInnerXCentersStage(BFS):
         # fmt: on
 
 
+class Build666InnerXCentersStageOnePhase(BFS):
+    """
+    Stage all 24 inner x-centers in one phase (8 UD, 8 LR, 8 FB).
+
+    24! / (8!^3) = 9,465,511,770 states. Built as a ranked cost-only table.
+    """
+
+    def __init__(self):
+        # fmt: off
+        BFS.__init__(
+            self,
+            "6x6x6-inner-x-centers-stage-one-phase",
+            (),
+            "6x6x6",
+            "lookup-table-6x6x6-step05-inner-x-centers-stage-one-phase.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+              . . . . . .
+              . . . . . .
+              . . U U . .
+              . . U U . .
+              . . . . . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . L L . .  . . F F . .  . . L L . .  . . F F . .
+ . . L L . .  . . F F . .  . . L L . .  . . F F . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . . . . .
+              . . U U . .
+              . . U U . .
+              . . . . . .
+              . . . . . .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
+            use_ranked_cost=True,
+        )
+        # fmt: on
+
+
+
 # =======
 # phase 3
 # =======
+
+PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES = (
+    "3Uw",
+    "3Uw'",
+    "3Lw",
+    "3Lw'",
+    "3Fw",
+    "3Fw'",
+    "3Rw",
+    "3Rw'",
+    "3Bw",
+    "3Bw'",
+    "3Dw",
+    "3Dw'",
+    "Uw",
+    "Uw'",
+    "Dw",
+    "Dw'",
+    "Fw",
+    "Fw'",
+    "Bw",
+    "Bw'",
+    "L",
+    "L'",
+    "L2",
+    "R",
+    "R'",
+    "R2",
+)
+
+UFBD_OUTER_X_CENTERS_666 = (
+    8, 11, 26, 29,
+    80, 83, 98, 101,
+    152, 155, 170, 173,
+    188, 191, 206, 209,
+)
+UFBD_LEFT_OBLIQUE_EDGES_666 = (
+    9, 17, 20, 28,
+    81, 89, 92, 100,
+    153, 161, 164, 172,
+    189, 197, 200, 208,
+)
+UFBD_RIGHT_OBLIQUE_EDGES_666 = (
+    10, 14, 23, 27,
+    82, 86, 95, 99,
+    154, 158, 167, 171,
+    190, 194, 203, 207,
+)
+
+
+class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "6x6x6-phase3-UD-left-right-oblique-centers-stage",
+            PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
+            "6x6x6",
+            "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage.txt",
+            False,
+            (
+                (
+                    """
+              . . . . . .
+              . . U U . .
+              . U . . U .
+              . U . . U .
+              . . U U . .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . . x x . .  . . . . . .  . . x x . .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . x . . x .  . . . . . .  . x . . x .
+ . . . . . .  . . x x . .  . . . . . .  . . x x . .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . . U U . .
+              . U . . U .
+              . U . . U .
+              . . U U . .
+              . . . . . .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=(
+                UFBD_LEFT_OBLIQUE_EDGES_666,
+                UFBD_RIGHT_OBLIQUE_EDGES_666,
+            ),
+        )
+
+
+class Build666Phase3UDLeftObliqueOuterXCentersStage(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "6x6x6-phase3-UD-left-oblique-outer-x-centers-stage",
+            PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
+            "6x6x6",
+            "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage.txt",
+            False,
+            (
+                (
+                    """
+              . . . . . .
+              . U U . U .
+              . . . . U .
+              . U . . . .
+              . U . U U .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . x x . x .  . . . . . .  . x x . x .
+ . . . . . .  . . . . x .  . . . . . .  . . . . x .
+ . . . . . .  . x . . . .  . . . . . .  . x . . . .
+ . . . . . .  . x . x x .  . . . . . .  . x . x x .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . U U . U .
+              . . . . U .
+              . U . . . .
+              . U . U U .
+              . . . . . .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=(
+                UFBD_LEFT_OBLIQUE_EDGES_666,
+                UFBD_OUTER_X_CENTERS_666,
+            ),
+        )
+
+
+class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "6x6x6-phase3-UD-right-oblique-outer-x-centers-stage",
+            PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
+            "6x6x6",
+            "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage.txt",
+            False,
+            (
+                (
+                    """
+              . . . . . .
+              . U . U U .
+              . U . . . .
+              . . . . U .
+              . U U . U .
+              . . . . . .
+
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+ . . . . . .  . x . x x .  . . . . . .  . x . x x .
+ . . . . . .  . x . . . .  . . . . . .  . x . . . .
+ . . . . . .  . . . . x .  . . . . . .  . . . . x .
+ . . . . . .  . x x . x .  . . . . . .  . x x . x .
+ . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+              . . . . . .
+              . U . U U .
+              . U . . . .
+              . . . . U .
+              . U U . U .
+              . . . . . .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=(
+                UFBD_RIGHT_OBLIQUE_EDGES_666,
+                UFBD_OUTER_X_CENTERS_666,
+            ),
+        )
+
+
 class Build666UDInnerXCentersStage(BFS):
     def __init__(self):
         # fmt: off

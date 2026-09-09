@@ -7,6 +7,8 @@ ordinary TestCase methods now so a failure names the behavior, not the module.
 from __future__ import annotations
 
 # standard libraries
+import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -16,10 +18,14 @@ from pyhashxx import hashxx
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import (
+    BFS,
     convert_state_to_hex,
     convert_to_cost_only,
     convert_to_hash_cost_only,
     get_line_number_splits,
+    lookup_table_dir,
+    mixed_radix_rank,
+    mixed_radix_unrank,
     multiset_rank,
     multiset_size,
     multiset_unrank,
@@ -58,6 +64,29 @@ class GetLineNumberSplitsTests(unittest.TestCase):
     def test_rejects_a_zero_core_count(self):
         with self.assertRaises(AssertionError):
             get_line_number_splits(10, 0)
+
+
+class LookupTableDirTests(unittest.TestCase):
+    """Finished tables can be redirected away from lookup-tables/."""
+
+    def test_default_is_lookup_tables(self):
+        previous = os.environ.pop("RUBIKS_LOOKUP_TABLE_DIR", None)
+        try:
+            self.assertEqual(lookup_table_dir(), Path("lookup-tables"))
+        finally:
+            if previous is not None:
+                os.environ["RUBIKS_LOOKUP_TABLE_DIR"] = previous
+
+    def test_env_override_is_honored(self):
+        previous = os.environ.get("RUBIKS_LOOKUP_TABLE_DIR")
+        os.environ["RUBIKS_LOOKUP_TABLE_DIR"] = "tmp/test-lookup-tables"
+        try:
+            self.assertEqual(lookup_table_dir(), Path("tmp/test-lookup-tables"))
+        finally:
+            if previous is None:
+                os.environ.pop("RUBIKS_LOOKUP_TABLE_DIR", None)
+            else:
+                os.environ["RUBIKS_LOOKUP_TABLE_DIR"] = previous
 
 
 class ReverseStepsTests(unittest.TestCase):
@@ -136,6 +165,84 @@ class MultisetRankTests(unittest.TestCase):
     def test_rejects_unsorted_symbols(self):
         with self.assertRaises(ValueError):
             multiset_rank("AAB", "BA", (1, 2))
+
+    def test_two_group_mixed_radix_order(self):
+        self.assertEqual(mixed_radix_rank((2, 3), (6, 6)), (2 * 6) + 3)
+        self.assertEqual(mixed_radix_unrank(15, (6, 6)), (2, 3))
+
+    def test_every_two_group_rank_round_trips(self):
+        for rank in range(36):
+            components = mixed_radix_unrank(rank, (6, 6))
+            self.assertEqual(mixed_radix_rank(components, (6, 6)), rank)
+
+    def test_grouped_unrank_reconstructs_the_compact_state(self):
+        builder = BFS.__new__(BFS)
+        builder.compact_squares = tuple(range(8))
+        builder.rank_universes = (6, 6)
+        builder.rank_groups = (
+            {"offset": 0, "length": 4, "symbols": "AB", "counts": (2, 2)},
+            {"offset": 4, "length": 4, "symbols": "AB", "counts": (2, 2)},
+        )
+        state = "BAABABBA"
+        rank = builder._ranked_state_rank(state)
+        self.assertEqual(rank, multiset_rank("BAAB", "AB", (2, 2)) * 6 + multiset_rank("ABBA", "AB", (2, 2)))
+        self.assertEqual(builder._ranked_state_unrank(rank), state)
+
+    def test_grouped_metadata_describes_both_radices(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            builder = BFS.__new__(BFS)
+            builder.ranked_metadata_filename = str(Path(scratch) / "cost.bin.json")
+            builder.rank_groups = (
+                {
+                    "squares": [1, 2, 3, 4],
+                    "offset": 0,
+                    "length": 4,
+                    "symbols": "AB",
+                    "counts": (2, 2),
+                    "universe_size": 6,
+                },
+                {
+                    "squares": [5, 9, 13, 17],
+                    "offset": 4,
+                    "length": 4,
+                    "symbols": "AB",
+                    "counts": (2, 2),
+                    "universe_size": 6,
+                },
+            )
+            builder.rank_universe = 36
+            builder.stats = {0: 1, 1: 3}
+            builder._write_ranked_metadata()
+            metadata = json.loads(Path(builder.ranked_metadata_filename).read_text(encoding="utf-8"))
+
+        self.assertEqual([group["universe_size"] for group in metadata["rank_groups"]], [6, 6])
+        self.assertEqual(metadata["rank_order"], "left-to-right mixed radix")
+        self.assertNotIn("symbols", metadata)
+        self.assertEqual(metadata["cost_encoding"], {"0": "unseen", "nonzero": "depth + 1"})
+
+    def test_single_group_metadata_keeps_legacy_fields(self):
+        with tempfile.TemporaryDirectory() as scratch:
+            builder = BFS.__new__(BFS)
+            builder.ranked_metadata_filename = str(Path(scratch) / "cost.bin.json")
+            builder.rank_groups = (
+                {
+                    "squares": [1, 2, 3, 4],
+                    "offset": 0,
+                    "length": 4,
+                    "symbols": "AB",
+                    "counts": (2, 2),
+                    "universe_size": 6,
+                },
+            )
+            builder.rank_symbols = "AB"
+            builder.rank_counts = (2, 2)
+            builder.rank_universe = 6
+            builder.stats = {0: 1}
+            builder._write_ranked_metadata()
+            metadata = json.loads(Path(builder.ranked_metadata_filename).read_text(encoding="utf-8"))
+
+        self.assertEqual(metadata["symbols"], "AB")
+        self.assertEqual(metadata["counts"], [2, 2])
 
 
 class ConvertToCostOnlyTests(unittest.TestCase):
@@ -216,6 +323,81 @@ class ConvertToHashCostOnlyTests(unittest.TestCase):
         written = self.convert("AAA:" + " ".join(["U"] * 16), buckets=8).strip()
         occupied = self.bucket_for("AAA", 8)
         self.assertEqual(written[occupied], "f")
+
+
+class HistogramTests(unittest.TestCase):
+    """Per-depth reports that both text and ranked builders append to histogram.txt."""
+
+    def fake_builder(self, **attrs):
+        builder = BFS.__new__(BFS)
+        builder.stats = {}
+        builder.starting_state_count = 0
+        builder.use_ranked_cost = False
+        for name, value in attrs.items():
+            setattr(builder, name, value)
+        return builder
+
+    def test_text_tables_add_starting_states_that_are_not_in_stats(self):
+        builder = self.fake_builder(stats={0: 0, 1: 4, 2: 70}, starting_state_count=1)
+        self.assertEqual(builder._table_linecount(), 75)
+
+    def test_ranked_tables_do_not_double_count_starting_states(self):
+        builder = self.fake_builder(stats={0: 1, 1: 4, 2: 70}, starting_state_count=1)
+        self.assertEqual(builder._table_linecount(), 75)
+
+    def test_ranked_save_appends_histogram_txt(self):
+        builder = self.fake_builder(
+            stats={0: 1, 1: 4, 2: 70},
+            starting_state_count=1,
+            use_ranked_cost=True,
+            ranked_cost_filename="lookup-table.cost-only.bin",
+            time_in_save=0,
+            name="histogram-test",
+        )
+        builder._publish_ranked_cost_file = lambda: None
+        builder._write_ranked_metadata = lambda: None
+        previous_skip = os.environ.pop("RUBIKS_SKIP_HISTOGRAM", None)
+
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                cwd = Path.cwd()
+                try:
+                    os.chdir(tmp)
+                    builder.save()
+                    histogram = Path("histogram.txt").read_text(encoding="utf-8")
+                finally:
+                    os.chdir(cwd)
+        finally:
+            if previous_skip is not None:
+                os.environ["RUBIKS_SKIP_HISTOGRAM"] = previous_skip
+
+        self.assertIn("lookup-table.cost-only.bin", histogram)
+        self.assertIn("0 steps has 1 entries", histogram)
+        self.assertIn("1 steps has 4 entries", histogram)
+        self.assertIn("2 steps has 70 entries", histogram)
+        self.assertIn("Total: 75 entries", histogram)
+
+    def test_skip_histogram_env_does_not_write_histogram_txt(self):
+        builder = self.fake_builder(
+            stats={0: 1, 1: 4},
+            starting_state_count=1,
+            use_ranked_cost=True,
+            ranked_cost_filename="lookup-table.cost-only.bin",
+            time_in_save=0,
+            name="histogram-test",
+        )
+        builder._publish_ranked_cost_file = lambda: None
+        builder._write_ranked_metadata = lambda: None
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cwd = Path.cwd()
+            try:
+                os.chdir(tmp)
+                os.environ["RUBIKS_SKIP_HISTOGRAM"] = "1"
+                builder.save()
+                self.assertFalse(Path("histogram.txt").exists())
+            finally:
+                os.chdir(cwd)
 
 
 if __name__ == "__main__":

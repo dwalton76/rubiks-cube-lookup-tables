@@ -58,8 +58,22 @@ supported_sizes = ("2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7")
 
 # 10 million
 WRITE_BATCH_SIZE = 10000000
-LOOKUP_TABLE_DIR = Path("lookup-tables")
+DEFAULT_LOOKUP_TABLE_DIR = Path("lookup-tables")
 TMPDIR = Path("./tmp/")
+
+
+def lookup_table_dir() -> Path:
+    """Where finished tables are written.
+
+    Tests set RUBIKS_LOOKUP_TABLE_DIR so a pytest run cannot overwrite the real
+    tables in lookup-tables/.
+    """
+    override = os.environ.get("RUBIKS_LOOKUP_TABLE_DIR")
+    return Path(override) if override else DEFAULT_LOOKUP_TABLE_DIR
+
+
+# Kept as an alias for callers that only need the default production location.
+LOOKUP_TABLE_DIR = DEFAULT_LOOKUP_TABLE_DIR
 
 # How much memory we let each "sort" use. Setting this above what the machine actually has
 # does not make sort faster, it just gets us into swap.
@@ -140,6 +154,35 @@ def multiset_unrank(rank: int, symbols: str, counts: Tuple[int, ...]) -> str:
             rank -= block
 
     return "".join(result)
+
+
+def mixed_radix_rank(ranks: Tuple[int, ...], universes: Tuple[int, ...]) -> int:
+    """Combine component ranks left-to-right, with the last universe least significant."""
+    if not ranks or len(ranks) != len(universes):
+        raise ValueError("ranks and universes must be non-empty and the same length")
+
+    result = 0
+    for rank, universe in zip(ranks, universes):
+        if universe <= 0 or rank < 0 or rank >= universe:
+            raise ValueError(f"component rank {rank} is outside universe {universe}")
+        result = (result * universe) + rank
+    return result
+
+
+def mixed_radix_unrank(rank: int, universes: Tuple[int, ...]) -> Tuple[int, ...]:
+    """Split a mixed-radix rank into components in the order used by mixed_radix_rank."""
+    if not universes or any(universe <= 0 for universe in universes):
+        raise ValueError("universes must be non-empty and positive")
+
+    total = math.prod(universes)
+    if rank < 0 or rank >= total:
+        raise ValueError(f"rank {rank} is outside 0..{total - 1}")
+
+    result = [0] * len(universes)
+    for index in range(len(universes) - 1, -1, -1):
+        result[index] = rank % universes[index]
+        rank //= universes[index]
+    return tuple(result)
 
 
 def get_line_number_splits(lines: int, cores: int) -> Tuple:
@@ -438,11 +481,12 @@ class BFS(object):
         use_centers_then_edges=False,
         use_c=False,
         use_ranked_cost=False,
+        ranked_cost_square_groups=None,
     ):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
-        self.filename = str(LOOKUP_TABLE_DIR / filename)
+        self.filename = str(lookup_table_dir() / filename)
         self.store_as_hex = store_as_hex
         self.starting_cubes = []
         self.use_cost_only = use_cost_only
@@ -454,6 +498,7 @@ class BFS(object):
         self.lt_centers = {}
         self.use_c = use_c
         self.use_ranked_cost = use_ranked_cost
+        self.ranked_cost_square_groups = tuple(tuple(group) for group in (ranked_cost_square_groups or ()))
         # Cube-state indexes (matching cube.state / rotate_xxx) that this table actually
         # cares about. Empty means we carry the full cube, including the "." placeholders.
         self.compact_squares = ()
@@ -483,6 +528,8 @@ class BFS(object):
         assert isinstance(self.use_cost_only, bool)
         assert isinstance(self.use_hash_cost_only, bool)
         assert isinstance(self.use_ranked_cost, bool)
+        if self.ranked_cost_square_groups and not self.use_ranked_cost:
+            raise ValueError(f"{self}: ranked_cost_square_groups requires use_ranked_cost=True")
         assert not (self.use_cost_only and self.use_hash_cost_only), "Both cannot be true"
 
         if size == "2x2x2":
@@ -674,6 +721,19 @@ class BFS(object):
         squares = self._interesting_squares()
         full_squares = 6 * self.size_number * self.size_number
 
+        if self.ranked_cost_square_groups:
+            flat_squares = tuple(square for group in self.ranked_cost_square_groups for square in group)
+            if not all(self.ranked_cost_square_groups):
+                raise ValueError(f"{self}: ranked cost square groups cannot be empty")
+            if len(set(flat_squares)) != len(flat_squares):
+                raise ValueError(f"{self}: ranked cost square groups overlap")
+            if set(flat_squares) != set(squares):
+                raise ValueError(f"{self}: ranked cost square groups must contain exactly the interesting squares")
+            for group in self.ranked_cost_square_groups:
+                if not self._squares_are_closed_orbit(list(group)):
+                    raise ValueError(f"{self}: ranked cost square group is not a closed orbit: {group}")
+            squares = list(flat_squares)
+
         # Markers in the C cruncher are stored in a char, and there is nothing to gain
         # if every square is already interesting.
         if not squares or len(squares) >= full_squares or len(squares) > 255:
@@ -704,17 +764,50 @@ class BFS(object):
         states = [self._state_for_workq(cube) for cube in self.starting_cubes]
         if not states:
             raise ValueError(f"{self}: ranked costs require at least one starting state")
-        expected = Counter(states[0])
-        if any(Counter(state) != expected for state in states[1:]):
-            raise ValueError(f"{self}: all ranked starting states must have the same multiset")
-        if len(expected) > 32:
-            raise ValueError(f"{self}: ranked costs support at most 32 distinct symbols")
 
-        self.rank_symbols = "".join(sorted(expected))
-        self.rank_counts = tuple(expected[symbol] for symbol in self.rank_symbols)
-        self.rank_universe = multiset_size(self.rank_counts)
+        group_sizes = (
+            tuple(len(group) for group in self.ranked_cost_square_groups)
+            if self.ranked_cost_square_groups
+            else (len(self.compact_squares),)
+        )
+        rank_groups = []
+        offset = 0
+        for group_index, group_size in enumerate(group_sizes):
+            group_states = [state[offset : offset + group_size] for state in states]
+            expected = Counter(group_states[0])
+            if any(Counter(state) != expected for state in group_states[1:]):
+                raise ValueError(
+                    f"{self}: all ranked starting states must have the same multiset in group {group_index}"
+                )
+            if len(expected) > 32:
+                raise ValueError(f"{self}: ranked costs support at most 32 distinct symbols per group")
+
+            symbols = "".join(sorted(expected))
+            counts = tuple(expected[symbol] for symbol in symbols)
+            universe = multiset_size(counts)
+            rank_groups.append(
+                {
+                    "squares": list(self.compact_squares[offset : offset + group_size]),
+                    "offset": offset,
+                    "length": group_size,
+                    "symbols": symbols,
+                    "counts": counts,
+                    "universe_size": universe,
+                }
+            )
+            offset += group_size
+
+        self.rank_groups = tuple(rank_groups)
+        self.rank_universes = tuple(group["universe_size"] for group in self.rank_groups)
+        self.rank_universe = math.prod(self.rank_universes)
         if self.rank_universe >= (1 << 64) or self.rank_universe > sys.maxsize:
             raise ValueError(f"{self}: ranked state space does not fit in uint64")
+
+        # These names predate grouped coordinates. Keep them as aliases for existing
+        # single-group builders and consumers.
+        if len(self.rank_groups) == 1:
+            self.rank_symbols = self.rank_groups[0]["symbols"]
+            self.rank_counts = self.rank_groups[0]["counts"]
 
         output = Path(self.filename)
         self.ranked_cost_filename = str(output.with_suffix(".cost-only.bin"))
@@ -738,12 +831,25 @@ class BFS(object):
             "format": "dense-multiset-cost-v1",
             "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
             "record_format": "<QB",
-            "symbols": self.rank_symbols,
-            "counts": list(self.rank_counts),
+            "rank_order": "left-to-right mixed radix",
+            "rank_groups": [
+                {
+                    "squares": group["squares"],
+                    "offset": group["offset"],
+                    "length": group["length"],
+                    "symbols": group["symbols"],
+                    "counts": list(group["counts"]),
+                    "universe_size": group["universe_size"],
+                }
+                for group in self.rank_groups
+            ],
             "universe_size": self.rank_universe,
             "completed_depth": max(self.stats),
             "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
         }
+        if len(self.rank_groups) == 1:
+            metadata["symbols"] = self.rank_symbols
+            metadata["counts"] = list(self.rank_counts)
         temporary = f"{self.ranked_metadata_filename}.tmp"
         with open(temporary, "w") as fh:
             json.dump(metadata, fh, indent=2, sort_keys=True)
@@ -1255,7 +1361,7 @@ class BFS(object):
         starting_records = {}
         for cube in self.starting_cubes:
             state = self._state_for_workq(cube)
-            rank = multiset_rank(state, self.rank_symbols, self.rank_counts)
+            rank = self._ranked_state_rank(state)
             starting_records[rank] = RANKED_WORKQ_RECORD.pack(rank, 0)
 
         with open(self.ranked_cost_live_filename, "r+b", buffering=0) as costs, open(
@@ -1271,6 +1377,28 @@ class BFS(object):
         self.stats = {0: self.workq_size}
         self.starting_cubes = []
         self._write_ranked_metadata()
+
+    def _ranked_state_rank(self, state: str) -> int:
+        """Rank a compact state by ranking each configured group, then mixing its radix."""
+        ranks = tuple(
+            multiset_rank(
+                state[group["offset"] : group["offset"] + group["length"]],
+                group["symbols"],
+                group["counts"],
+            )
+            for group in self.rank_groups
+        )
+        return mixed_radix_rank(ranks, self.rank_universes)
+
+    def _ranked_state_unrank(self, rank: int) -> str:
+        """Reconstruct the compact state represented by a grouped mixed-radix rank."""
+        component_ranks = mixed_radix_unrank(rank, self.rank_universes)
+        state = [""] * len(self.compact_squares)
+        for component_rank, group in zip(component_ranks, self.rank_groups):
+            group_state = multiset_unrank(component_rank, group["symbols"], group["counts"])
+            start = group["offset"]
+            state[start : start + group["length"]] = group_state
+        return "".join(state)
 
     def _ranked_core_filename(self, core: int) -> str:
         return f"{self.ranked_workq_filename}.next.core-{core}"
@@ -1296,10 +1424,6 @@ class BFS(object):
                 output,
                 "--ranked-depth",
                 str(self.depth),
-                "--rank-symbols",
-                self.rank_symbols,
-                "--rank-counts",
-                ",".join(str(count) for count in self.rank_counts),
                 "--rank-universe",
                 str(self.rank_universe),
                 "--size",
@@ -1313,6 +1437,30 @@ class BFS(object):
                 "--squares",
                 ",".join(str(index) for index in self.compact_squares),
             ]
+            if len(self.rank_groups) == 1:
+                cmd.extend(
+                    [
+                        "--rank-symbols",
+                        self.rank_symbols,
+                        "--rank-counts",
+                        ",".join(str(count) for count in self.rank_counts),
+                    ]
+                )
+            else:
+                cmd.extend(
+                    [
+                        "--rank-groups",
+                        ";".join(
+                            "{}:{}:{}:{}".format(
+                                group["length"],
+                                group["symbols"],
+                                ",".join(str(count) for count in group["counts"]),
+                                group["universe_size"],
+                            )
+                            for group in self.rank_groups
+                        ),
+                    ]
+                )
             if not build_workq:
                 cmd.append("--ranked-no-workq")
 
@@ -1460,9 +1608,13 @@ class BFS(object):
     def _table_linecount(self) -> int:
         """
         How many lines the finished lookup-table holds, from the per-depth counts that
-        search() collected. The starting states went into the table at depth 0.
+        search() collected. Text tables leave stats[0] at 0 and keep the starting states
+        in starting_state_count; ranked tables already put those states in stats[0].
         """
-        return sum(count for count in self.stats.values() if count) + self.starting_state_count
+        discovered = sum(count for count in self.stats.values() if count)
+        if self.stats.get(0):
+            return discovered
+        return discovered + self.starting_state_count
 
     def write_histogram(self, filename: str) -> None:
         """
@@ -1502,6 +1654,9 @@ class BFS(object):
 
         if linecount:
             report.append(f"    Average: {float(total_steps / linecount):.2f} moves\n\n")
+
+        if os.environ.get("RUBIKS_SKIP_HISTOGRAM"):
+            return
 
         with open("histogram.txt", "a") as fh:
             fh.write("\n".join(report) + "\n")
@@ -1604,6 +1759,7 @@ class BFS(object):
         if self.use_ranked_cost:
             self._publish_ranked_cost_file()
             self._write_ranked_metadata()
+            self.write_histogram(self.ranked_cost_filename)
             self.time_in_save += (dt.datetime.now() - start_time).total_seconds()
             log.info(f"{self}: ranked cost table is {self.ranked_cost_filename}")
             return

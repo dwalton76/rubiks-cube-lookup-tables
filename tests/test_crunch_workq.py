@@ -16,6 +16,8 @@ import unittest
 from pathlib import Path
 
 # rubiks cube libraries
+from rubikscubelookuptables.buildercore import multiset_rank
+from rubikscubennnsolver.RubiksCube222 import rotate_222
 from tests.builder_support import CRUNCHER, REPO_ROOT, ensure_cruncher
 from tests.script_support import load_lookup_script
 
@@ -303,6 +305,64 @@ class RankedCrunchWorkqTests(ScratchTestCase):
         ranks = [rank for rank, _ in records]
         self.assertEqual(len(ranks), len(set(ranks)))
         self.assertEqual(sum(int(stdout) for stdout, _ in results), len(records))
+
+    def test_two_aabb_groups_use_the_same_mixed_radix_ranks_as_python(self):
+        squares = (1, 2, 3, 4, 5, 9, 13, 17)
+        state = "AABBAABB"
+        cost = self.scratch / "grouped-cost.bin"
+        cost.write_bytes(b"\0" * 36)
+        with cost.open("r+b") as fh:
+            fh.write(b"\1")
+        workq = self.scratch / "grouped-workq.bin"
+        workq.write_bytes(RANKED_RECORD.pack(0, 0))
+        output = self.scratch / "grouped-next.bin"
+        command = [
+            str(CRUNCHER),
+            "--ranked-cost",
+            str(cost),
+            "--ranked-input",
+            str(workq),
+            "--ranked-output",
+            str(output),
+            "--ranked-depth",
+            "1",
+            "--rank-groups",
+            "4:AB:2,2:6;4:AB:2,2:6",
+            "--rank-universe",
+            "36",
+            "--size",
+            "2",
+            "--start",
+            "0",
+            "--end",
+            "0",
+            "--moves",
+            "U U' U2",
+            "--squares",
+            ",".join(str(square) for square in squares),
+        ]
+        completed = subprocess.run(command, cwd=REPO_ROOT, capture_output=True, text=True, check=False)
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+
+        full_state = ["."] * 25
+        full_state[0] = "x"
+        for square, char in zip(squares, state):
+            full_state[square] = char
+        expected = set()
+        for move in ("U", "U'", "U2"):
+            rotated = rotate_222(full_state[:], move)
+            compact = "".join(rotated[square] for square in squares)
+            rank0 = multiset_rank(compact[:4], "AB", (2, 2))
+            rank1 = multiset_rank(compact[4:], "AB", (2, 2))
+            if compact != state:
+                expected.add((rank0 * 6) + rank1)
+
+        records = self.read_records(output)
+        actual = {rank for rank, _ in records}
+        self.assertEqual(actual, expected)
+        self.assertEqual(int(completed.stdout), len(expected))
+        costs = cost.read_bytes()
+        self.assertTrue(all(costs[rank] == 2 for rank in expected))
 
 
 if __name__ == "__main__":
