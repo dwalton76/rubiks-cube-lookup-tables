@@ -28,8 +28,6 @@ def get_class(kls):
         m = importlib.import_module("rubikscubelookuptables.builder444")
     elif "333" in kls:
         m = importlib.import_module("rubikscubelookuptables.builder333")
-    elif "222" in kls:
-        m = importlib.import_module("rubikscubelookuptables.builder222")
     else:
         raise Exception("we should not be here")
 

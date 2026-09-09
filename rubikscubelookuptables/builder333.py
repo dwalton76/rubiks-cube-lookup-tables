@@ -41,6 +41,18 @@ from rubikscubelookuptables.buildercore import BFS
 
 
 class Build333MicroPythonPhase1(BFS):
+    """
+    TODO this is broken.  We used to have logic somewhere that did something special
+    for the edges in this phase.
+
+    lookup-table-3x3x3-step110.txt
+    ==============================
+    0 steps has 1 entries (100 percent, 0.00x previous step)
+
+    Total: 1 entries
+    Average: 0.00 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -73,6 +85,25 @@ class Build333MicroPythonPhase1(BFS):
 
 
 class Build333MicroPythonPhase2(BFS):
+    """
+    lookup-table-3x3x3-step120.txt
+    ==============================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 17 entries (0 percent, 8.50x previous step)
+    3 steps has 134 entries (0 percent, 7.88x previous step)
+    4 steps has 1,065 entries (0 percent, 7.95x previous step)
+    5 steps has 8,190 entries (0 percent, 7.69x previous step)
+    6 steps has 54,694 entries (5 percent, 6.68x previous step)
+    7 steps has 267,576 entries (24 percent, 4.89x previous step)
+    8 steps has 560,568 entries (51 percent, 2.09x previous step)
+    9 steps has 187,204 entries (17 percent, 0.33x previous step)
+    10 steps has 3,114 entries (0 percent, 0.02x previous step)
+
+    Total: 1,082,565 entries
+    Average: 7.80 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -105,6 +136,20 @@ class Build333MicroPythonPhase2(BFS):
 
 
 class Build333MicroPythonPhase2Edges(BFS):
+    """
+    lookup-table-3x3x3-step121-edges.txt
+    ====================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 17 entries (3 percent, 8.50x previous step)
+    3 steps has 104 entries (21 percent, 6.12x previous step)
+    4 steps has 221 entries (44 percent, 2.12x previous step)
+    5 steps has 150 entries (30 percent, 0.68x previous step)
+
+    Total: 495 entries
+    Average: 4.00 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -137,6 +182,22 @@ class Build333MicroPythonPhase2Edges(BFS):
 
 
 class Build333MicroPythonPhase2Corners(BFS):
+    """
+    lookup-table-3x3x3-step122-corners.txt
+    ======================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 13 entries (0 percent, 6.50x previous step)
+    3 steps has 70 entries (3 percent, 5.38x previous step)
+    4 steps has 335 entries (15 percent, 4.79x previous step)
+    5 steps has 1,008 entries (46 percent, 3.01x previous step)
+    6 steps has 726 entries (33 percent, 0.72x previous step)
+    7 steps has 32 entries (1 percent, 0.04x previous step)
+
+    Total: 2,187 entries
+    Average: 5.12 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -169,6 +230,28 @@ class Build333MicroPythonPhase2Corners(BFS):
 
 
 class Build333MicroPythonPhase3(BFS):
+    """
+    lookup-table-3x3x3-step130.txt
+    ==============================
+    0 steps has 96 entries (0 percent, 0.00x previous step)
+    1 steps has 192 entries (0 percent, 2.00x previous step)
+    2 steps has 864 entries (0 percent, 4.50x previous step)
+    3 steps has 3,456 entries (0 percent, 4.00x previous step)
+    4 steps has 11,904 entries (0 percent, 3.44x previous step)
+    5 steps has 50,880 entries (1 percent, 4.27x previous step)
+    6 steps has 173,376 entries (6 percent, 3.41x previous step)
+    7 steps has 358,272 entries (12 percent, 2.07x previous step)
+    8 steps has 495,168 entries (17 percent, 1.38x previous step)
+    9 steps has 678,720 entries (24 percent, 1.37x previous step)
+    10 steps has 692,928 entries (24 percent, 1.02x previous step)
+    11 steps has 307,392 entries (10 percent, 0.44x previous step)
+    12 steps has 46,848 entries (1 percent, 0.15x previous step)
+    13 steps has 2,304 entries (0 percent, 0.05x previous step)
+
+    Total: 2,822,400 entries
+    Average: 8.80 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -282,6 +365,19 @@ class Build333MicroPythonPhase3(BFS):
 
 
 class Build333MicroPythonPhase3Edges(BFS):
+    """
+    lookup-table-3x3x3-step131-edges.txt
+    ====================================
+    0 steps has 1 entries (1 percent, 0.00x previous step)
+    1 steps has 2 entries (2 percent, 2.00x previous step)
+    2 steps has 9 entries (12 percent, 4.50x previous step)
+    3 steps has 30 entries (42 percent, 3.33x previous step)
+    4 steps has 28 entries (40 percent, 0.93x previous step)
+
+    Total: 70 entries
+    Average: 3.17 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -315,6 +411,26 @@ class Build333MicroPythonPhase3Edges(BFS):
 
 
 class Build333MicroPythonPhase3Corners(BFS):
+    """
+    lookup-table-3x3x3-step132-corners.txt
+    ======================================
+    0 steps has 96 entries (0 percent, 0.00x previous step)
+    1 steps has 192 entries (0 percent, 2.00x previous step)
+    2 steps has 480 entries (1 percent, 2.50x previous step)
+    3 steps has 1,152 entries (2 percent, 2.40x previous step)
+    4 steps has 1,728 entries (4 percent, 1.50x previous step)
+    5 steps has 4,800 entries (11 percent, 2.78x previous step)
+    6 steps has 4,224 entries (10 percent, 0.88x previous step)
+    7 steps has 4,992 entries (12 percent, 1.18x previous step)
+    8 steps has 6,528 entries (16 percent, 1.31x previous step)
+    9 steps has 9,216 entries (22 percent, 1.41x previous step)
+    10 steps has 4,992 entries (12 percent, 0.54x previous step)
+    11 steps has 1,920 entries (4 percent, 0.38x previous step)
+
+    Total: 40,320 entries
+    Average: 7.49 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -428,6 +544,30 @@ class Build333MicroPythonPhase3Corners(BFS):
 
 
 class Build333MicroPythonPhase4(BFS):
+    """
+    lookup-table-3x3x3-step140.txt
+    ==============================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 27 entries (0 percent, 4.50x previous step)
+    3 steps has 120 entries (0 percent, 4.44x previous step)
+    4 steps has 519 entries (0 percent, 4.33x previous step)
+    5 steps has 1,932 entries (0 percent, 3.72x previous step)
+    6 steps has 6,484 entries (0 percent, 3.36x previous step)
+    7 steps has 20,310 entries (3 percent, 3.13x previous step)
+    8 steps has 55,034 entries (8 percent, 2.71x previous step)
+    9 steps has 113,892 entries (17 percent, 2.07x previous step)
+    10 steps has 178,495 entries (26 percent, 1.57x previous step)
+    11 steps has 179,196 entries (27 percent, 1.00x previous step)
+    12 steps has 89,728 entries (13 percent, 0.50x previous step)
+    13 steps has 16,176 entries (2 percent, 0.18x previous step)
+    14 steps has 1,488 entries (0 percent, 0.09x previous step)
+    15 steps has 144 entries (0 percent, 0.10x previous step)
+
+    Total: 663,552 entries
+    Average: 10.13 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -460,6 +600,23 @@ class Build333MicroPythonPhase4(BFS):
 
 
 class Build333MicroPythonPhase4Edges(BFS):
+    """
+    lookup-table-3x3x3-step141-edges.txt
+    ====================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 27 entries (0 percent, 4.50x previous step)
+    3 steps has 120 entries (1 percent, 4.44x previous step)
+    4 steps has 519 entries (7 percent, 4.33x previous step)
+    5 steps has 1,582 entries (22 percent, 3.05x previous step)
+    6 steps has 2,911 entries (42 percent, 1.84x previous step)
+    7 steps has 1,588 entries (22 percent, 0.55x previous step)
+    8 steps has 158 entries (2 percent, 0.10x previous step)
+
+    Total: 6,912 entries
+    Average: 5.82 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -492,6 +649,19 @@ class Build333MicroPythonPhase4Edges(BFS):
 
 
 class Build333MicroPythonPhase4Corners(BFS):
+    """
+    lookup-table-3x3x3-step142-corners.txt
+    ======================================
+    0 steps has 1 entries (1 percent, 0.00x previous step)
+    1 steps has 6 entries (6 percent, 6.00x previous step)
+    2 steps has 27 entries (28 percent, 4.50x previous step)
+    3 steps has 42 entries (43 percent, 1.56x previous step)
+    4 steps has 20 entries (20 percent, 0.48x previous step)
+
+    Total: 96 entries
+    Average: 2.77 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -516,38 +686,6 @@ class Build333MicroPythonPhase4Corners(BFS):
         D . D
         . . .
         D . D""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-
-
-class Build333Ultimate(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "3x3x3-ultimate",
-            # illegal moves
-            (),
-            "3x3x3",
-            "lookup-table-3x3x3-step00-ultimate.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-        U U U
-        U U U
-        U U U
-
- L L L  F F F  R R R  B B B
- L L L  F F F  R R R  B B B
- L L L  F F F  R R R  B B B
-
-        D D D
-        D D D
-        D D D""",
                     "ascii",
                 ),
             ),

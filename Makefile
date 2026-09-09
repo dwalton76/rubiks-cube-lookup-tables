@@ -34,15 +34,13 @@ format:
 # at a time. Do not add -n/xdist here.
 test:
 	@./venv/bin/python3 -m pytest -vv tests/
+	rm histogram.txt || true
 
 test-lite:
 	@./venv/bin/python3 -m pytest -vv tests/ -k "not test_build_" --ignore=tests/test_builder_determinism.py
 
 wheel:
 	@./venv/bin/python3 setup.py bdist_wheel
-
-222: clean
-	./utils/builderui.py Build222Ultimate
 
 333: clean
 	./utils/builderui.py Build333MicroPythonPhase1
@@ -64,10 +62,6 @@ wheel:
 	./utils/builderui.py Build444LRCentersStage
 	./utils/build-ida-graph.py Build444LRCentersStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step12-LR-centers-stage.json
-
-	./utils/builderui.py Build444LCentersStage
-	./utils/build-ida-graph.py Build444LCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step13-L-centers-stage.json
 
 444-phase2: clean
 	./utils/builderui.py Build444HighLowEdgesEdges
@@ -108,16 +102,8 @@ wheel:
 	./utils/build-ida-graph.py Build555LRCenterStageXCenter
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
 
-	./utils/builderui.py Build555UDCenterStageTCenter
-	./utils/build-ida-graph.py Build555UDCenterStageTCenter
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step13-UD-centers-stage-t-center-only.json
-
-	./utils/builderui.py Build555UDCenterStageXCenter
-	./utils/build-ida-graph.py Build555UDCenterStageXCenter
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step14-UD-centers-stage-x-center-only.json
-
-	# ./utils/builderui.py Build555XCenterStageOnePhase
-	# ./utils/builderui.py Build555TCenterStageOnePhase
+	./utils/builderui.py Build555XCenterStageOnePhase
+	./utils/builderui.py Build555TCenterStageOnePhase
 
 
 555-phase2: clean
@@ -128,10 +114,6 @@ wheel:
 	./utils/builderui.py Build555FBXCenterStage
 	./utils/build-ida-graph.py Build555FBXCenterStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step22-FB-x-centers-stage.json
-
-	./utils/builderui.py Build555Phase2LRCenterStage
-	./utils/build-ida-graph.py Build555Phase2LRCenterStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step23-LR-center-stage.json
 
 555-phase3: clean
 	./utils/builderui.py Build555Phase3LRCenterStage
@@ -170,7 +152,18 @@ wheel:
 	./utils/build-ida-graph.py Build555Phase5FBCenters
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step56-phase5-fb-centers.json
 
+	# Combo tables used only to build perfect-hash files for IDA (~576 million states).
+	./utils/builderui.py Build555Phase5FBCentersHighEdgeMidge
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.txt
+
+	./utils/builderui.py Build555Phase5FBCentersLowEdgeMidge
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step57-phase5-fb-centers-low-edge-and-midge.txt
+
 555-phase6: clean
+	# Combo table used only to build a perfect-hash file for IDA (~813 million states).
+	./utils/builderui.py Build555PairLastEightEdgesEdgesOnly
+	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt
+
 	./utils/builderui.py Build555Phase6Centers
 	./utils/build-ida-graph.py Build555Phase6Centers
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step61-phase6-centers.json
@@ -207,10 +200,6 @@ wheel:
 	./utils/builderui.py Build666UDInnerXCentersStage
 	./utils/build-ida-graph.py Build666UDInnerXCentersStage
 	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step11-UD-inner-x-centers-stage.json
-
-	./utils/builderui.py Build666UDXCentersStage
-	./utils/build-ida-graph.py Build666UDXCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step12-UD-x-centers.json
 
 	./utils/builderui.py Build666UDLeftObliqueCentersStage
 	./utils/build-ida-graph.py Build666UDLeftObliqueCentersStage

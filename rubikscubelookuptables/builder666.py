@@ -130,59 +130,6 @@ class Build666UDInnerXCentersStage(BFS):
         # fmt: on
 
 
-class Build666UDXCentersStage(BFS):
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "6x6x6-UD-x-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
-            "6x6x6",
-            "lookup-table-6x6x6-step12-UD-x-centers.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . U . . U .
-              . . . . . .
-              . . . . . .
-              . U . . U .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . x . . x .  . . . . . .  . x . . x .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . x . . x .  . . . . . .  . x . . x .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . U . . U .
-              . . . . . .
-              . . . . . .
-              . U . . U .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-        # fmt: on
-
-
 class Build666UDLeftObliqueCentersStage(BFS):
     def __init__(self):
         # fmt: off

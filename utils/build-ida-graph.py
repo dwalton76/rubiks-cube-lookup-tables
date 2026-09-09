@@ -26,7 +26,6 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555LRCenterSolve,
     LookupTable555LRTCenterStage,
     LookupTable555LRXCenterStage,
-    LookupTable555Phase2LRCenterStage,
     LookupTable555Phase3LRCenterStage,
     LookupTable555Phase5Centers,
     LookupTable555Phase5FBCenters,
@@ -36,8 +35,6 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555Phase6HighEdgeMidge,
     LookupTable555Phase6LowEdgeMidge,
     LookupTable555UDCenterSolve,
-    LookupTable555UDTCenterStage,
-    LookupTable555UDXCenterStage,
     RubiksCube555,
     solved_555,
 )
@@ -51,7 +48,6 @@ from rubikscubennnsolver.RubiksCube666 import (
     LookupTable666UDInnerXCentersStage,
     LookupTable666UDLeftObliqueCentersStage,
     LookupTable666UDRightObliqueCentersStage,
-    LookupTable666UDXCentersStage,
     RubiksCube666,
     solved_666,
 )
@@ -134,21 +130,12 @@ elif lt_class.startswith("Build555"):
     elif lt_class == "Build555LRCenterStageXCenter":
         cube.lt = LookupTable555LRXCenterStage(cube, build_state_index=True)
 
-    elif lt_class == "Build555UDCenterStageTCenter":
-        cube.lt = LookupTable555UDTCenterStage(cube, build_state_index=True)
-
-    elif lt_class == "Build555UDCenterStageXCenter":
-        cube.lt = LookupTable555UDXCenterStage(cube, build_state_index=True)
-
     # phase 2
     elif lt_class == "Build555FBTCenterStage":
         cube.lt = LookupTable555FBTCenterStage(cube, build_state_index=True)
 
     elif lt_class == "Build555FBXCenterStage":
         cube.lt = LookupTable555FBXCenterStage(cube, build_state_index=True)
-
-    elif lt_class == "Build555Phase2LRCenterStage":
-        cube.lt = LookupTable555Phase2LRCenterStage(cube, build_state_index=True)
 
     # phase 3
     elif lt_class == "Build555Phase3LRCenterStage":
@@ -212,9 +199,6 @@ elif lt_class.startswith("Build666"):
 
     elif lt_class == "Build666UDRightObliqueCentersStage":
         cube.lt = LookupTable666UDRightObliqueCentersStage(cube, build_state_index=True)
-
-    elif lt_class == "Build666UDXCentersStage":
-        cube.lt = LookupTable666UDXCentersStage(cube, build_state_index=True)
 
     # phase 5
     elif lt_class == "Build666Step50LRCenters":

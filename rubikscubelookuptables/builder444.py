@@ -7,41 +7,24 @@ from rubikscubelookuptables.buildercore import BFS
 log = logging.getLogger(__name__)
 
 
-class Build444Ultimate(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "444-ultimate",
-            (),
-            "4x4x4",
-            "lookup-table-4x4x4-step00-ultimate.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          U U U U
-          U U U U
-          U U U U
-          U U U U
-
- L L L L  F F F F  R R R R  B B B B
- L L L L  F F F F  R R R R  B B B B
- L L L L  F F F F  R R R R  B B B B
- L L L L  F F F F  R R R R  B B B B
-
-          D D D D
-          D D D D
-          D D D D
-          D D D D""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-
-
 class Build444UDCentersStage(BFS):
+    """
+    lookup-table-4x4x4-step11-UD-centers-stage.txt
+    ==============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 82 entries (0 percent, 20.50x previous step)
+    3 steps has 1,206 entries (0 percent, 14.71x previous step)
+    4 steps has 14,116 entries (1 percent, 11.70x previous step)
+    5 steps has 123,404 entries (16 percent, 8.74x previous step)
+    6 steps has 422,508 entries (57 percent, 3.42x previous step)
+    7 steps has 173,254 entries (23 percent, 0.41x previous step)
+    8 steps has 896 entries (0 percent, 0.01x previous step)
+
+    Total: 735,471 entries
+    Average: 6.03 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -74,6 +57,23 @@ class Build444UDCentersStage(BFS):
 
 
 class Build444LRCentersStage(BFS):
+    """
+    lookup-table-4x4x4-step12-LR-centers-stage.txt
+    ==============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 82 entries (0 percent, 20.50x previous step)
+    3 steps has 1,206 entries (0 percent, 14.71x previous step)
+    4 steps has 14,116 entries (1 percent, 11.70x previous step)
+    5 steps has 123,404 entries (16 percent, 8.74x previous step)
+    6 steps has 422,508 entries (57 percent, 3.42x previous step)
+    7 steps has 173,254 entries (23 percent, 0.41x previous step)
+    8 steps has 896 entries (0 percent, 0.01x previous step)
+
+    Total: 735,471 entries
+    Average: 6.03 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -103,156 +103,6 @@ class Build444LRCentersStage(BFS):
             use_c=True,
         )
         # fmt: on
-
-
-class StartingStates444LCentersStage(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "4x4x4-L-centers-stage",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "L", "L'", "R", "R'"),
-            "4x4x4",
-            "starting-states-lookup-table-4x4x4-step13-L-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          . . . .
-          . x x .
-          . x x .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . x x .  . x x .  . x x .
- . L L .  . x x .  . x x .  . x x .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . x x .
-          . x x .
-          . . . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-
-
-class Build444LCentersStage(BFS):
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "4x4x4-L-centers-stage",
-            (),
-            "4x4x4",
-            "lookup-table-4x4x4-step13-L-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                ('.....xx..xx..........LL..LL..........xx..xx..........xx..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........LL..xx..........xx..xx..........LL..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........LL..xx..........xx..xx..........xx..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........Lx..Lx..........xx..xx..........Lx..Lx..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........Lx..Lx..........xx..xx..........xL..xL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........Lx..xL..........xx..xx..........xL..Lx..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........xL..Lx..........xx..xx..........Lx..xL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........xL..xL..........xx..xx..........Lx..Lx..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........xL..xL..........xx..xx..........xL..xL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........xx..LL..........xx..xx..........LL..xx..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........xx..LL..........xx..xx..........xx..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-                ('.....xx..xx..........xx..xx..........xx..xx..........LL..LL..........xx..xx..........xx..xx.....', 'ULFRBD'),
-            ),
-            use_c=True,
-        )
-        # fmt: on
-
-
-class Build444ULFRBDCentersStage(BFS):
-    """
-    I have not built this table but started it...it is the exact same as the 5x5x5 x-centers
-    table which I have built which is
-
-    0 steps has 1 entries (0 percent, 0.00x previous step)
-    1 steps has 6 entries (0 percent, 6.00x previous step)
-    2 steps has 135 entries (0 percent, 22.50x previous step)
-    3 steps has 2,286 entries (0 percent, 16.93x previous step)
-    4 steps has 36,728 entries (0 percent, 16.07x previous step)
-    5 steps has 562,932 entries (0 percent, 15.33x previous step)
-    6 steps has 8,047,054 entries (0 percent, 14.29x previous step)
-    7 steps has 105,823,666 entries (1 percent, 13.15x previous step)
-    8 steps has 1,147,351,438 entries (12 percent, 10.84x previous step)
-    9 steps has 5,653,730,364 entries (59 percent, 4.93x previous step)
-    10 steps has 2,535,422,638 entries (26 percent, 0.45x previous step)
-    11 steps has 14,534,522 entries (0 percent, 0.01x previous step)
-
-    Total: 9,465,511,770 entries
-    Average: 9.12 moves
-    """
-
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "4x4x4-ULFRBD-centers-stage",
-            (),
-            "4x4x4",
-            "lookup-table-4x4x4-step10-ULFRBD-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . F F .  . L L .  . F F .
- . L L .  . F F .  . L L .  . F F .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""",
-                    "ascii"),),
-            use_c=True,
-        )
-        # fmt: on
-
-
-class StartingStates444HighLowEdges(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "444-highlow-edges",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "L", "L'", "R", "R'"),
-            "4x4x4",
-            "starting-states-lookup-table-4x4x4-step20-highlow-edges.txt",
-            False,  # store_as_hex
-            (
-                (
-                    """
-          . U D .
-          D U U U
-          U U U D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D L L U  U x x D  D R R U  U x x D
- U L L D  D x x U  U R R D  D x x U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D U U U
-          U U U D
-          . D U .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
 
 
 class StartingStates444HighLowEdgesCenters(BFS):
@@ -324,6 +174,24 @@ class Build444HighLowEdgesEdges(BFS):
 
 
 class Build444HighLowEdgesCenters(BFS):
+    """
+    lookup-table-4x4x4-step22-highlow-edges-centers.txt
+    ===================================================
+    0 steps has 12 entries (0 percent, 0.00x previous step)
+    1 steps has 34 entries (0 percent, 2.83x previous step)
+    2 steps has 384 entries (0 percent, 11.29x previous step)
+    3 steps has 3,354 entries (0 percent, 8.73x previous step)
+    4 steps has 22,324 entries (2 percent, 6.66x previous step)
+    5 steps has 113,276 entries (12 percent, 5.07x previous step)
+    6 steps has 338,860 entries (37 percent, 2.99x previous step)
+    7 steps has 388,352 entries (43 percent, 1.15x previous step)
+    8 steps has 34,048 entries (3 percent, 0.09x previous step)
+    9 steps has 256 entries (0 percent, 0.01x previous step)
+
+    Total: 900,900 entries
+    Average: 6.32 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -348,37 +216,6 @@ class Build444HighLowEdgesCenters(BFS):
                 ('.....UU..UU..........RR..LL..........xx..xx..........RR..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
                 ('.....UU..UU..........RR..RR..........xx..xx..........LL..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
             ),
-            use_c=True,
-        )
-        # fmt: on
-
-
-class Build444HighLowEdges(BFS):
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "444-highlow-edges",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'"),
-            "4x4x4",
-            "lookup-table-4x4x4-step20-highlow-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                ('.UD.DUUUUUUD.DU..DU.DLLUULLD.UD..DU.UxxDDxxU.UD..DU.DRRUURRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DLRUURLD.UD..DU.UxxDDxxU.UD..DU.DRLUULRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DRLUULRD.UD..DU.UxxDDxxU.UD..DU.DLRUURLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..DU.DLRUULRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..DU.DRLUURLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..DU.DLLUURRD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..DU.DRRUULLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-                ('.UD.DUUUUUUD.DU..DU.DRRUURRD.UD..DU.UxxDDxxU.UD..DU.DLLUULLD.UD..DU.UxxDDxxU.UD..UD.DUUUUUUD.DU.', 'ULFRBD'),
-            ),
-            use_centers_then_edges=True,
             use_c=True,
         )
         # fmt: on
@@ -440,6 +277,20 @@ class StartingStates444Reduce333FirstTwoCenters(BFS):
 
 
 class Build444Reduce333FirstTwoCenters(BFS):
+    """
+    lookup-table-4x4x4-step31-centers.txt
+    =====================================
+    0 steps has 36 entries (4 percent, 0.00x previous step)
+    1 steps has 80 entries (9 percent, 2.22x previous step)
+    2 steps has 212 entries (25 percent, 2.65x previous step)
+    3 steps has 288 entries (34 percent, 1.36x previous step)
+    4 steps has 192 entries (22 percent, 0.67x previous step)
+    5 steps has 32 entries (3 percent, 0.17x previous step)
+
+    Total: 840 entries
+    Average: 2.73 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -529,6 +380,22 @@ class Build444Reduce333FirstFourEdges(BFS):
 
 # phase 4
 class Build444Reduce333Centers(BFS):
+    """
+    lookup-table-4x4x4-step41-centers.txt
+    =====================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 42 entries (1 percent, 10.50x previous step)
+    3 steps has 244 entries (9 percent, 5.81x previous step)
+    4 steps has 774 entries (30 percent, 3.17x previous step)
+    5 steps has 878 entries (34 percent, 1.13x previous step)
+    6 steps has 569 entries (22 percent, 0.65x previous step)
+    7 steps has 8 entries (0 percent, 0.01x previous step)
+
+    Total: 2,520 entries
+    Average: 4.67 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
