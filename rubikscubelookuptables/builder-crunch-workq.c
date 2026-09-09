@@ -13,6 +13,7 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "center_symmetry_444.h"
 #include "ida_search_core.h"
 
 // If by some miracle we ever start building lookup-tables deeper than 20 moves
@@ -52,12 +53,33 @@
 #define MAX_COMPACT_SQUARES 255
 #define MAX_SQUARES_ARG 2048
 #define MAX_RANK_SYMBOLS 32
+#define MAX_RANK_GROUPS 32
 #define RANKED_RECORD_SIZE 9
 #define MAX_BINOM 64
 #define RANKED_IO_BUFFER (8 * 1024 * 1024)
 
 static uint64_t binom_table[MAX_BINOM + 1][MAX_BINOM + 1];
 static unsigned int binom_ready_n = 0;
+
+typedef struct {
+    unsigned int offset;
+    unsigned int length;
+    unsigned int symbol_count;
+    unsigned char symbols[MAX_RANK_SYMBOLS + 1];
+    unsigned int counts[MAX_RANK_SYMBOLS];
+    uint64_t universe;
+} rank_group_type;
+
+typedef enum {
+    RANK_MULTISET,
+    RANK_PAIRED_MULTISET,
+    RANK_EDGE_PAIRING_EVEN,
+    RANK_THREE_EDGE_PAIRING_PARITY,
+    RANK_WING_BINARY,
+    RANK_ORIENTATION_BITS,
+    RANK_CENTER_SYMMETRY_444,
+    RANK_PHASE5_COMBO_RELATIVE,
+} rank_type;
 
 
 // to_write holds batch_size lines, each line_width bytes from the last. process_workq()
@@ -301,6 +323,23 @@ parse_squares(char *arg, unsigned int *squares)
     return count;
 }
 
+
+static unsigned int
+parse_unsigned_list(char *arg, unsigned int *values, unsigned int maximum_count)
+{
+    unsigned int count = 0;
+    char *ptr = strtok(arg, ",");
+    while (ptr != NULL) {
+        if (count >= maximum_count) {
+            fprintf(stderr, "ERROR: too many unsigned-list entries\n");
+            exit(1);
+        }
+        values[count++] = (unsigned int) strtoul(ptr, NULL, 10);
+        ptr = strtok(NULL, ",");
+    }
+    return count;
+}
+
 static unsigned int
 parse_rank_counts(char *arg, unsigned int *counts)
 {
@@ -320,6 +359,78 @@ parse_rank_counts(char *arg, unsigned int *counts)
         ptr = strtok(NULL, ",");
     }
     return count;
+}
+
+/*
+ * Parse "length:symbols:count,count:universe[;...]" into contiguous compact-state
+ * groups. A single group continues to use the historical command-line options.
+ */
+static unsigned int
+parse_rank_groups(char *arg, rank_group_type *groups)
+{
+    unsigned int group_count = 0;
+    unsigned int offset = 0;
+    char *group_save = NULL;
+    char *group_arg = strtok_r(arg, ";", &group_save);
+
+    while (group_arg != NULL) {
+        char *field_save = NULL;
+        char *length_arg;
+        char *symbols_arg;
+        char *counts_arg;
+        char *universe_arg;
+        rank_group_type *group;
+
+        if (group_count >= MAX_RANK_GROUPS) {
+            fprintf(stderr, "ERROR: too many --rank-groups entries\n");
+            exit(1);
+        }
+        length_arg = strtok_r(group_arg, ":", &field_save);
+        symbols_arg = strtok_r(NULL, ":", &field_save);
+        counts_arg = strtok_r(NULL, ":", &field_save);
+        universe_arg = strtok_r(NULL, ":", &field_save);
+        if (!length_arg || !symbols_arg || !counts_arg || !universe_arg ||
+                strtok_r(NULL, ":", &field_save) != NULL) {
+            fprintf(stderr, "ERROR: invalid --rank-groups entry\n");
+            exit(1);
+        }
+
+        group = &groups[group_count];
+        memset(group, 0, sizeof(*group));
+        group->offset = offset;
+        group->length = (unsigned int) strtoul(length_arg, NULL, 10);
+        group->symbol_count = strlen(symbols_arg);
+        group->universe = strtoull(universe_arg, NULL, 10);
+        if (!group->length || !group->symbol_count ||
+                group->symbol_count > MAX_RANK_SYMBOLS || !group->universe) {
+            fprintf(stderr, "ERROR: invalid --rank-groups values\n");
+            exit(1);
+        }
+        memcpy(group->symbols, symbols_arg, group->symbol_count);
+        if (parse_rank_counts(counts_arg, group->counts) != group->symbol_count) {
+            fprintf(stderr, "ERROR: --rank-groups symbols and counts do not agree\n");
+            exit(1);
+        }
+        for (unsigned int i = 1; i < group->symbol_count; i++) {
+            if (group->symbols[i - 1] >= group->symbols[i]) {
+                fprintf(stderr, "ERROR: rank group symbols must be unique and sorted\n");
+                exit(1);
+            }
+        }
+        unsigned int count_total = 0;
+        for (unsigned int i = 0; i < group->symbol_count; i++) {
+            count_total += group->counts[i];
+        }
+        if (count_total != group->length) {
+            fprintf(stderr, "ERROR: rank group length and counts do not agree\n");
+            exit(1);
+        }
+
+        offset += group->length;
+        group_count++;
+        group_arg = strtok_r(NULL, ";", &group_save);
+    }
+    return group_count;
 }
 
 
@@ -557,6 +668,569 @@ multiset_rank(
     return rank;
 }
 
+static void
+grouped_multiset_unrank(
+    uint64_t rank,
+    unsigned char *state,
+    const rank_group_type *groups,
+    unsigned int group_count,
+    uint64_t universe)
+{
+    uint64_t component_ranks[MAX_RANK_GROUPS];
+
+    if (rank >= universe) {
+        fprintf(stderr, "ERROR: rank %" PRIu64 " is outside universe %" PRIu64 "\n", rank, universe);
+        exit(1);
+    }
+    for (unsigned int i = group_count; i-- > 0;) {
+        component_ranks[i] = rank % groups[i].universe;
+        rank /= groups[i].universe;
+    }
+    if (rank) {
+        fprintf(stderr, "ERROR: grouped rank universes do not cover the configured universe\n");
+        exit(1);
+    }
+    for (unsigned int i = 0; i < group_count; i++) {
+        multiset_unrank(
+            component_ranks[i], state + groups[i].offset, groups[i].symbols,
+            groups[i].counts, groups[i].symbol_count, groups[i].length, groups[i].universe);
+    }
+}
+
+static uint64_t
+grouped_multiset_rank(
+    const unsigned char *state,
+    const int symbol_of[MAX_RANK_GROUPS][256],
+    const rank_group_type *groups,
+    unsigned int group_count)
+{
+    uint64_t rank = 0;
+
+    for (unsigned int i = 0; i < group_count; i++) {
+        uint64_t component = multiset_rank(
+            state + groups[i].offset, symbol_of[i], groups[i].counts,
+            groups[i].symbol_count, groups[i].length);
+        if (rank > (UINT64_MAX - component) / groups[i].universe) {
+            fprintf(stderr, "ERROR: grouped ranked multiset arithmetic overflow\n");
+            exit(1);
+        }
+        rank = (rank * groups[i].universe) + component;
+    }
+    return rank;
+}
+
+static uint64_t
+center_symmetry_rank_444(
+    const unsigned char *state,
+    const int symbol_of[MAX_RANK_GROUPS][256],
+    const rank_group_type *groups)
+{
+    unsigned char transformed[CENTER_SYMMETRY_STICKERS_444];
+    unsigned char canonical[CENTER_SYMMETRY_STICKERS_444];
+
+    for (unsigned int symmetry = 0; symmetry < CENTER_SYMMETRY_COUNT_444; symmetry++) {
+        transform_centers_444(state, transformed, symmetry);
+        if (!symmetry || memcmp(transformed, canonical, sizeof(canonical)) < 0) {
+            memcpy(canonical, transformed, sizeof(canonical));
+        }
+    }
+    return grouped_multiset_rank(canonical, symbol_of, groups, 1);
+}
+
+static void
+phase5_combo_relative_canonicalize(unsigned char *state, const rank_group_type *groups)
+{
+    unsigned int wing_off = groups[2].offset;
+    unsigned int midge_off = groups[3].offset;
+    unsigned char map[256];
+    unsigned int next = 0;
+
+    memset(map, 0xff, sizeof(map));
+    map[(unsigned char) 'x'] = 'x';
+    for (unsigned int i = 0; i < 8; i++) {
+        unsigned char ch = state[midge_off + i];
+
+        if (ch == 'x') {
+            continue;
+        }
+        if (map[ch] == 0xff) {
+            if (next >= 4) {
+                fprintf(stderr, "ERROR: phase5 combo relative has more than four midge labels\n");
+                exit(1);
+            }
+            map[ch] = (unsigned char) ('A' + next);
+            next++;
+        }
+        state[midge_off + i] = 'L';
+    }
+    if (next != 4) {
+        fprintf(stderr, "ERROR: phase5 combo relative must occupy four midge slots\n");
+        exit(1);
+    }
+    for (unsigned int i = 0; i < 8; i++) {
+        unsigned char ch = state[wing_off + i];
+
+        if (map[ch] == 0xff) {
+            fprintf(stderr, "ERROR: phase5 combo relative wing label is not among the midges\n");
+            exit(1);
+        }
+        state[wing_off + i] = map[ch];
+    }
+}
+
+static void
+phase5_combo_relative_expand(unsigned char *state, const rank_group_type *groups)
+{
+    unsigned int midge_off = groups[3].offset;
+    unsigned int next = 0;
+
+    for (unsigned int i = 0; i < 8; i++) {
+        unsigned char ch = state[midge_off + i];
+
+        if (ch == 'x') {
+            continue;
+        }
+        if (ch != 'L' || next >= 4) {
+            fprintf(stderr, "ERROR: phase5 combo relative occupancy must be four L marks\n");
+            exit(1);
+        }
+        state[midge_off + i] = (unsigned char) ('A' + next);
+        next++;
+    }
+    if (next != 4) {
+        fprintf(stderr, "ERROR: phase5 combo relative occupancy must be four L marks\n");
+        exit(1);
+    }
+}
+
+static uint64_t
+phase5_combo_relative_rank(
+    const unsigned char *state,
+    unsigned int state_length,
+    const int symbol_of[MAX_RANK_GROUPS][256],
+    const rank_group_type *groups,
+    unsigned int group_count)
+{
+    unsigned char canonical[256];
+
+    if (state_length > sizeof(canonical) || group_count != 4) {
+        fprintf(stderr, "ERROR: phase5 combo relative state is the wrong size\n");
+        exit(1);
+    }
+    memcpy(canonical, state, state_length);
+    phase5_combo_relative_canonicalize(canonical, groups);
+    return grouped_multiset_rank(canonical, symbol_of, groups, group_count);
+}
+
+static void
+phase5_combo_relative_unrank(
+    uint64_t rank,
+    unsigned char *state,
+    const rank_group_type *groups,
+    unsigned int group_count,
+    uint64_t universe)
+{
+    grouped_multiset_unrank(rank, state, groups, group_count, universe);
+    phase5_combo_relative_expand(state, groups);
+}
+
+
+static uint64_t
+even_permutation_universe(unsigned int length)
+{
+    uint64_t result = 1;
+    if (length < 2) {
+        fprintf(stderr, "ERROR: even permutations require at least two symbols\n");
+        exit(1);
+    }
+    for (unsigned int value = 3; value <= length; value++) {
+        if (result > UINT64_MAX / value) {
+            fprintf(stderr, "ERROR: even permutation universe overflow\n");
+            exit(1);
+        }
+        result *= value;
+    }
+    return result;
+}
+
+
+static uint64_t
+permutation_universe(unsigned int length)
+{
+    uint64_t result = 1;
+    if (!length) {
+        fprintf(stderr, "ERROR: permutations require at least one symbol\n");
+        exit(1);
+    }
+    for (unsigned int value = 2; value <= length; value++) {
+        if (result > UINT64_MAX / value) {
+            fprintf(stderr, "ERROR: permutation universe overflow\n");
+            exit(1);
+        }
+        result *= value;
+    }
+    return result;
+}
+
+
+static void
+permutation_unrank(uint64_t rank, unsigned int length, unsigned char *permutation)
+{
+    unsigned int digits[MAX_RANK_SYMBOLS] = {0};
+    unsigned char remaining[MAX_RANK_SYMBOLS];
+    uint64_t universe = permutation_universe(length);
+
+    if (length > MAX_RANK_SYMBOLS || rank >= universe) {
+        fprintf(stderr, "ERROR: invalid permutation rank\n");
+        exit(1);
+    }
+    for (unsigned int i = 0; i < length; i++) {
+        remaining[i] = (unsigned char) i;
+    }
+    for (int i = (int) length - 1; i >= 0; i--) {
+        unsigned int radix = length - (unsigned int) i;
+        digits[i] = rank % radix;
+        rank /= radix;
+    }
+    for (unsigned int i = 0; i < length; i++) {
+        permutation[i] = remaining[digits[i]];
+        memmove(
+            &remaining[digits[i]], &remaining[digits[i] + 1],
+            length - digits[i] - 1);
+    }
+}
+
+
+static uint64_t
+permutation_rank(const unsigned char *permutation, unsigned int length)
+{
+    unsigned char remaining[MAX_RANK_SYMBOLS];
+    uint64_t rank = 0;
+
+    if (!length || length > MAX_RANK_SYMBOLS) {
+        fprintf(stderr, "ERROR: invalid permutation length\n");
+        exit(1);
+    }
+    for (unsigned int i = 0; i < length; i++) {
+        remaining[i] = (unsigned char) i;
+    }
+    for (unsigned int i = 0; i < length; i++) {
+        unsigned int digit = 0;
+        while (digit < length - i && remaining[digit] != permutation[i]) {
+            digit++;
+        }
+        if (digit == length - i) {
+            fprintf(stderr, "ERROR: invalid permutation\n");
+            exit(1);
+        }
+        rank = (rank * (length - i)) + digit;
+        memmove(&remaining[digit], &remaining[digit + 1], length - i - digit - 1);
+    }
+    return rank;
+}
+
+
+static void
+even_permutation_unrank(uint64_t rank, unsigned int length, unsigned char *permutation)
+{
+    unsigned int digits[MAX_RANK_SYMBOLS] = {0};
+    unsigned char remaining[MAX_RANK_SYMBOLS];
+    uint64_t universe = even_permutation_universe(length);
+
+    if (length > MAX_RANK_SYMBOLS || rank >= universe) {
+        fprintf(stderr, "ERROR: invalid even permutation rank\n");
+        exit(1);
+    }
+    for (unsigned int i = 0; i < length; i++) {
+        remaining[i] = (unsigned char) i;
+    }
+    for (int i = (int) length - 3; i >= 0; i--) {
+        unsigned int radix = length - (unsigned int) i;
+        digits[i] = rank % radix;
+        rank /= radix;
+    }
+    for (unsigned int i = 0; i < length - 2; i++) {
+        digits[length - 2] ^= digits[i] & 1;
+    }
+    for (unsigned int i = 0; i < length; i++) {
+        permutation[i] = remaining[digits[i]];
+        memmove(
+            &remaining[digits[i]], &remaining[digits[i] + 1],
+            length - digits[i] - 1);
+    }
+}
+
+
+static uint64_t
+even_permutation_rank(const unsigned char *permutation, unsigned int length)
+{
+    unsigned char remaining[MAX_RANK_SYMBOLS];
+    uint64_t rank = 0;
+    unsigned int parity = 0;
+
+    if (length < 2 || length > MAX_RANK_SYMBOLS) {
+        fprintf(stderr, "ERROR: invalid even permutation length\n");
+        exit(1);
+    }
+    for (unsigned int i = 0; i < length; i++) {
+        remaining[i] = (unsigned char) i;
+    }
+    for (unsigned int i = 0; i < length; i++) {
+        unsigned int digit = 0;
+        while (digit < length - i && remaining[digit] != permutation[i]) {
+            digit++;
+        }
+        if (digit == length - i) {
+            fprintf(stderr, "ERROR: invalid edge-pairing permutation\n");
+            exit(1);
+        }
+        parity ^= digit & 1;
+        if (i < length - 2) {
+            rank = (rank * (length - i)) + digit;
+        }
+        memmove(&remaining[digit], &remaining[digit + 1], length - i - digit - 1);
+    }
+    if (parity) {
+        fprintf(stderr, "ERROR: edge-pairing move left the even permutation orbit\n");
+        exit(1);
+    }
+    return rank;
+}
+
+
+static void
+edge_pairing_unrank_cube(
+    uint64_t rank,
+    unsigned char *cube,
+    unsigned int full_size,
+    const unsigned int *squares,
+    const unsigned int *partners,
+    unsigned int pair_count)
+{
+    unsigned char permutation[MAX_RANK_SYMBOLS];
+    memset(cube, '.', full_size);
+    cube[0] = 'x';
+    even_permutation_unrank(rank, pair_count, permutation);
+
+    for (unsigned int high = 0; high < pair_count; high++) {
+        unsigned char symbol = (unsigned char) (high + 1);
+        unsigned int low = permutation[high];
+        cube[squares[high]] = symbol;
+        cube[partners[high]] = symbol;
+        cube[squares[pair_count + low]] = symbol;
+        cube[partners[pair_count + low]] = symbol;
+    }
+}
+
+
+static uint64_t
+edge_pairing_rank_cube(
+    const unsigned char *cube,
+    const unsigned int *squares,
+    unsigned int pair_count)
+{
+    unsigned char low_position[256];
+    unsigned char permutation[MAX_RANK_SYMBOLS];
+    memset(low_position, 0xff, sizeof(low_position));
+
+    for (unsigned int low = 0; low < pair_count; low++) {
+        low_position[cube[squares[pair_count + low]]] = (unsigned char) low;
+    }
+    for (unsigned int high = 0; high < pair_count; high++) {
+        unsigned char position = low_position[cube[squares[high]]];
+        if (position == 0xff) {
+            fprintf(stderr, "ERROR: high edge has no matching low edge\n");
+            exit(1);
+        }
+        permutation[high] = position;
+    }
+    return even_permutation_rank(permutation, pair_count);
+}
+
+
+static void
+three_edge_pairing_unrank_cube(
+    uint64_t rank,
+    unsigned char *cube,
+    unsigned int full_size,
+    const unsigned int *squares,
+    const unsigned int *partners,
+    unsigned int pair_count)
+{
+    unsigned char high[MAX_RANK_SYMBOLS];
+    unsigned char delta[MAX_RANK_SYMBOLS];
+    uint64_t even_universe = even_permutation_universe(pair_count);
+    uint64_t high_rank = rank / even_universe;
+    uint64_t delta_rank = rank % even_universe;
+
+    permutation_unrank(high_rank, pair_count, high);
+    even_permutation_unrank(delta_rank, pair_count, delta);
+    memset(cube, '.', full_size);
+    cube[0] = 'x';
+
+    for (unsigned int i = 0; i < pair_count; i++) {
+        unsigned char high_symbol = (unsigned char) (high[i] + 1);
+        unsigned char midge_symbol = (unsigned char) (i + 1);
+        unsigned char low_symbol = (unsigned char) (high[delta[i]] + 1);
+        cube[squares[i]] = high_symbol;
+        cube[partners[i]] = high_symbol;
+        cube[squares[pair_count + i]] = midge_symbol;
+        cube[partners[pair_count + i]] = midge_symbol;
+        cube[squares[(2 * pair_count) + i]] = low_symbol;
+        cube[partners[(2 * pair_count) + i]] = low_symbol;
+    }
+}
+
+
+static uint64_t
+three_edge_pairing_rank_cube(
+    const unsigned char *cube,
+    const unsigned int *squares,
+    unsigned int pair_count)
+{
+    unsigned char midge_position[256];
+    unsigned char high[MAX_RANK_SYMBOLS];
+    unsigned char low[MAX_RANK_SYMBOLS];
+    unsigned char inverse_high[MAX_RANK_SYMBOLS];
+    unsigned char delta[MAX_RANK_SYMBOLS];
+    memset(midge_position, 0xff, sizeof(midge_position));
+
+    for (unsigned int i = 0; i < pair_count; i++) {
+        unsigned char symbol = cube[squares[pair_count + i]];
+        if (midge_position[symbol] != 0xff) {
+            fprintf(stderr, "ERROR: duplicate midge edge in three-edge rank\n");
+            exit(1);
+        }
+        midge_position[symbol] = (unsigned char) i;
+    }
+    for (unsigned int i = 0; i < pair_count; i++) {
+        high[i] = midge_position[cube[squares[i]]];
+        low[i] = midge_position[cube[squares[(2 * pair_count) + i]]];
+        if (high[i] == 0xff || low[i] == 0xff) {
+            fprintf(stderr, "ERROR: edge has no matching midge in three-edge rank\n");
+            exit(1);
+        }
+    }
+    for (unsigned int i = 0; i < pair_count; i++) {
+        inverse_high[high[i]] = (unsigned char) i;
+    }
+    for (unsigned int i = 0; i < pair_count; i++) {
+        delta[i] = inverse_high[low[i]];
+    }
+
+    return (permutation_rank(high, pair_count) * even_permutation_universe(pair_count)) +
+        even_permutation_rank(delta, pair_count);
+}
+
+
+static void
+wing_binary_unrank_cube(
+    uint64_t rank,
+    unsigned char *cube,
+    unsigned int full_size,
+    const unsigned int *squares,
+    const unsigned int *partners,
+    unsigned int partner_flip_mask,
+    const rank_group_type *groups,
+    unsigned int group_count,
+    uint64_t universe)
+{
+    unsigned char compact[MAX_COMPACT_SQUARES];
+    memset(cube, '.', full_size);
+    cube[0] = 'x';
+    grouped_multiset_unrank(rank, compact, groups, group_count, universe);
+    for (unsigned int i = 0; i < groups[0].length; i++) {
+        cube[squares[i]] = compact[i];
+        cube[partners[i]] = (partner_flip_mask & (1U << i))
+            ? (compact[i] == 'U' ? 'D' : 'U')
+            : compact[i];
+    }
+}
+
+
+static uint64_t
+wing_binary_rank_cube(
+    const unsigned char *cube,
+    const unsigned int *squares,
+    const int symbol_of[MAX_RANK_GROUPS][256],
+    const rank_group_type *groups,
+    unsigned int group_count)
+{
+    unsigned char compact[MAX_COMPACT_SQUARES];
+    unsigned int square_count = 0;
+    for (unsigned int group = 0; group < group_count; group++) {
+        square_count += groups[group].length;
+    }
+    for (unsigned int i = 0; i < square_count; i++) {
+        compact[i] = cube[squares[i]];
+    }
+    return grouped_multiset_rank(compact, symbol_of, groups, group_count);
+}
+
+
+static void
+paired_multiset_unrank_cube(
+    uint64_t rank,
+    unsigned char *cube,
+    unsigned int full_size,
+    const unsigned int *squares,
+    const unsigned int *partners,
+    const rank_group_type *groups,
+    unsigned int group_count,
+    uint64_t universe)
+{
+    unsigned char compact[MAX_COMPACT_SQUARES];
+    unsigned int square_count = 0;
+    memset(cube, '.', full_size);
+    cube[0] = 'x';
+    grouped_multiset_unrank(rank, compact, groups, group_count, universe);
+    for (unsigned int group = 0; group < group_count; group++) {
+        square_count += groups[group].length;
+    }
+    for (unsigned int i = 0; i < square_count; i++) {
+        cube[squares[i]] = compact[i];
+        cube[partners[i]] = compact[i];
+    }
+}
+
+
+static void
+orientation_bits_unrank_cube(
+    uint64_t rank,
+    unsigned char *cube,
+    unsigned int full_size,
+    const unsigned int *squares,
+    const unsigned int *partners,
+    unsigned int square_count,
+    unsigned int partner_flip_mask)
+{
+    memset(cube, '.', full_size);
+    cube[0] = 'x';
+    for (unsigned int i = 0; i < square_count; i++) {
+        unsigned char value = (rank & (1ULL << i)) ? 'D' : 'U';
+        cube[squares[i]] = value;
+        cube[partners[i]] = (partner_flip_mask & (1U << i))
+            ? (value == 'U' ? 'D' : 'U')
+            : value;
+    }
+}
+
+
+static uint64_t
+orientation_bits_rank_cube(
+    const unsigned char *cube,
+    const unsigned int *squares,
+    unsigned int square_count)
+{
+    uint64_t rank = 0;
+    for (unsigned int i = 0; i < square_count; i++) {
+        if (cube[squares[i]] == 'D') {
+            rank |= 1ULL << i;
+        }
+    }
+    return rank;
+}
+
 
 static uint64_t
 read_rank(FILE *fh)
@@ -602,18 +1276,134 @@ process_ranked_workq(
     unsigned int moves_count,
     unsigned int *squares,
     unsigned int square_count,
-    const unsigned char *symbols,
-    const unsigned int *counts,
-    unsigned int symbol_count,
+    const unsigned int *pairing_partners,
+    unsigned int pairing_partner_count,
+    const unsigned int *wing_flip_masks,
+    unsigned int wing_flip_mask_count,
+    unsigned int wing_partner_flip_mask,
+    rank_type configured_rank_type,
+    const rank_group_type *groups,
+    unsigned int group_count,
     uint64_t universe,
-    int write_workq)
+    int write_workq,
+    int scan_costs,
+    int orbit_parity,
+    const unsigned char *parity_flip)
 {
     unsigned int state_length = 0;
-    for (unsigned int i = 0; i < symbol_count; i++) {
-        state_length += counts[i];
+    uint64_t configured_universe = 1;
+    unsigned int pair_count = 0;
+    unsigned int full_size = (cube_size * cube_size * 6) + 1;
+
+    if (configured_rank_type == RANK_EDGE_PAIRING_EVEN) {
+        if (!square_count || square_count % 2 || pairing_partner_count != square_count) {
+            fprintf(stderr, "ERROR: edge pairing requires equally sized square and partner lists\n");
+            exit(1);
+        }
+        pair_count = square_count / 2;
+        configured_universe = even_permutation_universe(pair_count);
+        state_length = full_size;
+        for (unsigned int i = 0; i < square_count; i++) {
+            if (squares[i] >= full_size || pairing_partners[i] >= full_size) {
+                fprintf(stderr, "ERROR: edge-pairing square is outside the cube\n");
+                exit(1);
+            }
+        }
+    } else if (configured_rank_type == RANK_THREE_EDGE_PAIRING_PARITY) {
+        if (!square_count || square_count % 3 || pairing_partner_count != square_count) {
+            fprintf(stderr, "ERROR: three-edge pairing requires three equal square groups and partners\n");
+            exit(1);
+        }
+        pair_count = square_count / 3;
+        uint64_t all_permutations = permutation_universe(pair_count);
+        uint64_t even_permutations = even_permutation_universe(pair_count);
+        if (all_permutations > UINT64_MAX / even_permutations) {
+            fprintf(stderr, "ERROR: three-edge pairing universe overflow\n");
+            exit(1);
+        }
+        configured_universe = all_permutations * even_permutations;
+        state_length = full_size;
+        for (unsigned int i = 0; i < square_count; i++) {
+            if (squares[i] >= full_size || pairing_partners[i] >= full_size) {
+                fprintf(stderr, "ERROR: three-edge-pairing square is outside the cube\n");
+                exit(1);
+            }
+        }
+    } else if (configured_rank_type == RANK_ORIENTATION_BITS) {
+        if (!square_count || square_count > 32 || pairing_partner_count != square_count ||
+                wing_flip_mask_count != moves_count) {
+            fprintf(stderr, "ERROR: orientation-bits rank requires partners and one flip mask per move\n");
+            exit(1);
+        }
+        if (universe != (1ULL << square_count)) {
+            fprintf(stderr, "ERROR: orientation-bits universe must be 2^square_count\n");
+            exit(1);
+        }
+        configured_universe = universe;
+        state_length = full_size;
+        for (unsigned int i = 0; i < square_count; i++) {
+            if (squares[i] >= full_size || pairing_partners[i] >= full_size) {
+                fprintf(stderr, "ERROR: orientation-bits square is outside the cube\n");
+                exit(1);
+            }
+        }
+    } else {
+        for (unsigned int i = 0; i < group_count; i++) {
+            state_length += groups[i].length;
+            ensure_binom(groups[i].length);
+            uint64_t group_universe = multiset_perms(
+                groups[i].counts, groups[i].symbol_count, groups[i].length);
+            if (group_universe != groups[i].universe) {
+                fprintf(stderr, "ERROR: rank group %u universe is %" PRIu64 ", expected %" PRIu64 "\n",
+                    i, group_universe, groups[i].universe);
+                exit(1);
+            }
+            if (configured_universe > UINT64_MAX / groups[i].universe) {
+                fprintf(stderr, "ERROR: grouped ranked universe overflow\n");
+                exit(1);
+            }
+            configured_universe *= groups[i].universe;
+        }
+        if (!group_count || !square_count || square_count != state_length) {
+            fprintf(stderr, "ERROR: ranked mode requires --squares matching --rank-counts\n");
+            exit(1);
+        }
+        if (configured_rank_type == RANK_WING_BINARY ||
+                configured_rank_type == RANK_PAIRED_MULTISET) {
+            if (pairing_partner_count != square_count ||
+                    (configured_rank_type == RANK_WING_BINARY &&
+                     (group_count != 1 || wing_flip_mask_count != moves_count))) {
+                fprintf(stderr, "ERROR: paired rank requires partners (and wing-binary needs one group and flip mask per move)\n");
+                exit(1);
+            }
+            for (unsigned int i = 0; i < square_count; i++) {
+                if (squares[i] >= full_size || pairing_partners[i] >= full_size) {
+                    fprintf(stderr, "ERROR: paired square is outside the cube\n");
+                    exit(1);
+                }
+            }
+            state_length = full_size;
+        }
+        if (configured_rank_type == RANK_PHASE5_COMBO_RELATIVE) {
+            if (group_count != 4 || groups[2].length != 8 || groups[3].length != 8 ||
+                    groups[2].universe != 1680 || groups[3].universe != 70 ||
+                    strcmp((const char *) groups[3].symbols, "Lx")) {
+                fprintf(stderr, "ERROR: phase5-combo-relative needs FB t/x, ABCDx wings, and Lx midges\n");
+                exit(1);
+            }
+        }
     }
-    if (!square_count || square_count != state_length) {
-        fprintf(stderr, "ERROR: ranked mode requires --squares matching --rank-counts\n");
+    if (orbit_parity) {
+        if (configured_rank_type != RANK_MULTISET ||
+                configured_universe > UINT64_MAX / 2 ||
+                configured_universe * 2 != universe) {
+            fprintf(stderr, "ERROR: orbit-parity universe is %" PRIu64 ", expected twice %" PRIu64 "\n",
+                universe, configured_universe);
+            exit(1);
+        }
+    } else if (configured_universe != universe) {
+        fprintf(stderr, "ERROR: rank group universes multiply to %" PRIu64 ", expected %" PRIu64 "\n",
+            configured_universe, universe);
         exit(1);
     }
     if (depth > 254) {
@@ -629,12 +1419,13 @@ process_ranked_workq(
         exit(1);
     }
 
-    FILE *input = fopen(inputfile, "rb");
+    FILE *input = scan_costs ? NULL : fopen(inputfile, "rb");
     FILE *output = write_workq ? fopen(outputfile, "wb") : NULL;
     int cost_fd = open(cost_filename, O_RDWR);
     struct stat cost_stat;
-    int symbol_of[256];
-    if (!input || (write_workq && !output) || cost_fd < 0 || fstat(cost_fd, &cost_stat) != 0) {
+    int symbol_of[MAX_RANK_GROUPS][256];
+    if ((!scan_costs && !input) || (write_workq && !output) ||
+            cost_fd < 0 || fstat(cost_fd, &cost_stat) != 0) {
         fprintf(stderr, "ERROR: could not open ranked input/output files\n");
         exit(1);
     }
@@ -647,7 +1438,7 @@ process_ranked_workq(
         fprintf(stderr, "ERROR: could not size the ranked workq write buffer\n");
         exit(1);
     }
-    if (setvbuf(input, NULL, _IOFBF, RANKED_IO_BUFFER) != 0) {
+    if (input && setvbuf(input, NULL, _IOFBF, RANKED_IO_BUFFER) != 0) {
         fprintf(stderr, "ERROR: could not size the ranked workq read buffer\n");
         exit(1);
     }
@@ -664,20 +1455,25 @@ process_ranked_workq(
      */
     madvise(costs, (size_t) universe, MADV_HUGEPAGE);
 #endif
-    if (fseeko(input, (off_t) (start * RANKED_RECORD_SIZE), SEEK_SET) != 0) {
+    if (input && fseeko(input, (off_t) (start * RANKED_RECORD_SIZE), SEEK_SET) != 0) {
         fprintf(stderr, "ERROR: could not seek ranked workq\n");
         exit(1);
     }
 
-    ensure_binom(square_count);
     memset(symbol_of, 0xff, sizeof(symbol_of));
-    for (unsigned int symbol = 0; symbol < symbol_count; symbol++) {
-        symbol_of[symbols[symbol]] = (int) symbol;
+    for (unsigned int group = 0; group < group_count; group++) {
+        for (unsigned int symbol = 0; symbol < groups[group].symbol_count; symbol++) {
+            symbol_of[group][groups[group].symbols[symbol]] = (int) symbol;
+        }
     }
 
-    unsigned int *perm = build_compact_permutations(cube_size, squares, square_count, moves, moves_count);
-    unsigned char *state = malloc(square_count);
-    unsigned char *child = malloc(square_count);
+    unsigned int *perm = (configured_rank_type == RANK_MULTISET ||
+            configured_rank_type == RANK_CENTER_SYMMETRY_444 ||
+            configured_rank_type == RANK_PHASE5_COMBO_RELATIVE)
+        ? build_compact_permutations(cube_size, squares, square_count, moves, moves_count)
+        : NULL;
+    unsigned char *state = malloc(state_length);
+    unsigned char *child = malloc(state_length);
     if (!state || !child) {
         fprintf(stderr, "ERROR: could not allocate ranked states\n");
         exit(1);
@@ -686,13 +1482,54 @@ process_ranked_workq(
     uint64_t winners = 0;
     unsigned char encoded_cost = depth + 1;
     for (uint64_t record_index = start; record_index <= end; record_index++) {
-        uint64_t parent_rank = read_rank(input);
-        int previous = fgetc(input);
-        if (previous == EOF) {
-            fprintf(stderr, "ERROR: truncated ranked workq\n");
-            exit(1);
+        uint64_t parent_rank;
+        int previous = MOVE_NONE;
+        if (scan_costs) {
+            parent_rank = record_index;
+            if (__atomic_load_n(&costs[parent_rank], __ATOMIC_RELAXED) != depth) {
+                continue;
+            }
+        } else {
+            parent_rank = read_rank(input);
+            previous = fgetc(input);
+            if (previous == EOF) {
+                fprintf(stderr, "ERROR: truncated ranked workq\n");
+                exit(1);
+            }
         }
-        multiset_unrank(parent_rank, state, symbols, counts, symbol_count, square_count, universe);
+        unsigned int parity_bit = 0;
+        uint64_t center_rank = parent_rank;
+
+        if (orbit_parity) {
+            parity_bit = (unsigned int)(parent_rank & 1);
+            center_rank = parent_rank >> 1;
+        }
+        if (configured_rank_type == RANK_EDGE_PAIRING_EVEN) {
+            edge_pairing_unrank_cube(
+                parent_rank, state, full_size, squares, pairing_partners, pair_count);
+        } else if (configured_rank_type == RANK_THREE_EDGE_PAIRING_PARITY) {
+            three_edge_pairing_unrank_cube(
+                parent_rank, state, full_size, squares, pairing_partners, pair_count);
+        } else if (configured_rank_type == RANK_WING_BINARY) {
+            wing_binary_unrank_cube(
+                parent_rank, state, full_size, squares, pairing_partners,
+                wing_partner_flip_mask,
+                groups, group_count, universe);
+        } else if (configured_rank_type == RANK_PAIRED_MULTISET) {
+            paired_multiset_unrank_cube(
+                parent_rank, state, full_size, squares, pairing_partners,
+                groups, group_count, universe);
+        } else if (configured_rank_type == RANK_ORIENTATION_BITS) {
+            orientation_bits_unrank_cube(
+                parent_rank, state, full_size, squares, pairing_partners,
+                square_count, wing_partner_flip_mask);
+        } else if (configured_rank_type == RANK_PHASE5_COMBO_RELATIVE) {
+            phase5_combo_relative_unrank(parent_rank, state, groups, group_count, universe);
+        } else {
+            grouped_multiset_unrank(
+                center_rank, state, groups, group_count,
+                orbit_parity ? universe / 2 : universe);
+        }
 
         for (unsigned int move_index = 0; move_index < moves_count; move_index++) {
             move_type move = moves[move_index];
@@ -701,14 +1538,48 @@ process_ranked_workq(
             if (steps_on_same_face_and_layer(move, (move_type) previous)) {
                 continue;
             }
-            for (unsigned int i = 0; i < square_count; i++) {
-                child[perm[(move_index * square_count) + i]] = state[i];
+            if (configured_rank_type == RANK_EDGE_PAIRING_EVEN) {
+                rotate_full_cube((char *) child, (char *) state, full_size, cube_size, move);
+                child_rank = edge_pairing_rank_cube(child, squares, pair_count);
+            } else if (configured_rank_type == RANK_THREE_EDGE_PAIRING_PARITY) {
+                rotate_full_cube((char *) child, (char *) state, full_size, cube_size, move);
+                child_rank = three_edge_pairing_rank_cube(child, squares, pair_count);
+            } else if (configured_rank_type == RANK_PAIRED_MULTISET) {
+                rotate_full_cube((char *) child, (char *) state, full_size, cube_size, move);
+                child_rank = wing_binary_rank_cube(child, squares, symbol_of, groups, group_count);
+            } else if (configured_rank_type == RANK_WING_BINARY ||
+                    configured_rank_type == RANK_ORIENTATION_BITS) {
+                rotate_full_cube((char *) child, (char *) state, full_size, cube_size, move);
+                for (unsigned int i = 0; i < square_count; i++) {
+                    if (wing_flip_masks[move_index] & (1U << i)) {
+                        child[squares[i]] = child[squares[i]] == 'U' ? 'D' : 'U';
+                        child[pairing_partners[i]] =
+                            child[pairing_partners[i]] == 'U' ? 'D' : 'U';
+                    }
+                }
+                child_rank = configured_rank_type == RANK_WING_BINARY
+                    ? wing_binary_rank_cube(child, squares, symbol_of, groups, group_count)
+                    : orientation_bits_rank_cube(child, squares, square_count);
+            } else if (configured_rank_type == RANK_PHASE5_COMBO_RELATIVE) {
+                for (unsigned int i = 0; i < square_count; i++) {
+                    child[perm[(move_index * square_count) + i]] = state[i];
+                }
+                child_rank = phase5_combo_relative_rank(
+                    child, state_length, symbol_of, groups, group_count);
+            } else {
+                for (unsigned int i = 0; i < square_count; i++) {
+                    child[perm[(move_index * square_count) + i]] = state[i];
+                }
+                child_rank = configured_rank_type == RANK_CENTER_SYMMETRY_444
+                    ? center_symmetry_rank_444(child, symbol_of, groups)
+                    : grouped_multiset_rank(child, symbol_of, groups, group_count);
+                if (orbit_parity) {
+                    child_rank = (child_rank << 1) | (parity_bit ^ parity_flip[move_index]);
+                }
             }
-            if (memcmp(child, state, square_count) == 0) {
+            if (child_rank == parent_rank) {
                 continue;
             }
-
-            child_rank = multiset_rank(child, symbol_of, counts, symbol_count, square_count);
             if (__atomic_load_n(&costs[child_rank], __ATOMIC_RELAXED)) {
                 continue;
             }
@@ -724,16 +1595,21 @@ process_ranked_workq(
         }
     }
 
-    printf("%" PRIu64 "\n", winners);
     free(perm);
     free(state);
     free(child);
     munmap(costs, universe);
     close(cost_fd);
-    fclose(input);
-    if (output) {
-        fclose(output);
+    if (input) {
+        fclose(input);
     }
+    if (output) {
+        if (fflush(output) != 0 || fclose(output) != 0) {
+            fprintf(stderr, "ERROR: could not flush ranked workq output\n");
+            exit(1);
+        }
+    }
+    printf("%" PRIu64 "\n", winners);
 }
 
 
@@ -1001,11 +1877,26 @@ main (int argc, char *argv[])
     char squares_buffer[MAX_SQUARES_ARG];
     char rank_symbols[MAX_RANK_SYMBOLS + 1];
     char rank_counts_buffer[MAX_SQUARES_ARG];
+    char rank_groups_buffer[MAX_SQUARES_ARG];
+    char rank_type_buffer[64];
+    char pairing_partners_buffer[MAX_SQUARES_ARG];
+    char wing_flip_masks_buffer[MAX_SQUARES_ARG];
+    char parity_flip_moves_buffer[512];
     unsigned int squares[MAX_COMPACT_SQUARES];
+    unsigned int pairing_partners[MAX_COMPACT_SQUARES];
+    unsigned int wing_flip_masks[MOVE_MAX];
     unsigned int rank_counts[MAX_RANK_SYMBOLS];
+    rank_group_type rank_groups[MAX_RANK_GROUPS];
     unsigned int square_count = 0;
+    unsigned int pairing_partner_count = 0;
+    unsigned int wing_flip_mask_count = 0;
+    unsigned int wing_partner_flip_mask = 0;
     unsigned int rank_symbol_count = 0;
+    unsigned int rank_group_count = 0;
     int ranked_no_workq = 0;
+    int ranked_scan_costs = 0;
+    int orbit_parity = 0;
+    rank_type configured_rank_type = RANK_MULTISET;
     memset(inputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
     memset(outputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
     memset(ranked_cost, '\0', sizeof(ranked_cost));
@@ -1014,6 +1905,12 @@ main (int argc, char *argv[])
     memset(squares_buffer, '\0', sizeof(squares_buffer));
     memset(rank_symbols, '\0', sizeof(rank_symbols));
     memset(rank_counts_buffer, '\0', sizeof(rank_counts_buffer));
+    memset(rank_groups_buffer, '\0', sizeof(rank_groups_buffer));
+    memset(rank_type_buffer, '\0', sizeof(rank_type_buffer));
+    memset(pairing_partners_buffer, '\0', sizeof(pairing_partners_buffer));
+    memset(wing_flip_masks_buffer, '\0', sizeof(wing_flip_masks_buffer));
+    memset(parity_flip_moves_buffer, '\0', sizeof(parity_flip_moves_buffer));
+    memset(rank_groups, 0, sizeof(rank_groups));
 
     for (int i = 1; i < argc; i++) {
         if (strmatch(argv[i], "--inputfile")) {
@@ -1072,12 +1969,42 @@ main (int argc, char *argv[])
             i++;
             strncpy(rank_counts_buffer, argv[i], MAX_SQUARES_ARG - 1);
 
+        } else if (strmatch(argv[i], "--rank-groups")) {
+            i++;
+            strncpy(rank_groups_buffer, argv[i], MAX_SQUARES_ARG - 1);
+
+        } else if (strmatch(argv[i], "--rank-type")) {
+            i++;
+            strncpy(rank_type_buffer, argv[i], sizeof(rank_type_buffer) - 1);
+
+        } else if (strmatch(argv[i], "--pairing-partners")) {
+            i++;
+            strncpy(pairing_partners_buffer, argv[i], MAX_SQUARES_ARG - 1);
+
+        } else if (strmatch(argv[i], "--wing-flip-masks")) {
+            i++;
+            strncpy(wing_flip_masks_buffer, argv[i], MAX_SQUARES_ARG - 1);
+
+        } else if (strmatch(argv[i], "--wing-partner-flip-mask")) {
+            i++;
+            wing_partner_flip_mask = (unsigned int) strtoul(argv[i], NULL, 10);
+
         } else if (strmatch(argv[i], "--rank-universe")) {
             i++;
             rank_universe = strtoull(argv[i], NULL, 10);
 
         } else if (strmatch(argv[i], "--ranked-no-workq")) {
             ranked_no_workq = 1;
+
+        } else if (strmatch(argv[i], "--orbit-parity")) {
+            orbit_parity = 1;
+
+        } else if (strmatch(argv[i], "--parity-flip-moves")) {
+            i++;
+            strncpy(parity_flip_moves_buffer, argv[i], sizeof(parity_flip_moves_buffer) - 1);
+
+        } else if (strmatch(argv[i], "--ranked-scan-costs")) {
+            ranked_scan_costs = 1;
 
         } else if (strmatch(argv[i], "-h") || strmatch(argv[i], "--help")) {
             printf("\nTODO\n\n");
@@ -1125,30 +2052,157 @@ main (int argc, char *argv[])
     if (squares_buffer[0]) {
         square_count = parse_squares(squares_buffer, squares);
     }
+    if (pairing_partners_buffer[0]) {
+        pairing_partner_count = parse_squares(pairing_partners_buffer, pairing_partners);
+    }
+    if (wing_flip_masks_buffer[0]) {
+        wing_flip_mask_count = parse_unsigned_list(wing_flip_masks_buffer, wing_flip_masks, MOVE_MAX);
+    }
 
     if (ranked_cost[0]) {
-        rank_symbol_count = strlen(rank_symbols);
-        unsigned int rank_count_count = parse_rank_counts(rank_counts_buffer, rank_counts);
-        if (!ranked_input[0] || (!ranked_no_workq && !ranked_output[0]) ||
-                !rank_symbol_count || rank_symbol_count != rank_count_count || !rank_universe) {
+        if (!rank_type_buffer[0] || strmatch(rank_type_buffer, "multiset")) {
+            configured_rank_type = RANK_MULTISET;
+        } else if (strmatch(rank_type_buffer, "paired-multiset")) {
+            configured_rank_type = RANK_PAIRED_MULTISET;
+        } else if (strmatch(rank_type_buffer, "edge-pairing-even")) {
+            configured_rank_type = RANK_EDGE_PAIRING_EVEN;
+        } else if (strmatch(rank_type_buffer, "three-edge-pairing-parity")) {
+            configured_rank_type = RANK_THREE_EDGE_PAIRING_PARITY;
+        } else if (strmatch(rank_type_buffer, "wing-binary")) {
+            configured_rank_type = RANK_WING_BINARY;
+        } else if (strmatch(rank_type_buffer, "orientation-bits")) {
+            configured_rank_type = RANK_ORIENTATION_BITS;
+        } else if (strmatch(rank_type_buffer, "center-symmetry-444")) {
+            configured_rank_type = RANK_CENTER_SYMMETRY_444;
+        } else if (strmatch(rank_type_buffer, "phase5-combo-relative")) {
+            configured_rank_type = RANK_PHASE5_COMBO_RELATIVE;
+        } else {
+            fprintf(stderr, "ERROR: unsupported --rank-type %s\n", rank_type_buffer);
+            exit(1);
+        }
+
+        if (configured_rank_type == RANK_EDGE_PAIRING_EVEN ||
+                configured_rank_type == RANK_THREE_EDGE_PAIRING_PARITY) {
+            if (rank_groups_buffer[0] || rank_symbols[0] || rank_counts_buffer[0]) {
+                fprintf(stderr, "ERROR: edge rank cannot use multiset rank options\n");
+                exit(1);
+            }
+        } else if (configured_rank_type == RANK_ORIENTATION_BITS) {
+            if (rank_groups_buffer[0] || rank_symbols[0] || rank_counts_buffer[0]) {
+                fprintf(stderr, "ERROR: orientation-bits rank cannot use multiset rank options\n");
+                exit(1);
+            }
+        } else if (rank_groups_buffer[0]) {
+            if (rank_symbols[0] || rank_counts_buffer[0]) {
+                fprintf(stderr, "ERROR: --rank-groups cannot be combined with --rank-symbols/--rank-counts\n");
+                exit(1);
+            }
+            rank_group_count = parse_rank_groups(rank_groups_buffer, rank_groups);
+        } else {
+            rank_symbol_count = strlen(rank_symbols);
+            unsigned int rank_count_count = parse_rank_counts(rank_counts_buffer, rank_counts);
+            if (!rank_symbol_count || rank_symbol_count != rank_count_count) {
+                fprintf(stderr, "ERROR: ranked mode requires matching symbols and counts\n");
+                exit(1);
+            }
+            rank_group_count = 1;
+            rank_groups[0].offset = 0;
+            rank_groups[0].symbol_count = rank_symbol_count;
+            memcpy(rank_groups[0].symbols, rank_symbols, rank_symbol_count);
+            memcpy(rank_groups[0].counts, rank_counts, rank_symbol_count * sizeof(unsigned int));
+            for (unsigned int i = 0; i < rank_symbol_count; i++) {
+                rank_groups[0].length += rank_counts[i];
+            }
+            rank_groups[0].universe = rank_universe;
+        }
+        if ((!ranked_scan_costs && !ranked_input[0]) || (!ranked_no_workq && !ranked_output[0]) ||
+                (configured_rank_type != RANK_EDGE_PAIRING_EVEN &&
+                 configured_rank_type != RANK_THREE_EDGE_PAIRING_PARITY &&
+                 configured_rank_type != RANK_ORIENTATION_BITS && !rank_group_count) || !rank_universe) {
             fprintf(stderr, "ERROR: ranked mode requires input/output, symbols, counts and universe\n");
             exit(1);
         }
-        for (unsigned int i = 1; i < rank_symbol_count; i++) {
-            if ((unsigned char) rank_symbols[i - 1] >= (unsigned char) rank_symbols[i]) {
-                fprintf(stderr, "ERROR: --rank-symbols must be unique and sorted\n");
+        if (!rank_groups_buffer[0]) {
+            for (unsigned int i = 1; i < rank_symbol_count; i++) {
+                if ((unsigned char) rank_symbols[i - 1] >= (unsigned char) rank_symbols[i]) {
+                    fprintf(stderr, "ERROR: --rank-symbols must be unique and sorted\n");
+                    exit(1);
+                }
+            }
+        }
+        if (configured_rank_type == RANK_CENTER_SYMMETRY_444) {
+            if ((cube_size != 4 && cube_size != 6) || rank_group_count != 1 ||
+                    rank_groups[0].length != CENTER_SYMMETRY_STICKERS_444 ||
+                    strcmp((const char *) rank_groups[0].symbols, "FLU") ||
+                    rank_groups[0].counts[0] != 8 ||
+                    rank_groups[0].counts[1] != 8 ||
+                    rank_groups[0].counts[2] != 8) {
+                fprintf(stderr, "ERROR: center-symmetry-444 requires a 4x4x4 or 6x6x6 FLU 8,8,8 rank group\n");
                 exit(1);
             }
+            init_center_symmetry_444();
         }
         if (ranked_depth > 254) {
             fprintf(stderr, "ERROR: ranked depth must be <= 254\n");
             exit(1);
         }
+        unsigned char parity_flip[MOVE_MAX];
+        memset(parity_flip, 0, sizeof(parity_flip));
+        if (orbit_parity) {
+            char *flip_moves;
+            char *flip_move;
+            unsigned int flip_count = 0;
+
+            if (configured_rank_type != RANK_MULTISET || !rank_group_count || (rank_universe % 2)) {
+                fprintf(stderr, "ERROR: --orbit-parity requires multiset groups and an even universe\n");
+                exit(1);
+            }
+            if (!parity_flip_moves_buffer[0]) {
+                fprintf(stderr, "ERROR: --orbit-parity requires --parity-flip-moves\n");
+                exit(1);
+            }
+            char flip_storage[512];
+
+            /* --rank-counts stores the doubled universe on the only group.
+             * --rank-groups already carries the real component universes. */
+            if (!rank_groups_buffer[0]) {
+                rank_groups[0].universe = rank_universe / 2;
+            }
+            strncpy(flip_storage, parity_flip_moves_buffer, sizeof(flip_storage) - 1);
+            flip_storage[sizeof(flip_storage) - 1] = '\0';
+            flip_moves = flip_storage;
+            flip_move = strtok(flip_moves, " ");
+            while (flip_move != NULL) {
+                move_type flip = str2move(flip_move);
+                unsigned int matched = 0;
+
+                for (unsigned int move_index = 0; move_index < moves_index; move_index++) {
+                    if (moves[move_index] == flip) {
+                        parity_flip[move_index] = 1;
+                        matched = 1;
+                        flip_count++;
+                    }
+                }
+                if (!matched) {
+                    fprintf(stderr, "ERROR: parity flip move %s is not legal for this table\n", flip_move);
+                    exit(1);
+                }
+                flip_move = strtok(NULL, " ");
+            }
+            if (!flip_count) {
+                fprintf(stderr, "ERROR: --parity-flip-moves did not match any legal move\n");
+                exit(1);
+            }
+        }
         process_ranked_workq(
             ranked_input, ranked_output, ranked_cost, start, end, (unsigned char) ranked_depth,
             cube_size, moves, moves_index, squares, square_count,
-            (unsigned char *) rank_symbols, rank_counts, rank_symbol_count,
-            rank_universe, !ranked_no_workq);
+            pairing_partners, pairing_partner_count, wing_flip_masks, wing_flip_mask_count,
+            wing_partner_flip_mask,
+            configured_rank_type,
+            rank_groups, rank_group_count,
+            rank_universe, !ranked_no_workq, ranked_scan_costs,
+            orbit_parity, parity_flip);
     } else {
         if (start > UINT_MAX || end > UINT_MAX) {
             fprintf(stderr, "ERROR: text workq line range exceeds UINT_MAX\n");

@@ -1,0 +1,147 @@
+# Agent handbook: rubiks-cube-lookup-tables
+
+Python + C BFS/IDA builders for the prune tables consumed by `../rubiks-cube-NxNxN-solver`. This repo is **not** the solver. Finished production tables already live on S3 (`https://rubiks-cube-lookup-tables.s3.amazonaws.com/`).
+
+## Rules
+
+- Do **not** start a production table build unless the user explicitly asks. Full ranked tables take many CPU-hours and can fill RAM/tmpfs. Makefile targets such as `666-phase5` and `777-phase5-6-ranked` are real jobs, not smoke tests.
+- Do **not** commit unless the user asks. Do not force-push or skip hooks.
+- Never point tests at `lookup-tables/`. Pytest must set `RUBIKS_LOOKUP_TABLE_DIR=tmp/test-lookup-tables` and `RUBIKS_SKIP_HISTOGRAM=1` (`make test` already does).
+- Do not run builder tests with pytest-xdist. Builders share `./tmp`.
+- Do not format or commit generated `rubikscubelookuptables/builder555ss.py` / `builder777ss.py` (tens of MB, gitignored).
+- Builders import `rubikscubennnsolver`. After `make init`, `PYTHONPATH` must include the solver repo.
+- Project skills in `.cursor/skills/`: never CRLF (always LF); never keep unused lookup-table code in either repo; if a phase is slow, sample a heuristic matrix instead of shipping `--multiplier`.
+
+## Layout
+
+| Path | Role |
+| --- | --- |
+| `rubikscubelookuptables/builder{333,444,555,666,777}.py` | Builder classes (`Build444LRCentersStageRanked`, …) |
+| `rubikscubelookuptables/buildercore.py` | Search, ranked mmap, save, histogram, JSON sidecars |
+| `rubikscubelookuptables/builder-crunch-workq.c` | C work-queue expander used by Python builders |
+| `rubikscubelookuptables/builder-find-new-states.c` | Frontier helper |
+| `utils/builderui.py` | CLI: `./utils/builderui.py BuildXxx [--depth N] [--cores N]` |
+| `lookup-tables/` | Production outputs (and copies the solver may use) |
+| `tmp/` | Scratch; `make test` and every `builderui` run start empty |
+| `histogram.txt` | Appended depth histograms after production saves |
+| `tests/` | Unit tests + `builder_table_baselines.json` |
+
+`make init` compiles the two C helpers + `utils/pad-lines`, creates `venv`, and installs requirements. It also `export`s `PYTHONPATH` to both this repo and the solver (that export only lasts for the make recipe; export it in your shell too).
+
+```bash
+export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables
+make init
+source venv/bin/activate
+```
+
+On the Windows workstation, use WSL Ubuntu, not native PowerShell gcc.
+
+## Test and format
+
+```bash
+make format      # isort + black 120 + flake8 on git-known Python (honors .gitignore)
+make test        # full pytest; serial; writes tables under tmp/test-lookup-tables
+make test-lite   # skips test_build_* and tests/test_builder_determinism.py
+```
+
+`test_builder_tables.py` rebuilds every Makefile `builderui` class to the depth in `tests/builder_table_baselines.json` and byte-compares output. That is still a **test** build (tmp dir, tiny depths), not a production table.
+
+If you add a `./utils/builderui.py BuildFoo` line to the Makefile, add a baseline (or an entry in `SKIPPED_BUILDERS`) or `test_every_makefile_builder_is_accounted_for` fails.
+
+## How a table is built
+
+```mermaid
+flowchart TD
+  ui["utils/builderui.py BuildXxx"] --> cls["builderNNN.py class"]
+  cls --> search["builder.search depth, cores"]
+  search --> crunch["builder-crunch-workq / ranked CAS mmap"]
+  crunch --> save["builder.save"]
+  save --> ranked["name.cost-only.bin + .json"]
+  save --> hist["histogram.txt unless RUBIKS_SKIP_HISTOGRAM"]
+```
+
+1. `builderui.py` wipes `./tmp`, instantiates the class named on the command line from `builder{333…777}.py`.
+2. `search(depth, cores)` BFS/IDA-expands. Ranked builders mmap a dense cost array (prefer `/dev/shm`; disk-backed mmap will thrash).
+3. `save()` writes the table under `RUBIKS_LOOKUP_TABLE_DIR` or `lookup-tables/`, plus sidecar JSON for ranked files.
+
+`--code-gen` on `builderui.py` prints Python IDA helper classes; it does not search.
+
+Typical **ranked** invocation (only when asked):
+
+```bash
+./utils/builderui.py Build777Phase56UDLeftMiddleObliqueCentersStage --cores 22
+```
+
+Copy or upload the solver-facing `.cost-only.bin` artifact so `download_file_if_needed()` in the solver can see it. The solver wget path is the **basename** + `.gz` on S3.
+
+## Makefile map (production)
+
+| Make target | What it builds | Solver consumer |
+| --- | --- | --- |
+| `333` | MicroPython 3x3 phases | 3x3 / EV3 path |
+| `444-phase1-ranked`, `444-centers`, `444-pair-all-edges` | 4x4 ranked phase 1, all-center 70^3, all-edge pairing | `ida_search_444_phase1`, `ida_search_444_phase2` |
+| `555-phase1` … `555-phase6` | 5x5 ranked cost arrays | dedicated phase 1–6 C searchers |
+| `666-phase1` | Stage LR inner x-centers | `ida_search_666_centers_stage` |
+| `666-phase2` | Stage UD inner x-centers while pairing LR obliques | `ida_search_666_centers_stage` |
+| `666-phase2-lr-bars` | Symmetry-reduced depth-3 LR oblique bar hash | `ida_search_666_centers_stage --lr-bar-cost` |
+| `666-phase2-orbit1` | Even and odd orbit-1 distances for the same UD inner x-centers | `ida_search_666_centers_stage` |
+| `666-phase4-orbit0` | Even and odd orbit-0 distances for the three 6x6 UD pair tables | `ida_search_666_centers_stage` |
+| `777-phase2-orbit1` | Even and odd orbit-1 distances for 7x7 UD inner t/x centers | `ida_search_777_centers_stage` |
+| `777-phase5-6-orbit0` | Even and odd orbit-0 distances for the six 7x7 UD pair tables | `ida_search_777_UD_centers_stage` |
+| `666-phase3-preserve-inner-x` | UD oblique / outer-x pairs | same, phase 3 |
+| `666-phase5` | Three 70^5 tables: all inner-x plus one axis's obliques | `ida_search_666_daisy_centers` |
+| `777-phase2` | UD inner centers ranked | `ida_search_777_centers_stage` |
+| `777-phase5-6-ranked` | Six UD pairwise \(C(16,8)^2\) tables | `ida_search_777_UD_centers_stage` |
+| `777-daisy-lr-inner` | 70^2: LR inner-t times LR inner-x, phase 7 | `ida_search_777_daisy_centers` |
+| `777-phase8-paired` | Two 70^5 paired-bar tables, phase 8 moves | `ida_search_777_daisy_centers` |
+| `777-phase8-inner-interaction` | 70^4 UD/FB inners, phase 8 moves, one goal | `ida_search_777_daisy_centers` |
+| `777-phase8-ud-inner-fb-obliques` | 70^5 UD inners plus FB obliques, 70 paired-bar goals, phase 8 moves | `ida_search_777_daisy_centers` |
+| `777-phase8-fb-inner-ud-obliques` | 70^5 FB inners plus UD obliques, 70 paired-bar goals, phase 8 moves | `ida_search_777_daisy_centers` |
+
+`666-phase2-lr-bars` is a separate job, not part of `make 666`. The solver's `make 666-tables` builds this file into the solver's `lookup-tables/` along with the other 6x6 tables.
+
+Cost **matrices** that combine per-axis table costs are **not** built here. They are C arrays in the solver, regenerated by `rubiks-cube-NxNxN-solver/utils/build-*-cost-matrix.py`.
+
+## Ranked table formats
+
+Sidecar `*.cost-only.bin.json` uses `dense-multiset-cost-v1` for sticker
+multisets, `dense-edge-pairing-cost-v1` for the even matching between high
+and low wing slots (\(n!/2\) entries; 4x4 all-edge is \(12!/2 = 239,500,800\)),
+and `center-symmetry-444-cost-v1` for 24-sticker 8/8/8 centers quotiented by
+the 48 cube symmetries (4x4 all-centers and 6x6 inner-x: 197,221,662 orbits).
+
+| Field | Meaning |
+| --- | --- |
+| `cost_encoding` | `0` = unseen; nonzero = **depth + 1** |
+| `rank_order` | left-to-right mixed radix over `rank_groups` |
+| `universe_size` | mmap length in bytes (one byte per rank) |
+| `states_per_depth` | histogram used by tests/docs |
+
+Keep rank groups, square tuples, and legal moves identical to the C searcher. If you change `UFBD_*` lists in the solver, the builder class here must match.
+
+Live ranked files during a build:
+
+- cost array: `/dev/shm/<name>.cost-only.bin.live` if tmpfs exists, else `tmp/`
+- work queue: `tmp/` (sequential, can outgrow tmpfs)
+
+## Env vars
+
+| Variable | Effect |
+| --- | --- |
+| `RUBIKS_LOOKUP_TABLE_DIR` | Where `save()` writes. Tests: `tmp/test-lookup-tables` |
+| `RUBIKS_SKIP_HISTOGRAM` | Skip appending `histogram.txt` (tests set this) |
+| `PYTHONPATH` | Solver + this repo |
+
+## Adding a builde
+
+1. Class in `builderNNN.py` (filename, moves, `rank_groups` or graph state, goal).
+2. Makefile target that calls `builderui.py` and any post-process.
+3. Baseline in `tests/builder_table_baselines.json` (shallow depth is fine).
+4. Solver: C mmap + Python flags. Do not wire a new table into the solver until the format matches an existing searcher or you add one.
+5. Run `make test-lite` plus the new baseline test. Do not kick off `--cores 22` on the real universe unless asked.
+
+## Pitfalls
+
+- `make clean` deletes `tmp/` and the compiled C helpers; `make init` rebuilds helpers.
+- Histogram parse errors mean `histogram.txt` lacks your filename; tests should not touch that file.
+- Sibling solver `AGENTS.md` describes which table each C binary loads. Change both sides of a flag/filename pair together.

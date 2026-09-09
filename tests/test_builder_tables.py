@@ -14,14 +14,15 @@ import unittest
 from pathlib import Path
 
 # rubiks cube libraries
-from tests.builder_support import REPO_ROOT, SKIPPED_BUILDERS, build_table, makefile_builder_names, read_table
+from tests.builder_support import SKIPPED_BUILDERS, build_table, builder_output_path, makefile_builder_names, read_table
 
 BASELINES_PATH = Path(__file__).with_name("builder_table_baselines.json")
 BASELINES = json.loads(BASELINES_PATH.read_text(encoding="utf-8"))
 
 
 # Split a class name into words without breaking up runs of digits, so that
-# Build777Step53 becomes build_777_step_53 rather than build_7_7_7_step_5_3.
+# Build555Phase5Centers becomes build_555_phase_5_centers rather than
+# build_5_5_5_phase_5_centers.
 WORD_BOUNDARY = re.compile(
     r"(?<=[a-z])(?=[A-Z])" r"|(?<=[A-Z])(?=[A-Z][a-z])" r"|(?<=[A-Za-z])(?=\d)" r"|(?<=\d)(?=[A-Za-z])"
 )
@@ -51,7 +52,7 @@ class BuilderTableTests(unittest.TestCase):
         self.assertFalse(timed_out, f"{builder} timed out at depth {depth}\n{output}")
         self.assertEqual(status, 0, f"{builder} failed at depth {depth}\n{output}")
 
-        table = REPO_ROOT / str(expected["filename"])
+        table = builder_output_path(builder)
         self.assertTrue(table.is_file(), f"{builder} did not write {table}")
 
         facts = read_table(table, depth=depth)

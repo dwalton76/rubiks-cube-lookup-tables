@@ -1,264 +1,371 @@
 # standard libraries
 import logging
+from pathlib import Path
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
+from rubikscubennnsolver.RubiksCube666 import RubiksCube666, inner_x_centers_666, solved_666
 
 log = logging.getLogger(__name__)
 
-"""
-phase 1
-    stage the inner-x centers via 444 solver
 
-phase 2
-    pair the LR oblique edges
-    This happens via C via a heuristic formula based on unpaired LR oblique count so there is no table to build
+# fmt: off
+PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES = (
+    # keep inner x-centers and LR staging
+    "3Uw", "3Uw'",
+    "3Lw", "3Lw'",
+    "3Fw", "3Fw'",
+    "3Rw", "3Rw'",
+    "3Bw", "3Bw'",
+    "3Dw", "3Dw'",
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "L", "L'", "L2",
+    "R", "R'", "R2",
+)
 
-phase 3
-    stage LR centers via 555
+# Lw and Rw stay legal in phase 4 and are the orbit-0 flips that phase can play.
+PHASE4_ORBIT0_FLIP_MOVES = ("Lw", "Lw'", "Rw", "Rw'")
 
-phase 4
-    pair the UD oblique edges and outer x-centers to finish staging centers
+PHASE5_ILLEGAL_MOVES = (
+    "3Rw", "3Rw'",
+    "3Lw", "3Lw'",
+    "3Fw", "3Fw'",
+    "3Bw", "3Bw'",
+    "3Uw", "3Uw'",
+    "3Dw", "3Dw'",
+    "Rw", "Rw'",
+    "Lw", "Lw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+)
 
-phase 5
-    solve the UD inner x-centers and pair the UD oblique edges
-
-phase 6
-    solve the LR inner x-centers and pair the LR oblique edges
-    solve the FB inner x-centers and pair the FB oblique edges
-"""
+# fmt: on
 
 
-# =======
-# phase 1
-# =======
-class Build666LRInnerXCentersStage(BFS):
+def _ranked_inner_x_axis_starting_state(axis):
+    cube = RubiksCube666(solved_666, "URFDLB")
+    state = ["."] * len(cube.state)
+    for square in inner_x_centers_666:
+        state[square] = axis[0] if cube.state[square] in axis else "x"
+    return (("".join(state[1:]), "ULFRBD"),)
+
+
+# ==================================================
+# phases 1 and 2
+# phase 1 stages LR inner x; phase 2 stages UD inner x while pairing LR obliques.
+# Phase 2 cannot use 3Uw/3Dw/3Fw/3Bw quarters, so those are out of the parity
+# tables too. Orbit 1 flips only on 3Lw and 3Rw quarters.
+# ==================================================
+PHASE2_PRESERVE_LR_INNER_X_ILLEGAL_MOVES = (
+    "3Uw",
+    "3Uw'",
+    "3Dw",
+    "3Dw'",
+    "3Fw",
+    "3Fw'",
+    "3Bw",
+    "3Bw'",
+)
+PHASE2_ORBIT1_FLIP_MOVES = ("3Lw", "3Lw'", "3Rw", "3Rw'")
+
+
+class Build666Phase2UDInnerXCentersStageBinary(BFS):
+    """
+    Which eight of the 24 inner x-centers belong on U or D.
+
+    The coordinate is a single 24-slot multiset holding eight "U" and sixteen "x",
+    so 24! / (8! * 16!) = 735,471 states, every one of them reachable.
+
+    _ranked_inner_x_axis_starting_state("UD") encodes the one goal rather than
+    passing an ascii cube, so it is drawn here:
+
+                 . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . . U U . .
+                 . . . . . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . x x . .  . . x x . .  . . x x . .  . . x x . .
+    . . x x . .  . . x x . .  . . x x . .  . . x x . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . . U U . .
+                 . . . . . .
+                 . . . . . .
+
+    lookup-table-6x6x6-step11-UD-inner-x-centers-stage-binary.cost-only.bin
+    =======================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 82 entries (0 percent, 20.50x previous step)
+    3 steps has 1,206 entries (0 percent, 14.71x previous step)
+    4 steps has 14,116 entries (1 percent, 11.70x previous step)
+    5 steps has 123,404 entries (16 percent, 8.74x previous step)
+    6 steps has 422,508 entries (57 percent, 3.42x previous step)
+    7 steps has 173,254 entries (23 percent, 0.41x previous step)
+    8 steps has 896 entries (0 percent, 0.01x previous step)
+
+    Total: 735,471 entries
+    Average: 6.03 moves
+    """
+
     def __init__(self):
-        # fmt: off
         BFS.__init__(
             self,
-            "6x6x6-LR-inner-x-centers-stage",
+            "6x6x6-phase2-UD-inner-x-centers-stage-binary",
             (),
             "6x6x6",
-            "lookup-table-6x6x6-step00-inner-x-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . . . . . .
-              . . x x . .
-              . . x x . .
-              . . . . . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . L L . .  . . x x . .  . . L L . .  . . x x . .
- . . L L . .  . . x x . .  . . L L . .  . . x x . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . . . . .
-              . . x x . .
-              . . x x . .
-              . . . . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
+            "lookup-table-6x6x6-step11-UD-inner-x-centers-stage-binary.txt",
+            _ranked_inner_x_axis_starting_state("UD"),
+            use_ranked_cost=True,
         )
-        # fmt: on
 
 
-# =======
-# phase 3
-# =======
-class Build666UDInnerXCentersStage(BFS):
+class Build666Phase1LRInnerXCentersStageBinary(BFS):
+    """
+    Which eight of the 24 inner x-centers belong on L or R.
+
+    Same 24-slot multiset as the UD table, so 24! / (8! * 16!) = 735,471 states.
+    The two tables share a histogram because a cube rotation carries one goal onto
+    the other and the move set is unrestricted at this point.
+
+    _ranked_inner_x_axis_starting_state("LR") encodes the one goal rather than
+    passing an ascii cube, so it is drawn here:
+
+                 . . . . . .
+                 . . . . . .
+                 . . x x . .
+                 . . x x . .
+                 . . . . . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . L L . .  . . x x . .  . . L L . .  . . x x . .
+    . . L L . .  . . x x . .  . . L L . .  . . x x . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . . . . .
+                 . . x x . .
+                 . . x x . .
+                 . . . . . .
+                 . . . . . .
+
+    lookup-table-6x6x6-step12-LR-inner-x-centers-stage-binary.cost-only.bin
+    =======================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 82 entries (0 percent, 20.50x previous step)
+    3 steps has 1,206 entries (0 percent, 14.71x previous step)
+    4 steps has 14,116 entries (1 percent, 11.70x previous step)
+    5 steps has 123,404 entries (16 percent, 8.74x previous step)
+    6 steps has 422,508 entries (57 percent, 3.42x previous step)
+    7 steps has 173,254 entries (23 percent, 0.41x previous step)
+    8 steps has 896 entries (0 percent, 0.01x previous step)
+
+    Total: 735,471 entries
+    Average: 6.03 moves
+    """
+
     def __init__(self):
-        # fmt: off
         BFS.__init__(
             self,
-            "6x6x6-UD-inner-x-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            "6x6x6-phase1-LR-inner-x-centers-stage-binary",
+            (),
             "6x6x6",
-            "lookup-table-6x6x6-step11-UD-inner-x-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . . . . . .
-              . . U U . .
-              . . U U . .
-              . . . . . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . x x . .  . . . . . .  . . x x . .
- . . . . . .  . . x x . .  . . . . . .  . . x x . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . . . . .
-              . . U U . .
-              . . U U . .
-              . . . . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
+            "lookup-table-6x6x6-step12-LR-inner-x-centers-stage-binary.txt",
+            _ranked_inner_x_axis_starting_state("LR"),
+            use_ranked_cost=True,
         )
-        # fmt: on
 
 
-class Build666UDLeftObliqueCentersStage(BFS):
+class Build666Phase2UDInnerXOrbit1Parity(BFS):
+    """
+    Distance to staged UD inner x-centers with a chosen orbit-1 parity.
+
+    The center coordinate is the same C(24, 8) = 735,471 multiset as step11.
+    The BFS state is that rank plus the parity of 3Lw and 3Rw quarter turns, so
+    the joint space is 1,470,942. Publishing splits it into an even file and an
+    odd file, each indexed by the center rank alone. The even file is 0 at the
+    staged centers. The odd file is the shortest return to those centers with
+    odd orbit-1 parity. 3Uw, 3Dw, 3Fw, and 3Bw quarters are illegal, matching
+    the phase-2 search.
+
+    Phase 2 leaves the eight LR inner x-centers in place, so the eight UD
+    centers are chosen from the other 16 slots. Each file therefore holds
+    C(16, 8) = 12,870 reachable states. The other bytes stay 0.
+
+    lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-even.cost-only.bin
+    ============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    2 steps has 1 entries (0 percent, 1.00x previous step)
+    3 steps has 56 entries (0 percent, 56.00x previous step)
+    4 steps has 594 entries (4 percent, 10.61x previous step)
+    5 steps has 3,878 entries (30 percent, 6.53x previous step)
+    6 steps has 7,032 entries (54 percent, 1.81x previous step)
+    7 steps has 1,212 entries (9 percent, 0.17x previous step)
+    8 steps has 96 entries (0 percent, 0.08x previous step)
+
+    Total: 12,870 entries
+    Average: 5.70 moves
+
+    lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-odd.cost-only.bin
+    ===========================================================================
+    1 steps has 2 entries (0 percent, 0.00x previous step)
+    2 steps has 28 entries (0 percent, 14.00x previous step)
+    3 steps has 178 entries (1 percent, 6.36x previous step)
+    4 steps has 710 entries (5 percent, 3.99x previous step)
+    5 steps has 1,690 entries (13 percent, 2.38x previous step)
+    6 steps has 5,284 entries (41 percent, 3.13x previous step)
+    7 steps has 4,890 entries (37 percent, 0.93x previous step)
+    8 steps has 88 entries (0 percent, 0.02x previous step)
+
+    Total: 12,870 entries
+    Average: 6.10 moves
+
+                 . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . . U U . .
+                 . . . . . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . x x . .  . . x x . .  . . x x . .  . . x x . .
+    . . x x . .  . . x x . .  . . x x . .  . . x x . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . . U U . .
+                 . . . . . .
+                 . . . . . .
+    """
+
     def __init__(self):
-        # fmt: off
         BFS.__init__(
             self,
-            "6x6x6-UD-left-oblique-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            "6x6x6-phase2-UD-inner-x-centers-stage-orbit1-parity",
+            PHASE2_PRESERVE_LR_INNER_X_ILLEGAL_MOVES,
             "6x6x6",
-            "lookup-table-6x6x6-step13-UD-left-oblique-centers.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . . U . . .
-              . . . . U .
-              . U . . . .
-              . . . U . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . x . . .  . . . . . .  . . x . . .
- . . . . . .  . . . . x .  . . . . . .  . . . . x .
- . . . . . .  . x . . . .  . . . . . .  . x . . . .
- . . . . . .  . . . x . .  . . . . . .  . . . x . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . U . . .
-              . . . . U .
-              . U . . . .
-              . . . U . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
+            "lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-parity.txt",
+            _ranked_inner_x_axis_starting_state("UD"),
+            use_ranked_cost=True,
+            orbit_parity_flip_moves=PHASE2_ORBIT1_FLIP_MOVES,
         )
-        # fmt: on
+        table_dir = Path(self.filename).parent
+        self.orbit_parity_even_filename = str(
+            table_dir / "lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-even.cost-only.bin"
+        )
+        self.orbit_parity_odd_filename = str(
+            table_dir / "lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-odd.cost-only.bin"
+        )
 
 
-class Build666UDRightObliqueCentersStage(BFS):
+# ==================================================
+# phase 4
+# stage UD left/right obliques and outer x-centers
+# ==================================================
+# fmt: off
+UFBD_OUTER_X_CENTERS_666 = (
+    8, 11, 26, 29,
+    80, 83, 98, 101,
+    152, 155, 170, 173,
+    188, 191, 206, 209,
+)
+UFBD_LEFT_OBLIQUE_EDGES_666 = (
+    9, 17, 20, 28,
+    81, 89, 92, 100,
+    153, 161, 164, 172,
+    189, 197, 200, 208,
+)
+UFBD_RIGHT_OBLIQUE_EDGES_666 = (
+    10, 14, 23, 27,
+    82, 86, 95, 99,
+    154, 158, 167, 171,
+    190, 194, 203, 207,
+)
+# fmt: on
+
+
+class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
+    """
+    Stage the UD left and right obliques, one mixed-radix rank per orbit.
+
+    Each orbit spans the 16 U, F, B and D squares of its kind and eight of them
+    have to end up on U or D, so each contributes 16! / (8! * 8!) = 12,870 and the
+    pair gives (16! / (8! * 8!))^2 = 165,636,900 states. The move set keeps the
+    already staged LR inner x-centers fixed, and __init__ carries the ascii goal.
+
+    lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage.cost-only.bin
+    ===========================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 286 entries (0 percent, 9.86x previous step)
+    4 steps has 2,052 entries (0 percent, 7.17x previous step)
+    5 steps has 16,348 entries (0 percent, 7.97x previous step)
+    6 steps has 127,859 entries (0 percent, 7.82x previous step)
+    7 steps has 844,248 entries (0 percent, 6.60x previous step)
+    8 steps has 4,623,585 entries (2 percent, 5.48x previous step)
+    9 steps has 19,019,322 entries (11 percent, 4.11x previous step)
+    10 steps has 47,544,426 entries (28 percent, 2.50x previous step)
+    11 steps has 61,805,656 entries (37 percent, 1.30x previous step)
+    12 steps has 28,890,234 entries (17 percent, 0.47x previous step)
+    13 steps has 2,722,462 entries (1 percent, 0.09x previous step)
+    14 steps has 40,242 entries (0 percent, 0.01x previous step)
+    15 steps has 148 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 10.58 moves
+
+                 . . . . . .
+                 . . U U . .
+                 . U . . U .
+                 . U . . U .
+                 . . U U . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . x x . .  . . . . . .  . . x x . .
+    . . . . . .  . x . . x .  . . . . . .  . x . . x .
+    . . . . . .  . x . . x .  . . . . . .  . x . . x .
+    . . . . . .  . . x x . .  . . . . . .  . . x x . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . U U . .
+                 . U . . U .
+                 . U . . U .
+                 . . U U . .
+                 . . . . . .
+    """
+
     def __init__(self):
-        # fmt: off
+        flip_moves = tuple(getattr(self, "orbit_flip_moves", ()) or ())
         BFS.__init__(
             self,
-            "6x6x6-UD-right-oblique-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            getattr(self, "builder_name", "6x6x6-phase3-UD-left-right-oblique-centers-stage"),
+            PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
             "6x6x6",
-            "lookup-table-6x6x6-step14-UD-right-oblique-centers.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . . . U . .
-              . U . . . .
-              . . . . U .
-              . . U . . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . x . .  . . . . . .  . . . x . .
- . . . . . .  . x . . . .  . . . . . .  . x . . . .
- . . . . . .  . . . . x .  . . . . . .  . . . . x .
- . . . . . .  . . x . . .  . . . . . .  . . x . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . . U . .
-              . U . . . .
-              . . . . U .
-              . . U . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-        # fmt: on
-
-
-# perfect hash table
-class Build666UDObliqueCentersStage(BFS):
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "6x6x6-UD-oblique-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
-            "6x6x6",
-            "lookup-table-6x6x6-step15-UD-oblique-centers.txt",
-            False,  # store_as_hex
-            # starting cubes
+            getattr(self, "table_filename", "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage.txt"),
             (
                 (
                     """
@@ -285,574 +392,647 @@ class Build666UDObliqueCentersStage(BFS):
                     "ascii",
                 ),
             ),
-            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=(
+                UFBD_LEFT_OBLIQUE_EDGES_666,
+                UFBD_RIGHT_OBLIQUE_EDGES_666,
+            ),
+            orbit_parity_flip_moves=flip_moves or None,
         )
-        # fmt: on
+        if flip_moves:
+            directory = Path(self.filename).parent
+            self.orbit_parity_even_filename = str(directory / self.even_cost_name)
+            self.orbit_parity_odd_filename = str(directory / self.odd_cost_name)
 
 
-# perfect hash table
-class Build666UDLeftObliqueInnerXCentersStage(BFS):
+class Build666Phase3UDLeftObliqueOuterXCentersStage(BFS):
+    """
+    Stage the UD left obliques against the UD outer x-centers.
+
+    Same shape as step31: two 16-square orbits, eight squares each destined for U
+    or D, so (16! / (8! * 8!))^2 = 165,636,900 states. Pairing an oblique with the
+    outer x-centers is the cheaper of the two coordinates because the outer
+    x-centers move under plain outer turns. __init__ carries the ascii goal.
+
+    lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage.cost-only.bin
+    =============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 37 entries (0 percent, 18.50x previous step)
+    3 steps has 426 entries (0 percent, 11.51x previous step)
+    4 steps has 4,552 entries (0 percent, 10.69x previous step)
+    5 steps has 48,826 entries (0 percent, 10.73x previous step)
+    6 steps has 497,305 entries (0 percent, 10.19x previous step)
+    7 steps has 4,366,446 entries (2 percent, 8.78x previous step)
+    8 steps has 25,800,644 entries (15 percent, 5.91x previous step)
+    9 steps has 71,891,909 entries (43 percent, 2.79x previous step)
+    10 steps has 57,817,231 entries (34 percent, 0.80x previous step)
+    11 steps has 5,204,126 entries (3 percent, 0.09x previous step)
+    12 steps has 5,395 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.19 moves
+
+                 . . . . . .
+                 . U U . U .
+                 . . . . U .
+                 . U . . . .
+                 . U . U U .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . x x . x .  . . . . . .  . x x . x .
+    . . . . . .  . . . . x .  . . . . . .  . . . . x .
+    . . . . . .  . x . . . .  . . . . . .  . x . . . .
+    . . . . . .  . x . x x .  . . . . . .  . x . x x .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . U U . U .
+                 . . . . U .
+                 . U . . . .
+                 . U . U U .
+                 . . . . . .
+    """
+
     def __init__(self):
-        # fmt: off
+        flip_moves = tuple(getattr(self, "orbit_flip_moves", ()) or ())
         BFS.__init__(
             self,
-            "6x6x6-UD-left-oblique-inner-x-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            getattr(self, "builder_name", "6x6x6-phase3-UD-left-oblique-outer-x-centers-stage"),
+            PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
             "6x6x6",
-            "lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt",
-            False,  # store_as_hex
-            # starting cubes
+            getattr(self, "table_filename", "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage.txt"),
             (
                 (
                     """
               . . . . . .
-              . . U . . .
-              . . U U U .
-              . U U U . .
-              . . . U . .
+              . U U . U .
+              . . . . U .
+              . U . . . .
+              . U . U U .
               . . . . . .
 
  . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . x . . .  . . . . . .  . . x . . .
- . . . . . .  . . x x x .  . . . . . .  . . x x x .
- . . . . . .  . x x x . .  . . . . . .  . x x x . .
- . . . . . .  . . . x . .  . . . . . .  . . . x . .
+ . . . . . .  . x x . x .  . . . . . .  . x x . x .
+ . . . . . .  . . . . x .  . . . . . .  . . . . x .
+ . . . . . .  . x . . . .  . . . . . .  . x . . . .
+ . . . . . .  . x . x x .  . . . . . .  . x . x x .
  . . . . . .  . . . . . .  . . . . . .  . . . . . .
 
               . . . . . .
-              . . U . . .
-              . . U U U .
-              . U U U . .
-              . . . U . .
+              . U U . U .
+              . . . . U .
+              . U . . . .
+              . U . U U .
               . . . . . .""",
                     "ascii",
                 ),
             ),
-            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=(
+                UFBD_LEFT_OBLIQUE_EDGES_666,
+                UFBD_OUTER_X_CENTERS_666,
+            ),
+            orbit_parity_flip_moves=flip_moves or None,
         )
-        # fmt: on
+        if flip_moves:
+            directory = Path(self.filename).parent
+            self.orbit_parity_even_filename = str(directory / self.even_cost_name)
+            self.orbit_parity_odd_filename = str(directory / self.odd_cost_name)
 
 
-# perfect hash table
-class Build666UDRightObliqueInnerXCentersStage(BFS):
+class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
+    """
+    Stage the UD right obliques against the UD outer x-centers.
+
+    The mirror image of step32, so it has the same (16! / (8! * 8!))^2 =
+    165,636,900 states and the same histogram: reflecting the cube swaps the left
+    and right obliques while fixing the outer x-centers and the move set.
+    __init__ carries the ascii goal.
+
+    lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage.cost-only.bin
+    ==============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 37 entries (0 percent, 18.50x previous step)
+    3 steps has 426 entries (0 percent, 11.51x previous step)
+    4 steps has 4,552 entries (0 percent, 10.69x previous step)
+    5 steps has 48,826 entries (0 percent, 10.73x previous step)
+    6 steps has 497,305 entries (0 percent, 10.19x previous step)
+    7 steps has 4,366,446 entries (2 percent, 8.78x previous step)
+    8 steps has 25,800,644 entries (15 percent, 5.91x previous step)
+    9 steps has 71,891,909 entries (43 percent, 2.79x previous step)
+    10 steps has 57,817,231 entries (34 percent, 0.80x previous step)
+    11 steps has 5,204,126 entries (3 percent, 0.09x previous step)
+    12 steps has 5,395 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.19 moves
+
+                 . . . . . .
+                 . U . U U .
+                 . U . . . .
+                 . . . . U .
+                 . U U . U .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . x . x x .  . . . . . .  . x . x x .
+    . . . . . .  . x . . . .  . . . . . .  . x . . . .
+    . . . . . .  . . . . x .  . . . . . .  . . . . x .
+    . . . . . .  . x x . x .  . . . . . .  . x x . x .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . U . U U .
+                 . U . . . .
+                 . . . . U .
+                 . U U . U .
+                 . . . . . .
+    """
+
     def __init__(self):
-        # fmt: off
+        flip_moves = tuple(getattr(self, "orbit_flip_moves", ()) or ())
         BFS.__init__(
             self,
-            "6x6x6-UD-right-oblique-inner-x-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            getattr(self, "builder_name", "6x6x6-phase3-UD-right-oblique-outer-x-centers-stage"),
+            PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
             "6x6x6",
-            "lookup-table-6x6x6-step17-UD-right-oblique-inner-x-centers.txt",
-            False,  # store_as_hex
-            # starting cubes
+            getattr(self, "table_filename", "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage.txt"),
             (
                 (
                     """
               . . . . . .
-              . . . U . .
-              . U U U . .
-              . . U U U .
-              . . U . . .
+              . U . U U .
+              . U . . . .
+              . . . . U .
+              . U U . U .
               . . . . . .
 
  . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . x . .  . . . . . .  . . . x . .
- . . . . . .  . x x x . .  . . . . . .  . x x x . .
- . . . . . .  . . x x x .  . . . . . .  . . x x x .
- . . . . . .  . . x . . .  . . . . . .  . . x . . .
+ . . . . . .  . x . x x .  . . . . . .  . x . x x .
+ . . . . . .  . x . . . .  . . . . . .  . x . . . .
+ . . . . . .  . . . . x .  . . . . . .  . . . . x .
+ . . . . . .  . x x . x .  . . . . . .  . x x . x .
  . . . . . .  . . . . . .  . . . . . .  . . . . . .
 
               . . . . . .
-              . . . U . .
-              . U U U . .
-              . . U U U .
-              . . U . . .
+              . U . U U .
+              . U . . . .
+              . . . . U .
+              . U U . U .
               . . . . . .""",
                     "ascii",
                 ),
             ),
-            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=(
+                UFBD_RIGHT_OBLIQUE_EDGES_666,
+                UFBD_OUTER_X_CENTERS_666,
+            ),
+            orbit_parity_flip_moves=flip_moves or None,
         )
-        # fmt: on
+        if flip_moves:
+            directory = Path(self.filename).parent
+            self.orbit_parity_even_filename = str(directory / self.even_cost_name)
+            self.orbit_parity_odd_filename = str(directory / self.odd_cost_name)
 
 
-# =======
+class Build666Phase4LeftRightOrbit0Parity(Build666Phase3UDLeftRightObliqueCentersStage):
+    """
+    Even and odd orbit-0 distances for the UD left/right oblique pair.
+
+                 . . . . . .
+                 . . U U . .
+                 . U . . U .
+                 . U . . U .
+                 . . U U . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . x x . .  . . . . . .  . . x x . .
+    . . . . . .  . x . . x .  . . . . . .  . x . . x .
+    . . . . . .  . x . . x .  . . . . . .  . x . . x .
+    . . . . . .  . . x x . .  . . . . . .  . . x x . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . U U . .
+                 . U . . U .
+                 . U . . U .
+                 . . U U . .
+                 . . . . . .
+    """
+
+    builder_name = "6x6x6-phase4-UD-left-right-oblique-orbit0-parity"
+    table_filename = "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage-orbit0-parity.txt"
+    orbit_flip_moves = PHASE4_ORBIT0_FLIP_MOVES
+    even_cost_name = "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage-orbit0-even.cost-only.bin"
+    odd_cost_name = "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage-orbit0-odd.cost-only.bin"
+
+
+class Build666Phase4LeftOuterXOrbit0Parity(Build666Phase3UDLeftObliqueOuterXCentersStage):
+    """
+    Even and odd orbit-0 distances for the UD left-oblique/outer-x pair.
+
+                 . . . . . .
+                 . U U . U .
+                 . . . . U .
+                 . U . . . .
+                 . U . U U .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . x x . x .  . . . . . .  . x x . x .
+    . . . . . .  . . . . x .  . . . . . .  . . . . x .
+    . . . . . .  . x . . . .  . . . . . .  . x . . . .
+    . . . . . .  . x . x x .  . . . . . .  . x . x x .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . U U . U .
+                 . . . . U .
+                 . U . . . .
+                 . U . U U .
+                 . . . . . .
+    """
+
+    builder_name = "6x6x6-phase4-UD-left-oblique-outer-x-orbit0-parity"
+    table_filename = "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage-orbit0-parity.txt"
+    orbit_flip_moves = PHASE4_ORBIT0_FLIP_MOVES
+    even_cost_name = "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage-orbit0-even.cost-only.bin"
+    odd_cost_name = "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage-orbit0-odd.cost-only.bin"
+
+
+class Build666Phase4RightOuterXOrbit0Parity(Build666Phase3UDRightObliqueOuterXCentersStage):
+    """
+    Even and odd orbit-0 distances for the UD right-oblique/outer-x pair.
+
+                 . . . . . .
+                 . U . U U .
+                 . U . . . .
+                 . . . . U .
+                 . U U . U .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . x . x x .  . . . . . .  . x . x x .
+    . . . . . .  . x . . . .  . . . . . .  . x . . . .
+    . . . . . .  . . . . x .  . . . . . .  . . . . x .
+    . . . . . .  . x x . x .  . . . . . .  . x x . x .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . U . U U .
+                 . U . . . .
+                 . . . . U .
+                 . U U . U .
+                 . . . . . .
+    """
+
+    builder_name = "6x6x6-phase4-UD-right-oblique-outer-x-orbit0-parity"
+    table_filename = "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage-orbit0-parity.txt"
+    orbit_flip_moves = PHASE4_ORBIT0_FLIP_MOVES
+    even_cost_name = "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage-orbit0-even.cost-only.bin"
+    odd_cost_name = "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage-orbit0-odd.cost-only.bin"
+
+
+# ==================================================
 # phase 5
-# =======
-# - put LR centers such that they can be solved with L L' R R'
-# - EO the inside oribit of edges to prep for the 444 solver to pair those edge
-class StartingStates666Step50LRCenters(BFS):
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "6x6x6-step50",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "3Fw", "3Fw'", "3Fw2",
-                "3Rw", "3Rw'", "3Rw2",
-                "3Bw", "3Bw'", "3Bw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "Uw", "Uw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Rw", "Rw'",
-                "Bw", "Bw'",
-                "Dw", "Dw'",
-                "L", "L'",
-                "R", "R'",
-            ),
-            "6x6x6",
-            "starting-states-6x6x6-step50.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                ("""
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
+# daisy-solve all remaining centers with three 70^5 ranked tables:
+# all inner-x orbits plus both obliques from one axis.
+# ==================================================
 
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . L L . .  . . . . . .  . . x x . .  . . . . . .
- . L L L L .  . . . . . .  . x x x x .  . . . . . .
- . L L L L .  . . . . . .  . x x x x .  . . . . . .
- . . L L . .  . . . . . .  . . x x . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
+# fmt: off
+DAISY_LEFT_OBLIQUE_UD_666 = (9, 17, 28, 20, 189, 197, 208, 200)
+DAISY_RIGHT_OBLIQUE_UD_666 = (10, 23, 27, 14, 190, 203, 207, 194)
+DAISY_INNER_X_UD_666 = (15, 16, 21, 22, 195, 196, 201, 202)
+DAISY_LEFT_OBLIQUE_LR_666 = (45, 53, 64, 56, 117, 125, 136, 128)
+DAISY_RIGHT_OBLIQUE_LR_666 = (46, 59, 63, 50, 118, 131, 135, 122)
+DAISY_INNER_X_LR_666 = (51, 52, 57, 58, 123, 124, 129, 130)
+DAISY_LEFT_OBLIQUE_FB_666 = (81, 89, 100, 92, 153, 161, 172, 164)
+DAISY_RIGHT_OBLIQUE_FB_666 = (82, 95, 99, 86, 154, 167, 171, 158)
+DAISY_INNER_X_FB_666 = (87, 88, 93, 94, 159, 160, 165, 166)
+# fmt: on
 
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
+DAISY_CENTERS_ILLEGAL_MOVES_666 = PHASE5_ILLEGAL_MOVES
+DAISY_ORBIT_NAMES_666 = ("left-oblique", "right-oblique", "inner-x")
+DAISY_AXES_666 = ("UD", "LR", "FB")
+DAISY_AXIS_COLORS_666 = {"UD": ("U", "D"), "LR": ("L", "R"), "FB": ("F", "B")}
+DAISY_OBLIQUE_ORBITS_666 = frozenset(("left-oblique", "right-oblique"))
+DAISY_CENTER_ORBITS_666 = {
+    "UD": (
+        ("left-oblique", DAISY_LEFT_OBLIQUE_UD_666),
+        ("right-oblique", DAISY_RIGHT_OBLIQUE_UD_666),
+        ("inner-x", DAISY_INNER_X_UD_666),
+    ),
+    "LR": (
+        ("left-oblique", DAISY_LEFT_OBLIQUE_LR_666),
+        ("right-oblique", DAISY_RIGHT_OBLIQUE_LR_666),
+        ("inner-x", DAISY_INNER_X_LR_666),
+    ),
+    "FB": (
+        ("left-oblique", DAISY_LEFT_OBLIQUE_FB_666),
+        ("right-oblique", DAISY_RIGHT_OBLIQUE_FB_666),
+        ("inner-x", DAISY_INNER_X_FB_666),
+    ),
+}
+
+
+def daisy_inner_x_spine_table_specs_666():
+    """All three inner-x orbits plus both obliques from one axis: three 70^5 tables."""
+    return tuple(
+        (
+            axis,
+            f"all-inner-x-plus-{axis}-obliques",
+            f"Build666DaisyAllInnerXPlus{axis}ObliquesCenters",
         )
-        # fmt: on
+        for axis in DAISY_AXES_666
+    )
 
 
-class Build666Step50LRCenters(BFS):
+def _daisy_starting_states_666(selected_orbits):
+    """
+    Product of native and obliques-swapped goals for every axis that appears.
+
+    Inner-x stays native in both orientations. Axes can be oriented independently,
+    so a mixed-axis table needs the product rather than a single global swap.
+    """
+    axes = []
+    for axis in DAISY_AXES_666:
+        if any(orbit in DAISY_CENTER_ORBITS_666[axis] for orbit in selected_orbits):
+            axes.append(axis)
+
+    result = []
+    for orientation_bits in range(1 << len(axes)):
+        state = ["."] * (6 * 6 * 6)
+        for axis_index, axis in enumerate(axes):
+            swapped = bool(orientation_bits & (1 << axis_index))
+            primary, opposite = DAISY_AXIS_COLORS_666[axis]
+            for orbit_name, squares in selected_orbits:
+                if (orbit_name, squares) not in DAISY_CENTER_ORBITS_666[axis]:
+                    continue
+                swap = swapped and orbit_name in DAISY_OBLIQUE_ORBITS_666
+                first_color, second_color = (opposite, primary) if swap else (primary, opposite)
+                for square in squares[:4]:
+                    state[square - 1] = first_color
+                for square in squares[4:]:
+                    state[square - 1] = second_color
+        result.append(("".join(state), "ULFRBD"))
+    return tuple(result)
+
+
+class _Build666DaisyInnerXSpineCenters(BFS):
+    """
+    Dense ranked-cost 70^5 builder: every inner-x orbit plus one axis's obliques.
+
+    Five orbits of eight squares are tracked, the UD, LR and FB inner x-centers
+    plus the left and right obliques of `axis`.  Each orbit puts four squares on
+    its primary face and four on the opposite face, so each ranks 8! / (4! * 4!)
+    = 70 ways and the coordinate is 70^5 = 1,680,700,000 states.
+
+    Build666DaisyAllInnerXPlusUDObliquesCenters and the LR and FB classes
+    subclass this base, one per oblique axis.  They are the same cost function
+    under three indexings, because a cube rotation carrying one axis onto
+    another carries its tracked squares along, so all three share the histogram
+    below.
+
+    _daisy_starting_states_666 generates the goals instead of passing an ascii
+    cube.  It walks the product of native and obliques-swapped orientations over
+    every axis that appears, but the inner-x orbits never swap, so only the one
+    oblique axis varies and the eight products collapse to two goals.  This is
+    the first of them for the UD table; the second exchanges the U and D
+    obliques while leaving all three inner-x orbits where they are, and the LR
+    and FB tables are the same pair of goals rotated onto their own axis.
+
+                 . . . . . .
+                 . . U U . .
+                 . U U U U .
+                 . U U U U .
+                 . . U U . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . D D . .
+                 . D D D D .
+                 . D D D D .
+                 . . D D . .
+                 . . . . . .
+
+    lookup-table-6x6x6-daisy-all-inner-x-plus-UD-obliques-centers.cost-only.bin
+    ===========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 20 entries (0 percent, 10.00x previous step)
+    2 steps has 292 entries (0 percent, 14.60x previous step)
+    3 steps has 3,614 entries (0 percent, 12.38x previous step)
+    4 steps has 35,016 entries (0 percent, 9.69x previous step)
+    5 steps has 262,910 entries (0 percent, 7.51x previous step)
+    6 steps has 1,678,254 entries (0 percent, 6.38x previous step)
+    7 steps has 9,314,920 entries (0 percent, 5.55x previous step)
+    8 steps has 42,467,206 entries (2 percent, 4.56x previous step)
+    9 steps has 142,043,698 entries (8 percent, 3.34x previous step)
+    10 steps has 310,836,418 entries (18 percent, 2.19x previous step)
+    11 steps has 436,034,242 entries (25 percent, 1.40x previous step)
+    12 steps has 404,658,064 entries (24 percent, 0.93x previous step)
+    13 steps has 242,558,432 entries (14 percent, 0.60x previous step)
+    14 steps has 83,622,720 entries (4 percent, 0.34x previous step)
+    15 steps has 7,153,472 entries (0 percent, 0.09x previous step)
+    16 steps has 30,720 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.24 moves
+    """
+
+    axis = None
+    table_slug = None
+
     def __init__(self):
-        # fmt: off
+        selected_orbits = tuple(
+            orbit for axis in DAISY_AXES_666 for orbit in DAISY_CENTER_ORBITS_666[axis] if orbit[0] == "inner-x"
+        ) + tuple(orbit for orbit in DAISY_CENTER_ORBITS_666[self.axis] if orbit[0] != "inner-x")
+        self.selected_orbits = selected_orbits
+        self.goal_orientations = ("native", "obliques-swapped")
+
         BFS.__init__(
             self,
-            "6x6x6-step50",
-            (
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-            ),
+            f"6x6x6-daisy-{self.table_slug}-centers",
+            DAISY_CENTERS_ILLEGAL_MOVES_666,
             "6x6x6",
-            "lookup-table-6x6x6-step50-LR-solve-inner-x-center-and-oblique-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                ('............................................LL...LLLL..LLLL...LL....................................................xx...xxxx..xxxx...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...LLLL..LLLL...xx....................................................LL...xxxx..xxxx...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...LLLL..LLLL...xx....................................................xx...xxxx..xxxx...LL................................................................................', 'ULFRBD'),
-                ('............................................LL...LLLx..LLLx...LL....................................................xx...Lxxx..Lxxx...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...LLLx..LLLx...LL....................................................xx...xxxL..xxxL...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...LLLx..LLLx...xx....................................................LL...Lxxx..Lxxx...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...LLLx..LLLx...xx....................................................LL...xxxL..xxxL...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...LLLx..LLLx...xx....................................................xx...Lxxx..Lxxx...LL................................................................................', 'ULFRBD'),
-                ('............................................LL...LLLx..LLLx...xx....................................................xx...xxxL..xxxL...LL................................................................................', 'ULFRBD'),
-                ('............................................LL...xLLL..xLLL...LL....................................................xx...Lxxx..Lxxx...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...xLLL..xLLL...LL....................................................xx...xxxL..xxxL...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...xLLL..xLLL...xx....................................................LL...Lxxx..Lxxx...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...xLLL..xLLL...xx....................................................LL...xxxL..xxxL...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...xLLL..xLLL...xx....................................................xx...Lxxx..Lxxx...LL................................................................................', 'ULFRBD'),
-                ('............................................LL...xLLL..xLLL...xx....................................................xx...xxxL..xxxL...LL................................................................................', 'ULFRBD'),
-                ('............................................LL...xLLx..xLLx...LL....................................................xx...LxxL..LxxL...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...xLLx..xLLx...xx....................................................LL...LxxL..LxxL...xx................................................................................', 'ULFRBD'),
-                ('............................................LL...xLLx..xLLx...xx....................................................xx...LxxL..LxxL...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...LLLL..LLLL...LL....................................................LL...xxxx..xxxx...xx................................................................................', 'ULFRBD'),
-                ('............................................xx...LLLL..LLLL...LL....................................................xx...xxxx..xxxx...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...LLLL..LLLL...xx....................................................LL...xxxx..xxxx...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...LLLx..LLLx...LL....................................................LL...Lxxx..Lxxx...xx................................................................................', 'ULFRBD'),
-                ('............................................xx...LLLx..LLLx...LL....................................................LL...xxxL..xxxL...xx................................................................................', 'ULFRBD'),
-                ('............................................xx...LLLx..LLLx...LL....................................................xx...Lxxx..Lxxx...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...LLLx..LLLx...LL....................................................xx...xxxL..xxxL...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...LLLx..LLLx...xx....................................................LL...Lxxx..Lxxx...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...LLLx..LLLx...xx....................................................LL...xxxL..xxxL...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...xLLL..xLLL...LL....................................................LL...Lxxx..Lxxx...xx................................................................................', 'ULFRBD'),
-                ('............................................xx...xLLL..xLLL...LL....................................................LL...xxxL..xxxL...xx................................................................................', 'ULFRBD'),
-                ('............................................xx...xLLL..xLLL...LL....................................................xx...Lxxx..Lxxx...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...xLLL..xLLL...LL....................................................xx...xxxL..xxxL...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...xLLL..xLLL...xx....................................................LL...Lxxx..Lxxx...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...xLLL..xLLL...xx....................................................LL...xxxL..xxxL...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...xLLx..xLLx...LL....................................................LL...LxxL..LxxL...xx................................................................................', 'ULFRBD'),
-                ('............................................xx...xLLx..xLLx...LL....................................................xx...LxxL..LxxL...LL................................................................................', 'ULFRBD'),
-                ('............................................xx...xLLx..xLLx...xx....................................................LL...LxxL..LxxL...LL................................................................................', 'ULFRBD'),
-            ),
-            use_c=True,
-        )
-        # fmt: on
-
-
-class Build666Step50HighLowEdges(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "666-highlow-edges",
-            # fmt: off
-            (
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-            ),
-            # fmt: on
-            "6x6x6",
-            "lookup-table-6x6x6-step51-highlow-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . U D . .
-              . . . . . .
-              D . . . . U
-              U . . . . D
-              . . . . . .
-              . . D U . .
-
- . . D U . .  . . D U . .  . . D U . .  . . D U . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- D . . . . U  U . . . . D  D . . . . U  U . . . . D
- U . . . . D  D . . . . U  U . . . . D  D . . . . U
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . U D . .  . . U D . .  . . U D . .  . . U D . .
-
-              . . U D . .
-              . . . . . .
-              D . . . . U
-              U . . . . D
-              . . . . . .
-              . . D U . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
+            f"lookup-table-6x6x6-daisy-{self.table_slug}-centers.txt",
+            tuple(dict.fromkeys(_daisy_starting_states_666(selected_orbits))),
+            use_ranked_cost=True,
+            ranked_cost_square_groups=tuple(squares for _, squares in selected_orbits),
         )
 
 
-# =======
-# phase 6
-# =======
-# - solve the UD inner x-centers and pair the LR oblique edges
-# - solve the FB inner x-centers and pair the FB oblique edges
-class Build666UDInnerXCenterAndObliqueEdges(BFS):
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "6x6x6-UD-solve-inner-x-center-and-oblique-edges",
-            (
-                # do not mess up staged centers
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
+class Build666DaisyAllInnerXPlusUDObliquesCenters(_Build666DaisyInnerXSpineCenters):
+    """
+    All three inner-x orbits plus the UD obliques. A rotation onto LR or FB
+    carries this coordinate along, so the depth counts match those two tables.
+    The shared goal diagram is on _Build666DaisyInnerXSpineCenters.
 
-                # do not mess up staged centers
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
+    lookup-table-6x6x6-daisy-all-inner-x-plus-UD-obliques-centers.cost-only.bin
+    ===========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 20 entries (0 percent, 10.00x previous step)
+    2 steps has 292 entries (0 percent, 14.60x previous step)
+    3 steps has 3,614 entries (0 percent, 12.38x previous step)
+    4 steps has 35,016 entries (0 percent, 9.69x previous step)
+    5 steps has 262,910 entries (0 percent, 7.51x previous step)
+    6 steps has 1,678,254 entries (0 percent, 6.38x previous step)
+    7 steps has 9,314,920 entries (0 percent, 5.55x previous step)
+    8 steps has 42,467,206 entries (2 percent, 4.56x previous step)
+    9 steps has 142,043,698 entries (8 percent, 3.34x previous step)
+    10 steps has 310,836,418 entries (18 percent, 2.19x previous step)
+    11 steps has 436,034,242 entries (25 percent, 1.40x previous step)
+    12 steps has 404,658,064 entries (24 percent, 0.93x previous step)
+    13 steps has 242,558,432 entries (14 percent, 0.60x previous step)
+    14 steps has 83,622,720 entries (4 percent, 0.34x previous step)
+    15 steps has 7,153,472 entries (0 percent, 0.09x previous step)
+    16 steps has 30,720 entries (0 percent, 0.00x previous step)
 
-                # do not mess up solved LR
-                "3Uw2",
-                "3Dw2",
-                "3Fw2",
-                "3Bw2",
+    Total: 1,680,700,000 entries
+    Average: 11.24 moves
 
-                # do not mess up the EOed edges
-                "L", "L'",
-                "R", "R'",
-            ),
-            "6x6x6",
-            "lookup-table-6x6x6-step61-UD-solve-inner-x-center-and-oblique-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (("""
-              . . . . . .
-              . . U U . .
-              . U U U U .
-              . U U U U .
-              . . U U . .
-              . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . U U U U .
+                 . U U U U .
+                 . . U U . .
+                 . . . . . .
 
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
 
-              . . . . . .
-              . . D D . .
-              . D D D D .
-              . D D D D .
-              . . D D . .
-              . . . . . .""", "ascii",
-                ),
-                ("""
-              . . . . . .
-              . . D D . .
-              . D U U D .
-              . D U U D .
-              . . D D . .
-              . . . . . .
+                 . . . . . .
+                 . . D D . .
+                 . D D D D .
+                 . D D D D .
+                 . . D D . .
+                 . . . . . .
+    """
 
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . U U . .
-              . U D D U .
-              . U D D U .
-              . . U U . .
-              . . . . . .""", "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-        # fmt: on
+    axis = "UD"
+    table_slug = "all-inner-x-plus-UD-obliques"
 
 
-class Build666FBInnerXCenterAndObliqueEdges(BFS):
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "6x6x6-FB-solve-inner-x-center-and-oblique-edges",
-            (
-                # do not mess up staged centers
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
+class Build666DaisyAllInnerXPlusLRObliquesCenters(_Build666DaisyInnerXSpineCenters):
+    """
+    All three inner-x orbits plus the LR obliques. A rotation onto UD or FB
+    carries this coordinate along, so the depth counts match those two tables.
+    The shared goal diagram is on _Build666DaisyInnerXSpineCenters.
 
-                # do not mess up staged centers
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
+    lookup-table-6x6x6-daisy-all-inner-x-plus-LR-obliques-centers.cost-only.bin
+    ===========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 20 entries (0 percent, 10.00x previous step)
+    2 steps has 292 entries (0 percent, 14.60x previous step)
+    3 steps has 3,614 entries (0 percent, 12.38x previous step)
+    4 steps has 35,016 entries (0 percent, 9.69x previous step)
+    5 steps has 262,910 entries (0 percent, 7.51x previous step)
+    6 steps has 1,678,254 entries (0 percent, 6.38x previous step)
+    7 steps has 9,314,920 entries (0 percent, 5.55x previous step)
+    8 steps has 42,467,206 entries (2 percent, 4.56x previous step)
+    9 steps has 142,043,698 entries (8 percent, 3.34x previous step)
+    10 steps has 310,836,418 entries (18 percent, 2.19x previous step)
+    11 steps has 436,034,242 entries (25 percent, 1.40x previous step)
+    12 steps has 404,658,064 entries (24 percent, 0.93x previous step)
+    13 steps has 242,558,432 entries (14 percent, 0.60x previous step)
+    14 steps has 83,622,720 entries (4 percent, 0.34x previous step)
+    15 steps has 7,153,472 entries (0 percent, 0.09x previous step)
+    16 steps has 30,720 entries (0 percent, 0.00x previous step)
 
-                # do not mess up solved LR
-                "3Uw2",
-                "3Dw2",
-                "3Fw2",
-                "3Bw2",
+    Total: 1,680,700,000 entries
+    Average: 11.24 moves
 
-                # do not mess up the EOed edges
-                "L", "L'",
-                "R", "R'",
-            ),
-            "6x6x6",
-            "lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . U U U U .
+                 . U U U U .
+                 . . U U . .
+                 . . . . . .
 
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . B B . .  . . . . . .  . . F F . .
- . . . . . .  . B F F B .  . . . . . .  . F B B F .
- . . . . . .  . B F F B .  . . . . . .  . F B B F .
- . . . . . .  . . B B . .  . . . . . .  . . F F . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
 
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
+                 . . . . . .
+                 . . D D . .
+                 . D D D D .
+                 . D D D D .
+                 . . D D . .
+                 . . . . . .
+    """
 
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . F F . .  . . . . . .  . . B B . .
- . . . . . .  . F F F F .  . . . . . .  . B B B B .
- . . . . . .  . F F F F .  . . . . . .  . B B B B .
- . . . . . .  . . F F . .  . . . . . .  . . B B . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-        # fmt: on
+    axis = "LR"
+    table_slug = "all-inner-x-plus-LR-obliques"
 
 
-class Build666LRObliqueEdges(BFS):
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "6x6x6-LR-oblique-edges",
-            (
-                # do not mess up staged centers
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
+class Build666DaisyAllInnerXPlusFBObliquesCenters(_Build666DaisyInnerXSpineCenters):
+    """
+    All three inner-x orbits plus the FB obliques. A rotation onto UD or LR
+    carries this coordinate along, so the depth counts match those two tables.
+    The shared goal diagram is on _Build666DaisyInnerXSpineCenters.
 
-                # do not mess up staged centers
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
+    lookup-table-6x6x6-daisy-all-inner-x-plus-FB-obliques-centers.cost-only.bin
+    ===========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 20 entries (0 percent, 10.00x previous step)
+    2 steps has 292 entries (0 percent, 14.60x previous step)
+    3 steps has 3,614 entries (0 percent, 12.38x previous step)
+    4 steps has 35,016 entries (0 percent, 9.69x previous step)
+    5 steps has 262,910 entries (0 percent, 7.51x previous step)
+    6 steps has 1,678,254 entries (0 percent, 6.38x previous step)
+    7 steps has 9,314,920 entries (0 percent, 5.55x previous step)
+    8 steps has 42,467,206 entries (2 percent, 4.56x previous step)
+    9 steps has 142,043,698 entries (8 percent, 3.34x previous step)
+    10 steps has 310,836,418 entries (18 percent, 2.19x previous step)
+    11 steps has 436,034,242 entries (25 percent, 1.40x previous step)
+    12 steps has 404,658,064 entries (24 percent, 0.93x previous step)
+    13 steps has 242,558,432 entries (14 percent, 0.60x previous step)
+    14 steps has 83,622,720 entries (4 percent, 0.34x previous step)
+    15 steps has 7,153,472 entries (0 percent, 0.09x previous step)
+    16 steps has 30,720 entries (0 percent, 0.00x previous step)
 
-                # do not mess up solved LR
-                "3Uw2",
-                "3Dw2",
-                "3Fw2",
-                "3Bw2",
+    Total: 1,680,700,000 entries
+    Average: 11.24 moves
 
-                # do not mess up the EOed edges
-                "L", "L'",
-                "R", "R'",
-            ),
-            "6x6x6",
-            "lookup-table-6x6x6-step63-LR-oblique-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . . . . . .
-              . . U U . .
-              . . U U . .
-              . . . . . .
-              . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . U U U U .
+                 . U U U U .
+                 . . U U . .
+                 . . . . . .
 
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . L L . .  . . . . . .  . . R R . .  . . . . . .
- . L . . L .  . . F F . .  . R . . R .  . . B B . .
- . L . . L .  . . F F . .  . R . . R .  . . B B . .
- . . L L . .  . . . . . .  . . R R . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
 
-              . . . . . .
-              . . . . . .
-              . . D D . .
-              . . D D . .
-              . . . . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-                (
-                    """
-              . . . . . .
-              . . . . . .
-              . . U U . .
-              . . U U . .
-              . . . . . .
-              . . . . . .
+                 . . . . . .
+                 . . D D . .
+                 . D D D D .
+                 . D D D D .
+                 . . D D . .
+                 . . . . . .
+    """
 
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . R R . .  . . . . . .  . . L L . .  . . . . . .
- . R . . R .  . . F F . .  . L . . L .  . . B B . .
- . R . . R .  . . F F . .  . L . . L .  . . B B . .
- . . R R . .  . . . . . .  . . L L . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . . . . .
-              . . D D . .
-              . . D D . .
-              . . . . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-
-            ),
-            use_c=True,
-        )
-        # fmt: on
+    axis = "FB"
+    table_slug = "all-inner-x-plus-FB-obliques"

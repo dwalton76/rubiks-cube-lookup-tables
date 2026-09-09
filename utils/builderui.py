@@ -8,7 +8,7 @@ import logging
 import shutil
 
 # rubiks cube libraries
-from rubikscubelookuptables.buildercore import LOOKUP_TABLE_DIR, TMPDIR
+from rubikscubelookuptables.buildercore import TMPDIR, lookup_table_dir
 
 
 def get_class(kls):
@@ -56,8 +56,9 @@ if TMPDIR.exists():
     shutil.rmtree(TMPDIR)
 TMPDIR.mkdir(parents=True, exist_ok=False)
 
-if not LOOKUP_TABLE_DIR.exists():
-    LOOKUP_TABLE_DIR.mkdir(parents=True, exist_ok=False)
+table_dir = lookup_table_dir()
+if not table_dir.exists():
+    table_dir.mkdir(parents=True, exist_ok=True)
 
 log.info("")
 log.info("")
@@ -70,7 +71,6 @@ if args.code_gen:
     builder.code_gen()
 else:
     builder.search(args.depth, args.cores)
-    # builder.search_new(args.depth, args.cores)
 
     if args.type.startswith("Starting"):
         builder.save_starting_states()
@@ -93,14 +93,10 @@ else:
         ("Time in crunching workq", builder.time_in_crunching_workq),
         ("Time in sort", builder.time_in_sort),
         ("Time in file delete", builder.time_in_file_delete),
+        ("Time in find-new-states", builder.time_in_find_new_states),
+        ("Time in building workq", builder.time_in_building_workq),
+        ("Time in save", builder.time_in_save),
     ]
-
-    if builder.time_in_keep_best_solution:
-        rows.append(("Time in keep-best-solution", builder.time_in_keep_best_solution))
-
-    rows.append(("Time in find-new-states", builder.time_in_find_new_states))
-    rows.append(("Time in building workq", builder.time_in_building_workq))
-    rows.append(("Time in save", builder.time_in_save))
 
     accounted_time = sum(seconds for (_, seconds) in rows)
     rows.append(("Time not accounted for", total_time - accounted_time))

@@ -5,9 +5,10 @@ clean:
 	find . -name __pycache__ | xargs rm -rf
 
 init: clean
-	export PYTHONPATH=/home/dwalton76/rubiks-cube-NxNxN-solver/:/home/dwalton76/rubiks-cube-lookup-tables/
-	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-find-new-states utils/pad-lines
+	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
+	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/build-666-lr-oblique-bars rubikscubelookuptables/builder-find-new-states utils/pad-lines
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
+	gcc -O3 -o rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/compact-center-symmetry-cost.c
 	gcc -O3 -o rubikscubelookuptables/builder-find-new-states rubikscubelookuptables/builder-find-new-states.c
 	gcc -O3 -o utils/pad-lines utils/pad-lines.c
 	python3 -m venv venv
@@ -31,13 +32,13 @@ format:
 	@./venv/bin/python3 -m flake8 --config=.flake8 $(FORMAT_FILES)
 
 # The builder tests all stage intermediate files in ./tmp, so they have to run one
-# at a time. Do not add -n/xdist here.
+# at a time. Do not add -n/xdist here. Test builds write tables under
+# tmp/test-lookup-tables and do not append histogram.txt.
 test:
-	@./venv/bin/python3 -m pytest -vv tests/
-	rm histogram.txt || true
+	RUBIKS_LOOKUP_TABLE_DIR=tmp/test-lookup-tables RUBIKS_SKIP_HISTOGRAM=1 ./venv/bin/python3 -m pytest -vv tests/
 
 test-lite:
-	@./venv/bin/python3 -m pytest -vv tests/ -k "not test_build_" --ignore=tests/test_builder_determinism.py
+	RUBIKS_LOOKUP_TABLE_DIR=tmp/test-lookup-tables RUBIKS_SKIP_HISTOGRAM=1 ./venv/bin/python3 -m pytest -vv tests/ -k "not test_build_" --ignore=tests/test_builder_determinism.py
 
 wheel:
 	@./venv/bin/python3 setup.py bdist_wheel
@@ -55,313 +56,139 @@ wheel:
 	./utils/builderui.py Build333MicroPythonPhase4Corners
 
 444-phase1: clean
-	./utils/builderui.py Build444UDCentersStage
-	./utils/build-ida-graph.py Build444UDCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step11-UD-centers-stage.json
-
-	./utils/builderui.py Build444LRCentersStage
-	./utils/build-ida-graph.py Build444LRCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step12-LR-centers-stage.json
+	./utils/builderui.py Build444AllCentersStageSymmetryRanked
+	./utils/builderui.py Build444LRCentersStageRanked
+	./utils/builderui.py Build444HighLowEdgesEdgesAllMoves
 
 444-phase2: clean
-	./utils/builderui.py Build444HighLowEdgesEdges
-	./utils/build-ida-graph.py Build444HighLowEdgesEdges
-	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
-
-	./utils/builderui.py Build444HighLowEdgesCenters
-	./utils/build-ida-graph.py Build444HighLowEdgesCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step22-highlow-edges-centers.json
-
-444-phase3: clean
-	./utils/builderui.py Build444Reduce333FirstTwoCenters
-	./utils/build-ida-graph.py Build444Reduce333FirstTwoCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-centers.json
-
-	./utils/builderui.py Build444Reduce333FirstFourEdges
-	./utils/build-ida-graph.py Build444Reduce333FirstFourEdges
-	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
-
 	./utils/builderui.py Build444Reduce333Centers
-	./utils/build-ida-graph.py Build444Reduce333Centers
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step41-centers.json
+	./utils/builderui.py Build444PairAllEdges
 
-	./utils/builderui.py Build444Reduce333LastEightEdges
-	./utils/build-ida-graph.py Build444Reduce333LastEightEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step42-last-eight-edges.json
-
-444: 444-phase1 444-phase2 444-phase3
+444: 444-phase1 444-phase2
 
 555-phase1: clean
 	./utils/builderui.py Build555LRCenterStageTCenter
-	./utils/build-ida-graph.py Build555LRCenterStageTCenter
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.json
-
 	./utils/builderui.py Build555LRCenterStageXCenter
-	./utils/build-ida-graph.py Build555LRCenterStageXCenter
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
-
-	./utils/builderui.py Build555XCenterStageOnePhase
-	./utils/builderui.py Build555TCenterStageOnePhase
-
 
 555-phase2: clean
 	./utils/builderui.py Build555FBTCenterStage
-	./utils/build-ida-graph.py Build555FBTCenterStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step21-FB-t-centers-stage.json
-
 	./utils/builderui.py Build555FBXCenterStage
-	./utils/build-ida-graph.py Build555FBXCenterStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step22-FB-x-centers-stage.json
 
 555-phase3: clean
 	./utils/builderui.py Build555Phase3LRCenterStage
-	./utils/build-ida-graph.py Build555Phase3LRCenterStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage.json
-
-	# The json-to-binary.py steps take ~16G of RAM
 	./utils/builderui.py Build555EdgeOrientOuterOrbit
-	./utils/build-ida-graph.py Build555EdgeOrientOuterOrbit
-	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
-
 	./utils/builderui.py Build555EdgeOrientInnerOrbit
-	./utils/build-ida-graph.py Build555EdgeOrientInnerOrbit
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step903-EO-inner-orbit.json
 
 555-phase4: clean
-	./utils/builderui.py Build555Phase4 --depth 3
+	./utils/builderui.py Build555Phase4
 
 555-phase5: clean
-	# This takes a lot of RAM...run on an ec2 instance
 	./utils/builderui.py Build555Phase5Centers
-	./utils/build-ida-graph.py Build555Phase5Centers
-	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
-
-	./utils/builderui.py Build555Phase5HighEdgeMidge
-	./utils/build-ida-graph.py Build555Phase5HighEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.json
-
-	./utils/builderui.py Build555Phase5LowEdgeMidge
-	./utils/build-ida-graph.py Build555Phase5LowEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
-
-	./utils/builderui.py Build555Phase5FBCenters
-	./utils/build-ida-graph.py Build555Phase5FBCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step56-phase5-fb-centers.json
-
-	# Combo tables used only to build perfect-hash files for IDA (~576 million states).
 	./utils/builderui.py Build555Phase5FBCentersHighEdgeMidge
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.txt
-
 	./utils/builderui.py Build555Phase5FBCentersLowEdgeMidge
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step57-phase5-fb-centers-low-edge-and-midge.txt
 
 555-phase6: clean
-	# Combo table used only to build a perfect-hash file for IDA (~813 million states).
 	./utils/builderui.py Build555PairLastEightEdgesEdgesOnly
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt
-
 	./utils/builderui.py Build555Phase6Centers
-	./utils/build-ida-graph.py Build555Phase6Centers
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step61-phase6-centers.json
 
-	./utils/builderui.py Build555Phase6HighEdgeMidge
-	./utils/build-ida-graph.py Build555Phase6HighEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step62-phase6-high-edge-midge.json
+555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6
 
-	./utils/builderui.py Build555Phase6LowEdgeMidge
-	./utils/build-ida-graph.py Build555Phase6LowEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step63-phase6-low-edge-midge.json
+# Symmetry-reduced depth-3 LR oblique bar hash for 6x6 phase 2. The searcher
+# only loads the file. This target is not part of `make 666`.
+SOLVER_NNN := ../rubiks-cube-NxNxN-solver/rubikscubennnsolver
 
-555-solve-staged-centers: clean
-	./utils/builderui.py Build555UDCenterSolve
-	./utils/build-ida-graph.py Build555UDCenterSolve
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step34-UD-centers-solve.json
+666-phase2-lr-bars: rubikscubelookuptables/build-666-lr-oblique-bars
+	mkdir -p lookup-tables
+	./rubikscubelookuptables/build-666-lr-oblique-bars --threads 10 --depth 3 \
+	  --output lookup-tables/lookup-table-6x6x6-phase2-LR-oblique-bars.sym-depth3.hash.bin
 
-	./utils/builderui.py Build555LRCenterSolve
-	./utils/build-ida-graph.py Build555LRCenterSolve
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step35-LR-centers-solve.json
+rubikscubelookuptables/build-666-lr-oblique-bars: rubikscubelookuptables/build-666-lr-oblique-bars.c $(SOLVER_NNN)/rotate_xxx.c $(SOLVER_NNN)/ida_search_core.c $(SOLVER_NNN)/ida_search_core.h
+	gcc -O3 -Wall -Wextra -pthread -o $@ \
+	  rubikscubelookuptables/build-666-lr-oblique-bars.c \
+	  $(SOLVER_NNN)/rotate_xxx.c \
+	  $(SOLVER_NNN)/ida_search_core.c -lm -latomic
 
-	./utils/builderui.py Build555FBCenterSolve
-	./utils/build-ida-graph.py Build555FBCenterSolve
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step36-FB-centers-solve.json
+666-phase1:
+	./utils/builderui.py Build666Phase1LRInnerXCentersStageBinary --cores 10
 
-555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6 555-solve-staged-centers
+666-phase2:
+	./utils/builderui.py Build666Phase2UDInnerXCentersStageBinary --cores 10
 
-666-phase1: clean
-	./utils/builderui.py Build666LRInnerXCentersStage
-	./utils/build-ida-graph.py Build666LRInnerXCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step00-inner-x-centers-stage.json
+666-phase2-orbit1:
+	./utils/builderui.py Build666Phase2UDInnerXOrbit1Parity --cores 10
+
+666-phase4-orbit0:
+	./utils/builderui.py Build666Phase4LeftRightOrbit0Parity --cores 10
+	./utils/builderui.py Build666Phase4LeftOuterXOrbit0Parity --cores 10
+	./utils/builderui.py Build666Phase4RightOuterXOrbit0Parity --cores 10
 
 666-phase3: clean
-	./utils/builderui.py Build666UDInnerXCentersStage
-	./utils/build-ida-graph.py Build666UDInnerXCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step11-UD-inner-x-centers-stage.json
+	./utils/builderui.py Build666Phase3UDLeftRightObliqueCentersStage
+	./utils/builderui.py Build666Phase3UDLeftObliqueOuterXCentersStage
+	./utils/builderui.py Build666Phase3UDRightObliqueOuterXCentersStage
 
-	./utils/builderui.py Build666UDLeftObliqueCentersStage
-	./utils/build-ida-graph.py Build666UDLeftObliqueCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step13-UD-left-oblique-centers.json
+666-phase5:
+	./utils/builderui.py Build666DaisyAllInnerXPlusUDObliquesCenters
+	./utils/builderui.py Build666DaisyAllInnerXPlusLRObliquesCenters
+	./utils/builderui.py Build666DaisyAllInnerXPlusFBObliquesCenters
 
-	./utils/builderui.py Build666UDRightObliqueCentersStage
-	./utils/build-ida-graph.py Build666UDRightObliqueCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step14-UD-right-oblique-centers.json
+666: 666-phase1 666-phase2 666-phase3 666-phase5
 
-	./utils/builderui.py Build666UDObliqueCentersStage
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step15-UD-oblique-centers.txt
+777-phase2: clean
+	./utils/builderui.py Build777Phase2UDInnerCentersStage
 
-	./utils/builderui.py Build666UDLeftObliqueInnerXCentersStage
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt
+777-phase2-orbit1:
+	./utils/builderui.py Build777Phase2UDInnerCentersOrbit1Parity --cores 10
 
-	./utils/builderui.py Build666UDRightObliqueInnerXCentersStage
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step17-UD-right-oblique-inner-x-centers.txt
+777-phase5-6-ranked: clean
+	./utils/builderui.py Build777Phase56UDLeftRightObliqueCentersStage
+	./utils/builderui.py Build777Phase56UDLeftMiddleObliqueCentersStage
+	./utils/builderui.py Build777Phase56UDLeftObliqueOuterXCentersStage
+	./utils/builderui.py Build777Phase56UDMiddleRightObliqueCentersStage
+	./utils/builderui.py Build777Phase56UDRightObliqueOuterXCentersStage
+	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXCentersStage
 
-666-phase5: clean
-	./utils/builderui.py Build666Step50LRCenters
-	./utils/build-ida-graph.py Build666Step50LRCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step50-LR-solve-inner-x-center-and-oblique-edges.json
+777-phase5-6-orbit0:
+	./utils/builderui.py Build777Phase56UDLeftRightObliqueOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDLeftMiddleObliqueOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDLeftObliqueOuterXOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDMiddleRightObliqueOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDRightObliqueOuterXOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXOrbit0Parity --cores 10
 
-	./utils/builderui.py Build666Step50HighLowEdges
-	./utils/build-ida-graph.py Build666Step50HighLowEdges
-	./utils/json-combine.py lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json
+# LR inner-t times LR inner-x. 70^2 = 4,900 bytes, one native goal.
+777-daisy-lr-inner:
+	./utils/builderui.py Build777DaisyLRInnerCenters --cores 1
 
-666-phase6: clean
-	./utils/builderui.py Build666UDInnerXCenterAndObliqueEdges
-	./utils/build-ida-graph.py Build666UDInnerXCenterAndObliqueEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step61-UD-solve-inner-x-center-and-oblique-edges.json
+# 70 paired-bar goals instead of the two daisy placements. builderui.py wipes
+# ./tmp, so the two 70^5 builds have to stay in one recipe.
+777-phase8-paired:
+	./utils/builderui.py Build777Phase8UDPairedCenters --cores 10
+	./utils/builderui.py Build777Phase8FBPairedCenters --cores 10
 
-	./utils/builderui.py Build666FBInnerXCenterAndObliqueEdges
-	./utils/build-ida-graph.py Build666FBInnerXCenterAndObliqueEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.json
+777-phase8-inner-interaction:
+	./utils/builderui.py Build777Phase8InnerInteractionCenters --cores 8
 
-	./utils/builderui.py Build666LRObliqueEdges
-	./utils/build-ida-graph.py Build666LRObliqueEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step63-LR-oblique-edges.json
+# UD inners native, 70 FB paired-bar goals. Same phase 8 moves as the paired tables.
+777-phase8-ud-inner-fb-obliques:
+	./utils/builderui.py Build777Phase8UDInnerFBObliquesCenters --cores 10
 
-666: 666-phase4 666-phase5 666-phase6
+# FB inners native, 70 UD paired-bar goals.
+777-phase8-fb-inner-ud-obliques:
+	./utils/builderui.py Build777Phase8FBInnerUDObliquesCenters --cores 10
 
-777-phase4: clean
-	./utils/builderui.py Build777Phase4TCenters
-	./utils/build-ida-graph.py Build777Phase4TCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase4-t-centers.json
+777-phase8: 777-phase8-paired 777-phase8-inner-interaction 777-phase8-ud-inner-fb-obliques 777-phase8-fb-inner-ud-obliques
 
-	./utils/builderui.py Build777Phase4XCenters
-	./utils/build-ida-graph.py Build777Phase4XCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase4-x-centers.json
+# Phase 9 uses the same eight coordinates and goals with every 3-wide move
+# removed. Keep these sequential because builderui.py wipes ./tmp.
+777-phase9:
+	./utils/builderui.py Build777Phase9LRObliqueCenters --cores 10
+	./utils/builderui.py Build777Phase9InnerInteractionCenters --cores 10
+	./utils/builderui.py Build777Phase9MiddleInteractionCenters --cores 10
+	./utils/builderui.py Build777Phase9UDAxisCenters --cores 10
+	./utils/builderui.py Build777Phase9FBAxisCenters --cores 10
+	./utils/builderui.py Build777Phase9UDObliquesFBEdgesCenters --cores 10
+	./utils/builderui.py Build777Phase9FBObliquesUDEdgesCenters --cores 10
+	./utils/builderui.py Build777Phase9UDObliquesFBInnerTCenters --cores 10
 
-	./utils/builderui.py Build777Phase4Centers
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-inner-centers.txt
-
-	./utils/builderui.py Build777Phase4LeftOblique
-	./utils/build-ida-graph.py Build777Phase4LeftOblique
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase4-left-oblique.json
-
-	./utils/builderui.py Build777Phase4RightOblique
-	./utils/build-ida-graph.py Build777Phase4RightOblique
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase4-right-oblique.json
-
-	./utils/builderui.py Build777Phase4MiddleOblique
-	./utils/build-ida-graph.py Build777Phase4MiddleOblique
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase4-middle-oblique.json
-
-	./utils/builderui.py Build777Phase4LeftRightOblique
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-left-right-oblique.txt
-
-	./utils/builderui.py Build777Phase4LeftMiddleOblique
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase4-left-middle-oblique.txt
-
-777-phase5:
-	./utils/builderui.py Build777Phase5LeftOblique
-	./utils/build-ida-graph.py Build777Phase5LeftOblique
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase5-left-oblique.json
-
-	./utils/builderui.py Build777Phase5RightOblique
-	./utils/build-ida-graph.py Build777Phase5RightOblique
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase5-right-oblique.json
-
-	./utils/builderui.py Build777Phase5MiddleOblique
-	./utils/build-ida-graph.py Build777Phase5MiddleOblique
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase5-middle-oblique.json
-
-	./utils/builderui.py Build777Phase5LeftRightOblique
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase5-left-right-oblique.txt
-
-	./utils/builderui.py Build777Phase5LeftMiddleOblique
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase5-left-middle-oblique.txt
-
-777-phase7: clean
-	./utils/builderui.py Build777Step41
-	./utils/build-ida-graph.py Build777Step41
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step41.json
-
-	./utils/builderui.py Build777Step42
-	./utils/build-ida-graph.py Build777Step42
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step42.json
-
-	./utils/builderui.py Build777Step43
-	./utils/build-ida-graph.py Build777Step43
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step43.json
-
-	./utils/builderui.py Build777Step44
-	./utils/build-ida-graph.py Build777Step44
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step44.json
-
-777-phase8: clean
-	./utils/builderui.py Build777Step51
-	./utils/build-ida-graph.py Build777Step51
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step51.json
-
-	./utils/builderui.py Build777Step52
-	./utils/build-ida-graph.py Build777Step52
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step52.json
-
-	./utils/builderui.py Build777Step53
-	./utils/build-ida-graph.py Build777Step53
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step53.json
-
-	./utils/builderui.py Build777Step54
-	./utils/build-ida-graph.py Build777Step54
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step54.json
-
-	./utils/builderui.py Build777Step55
-	./utils/build-ida-graph.py Build777Step55
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step55.json
-
-777-phase9: clean
-	./utils/builderui.py Build777Step61
-	./utils/build-ida-graph.py Build777Step61
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step61.json
-
-	./utils/builderui.py Build777Step62
-	./utils/build-ida-graph.py Build777Step62
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step62.json
-
-	./utils/builderui.py Build777Step65
-	./utils/build-ida-graph.py Build777Step65
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step65.json
-
-	./utils/builderui.py Build777Step66
-	./utils/build-ida-graph.py Build777Step66
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step66.json
-
-777-phase-solve-t-centers: clean
-	./utils/builderui.py Build777Step71
-	./utils/build-ida-graph.py Build777Step71
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step71.json
-
-	./utils/builderui.py Build777Step72
-	./utils/build-ida-graph.py Build777Step72
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step72.json
-
-	./utils/builderui.py Build777Step75
-	./utils/build-ida-graph.py Build777Step75
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step75.json
-
-	./utils/builderui.py Build777Step76
-	./utils/build-ida-graph.py Build777Step76
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step76.json
-
-777: 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers
+777: 777-phase2 777-phase5-6-ranked 777-daisy-lr-inner 777-phase8

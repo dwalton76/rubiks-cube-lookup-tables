@@ -2,7 +2,9 @@
 
 # standard libraries
 import datetime as dt
+import fcntl
 import glob
+import itertools
 import json
 import logging
 import math
@@ -11,15 +13,13 @@ import shutil
 import struct
 import subprocess
 import sys
-from collections import Counter, deque
+from collections import Counter
 from pathlib import Path
 from threading import Thread
 from typing import List, Tuple
 
-# third party libraries
-from pyhashxx import hashxx
-
 # rubiks cube libraries
+from rubikscubennnsolver import wing_str_map
 from rubikscubennnsolver.misc import (
     parse_ascii_222,
     parse_ascii_333,
@@ -32,24 +32,12 @@ from rubikscubennnsolver.RubiksCube222 import RubiksCube222, moves_222, rotate_2
 from rubikscubennnsolver.RubiksCube333 import RubiksCube333, moves_333, rotate_333, solved_333
 from rubikscubennnsolver.RubiksCube444 import (
     RubiksCube444,
-    centers_444,
-    edges_444,
-    edges_recolor_pattern_444,
     moves_444,
     rotate_444,
     solved_444,
     wings_for_edges_recolor_pattern_444,
 )
-from rubikscubennnsolver.RubiksCube555 import (
-    RubiksCube555,
-    centers_555,
-    edges_555,
-    edges_recolor_pattern_555,
-    moves_555,
-    rotate_555,
-    solved_555,
-    wings_for_edges_pattern_555,
-)
+from rubikscubennnsolver.RubiksCube555 import RubiksCube555, edges_partner_555, moves_555, rotate_555, solved_555
 from rubikscubennnsolver.RubiksCube666 import RubiksCube666, moves_666, rotate_666, solved_666
 from rubikscubennnsolver.RubiksCube777 import RubiksCube777, moves_777, rotate_777, solved_777
 
@@ -58,14 +46,31 @@ supported_sizes = ("2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7")
 
 # 10 million
 WRITE_BATCH_SIZE = 10000000
-LOOKUP_TABLE_DIR = Path("lookup-tables")
+DEFAULT_LOOKUP_TABLE_DIR = Path("lookup-tables")
 TMPDIR = Path("./tmp/")
+
+
+def lookup_table_dir() -> Path:
+    """Where finished tables are written.
+
+    Tests set RUBIKS_LOOKUP_TABLE_DIR so a pytest run cannot overwrite the real
+    tables in lookup-tables/.
+    """
+    override = os.environ.get("RUBIKS_LOOKUP_TABLE_DIR")
+    return Path(override) if override else DEFAULT_LOOKUP_TABLE_DIR
+
+
+# Kept as an alias for callers that only need the default production location.
+LOOKUP_TABLE_DIR = DEFAULT_LOOKUP_TABLE_DIR
 
 # How much memory we let each "sort" use. Setting this above what the machine actually has
 # does not make sort faster, it just gets us into swap.
 SORT_BUFFER_SIZE = "16G"
 RANKED_WORKQ_RECORD = struct.Struct("<QB")
 RANKED_COST_TMPFS = Path("/dev/shm")
+# Keep the ranked frontier off the Cursor/Windows-watched workspace tree. Concurrent
+# 9p access of multi-gigabyte workq files has produced empty replacements.
+RANKED_WORKQ_DIR = Path("/tmp/rubiks-ranked-workq")
 
 
 def multiset_size(counts: Tuple[int, ...]) -> int:
@@ -80,6 +85,260 @@ def multiset_size(counts: Tuple[int, ...]) -> int:
         remaining -= count
 
     return result
+
+
+def even_permutation_size(length: int) -> int:
+    """Return the number of even permutations of ``length`` symbols."""
+    if length < 2:
+        raise ValueError("even permutation ranks require at least two symbols")
+    return math.factorial(length) // 2
+
+
+def permutation_rank(permutation: Tuple[int, ...]) -> int:
+    """Return the zero-based lexicographic (Lehmer) rank of a permutation."""
+    length = len(permutation)
+    if not length or set(permutation) != set(range(length)):
+        raise ValueError("expected a permutation of range(n), n >= 1")
+
+    remaining = list(range(length))
+    rank = 0
+    for index, value in enumerate(permutation):
+        digit = remaining.index(value)
+        rank = (rank * (length - index)) + digit
+        remaining.pop(digit)
+    return rank
+
+
+def permutation_unrank(rank: int, length: int) -> Tuple[int, ...]:
+    """Inverse of :func:`permutation_rank`."""
+    universe = math.factorial(length)
+    if length < 1 or rank < 0 or rank >= universe:
+        raise ValueError(f"rank must be in [0, {universe}) for a positive permutation length")
+
+    digits = [0] * length
+    for index in range(length - 1, -1, -1):
+        radix = length - index
+        digits[index] = rank % radix
+        rank //= radix
+
+    remaining = list(range(length))
+    return tuple(remaining.pop(digit) for digit in digits)
+
+
+def even_permutation_rank(permutation: Tuple[int, ...]) -> int:
+    """
+    Rank an even permutation densely in ``[0, n! / 2)``.
+
+    The first n-2 Lehmer digits identify an even permutation uniquely; the
+    final binary digit is fixed by the parity of those prefix digits.
+    """
+    length = len(permutation)
+    if length < 2 or set(permutation) != set(range(length)):
+        raise ValueError("expected a permutation of range(n), n >= 2")
+
+    remaining = list(range(length))
+    digits = []
+    for value in permutation:
+        digit = remaining.index(value)
+        digits.append(digit)
+        remaining.pop(digit)
+
+    if sum(digits) % 2:
+        raise ValueError("expected an even permutation")
+
+    rank = 0
+    for index, digit in enumerate(digits[:-2]):
+        rank = (rank * (length - index)) + digit
+    return rank
+
+
+def even_permutation_unrank(rank: int, length: int) -> Tuple[int, ...]:
+    """Inverse of :func:`even_permutation_rank`."""
+    universe = even_permutation_size(length)
+    if rank < 0 or rank >= universe:
+        raise ValueError(f"rank must be in [0, {universe})")
+
+    digits = [0] * length
+    remainder = rank
+    for index in range(length - 3, -1, -1):
+        radix = length - index
+        digits[index] = remainder % radix
+        remainder //= radix
+    digits[-2] = sum(digits[:-2]) % 2
+
+    remaining = list(range(length))
+    permutation = []
+    for digit in digits:
+        permutation.append(remaining.pop(digit))
+    return tuple(permutation)
+
+
+def edge_pairing_rank(state: str) -> int:
+    """
+    Rank the even matching between equal-sized high- and low-wing slot groups.
+
+    ``state`` contains the high slots followed by the low slots. Each group
+    must contain the same set of unique symbols. Symbol names are quotiented
+    out; only the matching from high positions to low positions is ranked.
+    """
+    if len(state) < 4 or len(state) % 2:
+        raise ValueError("edge-pairing state must contain two equal groups of at least two slots")
+
+    pair_count = len(state) // 2
+    high = state[:pair_count]
+    low = state[pair_count:]
+    if len(set(high)) != pair_count or set(high) != set(low):
+        raise ValueError("edge-pairing groups must contain the same unique symbols")
+
+    low_position = {symbol: index for index, symbol in enumerate(low)}
+    permutation = tuple(low_position[symbol] for symbol in high)
+    return even_permutation_rank(permutation)
+
+
+def three_edge_pairing_rank(state: str) -> int:
+    """
+    Rank high-to-midge and low-to-midge permutations with their shared parity.
+
+    The state is high slots, then midge slots, then low slots.  Labels are
+    normalized by their midge positions.  If H and L are the resulting
+    permutations, D[i] = inverse(H)[L[i]] is even, and the dense rank is
+    rank(H) * (n! / 2) + even_rank(D).
+    """
+    if len(state) < 6 or len(state) % 3:
+        raise ValueError("three-edge-pairing state must contain three equal groups of at least two slots")
+
+    pair_count = len(state) // 3
+    high = state[:pair_count]
+    midge = state[pair_count : 2 * pair_count]
+    low = state[2 * pair_count :]
+    expected = set(midge)
+    if (
+        len(expected) != pair_count
+        or len(set(high)) != pair_count
+        or len(set(low)) != pair_count
+        or set(high) != expected
+        or set(low) != expected
+    ):
+        raise ValueError("three-edge-pairing groups must contain the same unique symbols")
+
+    midge_position = {symbol: index for index, symbol in enumerate(midge)}
+    high_permutation = tuple(midge_position[symbol] for symbol in high)
+    low_permutation = tuple(midge_position[symbol] for symbol in low)
+    inverse_high = [0] * pair_count
+    for position, value in enumerate(high_permutation):
+        inverse_high[value] = position
+    delta = tuple(inverse_high[value] for value in low_permutation)
+
+    return (permutation_rank(high_permutation) * even_permutation_size(pair_count)) + even_permutation_rank(delta)
+
+
+def phase5_combo_relative_canonicalize(state: str) -> str:
+    """
+    Quotient phase-5 combo labels so occupied midges in slot order are ABCD.
+
+    ``state`` is 32 characters: FB t, FB x, wings, midges. Wings and midges
+    carry matching piece names; after this they are ABCDx and Lx occupancy.
+    """
+    if len(state) != 32:
+        raise ValueError("phase5-combo-relative state must be 32 characters")
+
+    label_map = {}
+    occupancy = []
+    for char in state[24:32]:
+        if char == "x":
+            occupancy.append("x")
+            continue
+        if char not in label_map:
+            if len(label_map) >= 4:
+                raise ValueError("phase5-combo-relative state has more than four midge labels")
+            label_map[char] = "ABCD"[len(label_map)]
+        occupancy.append("L")
+    if len(label_map) != 4:
+        raise ValueError("phase5-combo-relative state must occupy four midge slots")
+
+    wings = []
+    for char in state[16:24]:
+        if char == "x":
+            wings.append("x")
+            continue
+        if char not in label_map:
+            raise ValueError(f"phase5-combo-relative wing label {char!r} is not among the midges")
+        wings.append(label_map[char])
+    return state[:16] + "".join(wings) + "".join(occupancy)
+
+
+def phase5_combo_relative_expand(state: str) -> str:
+    """Replace Lx midge occupancy with ABCD in slot order."""
+    if len(state) != 32:
+        raise ValueError("phase5-combo-relative state must be 32 characters")
+
+    midges = []
+    next_label = 0
+    for char in state[24:32]:
+        if char == "x":
+            midges.append("x")
+        elif char == "L":
+            if next_label >= 4:
+                raise ValueError("phase5-combo-relative occupancy has more than four L marks")
+            midges.append("ABCD"[next_label])
+            next_label += 1
+        else:
+            raise ValueError(f"phase5-combo-relative occupancy contains {char!r}, expected L or x")
+    if next_label != 4:
+        raise ValueError("phase5-combo-relative occupancy must contain four L marks")
+    return state[:24] + "".join(midges)
+
+
+def three_edge_pairing_unrank(rank: int, pair_count: int) -> str:
+    """Return the canonical high/midge/low state for a three-edge rank."""
+    if pair_count < 2 or pair_count > 32:
+        raise ValueError("three-edge-pairing ranks support between 2 and 32 pairs")
+    even_universe = even_permutation_size(pair_count)
+    universe = math.factorial(pair_count) * even_universe
+    if rank < 0 or rank >= universe:
+        raise ValueError(f"rank must be in [0, {universe})")
+
+    symbols = "0123456789abcdefghijklmnopqrstuv"[:pair_count]
+    high_rank, delta_rank = divmod(rank, even_universe)
+    high = permutation_unrank(high_rank, pair_count)
+    delta = even_permutation_unrank(delta_rank, pair_count)
+    low = tuple(high[index] for index in delta)
+    return "".join(symbols[index] for index in high) + symbols + "".join(symbols[index] for index in low)
+
+
+def orientation_bits_rank(state: str) -> int:
+    """Rank a U/D orientation string as a bit mask of D stickers."""
+    if not state or len(state) > 32:
+        raise ValueError("orientation-bits states must contain between 1 and 32 stickers")
+    rank = 0
+    for index, char in enumerate(state):
+        if char == "D":
+            rank |= 1 << index
+        elif char != "U":
+            raise ValueError(f"orientation-bits state contains {char!r}, expected U or D")
+    return rank
+
+
+def orientation_bits_unrank(rank: int, square_count: int) -> str:
+    """Return the U/D string for an orientation-bits rank."""
+    if square_count < 1 or square_count > 32:
+        raise ValueError("orientation-bits ranks support between 1 and 32 stickers")
+    if rank < 0 or rank >= (1 << square_count):
+        raise ValueError("orientation-bits rank is outside the universe")
+    return "".join("D" if rank & (1 << index) else "U" for index in range(square_count))
+
+
+def edge_pairing_unrank(rank: int, pair_count: int) -> str:
+    """Return a canonical two-group state for an even matching rank."""
+    if pair_count > 32:
+        raise ValueError("edge-pairing ranks support at most 32 pairs")
+
+    symbols = "0123456789abcdefghijklmnopqrstuv"[:pair_count]
+    permutation = even_permutation_unrank(rank, pair_count)
+    low = [""] * pair_count
+    for high_position, low_position in enumerate(permutation):
+        low[low_position] = symbols[high_position]
+    return symbols + "".join(low)
 
 
 def multiset_rank(state: str, symbols: str, counts: Tuple[int, ...]) -> int:
@@ -114,6 +373,69 @@ def multiset_rank(state: str, symbols: str, counts: Tuple[int, ...]) -> int:
     return rank
 
 
+CENTER_COORDINATES_444 = (
+    (-1, 2, -1),
+    (1, 2, -1),
+    (-1, 2, 1),
+    (1, 2, 1),
+    (-2, 1, -1),
+    (-2, 1, 1),
+    (-2, -1, -1),
+    (-2, -1, 1),
+    (-1, 1, 2),
+    (1, 1, 2),
+    (-1, -1, 2),
+    (1, -1, 2),
+    (2, 1, 1),
+    (2, 1, -1),
+    (2, -1, 1),
+    (2, -1, -1),
+    (1, 1, -2),
+    (-1, 1, -2),
+    (1, -1, -2),
+    (-1, -1, -2),
+    (-1, -2, 1),
+    (1, -2, 1),
+    (-1, -2, -1),
+    (1, -2, -1),
+)
+
+
+def center_symmetries_444():
+    """Return all 48 simultaneous position/axis-symbol cube symmetries."""
+    by_coordinate = {coordinate: index for index, coordinate in enumerate(CENTER_COORDINATES_444)}
+    symbol_axis = {"L": 0, "U": 1, "F": 2}
+    symbol_by_axis = {axis: symbol for symbol, axis in symbol_axis.items()}
+    result = []
+    for axes in itertools.permutations(range(3)):
+        symbol_map = {symbol: symbol_by_axis[axes[axis]] for symbol, axis in symbol_axis.items()}
+        for signs in itertools.product((-1, 1), repeat=3):
+            positions = []
+            for coordinate in CENTER_COORDINATES_444:
+                destination = [0, 0, 0]
+                for source_axis in range(3):
+                    destination[axes[source_axis]] = signs[source_axis] * coordinate[source_axis]
+                positions.append(by_coordinate[tuple(destination)])
+            result.append((tuple(positions), symbol_map))
+    return tuple(result)
+
+
+CENTER_SYMMETRIES_444 = center_symmetries_444()
+CENTER_SYMMETRY_ORBIT_COUNT_444 = 197221662
+
+
+def center_symmetry_rank_444(state: str) -> int:
+    """Canonical raw 8/8/8 multiset rank under all 48 cube symmetries."""
+    canonical = None
+    for positions, symbol_map in CENTER_SYMMETRIES_444:
+        transformed = [""] * 24
+        for source, destination in enumerate(positions):
+            transformed[destination] = symbol_map[state[source]]
+        transformed = "".join(transformed)
+        canonical = transformed if canonical is None or transformed < canonical else canonical
+    return multiset_rank(canonical, "FLU", (8, 8, 8))
+
+
 def multiset_unrank(rank: int, symbols: str, counts: Tuple[int, ...]) -> str:
     """Return the multiset permutation at a zero-based lexicographic rank."""
     if tuple(sorted(symbols)) != tuple(symbols) or len(set(symbols)) != len(symbols):
@@ -140,6 +462,35 @@ def multiset_unrank(rank: int, symbols: str, counts: Tuple[int, ...]) -> str:
             rank -= block
 
     return "".join(result)
+
+
+def mixed_radix_rank(ranks: Tuple[int, ...], universes: Tuple[int, ...]) -> int:
+    """Combine component ranks left-to-right, with the last universe least significant."""
+    if not ranks or len(ranks) != len(universes):
+        raise ValueError("ranks and universes must be non-empty and the same length")
+
+    result = 0
+    for rank, universe in zip(ranks, universes):
+        if universe <= 0 or rank < 0 or rank >= universe:
+            raise ValueError(f"component rank {rank} is outside universe {universe}")
+        result = (result * universe) + rank
+    return result
+
+
+def mixed_radix_unrank(rank: int, universes: Tuple[int, ...]) -> Tuple[int, ...]:
+    """Split a mixed-radix rank into components in the order used by mixed_radix_rank."""
+    if not universes or any(universe <= 0 for universe in universes):
+        raise ValueError("universes must be non-empty and positive")
+
+    total = math.prod(universes)
+    if rank < 0 or rank >= total:
+        raise ValueError(f"rank {rank} is outside 0..{total - 1}")
+
+    result = [0] * len(universes)
+    for index in range(len(universes) - 1, -1, -1):
+        result[index] = rank % universes[index]
+        rank //= universes[index]
+    return tuple(result)
 
 
 def get_line_number_splits(lines: int, cores: int) -> Tuple:
@@ -184,125 +535,6 @@ def get_line_number_splits(lines: int, cores: int) -> Tuple:
 def reverse_steps(steps: List[str]) -> List[str]:
     """Return the inverse of a scramble, last move first."""
     return [step if step[-1] == "2" else step[0:-1] if step[-1] == "'" else step + "'" for step in reversed(steps)]
-
-
-def convert_state_to_hex(state: str) -> str:
-    """Pack a state of x/- vs U/L/F/R/B/D into hex, one bit per square."""
-    state = (
-        state.replace("x", "0")
-        .replace("-", "0")
-        .replace("U", "1")
-        .replace("L", "1")
-        .replace("F", "1")
-        .replace("R", "1")
-        .replace("B", "1")
-        .replace("D", "1")
-    )
-    hex_width = int(math.ceil(len(state) / 4.0))
-    hex_state = hex(int(state, 2))[2:]
-
-    if hex_state.endswith("L"):
-        hex_state = hex_state[:-1]
-
-    return hex_state.zfill(hex_width)
-
-
-def convert_to_cost_only(filename: str) -> None:
-    filename_new = filename.replace(".txt", ".cost-only.txt")
-    prev_state_int = None
-
-    with open(filename, "r") as fh:
-        with open(filename_new, "w") as fh_new:
-            for line_number, line in enumerate(fh):
-                state, steps = line.strip().split(":")
-                steps = steps.split()
-                state_int = int(state, 16)
-                # log.info("%s: state_int %d" % (state, state_int))
-
-                # Add 0s for every state from prev_state_int to state_int
-                if prev_state_int is None:
-                    zeroes_between_prev_and_now = state_int
-                else:
-                    zeroes_between_prev_and_now = state_int - prev_state_int - 1
-
-                if zeroes_between_prev_and_now > 0:
-                    # log.info("zeroes_between_prev_and_now %s" % zeroes_between_prev_and_now)
-                    zeroes_between_prev_and_now = zeroes_between_prev_and_now * "0"
-                    fh_new.write(zeroes_between_prev_and_now)
-
-                # Write the steps_len
-                if steps and steps[0].isdigit():
-                    steps_len = int(steps[0])
-                else:
-                    steps_len = len(steps)
-
-                # We save the steps_len as a single hex character so cap it at 15
-                if steps_len > 15:
-                    log.warning("steps_len %d is > 15...saving as 15" % steps_len)
-                    steps_len = 15
-
-                # Convert steps_len to hex and ignore the 0x part of the string
-                steps_len = hex(steps_len)[2]
-                fh_new.write(steps_len)
-                prev_state_int = state_int
-
-
-def convert_to_hash_cost_only(filename: str, bucketcount: int) -> None:
-    filename_new = filename.replace(".txt", ".hash-cost-only.txt")
-
-    bucket = bytearray(bucketcount)
-    collisions = 0
-
-    with open(filename, "r") as fh:
-        for line_number, line in enumerate(fh):
-            state, steps = line.strip().split(":")
-            steps = steps.split()
-
-            hash_raw = hashxx(state.encode("utf-8"))
-            hash_index = int(hash_raw % bucketcount)
-
-            # Write the steps_len
-            if steps[0].isdigit():
-                steps_len = int(steps[0])
-            else:
-                steps_len = len(steps)
-
-            # log.info("state: %s, hash_index %s, steps_len %s" % (state, hash_index, steps_len))
-
-            if not bucket[hash_index]:
-                bucket[hash_index] = steps_len
-            else:
-                collisions += 1
-
-                if bucket[hash_index] > steps_len:
-                    bucket[hash_index] = steps_len
-
-            if line_number % 1000000 == 0:
-                log.info(line_number)
-            # if line_number >= 1000:
-            #    break
-
-    log.info("%d collisions" % collisions)
-    log.info(f"begin writing {filename_new}")
-    with open(filename_new, "w") as fh_new:
-        to_write = []
-
-        for index, x in enumerate(bucket):
-            if x > 15:
-                to_write.append("f")
-            else:
-                # Convert steps_len to hex and ignore the 0x part of the string
-                to_write.append(hex(x)[2])
-
-            if index % 100000 == 0:
-                fh_new.write("".join(to_write))
-                to_write = []
-
-        if to_write:
-            fh_new.write("".join(to_write))
-
-        fh_new.write("\n")
-    log.info(f"end writing {filename_new}")
 
 
 def parse_histogram(filename: str) -> str:
@@ -408,9 +640,12 @@ class BackgroundProcess(Thread):
         log.debug(f"Running {' '.join(self.cmd)}")
         try:
             self.result = subprocess.check_output(self.cmd)
-
-            if self.result is not None and self.result.isdigit():
-                self.result = int(self.result)
+            if isinstance(self.result, bytes):
+                self.result = self.result.decode("utf-8")
+            if self.result is not None:
+                self.result = self.result.strip()
+                if self.result.isdigit():
+                    self.result = int(self.result)
             self.ok = True
         except subprocess.CalledProcessError as e:
             self.ok = False
@@ -428,62 +663,68 @@ class BFS(object):
         illegal_moves,
         size,
         filename,
-        store_as_hex,
         starting_cube_states,
-        use_cost_only=False,
-        use_hash_cost_only=False,
-        use_edges_pattern=False,
         legal_moves=None,
         rotations=[],
-        use_centers_then_edges=False,
-        use_c=False,
         use_ranked_cost=False,
+        ranked_cost_square_groups=None,
+        ranked_cost_type="multiset",
+        edge_pairing_partners=None,
+        ranked_cost_move_flip_masks=None,
+        ranked_cost_partner_flip_mask=0,
+        ranked_dense_frontier=False,
+        orbit_parity_flip_moves=None,
     ):
         self.name = name
         self.illegal_moves = illegal_moves
         self.size = size
-        self.filename = str(LOOKUP_TABLE_DIR / filename)
-        self.store_as_hex = store_as_hex
+        self.filename = str(lookup_table_dir() / filename)
         self.starting_cubes = []
-        self.use_cost_only = use_cost_only
-        self.use_hash_cost_only = use_hash_cost_only
-        self.use_edges_pattern = use_edges_pattern
         self.starting_cube_states = starting_cube_states
         self.rotations = rotations
-        self.use_centers_then_edges = use_centers_then_edges
-        self.lt_centers = {}
-        self.use_c = use_c
         self.use_ranked_cost = use_ranked_cost
+        self.ranked_cost_square_groups = tuple(tuple(group) for group in (ranked_cost_square_groups or ()))
+        self.ranked_cost_type = ranked_cost_type
+        self.edge_pairing_partners = tuple(edge_pairing_partners or ())
+        self.ranked_cost_move_flip_masks = tuple(ranked_cost_move_flip_masks or ())
+        self.ranked_cost_partner_flip_mask = ranked_cost_partner_flip_mask
+        self.ranked_dense_frontier = ranked_dense_frontier
+        self.orbit_parity_flip_moves = tuple(orbit_parity_flip_moves or ())
+        self.orbit_parity_even_filename = None
+        self.orbit_parity_odd_filename = None
         # Cube-state indexes (matching cube.state / rotate_xxx) that this table actually
         # cares about. Empty means we carry the full cube, including the "." placeholders.
         self.compact_squares = ()
-
-        # builder-crunch-workq.c only applies legal turns to a full cube state.
-        # The Python cruncher also recolors edges-pattern keys, and it flips a
-        # handful of stickers after L/R (or F/B) for a few 3x3x3/5x5x5 tables.
-        if self.use_c:
-            assert not self.use_edges_pattern, f"{name} cannot use the C cruncher with use_edges_pattern"
-            python_only_markers = (
-                "3x3x3-phase1",
-                "3x3x3-phase2",
-                "5x5x5-LR-center-stage-EO-inner-orbit",
-                "5x5x5-LR-center-stage-EO-both-orbits",
-                "5x5x5-EO-inner-orbit",
-                "5x5x5-EO-both-orbits",
-            )
-            for marker in python_only_markers:
-                assert marker not in name, f"{name} needs the Python cruncher ({marker})"
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
         assert self.size in supported_sizes, f"{self.size} not supported"
         assert isinstance(self.filename, str)
-        assert isinstance(self.store_as_hex, bool)
         assert isinstance(starting_cube_states, tuple)
-        assert isinstance(self.use_cost_only, bool)
-        assert isinstance(self.use_hash_cost_only, bool)
         assert isinstance(self.use_ranked_cost, bool)
-        assert not (self.use_cost_only and self.use_hash_cost_only), "Both cannot be true"
+        assert isinstance(self.ranked_dense_frontier, bool)
+        if self.ranked_dense_frontier and not self.use_ranked_cost:
+            raise ValueError(f"{self}: dense frontier scans require use_ranked_cost=True")
+        if self.ranked_cost_type not in (
+            "multiset",
+            "paired-multiset",
+            "edge-pairing-even",
+            "three-edge-pairing-parity",
+            "wing-binary",
+            "orientation-bits",
+            "center-symmetry-444",
+            "phase5-combo-relative",
+        ):
+            raise ValueError(f"{self}: unsupported ranked cost type {self.ranked_cost_type!r}")
+        if self.ranked_cost_type != "multiset" and not self.use_ranked_cost:
+            raise ValueError(f"{self}: ranked_cost_type requires use_ranked_cost=True")
+        if self.ranked_cost_move_flip_masks and self.ranked_cost_type not in (
+            "wing-binary",
+            "orientation-bits",
+        ):
+            raise ValueError(f"{self}: move flip masks are supported only for wing-binary or orientation-bits ranking")
+        if self.ranked_cost_square_groups and not self.use_ranked_cost:
+            raise ValueError(f"{self}: ranked_cost_square_groups requires use_ranked_cost=True")
 
         if size == "2x2x2":
             self.all_moves = moves_222
@@ -570,7 +811,6 @@ class BFS(object):
         log.info(f"all moves     : {' '.join(self.all_moves)}")
         log.info(f"illegal moves : {' '.join(self.illegal_moves)}")
         log.info(f"legal moves   : {' '.join(self.legal_moves)}")
-        self.bucketcount = 0
         self.size_number = int(self.size[0])
         self.starting_state_count = 0
         self.stats = {0: 0}
@@ -589,7 +829,6 @@ class BFS(object):
         self.time_in_crunching_workq = 0
         self.time_in_save = 0
         self.time_in_find_new_states = 0
-        self.time_in_keep_best_solution = 0
 
     def __str__(self):
         return self.name
@@ -665,14 +904,68 @@ class BFS(object):
         When the squares this table cares about form a closed orbit, we can store and
         crunch just those squares instead of a full cube of mostly "." placeholders.
         """
-        if not self.use_c:
-            return ()
+        if getattr(self, "ranked_cost_type", "multiset") in (
+            "edge-pairing-even",
+            "three-edge-pairing-parity",
+        ):
+            expected_group_count = 2 if self.ranked_cost_type == "edge-pairing-even" else 3
+            if len(self.ranked_cost_square_groups) != expected_group_count:
+                raise ValueError(f"{self}: edge pairing requires {expected_group_count} equal square groups")
+            group_size = len(self.ranked_cost_square_groups[0])
+            if group_size < 2 or any(len(group) != group_size for group in self.ranked_cost_square_groups):
+                raise ValueError(f"{self}: edge-pairing groups must have the same length of at least two")
+            flat_squares = tuple(square for group in self.ranked_cost_square_groups for square in group)
+            if len(set(flat_squares)) != len(flat_squares):
+                raise ValueError(f"{self}: edge-pairing square groups overlap")
+            if len(self.edge_pairing_partners) != len(flat_squares):
+                raise ValueError(f"{self}: each edge-pairing square needs its partner square")
+            if set(flat_squares) & set(self.edge_pairing_partners):
+                raise ValueError(f"{self}: edge-pairing squares and partner squares overlap")
+            if len(set(self.edge_pairing_partners)) != len(self.edge_pairing_partners):
+                raise ValueError(f"{self}: edge-pairing partner squares contain duplicates")
+            for group in self.ranked_cost_square_groups:
+                if not self._squares_are_closed_orbit(list(group)):
+                    raise ValueError(f"{self}: edge-pairing square group is not a closed orbit: {group}")
+            for offset in range(0, len(self.edge_pairing_partners), group_size):
+                partner_group = self.edge_pairing_partners[offset : offset + group_size]
+                if not self._squares_are_closed_orbit(list(partner_group)):
+                    raise ValueError(f"{self}: edge-pairing partner group is not a closed orbit: {partner_group}")
+            return flat_squares
 
-        if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
-            return ()
+        if getattr(self, "ranked_cost_type", "multiset") in (
+            "paired-multiset",
+            "wing-binary",
+            "orientation-bits",
+        ):
+            label = self.ranked_cost_type
+            if label != "paired-multiset" and len(self.ranked_cost_square_groups) != 1:
+                raise ValueError(f"{self}: {label} ranking requires one square group")
+            squares = tuple(square for group in self.ranked_cost_square_groups for square in group)
+            if len(squares) < 2 or len(set(squares)) != len(squares):
+                raise ValueError(f"{self}: {label} squares must be distinct")
+            if label == "orientation-bits" and len(squares) > 32:
+                raise ValueError(f"{self}: orientation-bits ranking supports at most 32 squares")
+            if len(self.edge_pairing_partners) != len(squares):
+                raise ValueError(f"{self}: every {label} square needs one partner")
+            if set(squares) & set(self.edge_pairing_partners):
+                raise ValueError(f"{self}: {label} squares and partners overlap")
+            return tuple(squares)
 
         squares = self._interesting_squares()
         full_squares = 6 * self.size_number * self.size_number
+
+        if self.ranked_cost_square_groups:
+            flat_squares = tuple(square for group in self.ranked_cost_square_groups for square in group)
+            if not all(self.ranked_cost_square_groups):
+                raise ValueError(f"{self}: ranked cost square groups cannot be empty")
+            if len(set(flat_squares)) != len(flat_squares):
+                raise ValueError(f"{self}: ranked cost square groups overlap")
+            if set(flat_squares) != set(squares):
+                raise ValueError(f"{self}: ranked cost square groups must contain exactly the interesting squares")
+            for group in self.ranked_cost_square_groups:
+                if not self._squares_are_closed_orbit(list(group)):
+                    raise ValueError(f"{self}: ranked cost square group is not a closed orbit: {group}")
+            squares = list(flat_squares)
 
         # Markers in the C cruncher are stored in a char, and there is nothing to gain
         # if every square is already interesting.
@@ -687,43 +980,169 @@ class BFS(object):
         return tuple(squares)
 
     def _state_for_workq(self, cube) -> str:
+        if getattr(self, "ranked_cost_type", "multiset") in (
+            "edge-pairing-even",
+            "three-edge-pairing-parity",
+        ):
+            if self.ranked_cost_type == "edge-pairing-even":
+                if self.size != "4x4x4":
+                    raise ValueError("edge-pairing-even recoloring is implemented only for 4x4x4")
+                partner_by_square = {square: partner for _, square, partner in wings_for_edges_recolor_pattern_444}
+            else:
+                if self.size != "5x5x5":
+                    raise ValueError("three-edge-pairing-parity recoloring is implemented only for 5x5x5")
+                partner_by_square = edges_partner_555
+            edge_names = [
+                wing_str_map[cube.state[square] + cube.state[partner_by_square[square]]]
+                for square in self.compact_squares
+            ]
+            group_count = 2 if self.ranked_cost_type == "edge-pairing-even" else 3
+            pair_count = len(edge_names) // group_count
+            groups = [edge_names[index : index + pair_count] for index in range(0, len(edge_names), pair_count)]
+            if any(len(set(group)) != pair_count or set(group) != set(groups[0]) for group in groups):
+                raise ValueError(f"{self}: edge slot groups do not contain the same unique edges")
+            symbols = "0123456789abcdefghijklmnopqrstuv"
+            normalization_group = groups[0] if group_count == 2 else groups[1]
+            symbol_by_edge = {edge: symbols[index] for index, edge in enumerate(normalization_group)}
+            return "".join(symbol_by_edge[edge] for edge in edge_names)
+
         if self.compact_squares:
             return "".join(cube.state[index] for index in self.compact_squares)
 
         return "".join(cube.state)
 
     def _configure_ranked_cost(self) -> None:
-        """Validate and describe the dense multiset-ranked state space."""
-        if not self.use_c:
-            raise ValueError(f"{self}: ranked costs require use_c=True")
+        """Validate and describe the dense ranked state space."""
         if not self.compact_squares:
             raise ValueError(f"{self}: ranked costs require a compact closed-orbit state")
-        if self.use_cost_only or self.use_hash_cost_only or self.store_as_hex:
-            raise ValueError(f"{self}: ranked costs cannot be combined with another output encoding")
 
         states = [self._state_for_workq(cube) for cube in self.starting_cubes]
         if not states:
             raise ValueError(f"{self}: ranked costs require at least one starting state")
-        expected = Counter(states[0])
-        if any(Counter(state) != expected for state in states[1:]):
-            raise ValueError(f"{self}: all ranked starting states must have the same multiset")
-        if len(expected) > 32:
-            raise ValueError(f"{self}: ranked costs support at most 32 distinct symbols")
 
-        self.rank_symbols = "".join(sorted(expected))
-        self.rank_counts = tuple(expected[symbol] for symbol in self.rank_symbols)
-        self.rank_universe = multiset_size(self.rank_counts)
+        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            pair_count = len(self.compact_squares) // 2
+            for state in states:
+                edge_pairing_rank(state)
+            self.edge_pairing_pair_count = pair_count
+            self.rank_groups = ()
+            self.rank_universes = ()
+            self.rank_universe = even_permutation_size(pair_count)
+            self._configure_ranked_output()
+            return
+
+        if getattr(self, "ranked_cost_type", "multiset") == "three-edge-pairing-parity":
+            pair_count = len(self.compact_squares) // 3
+            for state in states:
+                three_edge_pairing_rank(state)
+            self.edge_pairing_pair_count = pair_count
+            self.rank_groups = ()
+            self.rank_universes = ()
+            self.rank_universe = math.factorial(pair_count) * even_permutation_size(pair_count)
+            self._configure_ranked_output()
+            return
+
+        if getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
+            square_count = len(self.compact_squares)
+            for state in states:
+                if len(state) != square_count:
+                    raise ValueError(f"{self}: orientation-bits state length must match the square group")
+                orientation_bits_rank(state)
+            self.rank_groups = ()
+            self.rank_universes = ()
+            self.rank_universe = 1 << square_count
+            self.rank_symbols = "DU"
+            self.rank_counts = (square_count,)
+            self._configure_ranked_output()
+            return
+
+        group_sizes = (
+            tuple(len(group) for group in self.ranked_cost_square_groups)
+            if self.ranked_cost_square_groups
+            else (len(self.compact_squares),)
+        )
+        rank_groups = []
+        offset = 0
+        for group_index, group_size in enumerate(group_sizes):
+            group_states = [state[offset : offset + group_size] for state in states]
+            expected = Counter(group_states[0])
+            if any(Counter(state) != expected for state in group_states[1:]):
+                raise ValueError(
+                    f"{self}: all ranked starting states must have the same multiset in group {group_index}"
+                )
+            if len(expected) > 32:
+                raise ValueError(f"{self}: ranked costs support at most 32 distinct symbols per group")
+
+            symbols = "".join(sorted(expected))
+            counts = tuple(expected[symbol] for symbol in symbols)
+            universe = multiset_size(counts)
+            rank_groups.append(
+                {
+                    "squares": list(self.compact_squares[offset : offset + group_size]),
+                    "offset": offset,
+                    "length": group_size,
+                    "symbols": symbols,
+                    "counts": counts,
+                    "universe_size": universe,
+                }
+            )
+            offset += group_size
+
+        if getattr(self, "ranked_cost_type", "multiset") == "phase5-combo-relative":
+            if len(rank_groups) != 4 or rank_groups[2]["length"] != 8 or rank_groups[3]["length"] != 8:
+                raise ValueError(f"{self}: phase5-combo-relative needs FB t/x, 8 wings, and 8 midges")
+            if rank_groups[2]["symbols"] != "ABCDx" or rank_groups[2]["counts"] != (1, 1, 1, 1, 4):
+                raise ValueError(f"{self}: phase5-combo-relative wings must be ABCDx")
+            rank_groups[3] = {
+                "squares": rank_groups[3]["squares"],
+                "offset": rank_groups[3]["offset"],
+                "length": 8,
+                "symbols": "Lx",
+                "counts": (4, 4),
+                "universe_size": 70,
+            }
+
+        self.rank_groups = tuple(rank_groups)
+        self.rank_universes = tuple(group["universe_size"] for group in self.rank_groups)
+        self.rank_universe = math.prod(self.rank_universes)
+        if self.orbit_parity_flip_moves:
+            if self.ranked_cost_type != "multiset" or not self.rank_groups:
+                raise ValueError(f"{self}: orbit parity requires multiset rank groups")
+            missing = [move for move in self.orbit_parity_flip_moves if move not in self.legal_moves]
+            if missing:
+                raise ValueError(f"{self}: parity flip moves are not legal: {' '.join(missing)}")
+            self.rank_universe *= 2
         if self.rank_universe >= (1 << 64) or self.rank_universe > sys.maxsize:
             raise ValueError(f"{self}: ranked state space does not fit in uint64")
 
+        # These names predate grouped coordinates. Keep them as aliases for existing
+        # single-group builders and consumers.
+        if len(self.rank_groups) == 1:
+            self.rank_symbols = self.rank_groups[0]["symbols"]
+            self.rank_counts = self.rank_groups[0]["counts"]
+
+        if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
+            if (
+                len(self.compact_squares) != 24
+                or len(self.rank_groups) != 1
+                or self.rank_symbols != "FLU"
+                or self.rank_counts != (8, 8, 8)
+            ):
+                raise ValueError(f"{self}: center-symmetry-444 requires one FLU 8/8/8 group of 24 stickers")
+
+        self._configure_ranked_output()
+
+    def _configure_ranked_output(self) -> None:
         output = Path(self.filename)
         self.ranked_cost_filename = str(output.with_suffix(".cost-only.bin"))
         self.ranked_metadata_filename = f"{self.ranked_cost_filename}.json"
+        self.ranked_symmetry_index_filename = f"{self.ranked_cost_filename}.symmetry-index.bin"
         cost_dir = self._ranked_cost_dir()
         self.ranked_cost_live_filename = str(cost_dir / f"{self.name}.cost-only.bin.live")
         # The frontier is only ever read and appended to sequentially, so it belongs on
         # disk. It outgrows tmpfs long before the cost array does.
-        self.ranked_workq_filename = str(TMPDIR / f"{self}.ranked-workq.bin")
+        RANKED_WORKQ_DIR.mkdir(parents=True, exist_ok=True)
+        self.ranked_workq_filename = str(RANKED_WORKQ_DIR / f"{self.name}.ranked-workq.bin")
 
         if cost_dir == RANKED_COST_TMPFS:
             log.info(f"ranked cost array in {cost_dir}")
@@ -734,16 +1153,140 @@ class BFS(object):
             )
 
     def _write_ranked_metadata(self) -> None:
-        metadata = {
-            "format": "dense-multiset-cost-v1",
-            "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
-            "record_format": "<QB",
-            "symbols": self.rank_symbols,
-            "counts": list(self.rank_counts),
-            "universe_size": self.rank_universe,
-            "completed_depth": max(self.stats),
-            "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
-        }
+        # Orbit-parity builds publish even and odd cost files and delete the combined
+        # array. A sidecar named for that combined file is never opened.
+        if getattr(self, "orbit_parity_even_filename", None):
+            return
+        if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
+            metadata = {
+                "format": "center-symmetry-444-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "rank_order": "minimum raw FLU 8/8/8 multiset rank under 48 symmetries",
+                "raw_universe_size": self.rank_universe,
+                "symmetry_count": 48,
+                "orbit_count": CENTER_SYMMETRY_ORBIT_COUNT_444,
+                "stored_entry_count": self._table_linecount(),
+                "symmetry_index": os.path.basename(self.ranked_symmetry_index_filename),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+        elif getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
+            metadata = {
+                "format": "dense-orientation-bits-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": "bit mask of D stickers",
+                "squares": list(self.ranked_cost_square_groups[0]),
+                "partner_squares": list(self.edge_pairing_partners),
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+            if self.ranked_cost_move_flip_masks:
+                metadata["move_flip_masks"] = {
+                    move: mask for move, mask in zip(self.legal_moves, self.ranked_cost_move_flip_masks)
+                }
+                metadata["partner_flip_mask"] = self.ranked_cost_partner_flip_mask
+        elif getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            metadata = {
+                "format": "dense-edge-pairing-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": "even Lehmer prefix",
+                "pair_count": self.edge_pairing_pair_count,
+                "high_squares": list(self.ranked_cost_square_groups[0]),
+                "low_squares": list(self.ranked_cost_square_groups[1]),
+                "partner_squares": list(self.edge_pairing_partners),
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+        elif getattr(self, "ranked_cost_type", "multiset") == "phase5-combo-relative":
+            metadata = {
+                "format": "dense-phase5-combo-relative-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": (
+                    "FB t/x occupancy, then wings remapped so occupied midges in slot "
+                    "order are ABCD, then midge occupancy"
+                ),
+                "rank_groups": [
+                    {
+                        "squares": group["squares"],
+                        "offset": group["offset"],
+                        "length": group["length"],
+                        "symbols": group["symbols"],
+                        "counts": list(group["counts"]),
+                        "universe_size": group["universe_size"],
+                    }
+                    for group in self.rank_groups
+                ],
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+        elif getattr(self, "ranked_cost_type", "multiset") == "three-edge-pairing-parity":
+            metadata = {
+                "format": "dense-three-edge-pairing-parity-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": "rank(H) * (n! / 2) + even_rank(inverse(H) composed with L)",
+                "pair_count": self.edge_pairing_pair_count,
+                "high_squares": list(self.ranked_cost_square_groups[0]),
+                "midge_squares": list(self.ranked_cost_square_groups[1]),
+                "low_squares": list(self.ranked_cost_square_groups[2]),
+                "partner_squares": list(self.edge_pairing_partners),
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+        else:
+            metadata = {
+                "format": (
+                    "dense-wing-binary-cost-v1"
+                    if getattr(self, "ranked_cost_type", "multiset") == "wing-binary"
+                    else (
+                        "dense-paired-multiset-cost-v1"
+                        if getattr(self, "ranked_cost_type", "multiset") == "paired-multiset"
+                        else "dense-multiset-cost-v1"
+                    )
+                ),
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": "left-to-right mixed radix",
+                "rank_groups": [
+                    {
+                        "squares": group["squares"],
+                        "offset": group["offset"],
+                        "length": group["length"],
+                        "symbols": group["symbols"],
+                        "counts": list(group["counts"]),
+                        "universe_size": group["universe_size"],
+                    }
+                    for group in self.rank_groups
+                ],
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+            if len(self.rank_groups) == 1:
+                metadata["symbols"] = self.rank_symbols
+                metadata["counts"] = list(self.rank_counts)
+            if getattr(self, "ranked_cost_type", "multiset") in ("paired-multiset", "wing-binary"):
+                metadata["partner_squares"] = list(self.edge_pairing_partners)
+                if self.ranked_cost_type == "wing-binary":
+                    metadata["move_flip_masks"] = {
+                        move: mask for move, mask in zip(self.legal_moves, self.ranked_cost_move_flip_masks)
+                    }
+                    metadata["partner_flip_mask"] = self.ranked_cost_partner_flip_mask
+        metadata["frontier_mode"] = (
+            "dense-cost-scan" if getattr(self, "ranked_dense_frontier", False) else "ranked-record-workq"
+        )
         temporary = f"{self.ranked_metadata_filename}.tmp"
         with open(temporary, "w") as fh:
             json.dump(metadata, fh, indent=2, sort_keys=True)
@@ -761,22 +1304,93 @@ class BFS(object):
         live_name = f"{self.name}.cost-only.bin.live"
         candidates = [directory for directory in (RANKED_COST_TMPFS, TMPDIR) if directory.is_dir()]
 
-        # A run that died before save() left its array behind. Reclaim that space before
-        # measuring, otherwise a stale tmpfs copy pushes us onto disk.
         for directory in candidates:
             leftover = directory / live_name
-            if leftover.exists():
-                leftover.unlink()
-
-        for directory in candidates:
-            if shutil.disk_usage(directory).free >= need:
+            reclaimable = leftover.stat().st_size if leftover.exists() else 0
+            if shutil.disk_usage(directory).free + reclaimable >= need:
                 return directory
 
         return TMPDIR
 
+    def _split_orbit_parity_cost_file(self) -> None:
+        """Write the even and odd halves of a rank*2+parity cost array."""
+        live = self.ranked_cost_live_filename
+        with open(live, "rb") as source:
+            combined = source.read()
+        if len(combined) != self.rank_universe or len(combined) % 2:
+            raise RuntimeError(
+                f"{self}: orbit-parity cost file is {len(combined)} bytes, expected {self.rank_universe}"
+            )
+        half = len(combined) // 2
+        even = combined[0::2]
+        odd = combined[1::2]
+        if len(even) != half or len(odd) != half:
+            raise RuntimeError(f"{self}: orbit-parity split produced uneven files")
+        for filename, payload in (
+            (self.orbit_parity_even_filename, even),
+            (self.orbit_parity_odd_filename, odd),
+        ):
+            Path(filename).parent.mkdir(parents=True, exist_ok=True)
+            with open(filename, "wb") as destination:
+                destination.write(payload)
+            log.info(f"{self}: wrote {filename} ({half:,} bytes)")
+        os.remove(live)
+        self._orbit_parity_payloads = {"even": even, "odd": odd}
+
+    def _write_split_cost_histogram(self, filename: str, payload: bytes) -> None:
+        counts = {}
+        for encoded in payload:
+            if not encoded:
+                continue
+            depth = encoded - 1
+            counts[depth] = counts.get(depth, 0) + 1
+        linecount = sum(counts.values())
+        report = ["", f"    {filename}", "    " + "=" * len(filename)]
+        prev = None
+        total_steps = 0
+        for depth in sorted(counts):
+            count = counts[depth]
+            delta = float(count / prev) if prev else 0.0
+            percent = int(float(count / linecount) * 100) if linecount else 0
+            report.append(
+                "    {} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(depth, count, percent, delta)
+            )
+            total_steps += depth * count
+            prev = count
+        report.append(f"\n    Total: {linecount:,} entries")
+        if linecount:
+            report.append(f"    Average: {float(total_steps / linecount):.2f} moves\n\n")
+        text = "\n".join(report) + "\n"
+        log.info(text)
+        if os.environ.get("RUBIKS_SKIP_HISTOGRAM"):
+            return
+        with open("histogram.txt", "a") as fh:
+            fh.write(text)
+
     def _publish_ranked_cost_file(self) -> None:
+        if self.orbit_parity_even_filename:
+            self._split_orbit_parity_cost_file()
+            return
         live = self.ranked_cost_live_filename
         dest = self.ranked_cost_filename
+        if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
+            Path(dest).parent.mkdir(parents=True, exist_ok=True)
+            if self._table_linecount() == CENTER_SYMMETRY_ORBIT_COUNT_444:
+                log.info(f"{self}: compact 48-symmetry cost table {live} -> {dest}")
+                subprocess.check_call(
+                    [
+                        "./rubikscubelookuptables/compact-center-symmetry-cost",
+                        live,
+                        dest,
+                        self.ranked_symmetry_index_filename,
+                    ]
+                )
+                os.remove(live)
+                return
+            log.warning(
+                f"{self}: incomplete symmetry table ({self._table_linecount()} orbits); "
+                "publishing canonical raw ranks without compacting"
+            )
         if os.path.abspath(live) == os.path.abspath(dest):
             return
         Path(dest).parent.mkdir(parents=True, exist_ok=True)
@@ -872,44 +1486,10 @@ class BFS(object):
 
         self.rm_per_core_workq_results_files()
 
-        if self.use_edges_pattern:
-            pattern = None
-
-            if self.size == "4x4x4":
-                # pattern = "10425376a8b9ecfdhgkiljnm"
-                if self.filename.endswith("lookup-table-4x4x4-step32-first-four-edges.txt"):
-                    pattern = "--------a8b9ecfd--------"
-                elif self.filename.endswith("lookup-table-4x4x4-step42-last-eight-edges.txt"):
-                    pattern = "10425376--------hgkiljnm"
-
-            elif self.size == "5x5x5":
-                if self.filename.endswith("lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt"):
-                    pattern = "-------------SSTT--UUVV-------------"
-
-                elif self.filename.endswith("lookup-table-5x5x5-step54-phase5-low-edge-and-midge.txt"):
-                    pattern = "------------sS--TtuU--Vv------------"
-
-                elif self.filename.endswith("lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt"):
-                    pattern = "OOopPPQQqrRR------------WWwxXXYYyzZZ"
-
-                elif self.filename.endswith("lookup-table-5x5x5-step62-phase6-high-edge-midge.txt"):
-                    pattern = "OO--PPQQ--RR------------WW--XXYY--ZZ"
-
-                elif self.filename.endswith("lookup-table-5x5x5-step63-phase6-low-edge-midge.txt"):
-                    pattern = "-OopP--QqrR--------------WwxX--YyzZ-"
-
-            if pattern is None:
-                raise Exception(f"implement edges-pattern for {self.size} {self.filename}")
-        else:
-            pattern = ""
-
         with open(self.workq_filename, "w") as fh_workq, open(self.filename, "w") as fh:
             for cube in self.starting_cubes:
                 log.info(f"starting cube {''.join(cube.state).replace('.', '')[1:]}")
-                if self.use_edges_pattern:
-                    workq_line = f"{pattern}:{''.join(cube.state)}:"
-                else:
-                    workq_line = f"{self._state_for_workq(cube)}:"
+                workq_line = f"{self._state_for_workq(cube)}:"
 
                 fh.write(workq_line + "\n")
                 fh_workq.write(workq_line + " " * (self.workq_line_length - len(workq_line)) + "\n")
@@ -934,13 +1514,7 @@ class BFS(object):
         with open(first_file, "r") as fh:
             line = next(fh)
 
-            if line.count(":") == 1:
-                state = line.split(":")[0]
-            elif line.count(":") == 2:
-                state1, state2, steps = line.split(":")
-                state = ":".join([state1, state2])
-            else:
-                raise Exception(f"Found {line.count(':')} :s in line:\n{line}")
+            state = line.split(":", 1)[0]
 
             state_width = len(state)
 
@@ -999,39 +1573,22 @@ class BFS(object):
                 start += line_number_offset
                 end += line_number_offset
 
-                if self.use_c:
-                    # fmt: off
-                    cmd = [
-                        "nice",
-                        "./rubikscubelookuptables/builder-crunch-workq",
-                        "--size", self.size[0],
-                        "--inputfile", self.workq_filename,
-                        "--linewidth", str(self.workq_line_length + 1),
-                        "--start", str(start),
-                        "--end", str(end),
-                        "--outputfile", self.get_workq_filename_for_core(core),
-                        "--moves", f"{' '.join(self.legal_moves)}",
-                    ]
-                    # fmt: on
+                # fmt: off
+                cmd = [
+                    "nice",
+                    "./rubikscubelookuptables/builder-crunch-workq",
+                    "--size", self.size[0],
+                    "--inputfile", self.workq_filename,
+                    "--linewidth", str(self.workq_line_length + 1),
+                    "--start", str(start),
+                    "--end", str(end),
+                    "--outputfile", self.get_workq_filename_for_core(core),
+                    "--moves", f"{' '.join(self.legal_moves)}",
+                ]
+                # fmt: on
 
-                    if self.compact_squares:
-                        cmd.extend(["--squares", ",".join(str(index) for index in self.compact_squares)])
-
-                else:
-                    cmd = [
-                        "nice",
-                        "./rubikscubelookuptables/builder-crunch-workq.py",
-                        self.size,
-                        self.workq_filename,
-                        str(self.workq_line_length),
-                        str(start),
-                        str(end),
-                        self.get_workq_filename_for_core(core),
-                        f"{' '.join(self.legal_moves)}",
-                    ]
-
-                if self.use_edges_pattern:
-                    cmd.append("--use-edges-pattern")
+                if self.compact_squares:
+                    cmd.extend(["--squares", ",".join(str(index) for index in self.compact_squares)])
 
                 log.info(" ".join(cmd))
 
@@ -1067,50 +1624,6 @@ class BFS(object):
             self._sort_merge_state_files(core_files, sorted_results_filename)
             self.rm_files(core_files)
 
-    def _build_edges_pattern_workq(self, new_states_filename: str, build_workq: bool) -> int:
-        """
-        Build the workq for the next depth from the new states we just found and return
-        how many new states there were.
-
-        Only the edges-pattern tables need this. For everything else builder-find-new-states
-        writes the workq itself.
-        """
-        log.info("building next workq file begin")
-        start_time = dt.datetime.now()
-        workq_line_length = self.workq_line_length
-        new_states_count = int(subprocess.check_output(f"wc -l {new_states_filename}", shell=True).strip().split()[0])
-
-        if build_workq:
-            to_write = []
-            to_write_count = 0
-
-            with open(new_states_filename, "r") as fh_new_states, open(self.workq_filename_next, "w") as fh_workq_next:
-
-                for line in fh_new_states:
-                    pattern, state, steps_to_solve = line.rstrip().split(":", maxsplit=2)
-                    steps_to_scramble = " ".join(reverse_steps(steps_to_solve.split()))
-                    workq_line = f"{pattern}:{state}:{steps_to_scramble}"
-
-                    to_write.append(f"{workq_line:<{workq_line_length}}\n")
-                    to_write_count += 1
-                    self.workq_size += 1
-
-                    if to_write_count >= WRITE_BATCH_SIZE:
-                        fh_workq_next.write("".join(to_write))
-                        to_write = []
-                        to_write_count = 0
-
-                if to_write_count:
-                    fh_workq_next.write("".join(to_write))
-
-        else:
-            with open(self.workq_filename_next, "w"):
-                pass
-
-        self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
-        log.info("building next workq file end")
-        return new_states_count
-
     def _search_process_builder_crunch_workq_results(self, max_depth):
         """
         Process the results from all of the builder-crunch-workq processes
@@ -1138,66 +1651,43 @@ class BFS(object):
         # The last depth we explore does not need a workq for the depth after it
         build_workq = max_depth is None or self.depth < max_depth
 
-        if self.use_edges_pattern:
-            log.info("keep-best-solution.py begin")
-            start_time = dt.datetime.now()
-            subprocess.check_output(f"nice ./utils/keep-best-solution.py {sorted_results_filename}", shell=True)
-            self.time_in_keep_best_solution += (dt.datetime.now() - start_time).total_seconds()
-            log.info("keep-best-solution.py end")
+        log.info("builder-find-new-states begin")
+        start_time = dt.datetime.now()
 
-            log.info("builder-find-new-edges-pattern-states.py begin")
-            start_time = dt.datetime.now()
-            cmd = "nice ./rubikscubelookuptables/builder-find-new-edges-pattern-states.py %s %s %s" % (
-                self.filename,
-                sorted_results_filename,
-                new_states_filename,
-            )
-            log.info(cmd)
-            subprocess.check_output(cmd, shell=True)
-            self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
-            log.info("builder-find-new-edges-pattern-states.py end")
+        # fmt: off
+        cmd = [
+            "nice",
+            "./rubikscubelookuptables/builder-find-new-states",
+            "--table", self.filename,
+            "--results", sorted_results_filename,
+            "--new-states", new_states_filename,
+        ]
+        # fmt: on
 
-            os.remove(sorted_results_filename)
-            new_states_count = self._build_edges_pattern_workq(new_states_filename, build_workq)
+        # builder-find-new-states writes the next workq for us. It already holds the
+        # moves that scrambled each new state, so letting it do both saves reading the
+        # new states back off disk and reversing every move sequence twice.
+        if build_workq:
+            cmd.extend(["--workq", self.workq_filename_next, "--linewidth", str(self.workq_line_length)])
 
+        log.info(" ".join(cmd))
+
+        # It reports the number of new states and the width of the longest one it wrote,
+        # which saves us a "wc -l" pass here and a "wc --max-line-length" pass in save()
+        count, longest_line = subprocess.check_output(cmd).split()
+        new_states_count = int(count)
+        self.max_table_line_length = max(self.max_table_line_length, int(longest_line))
+        self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
+        log.info("builder-find-new-states end")
+
+        os.remove(sorted_results_filename)
+
+        if build_workq:
+            self.workq_size = new_states_count
         else:
-            log.info("builder-find-new-states begin")
-            start_time = dt.datetime.now()
-
-            # fmt: off
-            cmd = [
-                "nice",
-                "./rubikscubelookuptables/builder-find-new-states",
-                "--table", self.filename,
-                "--results", sorted_results_filename,
-                "--new-states", new_states_filename,
-            ]
-            # fmt: on
-
-            # builder-find-new-states writes the next workq for us. It already holds the
-            # moves that scrambled each new state, so letting it do both saves reading the
-            # new states back off disk and reversing every move sequence twice.
-            if build_workq:
-                cmd.extend(["--workq", self.workq_filename_next, "--linewidth", str(self.workq_line_length)])
-
-            log.info(" ".join(cmd))
-
-            # It reports the number of new states and the width of the longest one it wrote,
-            # which saves us a "wc -l" pass here and a "wc --max-line-length" pass in save()
-            count, longest_line = subprocess.check_output(cmd).split()
-            new_states_count = int(count)
-            self.max_table_line_length = max(self.max_table_line_length, int(longest_line))
-            self.time_in_find_new_states += (dt.datetime.now() - start_time).total_seconds()
-            log.info("builder-find-new-states end")
-
-            os.remove(sorted_results_filename)
-
-            if build_workq:
-                self.workq_size = new_states_count
-            else:
-                # search() stops once the workq is empty
-                with open(self.workq_filename_next, "w"):
-                    pass
+            # search() stops once the workq is empty
+            with open(self.workq_filename_next, "w"):
+                pass
 
         log.info(f"there are {new_states_count:,} new states")
 
@@ -1245,6 +1735,7 @@ class BFS(object):
             self.ranked_cost_live_filename,
             self.ranked_cost_filename,
             self.ranked_metadata_filename,
+            self.ranked_symmetry_index_filename,
         ):
             if os.path.exists(filename):
                 os.remove(filename)
@@ -1255,7 +1746,7 @@ class BFS(object):
         starting_records = {}
         for cube in self.starting_cubes:
             state = self._state_for_workq(cube)
-            rank = multiset_rank(state, self.rank_symbols, self.rank_counts)
+            rank = self._ranked_state_rank(state)
             starting_records[rank] = RANKED_WORKQ_RECORD.pack(rank, 0)
 
         with open(self.ranked_cost_live_filename, "r+b", buffering=0) as costs, open(
@@ -1272,15 +1763,89 @@ class BFS(object):
         self.starting_cubes = []
         self._write_ranked_metadata()
 
+    def _ranked_state_rank(self, state: str) -> int:
+        """Rank a compact state in the configured dense coordinate."""
+        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            return edge_pairing_rank(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "three-edge-pairing-parity":
+            return three_edge_pairing_rank(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
+            return orientation_bits_rank(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
+            return center_symmetry_rank_444(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "phase5-combo-relative":
+            state = phase5_combo_relative_canonicalize(state)
+
+        ranks = tuple(
+            multiset_rank(
+                state[group["offset"] : group["offset"] + group["length"]],
+                group["symbols"],
+                group["counts"],
+            )
+            for group in self.rank_groups
+        )
+        rank = mixed_radix_rank(ranks, self.rank_universes)
+        if getattr(self, "orbit_parity_flip_moves", ()):
+            return rank * 2
+        return rank
+
+    def _ranked_state_unrank(self, rank: int) -> str:
+        """Reconstruct the canonical compact state represented by a dense rank."""
+        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            return edge_pairing_unrank(rank, self.edge_pairing_pair_count)
+        if getattr(self, "ranked_cost_type", "multiset") == "three-edge-pairing-parity":
+            return three_edge_pairing_unrank(rank, self.edge_pairing_pair_count)
+        if getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
+            return orientation_bits_unrank(rank, len(self.compact_squares))
+
+        component_ranks = mixed_radix_unrank(rank, self.rank_universes)
+        state = [""] * len(self.compact_squares)
+        for component_rank, group in zip(component_ranks, self.rank_groups):
+            group_state = multiset_unrank(component_rank, group["symbols"], group["counts"])
+            start = group["offset"]
+            state[start : start + group["length"]] = group_state
+        compact = "".join(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "phase5-combo-relative":
+            return phase5_combo_relative_expand(compact)
+        return compact
+
     def _ranked_core_filename(self, core: int) -> str:
         return f"{self.ranked_workq_filename}.next.core-{core}"
+
+    def _ranked_lock_filename(self) -> str:
+        return str(RANKED_WORKQ_DIR / f"{self.name}.lock")
+
+    def _acquire_ranked_search_lock(self) -> None:
+        """Prevent builders with the same artifact names from corrupting each other."""
+        lock_filename = self._ranked_lock_filename()
+        self._ranked_lock_file = open(lock_filename, "a+")
+        try:
+            fcntl.flock(self._ranked_lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            self._ranked_lock_file.seek(0)
+            owner = self._ranked_lock_file.read().strip() or "unknown process"
+            self._ranked_lock_file.close()
+            del self._ranked_lock_file
+            raise RuntimeError(f"{self}: another ranked build owns {lock_filename} ({owner})")
+        self._ranked_lock_file.seek(0)
+        self._ranked_lock_file.truncate()
+        self._ranked_lock_file.write(f"pid {os.getpid()}\n")
+        self._ranked_lock_file.flush()
+
+    def _release_ranked_search_lock(self) -> None:
+        lock_file = getattr(self, "_ranked_lock_file", None)
+        if lock_file is not None:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+            lock_file.close()
+            del self._ranked_lock_file
 
     def _ranked_launch_crunchers(self, build_workq: bool) -> int:
         """Expand one ranked frontier and return the number of successful cost claims."""
         start_time = dt.datetime.now()
         threads = []
 
-        for core, (start, end) in enumerate(get_line_number_splits(self.workq_size, self.cores)):
+        split_size = self.rank_universe if self.ranked_dense_frontier else self.workq_size
+        for core, (start, end) in enumerate(get_line_number_splits(split_size, self.cores)):
             if start is None:
                 continue
 
@@ -1296,10 +1861,6 @@ class BFS(object):
                 output,
                 "--ranked-depth",
                 str(self.depth),
-                "--rank-symbols",
-                self.rank_symbols,
-                "--rank-counts",
-                ",".join(str(count) for count in self.rank_counts),
                 "--rank-universe",
                 str(self.rank_universe),
                 "--size",
@@ -1313,8 +1874,120 @@ class BFS(object):
                 "--squares",
                 ",".join(str(index) for index in self.compact_squares),
             ]
-            if not build_workq:
+            if getattr(self, "ranked_cost_type", "multiset") in (
+                "paired-multiset",
+                "edge-pairing-even",
+                "three-edge-pairing-parity",
+                "wing-binary",
+                "orientation-bits",
+            ):
+                cmd.extend(
+                    [
+                        "--rank-type",
+                        self.ranked_cost_type,
+                        "--pairing-partners",
+                        ",".join(str(index) for index in self.edge_pairing_partners),
+                    ]
+                )
+                if self.ranked_cost_type in ("wing-binary", "orientation-bits"):
+                    if len(self.ranked_cost_move_flip_masks) != len(self.legal_moves):
+                        raise ValueError(f"{self}: {self.ranked_cost_type} ranking needs one flip mask per legal move")
+                    cmd.extend(
+                        [
+                            "--wing-flip-masks",
+                            ",".join(str(mask) for mask in self.ranked_cost_move_flip_masks),
+                            "--wing-partner-flip-mask",
+                            str(self.ranked_cost_partner_flip_mask),
+                        ]
+                    )
+                    if self.ranked_cost_type == "wing-binary":
+                        cmd.extend(
+                            [
+                                "--rank-symbols",
+                                self.rank_symbols,
+                                "--rank-counts",
+                                ",".join(str(count) for count in self.rank_counts),
+                            ]
+                        )
+                elif self.ranked_cost_type == "paired-multiset":
+                    cmd.extend(
+                        [
+                            "--rank-groups",
+                            ";".join(
+                                "{}:{}:{}:{}".format(
+                                    group["length"],
+                                    group["symbols"],
+                                    ",".join(str(count) for count in group["counts"]),
+                                    group["universe_size"],
+                                )
+                                for group in self.rank_groups
+                            ),
+                        ]
+                    )
+            elif self.ranked_cost_type == "center-symmetry-444":
+                cmd.extend(
+                    [
+                        "--rank-type",
+                        self.ranked_cost_type,
+                        "--rank-symbols",
+                        self.rank_symbols,
+                        "--rank-counts",
+                        ",".join(str(count) for count in self.rank_counts),
+                    ]
+                )
+            elif self.ranked_cost_type == "phase5-combo-relative":
+                cmd.extend(
+                    [
+                        "--rank-type",
+                        self.ranked_cost_type,
+                        "--rank-groups",
+                        ";".join(
+                            "{}:{}:{}:{}".format(
+                                group["length"],
+                                group["symbols"],
+                                ",".join(str(count) for count in group["counts"]),
+                                group["universe_size"],
+                            )
+                            for group in self.rank_groups
+                        ),
+                    ]
+                )
+            elif len(self.rank_groups) == 1:
+                cmd.extend(
+                    [
+                        "--rank-symbols",
+                        self.rank_symbols,
+                        "--rank-counts",
+                        ",".join(str(count) for count in self.rank_counts),
+                    ]
+                )
+            else:
+                cmd.extend(
+                    [
+                        "--rank-groups",
+                        ";".join(
+                            "{}:{}:{}:{}".format(
+                                group["length"],
+                                group["symbols"],
+                                ",".join(str(count) for count in group["counts"]),
+                                group["universe_size"],
+                            )
+                            for group in self.rank_groups
+                        ),
+                    ]
+                )
+            if self.ranked_dense_frontier:
+                cmd.extend(["--ranked-scan-costs", "--ranked-no-workq"])
+            elif not build_workq:
                 cmd.append("--ranked-no-workq")
+            if self.orbit_parity_flip_moves:
+                cmd.extend(
+                    [
+                        "--orbit-parity",
+                        "--parity-flip-moves",
+                        " ".join(self.orbit_parity_flip_moves),
+                    ]
+                )
 
             log.info(" ".join(cmd))
             thread = BackgroundProcess(cmd, f"ranked builder-crunch-workq core {core}")
@@ -1335,14 +2008,35 @@ class BFS(object):
     def _ranked_finish_depth(self, new_states_count: int, build_workq: bool) -> None:
         """Replace the current frontier with the successful per-core claim records."""
         start_time = dt.datetime.now()
+        if self.ranked_dense_frontier:
+            for filename in glob.glob(f"{self.ranked_workq_filename}.next.core-*"):
+                os.remove(filename)
+            with open(self.ranked_workq_filename, "wb"):
+                pass
+            self.workq_size = new_states_count
+            self.stats[self.depth] = new_states_count
+            self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
+            self._write_ranked_metadata()
+            log.warning(f"{self.index}: finished ranked depth {self.depth}, dense frontier size {self.workq_size:,}")
+            return
+
         next_workq = f"{self.ranked_workq_filename}.next"
         core_files = sorted(glob.glob(f"{self.ranked_workq_filename}.next.core-*"))
+        expected_bytes = new_states_count * RANKED_WORKQ_RECORD.size if build_workq else 0
+        core_bytes = sum(os.path.getsize(filename) for filename in core_files)
+        if core_bytes != expected_bytes:
+            raise RuntimeError(
+                f"ranked core workqs total {core_bytes} bytes after depth {self.depth}, "
+                f"expected {expected_bytes} ({new_states_count} records); retained {len(core_files)} core files"
+            )
 
         with open(next_workq, "wb") as destination:
             if build_workq:
                 for filename in core_files:
                     with open(filename, "rb") as source:
                         shutil.copyfileobj(source, destination, 16 * 1024 * 1024)
+            destination.flush()
+            os.fsync(destination.fileno())
 
         if os.path.exists(self.ranked_workq_filename):
             os.remove(self.ranked_workq_filename)
@@ -1351,6 +2045,13 @@ class BFS(object):
         os.replace(next_workq, self.ranked_workq_filename)
 
         self.workq_size = new_states_count if build_workq else 0
+        if build_workq:
+            actual_bytes = os.path.getsize(self.ranked_workq_filename)
+            if actual_bytes != expected_bytes:
+                raise RuntimeError(
+                    f"ranked workq is {actual_bytes} bytes after depth {self.depth}, "
+                    f"expected {expected_bytes} ({self.workq_size} records)"
+                )
         self.stats[self.depth] = new_states_count
         self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
         self._write_ranked_metadata()
@@ -1359,17 +2060,21 @@ class BFS(object):
     def _ranked_search(self, max_depth: int) -> None:
         if max_depth is not None and max_depth > 254:
             raise ValueError("ranked cost tables support a maximum depth of 254")
-        self._ranked_search_setup()
+        self._acquire_ranked_search_lock()
+        try:
+            self._ranked_search_setup()
 
-        while self.workq_size:
-            build_workq = max_depth is None or self.depth < max_depth
-            new_states_count = self._ranked_launch_crunchers(build_workq)
-            self._ranked_finish_depth(new_states_count, build_workq)
-            self.depth += 1
-            self.log_table_stats()
+            while self.workq_size:
+                build_workq = max_depth is None or self.depth < max_depth
+                new_states_count = self._ranked_launch_crunchers(build_workq)
+                self._ranked_finish_depth(new_states_count, build_workq)
+                self.depth += 1
+                self.log_table_stats()
 
-            if not build_workq:
-                break
+                if not build_workq:
+                    break
+        finally:
+            self._release_ranked_search_lock()
 
     def search(self, max_depth, cores):
         """
@@ -1398,28 +2103,11 @@ class BFS(object):
                 break
 
     def save_starting_states(self):
-        patterns = []
         to_write = []
         with open(self.filename, "r") as fh_read:
             for line in fh_read:
-                if self.use_edges_pattern:
-                    pattern, cube_state_string, steps = line.rstrip().split(":")
-                    self.cube.state = list(cube_state_string)
-                else:
-                    cube_state_string, steps = line.rstrip().split(":")
-                    self.cube.state = list(cube_state_string)
-
-                if self.use_edges_pattern:
-                    patterns.append(pattern)
-
-                if self.name == "5x5x5-edges-solve-second-four":
-                    if (
-                        self.cube.state[53] != "F"
-                        or self.cube.state[73] != "F"
-                        or self.cube.state[103] != "B"
-                        or self.cube.state[123] != "B"
-                    ):
-                        continue
+                cube_state_string, steps = line.rstrip().split(":")
+                self.cube.state = list(cube_state_string)
 
                 to_write.append(f"             ('{cube_state_string[1:]}', 'ULFRBD'),")
 
@@ -1443,32 +2131,30 @@ class BFS(object):
                 state = state[2:]
                 state = state.replace(".", "")
 
-                if self.store_as_hex:
-                    state = convert_state_to_hex(state)
-
                 to_write.append(f"'{state}',")
 
         with open(f"{self.filename}.starting-states.compact", "w") as fh:
             to_write.sort()
             fh.write("\n".join(to_write) + "\n")
 
-        if self.use_edges_pattern:
-            print("state_target patterns:\n%s\n\n" % "\n".join(patterns))
-
         shutil.move(f"{self.filename}.starting-states", self.filename)
 
     def _table_linecount(self) -> int:
         """
         How many lines the finished lookup-table holds, from the per-depth counts that
-        search() collected. The starting states went into the table at depth 0.
+        search() collected. Text tables leave stats[0] at 0 and keep the starting states
+        in starting_state_count; ranked tables already put those states in stats[0].
         """
-        return sum(count for count in self.stats.values() if count) + self.starting_state_count
+        discovered = sum(count for count in self.stats.values() if count)
+        if self.stats.get(0):
+            return discovered
+        return discovered + self.starting_state_count
 
     def write_histogram(self, filename: str) -> None:
         """
-        Append the report that utils/print-histogram.py produces, but build it from the
-        per-depth counts that search() already collected instead of making another full
-        pass over a table that can run to billions of lines.
+        Append a depth histogram built from the per-depth counts that search()
+        already collected, instead of making another full pass over a table that
+        can run to billions of lines.
         """
         stats = {depth: count for (depth, count) in self.stats.items() if count}
 
@@ -1503,100 +2189,11 @@ class BFS(object):
         if linecount:
             report.append(f"    Average: {float(total_steps / linecount):.2f} moves\n\n")
 
+        if os.environ.get("RUBIKS_SKIP_HISTOGRAM"):
+            return
+
         with open("histogram.txt", "a") as fh:
             fh.write("\n".join(report) + "\n")
-
-    def _convert_state_to_smaller_format(self) -> int:
-        """
-        Rewrite the table with the states in their smaller format and return the length of
-        the longest line we wrote. save() needs that to pad the file and measuring it here
-        saves a separate pass over a table that can run to tens of GB.
-        """
-        to_write = []
-        to_write_count = 0
-        max_line_length = 0
-
-        with open(f"{self.filename}.small", "w") as fh_final:
-            with open(self.filename, "r") as fh_read:
-                if self.use_edges_pattern:
-                    for line in fh_read:
-                        pattern, cube_state_string, steps = line.rstrip().split(":")
-                        pattern = pattern.replace(".", "")
-                        self.cube.state = list(cube_state_string)
-                        to_write.append(f"{pattern}:{steps}")
-                        to_write_count += 1
-
-                        if to_write_count >= WRITE_BATCH_SIZE:
-                            max_line_length = max(max_line_length, max(map(len, to_write)))
-                            fh_final.write("\n".join(to_write) + "\n")
-                            to_write = []
-                            to_write_count = 0
-
-                elif self.use_centers_then_edges:
-                    for line in fh_read:
-                        cube_state_string, steps = line.rstrip().split(":")
-                        self.cube.state = list(cube_state_string)
-
-                        if self.size == "4x4x4":
-                            centers = "".join([self.cube.state[x] for x in centers_444])
-                            edges = "".join([self.cube.state[x] for x in edges_444])
-                            centers = centers.replace(".", "")
-                            edges = edges.replace(".", "")
-
-                            if self.store_as_hex:
-                                centers = convert_state_to_hex(centers)
-                                edges = convert_state_to_hex(edges)
-
-                        elif self.size == "5x5x5":
-                            centers = "".join([self.cube.state[x] for x in centers_555])
-                            edges = "".join([self.cube.state[x] for x in edges_555])
-                            centers = centers.replace(".", "")
-                            edges = edges.replace(".", "")
-
-                            if self.store_as_hex:
-                                centers = convert_state_to_hex(centers)
-                                edges = convert_state_to_hex(edges)
-
-                        else:
-                            raise Exception(f"Add support for {self.size}")
-
-                        to_write.append(f"{centers}{edges}:{steps}")
-                        to_write_count += 1
-
-                        if to_write_count >= WRITE_BATCH_SIZE:
-                            max_line_length = max(max_line_length, max(map(len, to_write)))
-                            fh_final.write("\n".join(to_write) + "\n")
-                            to_write = []
-                            to_write_count = 0
-
-                else:
-                    store_as_hex = self.store_as_hex
-
-                    for line in fh_read:
-                        cube_state_string, steps = line.rstrip().split(":")
-                        cube_state_string_small = cube_state_string[1:].replace(".", "")
-
-                        if store_as_hex:
-                            cube_state_string_small = convert_state_to_hex(cube_state_string_small)
-
-                        to_write.append(f"{cube_state_string_small}:{steps}")
-                        to_write_count += 1
-
-                        if to_write_count >= WRITE_BATCH_SIZE:
-                            max_line_length = max(max_line_length, max(map(len, to_write)))
-                            fh_final.write("\n".join(to_write))
-                            fh_final.write("\n")
-                            to_write = []
-                            to_write_count = 0
-
-            if to_write_count:
-                max_line_length = max(max_line_length, max(map(len, to_write)))
-                fh_final.write("\n".join(to_write))
-                fh_final.write("\n")
-                to_write = []
-                to_write_count = 0
-
-        return max_line_length
 
     def save(self):
         start_time = dt.datetime.now()
@@ -1604,19 +2201,21 @@ class BFS(object):
         if self.use_ranked_cost:
             self._publish_ranked_cost_file()
             self._write_ranked_metadata()
+            if getattr(self, "orbit_parity_even_filename", None):
+                self._write_split_cost_histogram(self.orbit_parity_even_filename, self._orbit_parity_payloads["even"])
+                self._write_split_cost_histogram(self.orbit_parity_odd_filename, self._orbit_parity_payloads["odd"])
+            else:
+                self.write_histogram(self.ranked_cost_filename)
             self.time_in_save += (dt.datetime.now() - start_time).total_seconds()
             log.info(f"{self}: ranked cost table is {self.ranked_cost_filename}")
             return
 
-        # Convert the states in our lookup-table to their smaller format...basically
-        # remove all of the '.'s and if convert to hex (if requested).
+        # Convert the states in our lookup-table to their smaller format by dropping
+        # the leading "x" and the "." placeholders.
         log.info(f"{self}: save() begin")
         log.info(f"{self}: convert state to smaller format, file {self.filename}")
 
-        if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
-            max_line_length = self._convert_state_to_smaller_format()
-            shutil.move(f"{self.filename}.small", self.filename)
-        elif self.compact_squares:
+        if self.compact_squares:
             # The table is already just the interesting squares, which is the same format
             # cut | tr used to produce at the end. Measuring the width here is a read of
             # that small file, not a conversion of a full-cube table.
@@ -1685,44 +2284,18 @@ class BFS(object):
             log.info(f"{self}: build histogram")
             self.write_histogram(filename)
 
-            if self.use_cost_only:
-                log.info(f"{self}: build cost-only copy of file")
-                convert_to_cost_only(filename)
-
-            elif self.use_hash_cost_only:
-                log.info(f"{self}: build hash-cost-only copy of file")
-                convert_to_hash_cost_only(filename, self.bucketcount)
-
             log.info(f"{self}: save() end")
 
         self.time_in_save += (dt.datetime.now() - start_time).total_seconds()
 
-    def get_starting_states(self, use_hex, use_edges_pattern):
+    def get_starting_states(self):
 
         if self.starting_cube_states:
             foo = []
 
             for state, state_type in self.starting_cube_states:
                 if state_type == "ULFRBD":
-
-                    if use_edges_pattern:
-                        self.cube.state = ["x"] + list(state)
-
-                        if self.size == "5x5x5":
-                            state = edges_recolor_pattern_555(self.cube.state[:])
-                            state = "".join([state[index] for index in wings_for_edges_pattern_555])
-                        elif self.size == "4x4x4":
-                            state = edges_recolor_pattern_444(self.cube.state[:])
-                            state = "".join([state[index] for (_, index, _) in wings_for_edges_recolor_pattern_444])
-                        else:
-                            raise Exception(f"use_edges_pattern not supported for {self.size}")
-
-                    else:
-                        state = "".join(state.split()).strip().replace(".", "")
-
-                        if use_hex:
-                            state = convert_state_to_hex(state)
-
+                    state = "".join(state.split()).strip().replace(".", "")
                     foo.append('        "' + state + '"')
 
                 elif state_type == "ascii":
@@ -1742,7 +2315,7 @@ class BFS(object):
     def _code_gen_lookup_table(self):
         class_name = type(self).__name__.replace("Build", "LookupTable")
         histogram, linecount, max_depth = parse_histogram(self.filename)
-        starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
+        starting_states = self.get_starting_states()
         filename_minus_directory = self.filename.split("/")[1]
 
         print(
@@ -1801,7 +2374,7 @@ class %s(LookupTable):
     def _code_gen_lookup_table_ida(self):
         class_name = type(self).__name__.replace("Build", "LookupTableIDA")
         histogram, linecount, max_depth = parse_histogram(self.filename)
-        starting_states = self.get_starting_states(self.store_as_hex, self.use_edges_pattern)
+        starting_states = self.get_starting_states()
 
         print(
             '''
@@ -1842,23 +2415,7 @@ class %s(LookupTableIDAViaGraph):
             )
         )
 
-        if self.store_as_hex:
-            print(
-                "        lt_state = ''.join(['1' if parent_state[x] in (foo, bar) else '0' for x in TBD_%s])"
-                % self.size.replace("x", "")
-            )
-            print("        lt_state = self.hex_format % int(lt_state, 2)\n\n")
-
-        elif self.use_edges_pattern:
-            print(f"        state = edges_recolor_pattern_{self.size.replace('x', '')}(parent_state[:])")
-            print(
-                "        edges_state = ''.join([state[index] for index in wings_for_edges_pattern_%s])"
-                % self.size.replace("x", "")
-            )
-            print("        lt_state = edges_state")
-
-        else:
-            print(f"        lt_state = ''.join([parent_state[x] for x in TBD_{self.size.replace('x', '')}])")
+        print(f"        lt_state = ''.join([parent_state[x] for x in TBD_{self.size.replace('x', '')}])")
 
         print("        cost_to_goal = max(foo_cost, bar_cost)")
         print("        return (lt_state, cost_to_goal)\n\n")
@@ -1878,77 +2435,3 @@ class %s(LookupTableIDAViaGraph):
                 self._code_gen_lookup_table()
         else:
             self._code_gen_lookup_table()
-
-    def search_new(self, max_depth=99, cores=4):
-        workq = deque()
-        table = {}
-
-        # seed the workq
-        for cube in self.starting_cubes:
-            cube_state_minus_x = "".join(cube.state[1:])
-            table[cube_state_minus_x] = []
-
-            for step in self.legal_moves:
-                workq.append((cube_state_minus_x, [step]))
-
-        index = 0
-        max_depth = 5
-        log.info(f"max_depth {max_depth}")
-
-        while workq:
-            state, steps_to_scramble = workq.popleft()
-            # log.info(f"{index}: {state}, {steps_to_scramble}")
-
-            debug = False
-            """
-            if len(steps_to_scramble) >= 3 and steps_to_scramble[0] == "Lw" and steps_to_scramble[1] == "U'" and steps_to_scramble[2] == "3Bw2":
-                log.info(f"{index}: {steps_to_scramble}")
-                debug = True
-
-            if debug:
-                log.info(state)
-            """
-
-            cube.state = ["x"]
-            cube.state.extend(list(state))
-
-            if debug:
-                cube.print_cube()
-
-            cube.rotate(steps_to_scramble[-1])
-            cube_state_minus_x = "".join(cube.state[1:])
-
-            add_to_table = False
-
-            if cube_state_minus_x not in table:
-                add_to_table = True
-            else:
-                # if len(steps_to_scramble) <= len(table[cube_state_minus_x]):
-                if len(steps_to_scramble) < len(table[cube_state_minus_x]):
-                    add_to_table = True
-
-            if add_to_table:
-                table[cube_state_minus_x] = steps_to_scramble[:]
-
-                if len(steps_to_scramble) < max_depth:
-                    for step in self.legal_moves:
-                        workq.append((cube_state_minus_x, steps_to_scramble + [step]))
-
-            if debug:
-                cube.print_cube()
-                log.info(
-                    f"cube_state_minus_x {cube_state_minus_x}, cube state pretty {cube_state_minus_x.replace('.', '')}, add_to_table {add_to_table}"
-                )
-
-            index += 1
-
-            if index % 10000 == 0:
-                log.info(
-                    f"{index:,}: depth {len(steps_to_scramble)}, {len(workq):,} items on workq, {len(table):,} items in table"
-                )
-
-        with open(self.filename, "w") as fh:
-            for cube_state_minus_x in sorted(table.keys()):
-                steps_to_scramble = table[cube_state_minus_x]
-                steps_to_solve = reverse_steps(steps_to_scramble)
-                fh.write(f"{cube_state_minus_x}:{' '.join(steps_to_solve)}\n")

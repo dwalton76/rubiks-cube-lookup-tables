@@ -39,6 +39,30 @@ This should averge 31 moves
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
 
+# fmt: off
+PHASE2_ILLEGAL_MOVES = (
+    "L", "L'",
+    "R", "R'",
+)
+
+PHASE3_ILLEGAL_MOVES = (
+    "L", "L'",
+    "R", "R'",
+    "F", "F'",
+    "B", "B'",
+)
+
+PHASE4_ILLEGAL_MOVES = (
+    "R", "R'",
+    "L", "L'",
+    "F", "F'",
+    "B", "B'",
+    "U", "U'",
+    "D", "D'",
+)
+
+# fmt: on
+
 
 class Build333MicroPythonPhase1(BFS):
     """
@@ -51,6 +75,18 @@ class Build333MicroPythonPhase1(BFS):
 
     Total: 1 entries
     Average: 0.00 moves
+
+           x 1 x
+           1 U 1
+           x 1 x
+
+    x 1 x  x 1 x  x 1 x  x 1 x
+    1 L 1  1 F 1  1 R 1  1 B 1
+    x 1 x  x 1 x  x 1 x  x 1 x
+
+           x 1 x
+           1 D 1
+           x 1 x
     """
 
     def __init__(self):
@@ -61,7 +97,6 @@ class Build333MicroPythonPhase1(BFS):
             (),
             "3x3x3",
             "lookup-table-3x3x3-step110.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 (
@@ -80,7 +115,6 @@ class Build333MicroPythonPhase1(BFS):
                     "ascii",
                 ),
             ),
-            use_c=True,
         )
 
 
@@ -102,17 +136,27 @@ class Build333MicroPythonPhase2(BFS):
 
     Total: 1,082,565 entries
     Average: 7.80 moves
+
+           U x U
+           x U x
+           U x U
+
+    x x x  x x x  x x x  x x x
+    1 L 1  1 F 1  1 R 1  1 B 1
+    x x x  x x x  x x x  x x x
+
+           U x U
+           x D x
+           U x U
     """
 
     def __init__(self):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase2",
-            # illegal moves
-            ("L", "L'", "R", "R'"),
+            PHASE2_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step120.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 (
@@ -131,7 +175,6 @@ class Build333MicroPythonPhase2(BFS):
                     "ascii",
                 ),
             ),
-            use_c=True,
         )
 
 
@@ -148,17 +191,27 @@ class Build333MicroPythonPhase2Edges(BFS):
 
     Total: 495 entries
     Average: 4.00 moves
+
+           . x .
+           x . x
+           . x .
+
+    . x .  . x .  . x .  . x .
+    1 . 1  1 . 1  1 . 1  1 . 1
+    . x .  . x .  . x .  . x .
+
+           . x .
+           x . x
+           . x .
     """
 
     def __init__(self):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase2-edges",
-            # illegal moves
-            ("L", "L'", "R", "R'"),
+            PHASE2_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step121-edges.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 (
@@ -177,7 +230,6 @@ class Build333MicroPythonPhase2Edges(BFS):
                     "ascii",
                 ),
             ),
-            use_c=True,
         )
 
 
@@ -196,17 +248,27 @@ class Build333MicroPythonPhase2Corners(BFS):
 
     Total: 2,187 entries
     Average: 5.12 moves
+
+           U . U
+           . . .
+           U . U
+
+    x . x  x . x  x . x  x . x
+    . . .  . . .  . . .  . . .
+    x . x  x . x  x . x  x . x
+
+           U . U
+           . . .
+           U . U
     """
 
     def __init__(self):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase2-corners",
-            # illegal moves
-            ("L", "L'", "R", "R'"),
+            PHASE2_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step122-corners.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 (
@@ -225,42 +287,55 @@ class Build333MicroPythonPhase2Corners(BFS):
                     "ascii",
                 ),
             ),
-            use_c=True,
         )
 
 
 class Build333MicroPythonPhase3(BFS):
     """
-    lookup-table-3x3x3-step130.txt
-    ==============================
-    0 steps has 96 entries (0 percent, 0.00x previous step)
-    1 steps has 192 entries (0 percent, 2.00x previous step)
-    2 steps has 864 entries (0 percent, 4.50x previous step)
-    3 steps has 3,456 entries (0 percent, 4.00x previous step)
-    4 steps has 11,904 entries (0 percent, 3.44x previous step)
-    5 steps has 50,880 entries (1 percent, 4.27x previous step)
-    6 steps has 173,376 entries (6 percent, 3.41x previous step)
-    7 steps has 358,272 entries (12 percent, 2.07x previous step)
-    8 steps has 495,168 entries (17 percent, 1.38x previous step)
-    9 steps has 678,720 entries (24 percent, 1.37x previous step)
-    10 steps has 692,928 entries (24 percent, 1.02x previous step)
-    11 steps has 307,392 entries (10 percent, 0.44x previous step)
-    12 steps has 46,848 entries (1 percent, 0.15x previous step)
-    13 steps has 2,304 entries (0 percent, 0.05x previous step)
+       First of the 96 seeded goal states. x marks an edge this coordinate does
+       not track. The other 95 are the remaining corner and edge arrangements
+       this phase treats as solved.
 
-    Total: 2,822,400 entries
-    Average: 8.80 moves
+           D F D
+           x U x
+           D F D
+
+    L x L  B F B  R x R  F F F
+    x L x  x F x  x R x  x B x
+    L x L  B F B  R x R  F F F
+
+           U F U
+           x D x
+           U F U
+
+       lookup-table-3x3x3-step130.txt
+       ==============================
+       0 steps has 96 entries (0 percent, 0.00x previous step)
+       1 steps has 192 entries (0 percent, 2.00x previous step)
+       2 steps has 864 entries (0 percent, 4.50x previous step)
+       3 steps has 3,456 entries (0 percent, 4.00x previous step)
+       4 steps has 11,904 entries (0 percent, 3.44x previous step)
+       5 steps has 50,880 entries (1 percent, 4.27x previous step)
+       6 steps has 173,376 entries (6 percent, 3.41x previous step)
+       7 steps has 358,272 entries (12 percent, 2.07x previous step)
+       8 steps has 495,168 entries (17 percent, 1.38x previous step)
+       9 steps has 678,720 entries (24 percent, 1.37x previous step)
+       10 steps has 692,928 entries (24 percent, 1.02x previous step)
+       11 steps has 307,392 entries (10 percent, 0.44x previous step)
+       12 steps has 46,848 entries (1 percent, 0.15x previous step)
+       13 steps has 2,304 entries (0 percent, 0.05x previous step)
+
+       Total: 2,822,400 entries
+       Average: 8.80 moves
     """
 
     def __init__(self):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase3",
-            # illegal moves
-            ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
+            PHASE3_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step130.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 ("DFDxUxDFDLxLxLxLxLBFBxFxBFBRxRxRxRxRFFFxBxFFFUFUxDxUFU", "ULFRBD"),
@@ -360,7 +435,6 @@ class Build333MicroPythonPhase3(BFS):
                 ("UFUxUxUFURxRxLxLxLBFBxFxFFFLxLxRxRxRFFFxBxBFBDFDxDxDFD", "ULFRBD"),
                 ("UFUxUxUFURxRxLxRxRBFBxFxBFBLxLxRxLxLFFFxBxFFFDFDxDxDFD", "ULFRBD"),
             ),
-            use_c=True,
         )
 
 
@@ -376,17 +450,27 @@ class Build333MicroPythonPhase3Edges(BFS):
 
     Total: 70 entries
     Average: 3.17 moves
+
+           . F .
+           x . x
+           . F .
+
+    . x .  . F .  . x .  . F .
+    x . x  x . x  x . x  x . x
+    . x .  . F .  . x .  . F .
+
+           . F .
+           x . x
+           . F .
     """
 
     def __init__(self):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase3-edges",
-            # illegal moves
-            ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
+            PHASE3_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step131-edges.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 (
@@ -406,40 +490,54 @@ class Build333MicroPythonPhase3Edges(BFS):
                     "ascii",
                 ),
             ),
-            use_c=True,
         )
 
 
 class Build333MicroPythonPhase3Corners(BFS):
     """
-    lookup-table-3x3x3-step132-corners.txt
-    ======================================
-    0 steps has 96 entries (0 percent, 0.00x previous step)
-    1 steps has 192 entries (0 percent, 2.00x previous step)
-    2 steps has 480 entries (1 percent, 2.50x previous step)
-    3 steps has 1,152 entries (2 percent, 2.40x previous step)
-    4 steps has 1,728 entries (4 percent, 1.50x previous step)
-    5 steps has 4,800 entries (11 percent, 2.78x previous step)
-    6 steps has 4,224 entries (10 percent, 0.88x previous step)
-    7 steps has 4,992 entries (12 percent, 1.18x previous step)
-    8 steps has 6,528 entries (16 percent, 1.31x previous step)
-    9 steps has 9,216 entries (22 percent, 1.41x previous step)
-    10 steps has 4,992 entries (12 percent, 0.54x previous step)
-    11 steps has 1,920 entries (4 percent, 0.38x previous step)
+       First of the 96 seeded corner goals. Dots are edges, which this table
+       ignores. The other 95 are the remaining corner arrangements this phase
+       treats as solved. This first state has the U/D corners swapped with each
+       other and the F/B corners swapped with each other.
 
-    Total: 40,320 entries
-    Average: 7.49 moves
+           D . D
+           . . .
+           D . D
+
+    L . L  B . B  R . R  F . F
+    . . .  . . .  . . .  . . .
+    L . L  B . B  R . R  F . F
+
+           U . U
+           . . .
+           U . U
+
+       lookup-table-3x3x3-step132-corners.txt
+       ======================================
+       0 steps has 96 entries (0 percent, 0.00x previous step)
+       1 steps has 192 entries (0 percent, 2.00x previous step)
+       2 steps has 480 entries (1 percent, 2.50x previous step)
+       3 steps has 1,152 entries (2 percent, 2.40x previous step)
+       4 steps has 1,728 entries (4 percent, 1.50x previous step)
+       5 steps has 4,800 entries (11 percent, 2.78x previous step)
+       6 steps has 4,224 entries (10 percent, 0.88x previous step)
+       7 steps has 4,992 entries (12 percent, 1.18x previous step)
+       8 steps has 6,528 entries (16 percent, 1.31x previous step)
+       9 steps has 9,216 entries (22 percent, 1.41x previous step)
+       10 steps has 4,992 entries (12 percent, 0.54x previous step)
+       11 steps has 1,920 entries (4 percent, 0.38x previous step)
+
+       Total: 40,320 entries
+       Average: 7.49 moves
     """
 
     def __init__(self):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase3-corners",
-            # illegal moves
-            ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
+            PHASE3_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step132-corners.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 ("D.D...D.DL.L...L.LB.B...B.BR.R...R.RF.F...F.FU.U...U.U", "ULFRBD"),
@@ -539,7 +637,6 @@ class Build333MicroPythonPhase3Corners(BFS):
                 ("U.U...U.UR.R...L.LB.B...F.FL.L...R.RF.F...B.BD.D...D.D", "ULFRBD"),
                 ("U.U...U.UR.R...R.RB.B...B.BL.L...L.LF.F...F.FD.D...D.D", "ULFRBD"),
             ),
-            use_c=True,
         )
 
 
@@ -566,17 +663,27 @@ class Build333MicroPythonPhase4(BFS):
 
     Total: 663,552 entries
     Average: 10.13 moves
+
+           U U U
+           U U U
+           U U U
+
+    L L L  F F F  R R R  B B B
+    L L L  F F F  R R R  B B B
+    L L L  F F F  R R R  B B B
+
+           D D D
+           D D D
+           D D D
     """
 
     def __init__(self):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase4",
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+            PHASE4_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step140.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 (
@@ -595,7 +702,6 @@ class Build333MicroPythonPhase4(BFS):
                     "ascii",
                 ),
             ),
-            use_c=True,
         )
 
 
@@ -615,17 +721,27 @@ class Build333MicroPythonPhase4Edges(BFS):
 
     Total: 6,912 entries
     Average: 5.82 moves
+
+           . U .
+           U . U
+           . U .
+
+    . L .  . F .  . R .  . B .
+    L . L  F . F  R . R  B . B
+    . L .  . F .  . R .  . B .
+
+           . D .
+           D . D
+           . D .
     """
 
     def __init__(self):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase4-edges",
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+            PHASE4_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step141-edges.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 (
@@ -644,7 +760,6 @@ class Build333MicroPythonPhase4Edges(BFS):
                     "ascii",
                 ),
             ),
-            use_c=True,
         )
 
 
@@ -660,17 +775,27 @@ class Build333MicroPythonPhase4Corners(BFS):
 
     Total: 96 entries
     Average: 2.77 moves
+
+           U . U
+           . . .
+           U . U
+
+    L . L  F . F  R . R  B . B
+    . . .  . . .  . . .  . . .
+    L . L  F . F  R . R  B . B
+
+           D . D
+           . . .
+           D . D
     """
 
     def __init__(self):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase4-corners",
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+            PHASE4_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step142-corners.txt",
-            False,  # store_as_hex
             # starting cubes
             (
                 (
@@ -689,5 +814,4 @@ class Build333MicroPythonPhase4Corners(BFS):
                     "ascii",
                 ),
             ),
-            use_c=True,
         )
