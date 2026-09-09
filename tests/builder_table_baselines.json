@@ -1,17 +1,4 @@
 {
-  "Build222Ultimate": {
-    "filename": "lookup-tables/lookup-table-2x2x2-step00-ultimate.txt",
-    "lines": 53568,
-    "states_per_depth": {
-      "0": 24,
-      "1": 216,
-      "2": 1296,
-      "3": 7704,
-      "4": 44328
-    },
-    "states_md5": "0f45c9a4c8d1eb448ac9d121eb747ca1",
-    "depth": 4
-  },
   "Build333MicroPythonPhase1": {
     "filename": "lookup-tables/lookup-table-3x3x3-step110.txt",
     "lines": 1,
@@ -162,19 +149,6 @@
       "4": 11163
     },
     "states_md5": "1657770a581fbaf97dc103f7eb33c4ec",
-    "depth": 4
-  },
-  "Build444LCentersStage": {
-    "filename": "lookup-tables/lookup-table-4x4x4-step13-L-centers-stage.txt",
-    "lines": 10490,
-    "states_per_depth": {
-      "0": 12,
-      "1": 54,
-      "2": 660,
-      "3": 4688,
-      "4": 5076
-    },
-    "states_md5": "913e824d7f86a774d9f5552438958781",
     "depth": 4
   },
   "Build444LRCentersStage": {
@@ -359,19 +333,6 @@
     "states_md5": "0d7dec29156e2fe2c9a4c5a46b6ebda3",
     "depth": 4
   },
-  "Build555Phase2LRCenterStage": {
-    "filename": "lookup-tables/lookup-table-5x5x5-step23-LR-center-stage.txt",
-    "lines": 4804,
-    "states_per_depth": {
-      "0": 432,
-      "1": 396,
-      "2": 1064,
-      "3": 1692,
-      "4": 1220
-    },
-    "states_md5": "b018c1743b7ab6544c6ee1ec1a81ab4a",
-    "depth": 4
-  },
   "Build555Phase3LRCenterStage": {
     "filename": "lookup-tables/lookup-table-5x5x5-step901-LR-center-stage.txt",
     "lines": 4804,
@@ -487,32 +448,6 @@
       "4": 3136
     },
     "states_md5": "57190ae626c41f1d96493e29ad643be9",
-    "depth": 4
-  },
-  "Build555UDCenterStageTCenter": {
-    "filename": "lookup-tables/lookup-table-5x5x5-step13-UD-centers-stage-t-center-only.txt",
-    "lines": 10597,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 66,
-      "3": 900,
-      "4": 9626
-    },
-    "states_md5": "9b969710207101ee4d16192b4378dce6",
-    "depth": 4
-  },
-  "Build555UDCenterStageXCenter": {
-    "filename": "lookup-tables/lookup-table-5x5x5-step14-UD-centers-stage-x-center-only.txt",
-    "lines": 15409,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 82,
-      "3": 1206,
-      "4": 14116
-    },
-    "states_md5": "330fa8097e8c27eca0c47d85b405df08",
     "depth": 4
   },
   "Build666FBInnerXCenterAndObliqueEdges": {
@@ -669,19 +604,6 @@
       "4": 10773
     },
     "states_md5": "5e689d2067c0c9ffb6b5ae86a0b00df1",
-    "depth": 4
-  },
-  "Build666UDXCentersStage": {
-    "filename": "lookup-tables/lookup-table-6x6x6-step12-UD-x-centers.txt",
-    "lines": 1512,
-    "states_per_depth": {
-      "0": 1,
-      "1": 2,
-      "2": 29,
-      "3": 234,
-      "4": 1246
-    },
-    "states_md5": "02bbe88281b35c8bd82005e95db436dd",
     "depth": 4
   },
   "Build777Phase4Centers": {

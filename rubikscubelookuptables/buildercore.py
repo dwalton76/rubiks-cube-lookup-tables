@@ -1805,7 +1805,7 @@ class %s(LookupTable):
 
         print(
             '''
-class %s(LookupTableIDA):
+class %s(LookupTableIDAViaGraph):
     """
 %s
     """
@@ -1815,7 +1815,7 @@ class %s(LookupTableIDA):
     )
 
     def __init__(self, parent):
-        LookupTableIDA.__init__(
+        LookupTableIDAViaGraph.__init__(
             self,
             parent,
             '%s',

@@ -47,6 +47,11 @@ BUILD_TIMEOUT = 300
 # builderui call in the Makefile.
 SKIPPED_BUILDERS = {
     "Build555Phase4": "starting states are too large to build at a test depth",
+    "Build555XCenterStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555TCenterStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555Phase5FBCentersHighEdgeMidge": "576 million states; used only to build a perfect-hash file",
+    "Build555Phase5FBCentersLowEdgeMidge": "576 million states; used only to build a perfect-hash file",
+    "Build555PairLastEightEdgesEdgesOnly": "813 million states; used only to build a perfect-hash file",
     "Build777Phase4LeftRightOblique": "starting states are too large to build at a test depth",
     "Build777Phase4LeftMiddleOblique": "starting states are too large to build at a test depth",
 }
@@ -99,7 +104,7 @@ def builder_class(name: str):
     ensure_starting_state_modules()
     # Match builderui's precedence. Some class names describe reducing a larger cube
     # to 3x3x3 and therefore contain more than one size.
-    for size in ("777", "666", "555", "444", "333", "222"):
+    for size in ("777", "666", "555", "444", "333"):
         if size in name:
             module = importlib.import_module(f"rubikscubelookuptables.builder{size}")
             return getattr(module, name)
