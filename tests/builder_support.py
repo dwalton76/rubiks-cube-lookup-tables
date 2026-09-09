@@ -46,14 +46,64 @@ BUILD_TIMEOUT = 300
 # listed rather than dropped so the coverage test still accounts for every
 # builderui call in the Makefile.
 SKIPPED_BUILDERS = {
-    "Build555Phase4": "starting states are too large to build at a test depth",
-    "Build555XCenterStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
-    "Build555TCenterStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
-    "Build555Phase5FBCentersHighEdgeMidge": "576 million states; used only to build a perfect-hash file",
-    "Build555Phase5FBCentersLowEdgeMidge": "576 million states; used only to build a perfect-hash file",
-    "Build555PairLastEightEdgesEdgesOnly": "813 million states; used only to build a perfect-hash file",
-    "Build777Phase4LeftRightOblique": "starting states are too large to build at a test depth",
-    "Build777Phase4LeftMiddleOblique": "starting states are too large to build at a test depth",
+    "Build444PairAllEdges": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build444Reduce333Centers": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build444AllCentersStageSymmetryRanked": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build444LRCentersStageRanked": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build444HighLowEdgesEdgesAllMoves": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555LRCenterStageTCenter": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555LRCenterStageXCenter": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555FBTCenterStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555FBXCenterStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555Phase3LRCenterStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555EdgeOrientOuterOrbit": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555EdgeOrientInnerOrbit": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555Phase4": "ranked table has 343,000 starting states and a 121,287,375-byte dense cost array",
+    "Build555Phase5Centers": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build555Phase5FBCentersHighEdgeMidge": "ranked table is a 576,240,000-byte dense cost array",
+    "Build555Phase5FBCentersLowEdgeMidge": "ranked table is a 576,240,000-byte dense cost array",
+    "Build555PairLastEightEdgesEdgesOnly": "ranked table has an 812,851,200-byte dense cost array",
+    "Build555Phase6Centers": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase2UDInnerXCentersStageBinary": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase2UDInnerXOrbit1Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase1LRInnerXCentersStageBinary": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase3UDLeftRightObliqueCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase3UDLeftObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase3UDRightObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase4LeftRightOrbit0Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase4LeftOuterXOrbit0Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase4RightOuterXOrbit0Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase2UDInnerCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase2UDInnerCentersOrbit1Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDLeftRightObliqueCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDLeftMiddleObliqueCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDLeftObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDMiddleRightObliqueCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDRightObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDMiddleObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDLeftRightObliqueOrbit0Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDLeftMiddleObliqueOrbit0Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDLeftObliqueOuterXOrbit0Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDMiddleRightObliqueOrbit0Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDRightObliqueOuterXOrbit0Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase56UDMiddleObliqueOuterXOrbit0Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666DaisyAllInnerXPlusUDObliquesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666DaisyAllInnerXPlusLRObliquesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666DaisyAllInnerXPlusFBObliquesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777DaisyLRInnerCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase8UDPairedCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase8FBPairedCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase8InnerInteractionCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase8UDInnerFBObliquesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase8FBInnerUDObliquesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase9LRObliqueCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase9InnerInteractionCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase9MiddleInteractionCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase9UDAxisCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase9FBAxisCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase9UDObliquesFBEdgesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase9FBObliquesUDEdgesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase9UDObliquesFBInnerTCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
 }
 
 
@@ -119,7 +169,10 @@ def builder_output_path(name: str) -> Path:
         builder = builder_class(name)()
     finally:
         logging.disable(previous_disable_level)
-    return REPO_ROOT / builder.filename
+    path = Path(builder.filename)
+    if path.is_absolute():
+        return path
+    return REPO_ROOT / path
 
 
 @dataclass
@@ -205,7 +258,7 @@ def read_table(path: Path, depth: Optional[int] = None) -> TableFacts:
                 solution_over_depth = line.decode("ascii", "replace")
 
     return TableFacts(
-        filename=str(path.relative_to(REPO_ROOT)).replace(os.sep, "/"),
+        filename="lookup-tables/" + path.name,
         lines=line_count,
         # Keyed by string because this round-trips through JSON. Depth 0 is the
         # starting states, which reach themselves in no moves.

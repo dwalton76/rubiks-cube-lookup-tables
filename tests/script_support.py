@@ -24,7 +24,6 @@ from typing import Iterable, Sequence
 from tests.builder_support import PAD_LINES, REPO_ROOT, builder_environment, ensure_importable, ensure_pad_lines
 
 UTILS = REPO_ROOT / "utils"
-LOOKUP_TABLES = REPO_ROOT / "rubikscubelookuptables"
 
 
 def utils_scripts() -> list:
@@ -64,11 +63,6 @@ def load_utils_script(name: str) -> ModuleType:
     return load_script(UTILS / name)
 
 
-def load_lookup_script(name: str) -> ModuleType:
-    """Import a dashed helper under rubikscubelookuptables/ by path."""
-    return load_script(LOOKUP_TABLES / name)
-
-
 def run_utils_script(
     name: str,
     *arguments: str,
@@ -77,8 +71,7 @@ def run_utils_script(
 ) -> subprocess.CompletedProcess:
     """Run a utils script the way the Makefile does, from the repo root.
 
-    The scripts shell out to each other with paths like ./utils/keep-best-solution.py, so the
-    working directory defaults to the repo root. They are invoked through the current
+    Scripts are invoked from the repo root through the current
     interpreter because several of them have no shebang line.
     """
     completed = subprocess.run(
@@ -104,7 +97,7 @@ def run_pad_lines(
     expect_success: bool = True,
     cwd: Path = REPO_ROOT,
 ) -> subprocess.CompletedProcess:
-    """Run the C pad-lines helper the way save() and the keep-* scripts do."""
+    """Run the C pad-lines helper the way save() does."""
     ensure_pad_lines()
     completed = subprocess.run(
         [str(PAD_LINES), *arguments],

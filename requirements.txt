@@ -1,1 +1,1 @@
-pyhashxx==0.1.3
+# Runtime imports come from the solver package. This file stays so `make init` has a requirements list to install.

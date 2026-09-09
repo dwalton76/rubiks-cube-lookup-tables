@@ -17,4 +17,5 @@ setup(
     author_email="dwalton76@gmail.com",
     license=license_text,
     packages=["rubikscubelookuptables"],
+    install_requires=[],
 )
