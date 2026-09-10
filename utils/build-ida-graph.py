@@ -40,14 +40,10 @@ from rubikscubennnsolver.RubiksCube555 import (
 )
 from rubikscubennnsolver.RubiksCube666 import (
     LookupTable666FBInnerXCenterAndObliqueEdges,
-    LookupTable666LRInnerXCentersStage,
     LookupTable666LRObliqueEdges,
     LookupTable666Step50HighLowEdges,
     LookupTable666Step50LRCenters,
     LookupTable666UDInnerXCenterAndObliqueEdges,
-    LookupTable666UDInnerXCentersStage,
-    LookupTable666UDLeftObliqueCentersStage,
-    LookupTable666UDRightObliqueCentersStage,
     RubiksCube666,
     solved_666,
 )
@@ -73,12 +69,20 @@ from rubikscubennnsolver.RubiksCube777 import (
     LookupTable777Step62,
     LookupTable777Step65,
     LookupTable777Step66,
+    RubiksCube777,
+    solved_777,
+)
+from rubikscubennnsolver.RubiksCubeNNNEven import (
+    LookupTable666LRInnerXCentersStage,
+    LookupTable666UDInnerXCentersStage,
+    LookupTable666UDLeftObliqueCentersStage,
+    LookupTable666UDRightObliqueCentersStage,
+)
+from rubikscubennnsolver.RubiksCubeNNNOdd import (
     LookupTable777Step71,
     LookupTable777Step72,
     LookupTable777Step75,
     LookupTable777Step76,
-    RubiksCube777,
-    solved_777,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")

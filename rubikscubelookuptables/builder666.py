@@ -97,8 +97,8 @@ PHASE6_ILLEGAL_MOVES = (
 
 
 # ==================================================
-# phase 1
-# stage inner x-centers and pair the LR obliques
+# plus-sign staging (even cubes larger than 6x6)
+# stage LR inner x-centers and pair the LR obliques
 # ==================================================
 class Build666LRInnerXCentersStage(BFS):
     """
@@ -161,6 +161,10 @@ class Build666LRInnerXCentersStage(BFS):
         # fmt: on
 
 
+# ==================================================
+# phase 1
+# stage all inner x-centers and pair the LR obliques
+# ==================================================
 class Build666InnerXCentersStageOnePhase(BFS):
     """
     Stage all 24 inner x-centers in one phase (8 UD, 8 LR, 8 FB).
@@ -441,8 +445,8 @@ class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
 
 
 # ==================================================
-# phase 3 --low-memory
-# pair the UD obliques
+# plus-sign staging (even cubes larger than 6x6)
+# stage UD inner x-centers and pair the UD obliques
 # ==================================================
 class Build666UDInnerXCentersStage(BFS):
     """
