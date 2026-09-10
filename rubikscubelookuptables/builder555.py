@@ -102,9 +102,10 @@ CENTERS_SOLVE_ILLEGAL_MOVES = (
 # fmt: on
 
 
-# =======
+# ==================================================
 # phase 1
-# =======
+# stage LR centers
+# ==================================================
 class Build555LRCenterStageTCenter(BFS):
     """
     24! / (8! * 16!) = 735,471 states
@@ -217,9 +218,10 @@ class Build555LRCenterStageXCenter(BFS):
         )
 
 
-# =======
+# ==================================================
 # phase 2
-# =======
+# stage FB (and UD) centers
+# ==================================================
 class Build555FBTCenterStage(BFS):
     """
     16! / (8! * 8!) = 12,870 states
@@ -332,6 +334,10 @@ class Build555FBXCenterStage(BFS):
         )
 
 
+# ==================================================
+# phase 3
+# EO the wings and midges; LR centers to 1-of-432
+# ==================================================
 class Build555Phase3LRCenterStage(BFS):
     """
     (8! / (4! * 4!))^2 = 4,900 states
@@ -910,9 +916,10 @@ class Build555EdgeOrientInnerOrbit(BFS):
         )
 
 
-# =======
+# ==================================================
 # phase 4
-# =======
+# park four edges on the x-plane
+# ==================================================
 class StartingStatesBuild555Phase4(BFS):
     def __init__(self):
         BFS.__init__(
@@ -983,9 +990,10 @@ class Build555Phase4(BFS):
         )
 
 
-# =======
+# ==================================================
 # phase 5
-# =======
+# pair those four edges; LR/FB centers to vertical bars
+# ==================================================
 class StartingStatesBuild555Phase5Centers(BFS):
     def __init__(self):
         BFS.__init__(
@@ -1678,11 +1686,10 @@ class Build555Phase5FBCenters(BFS):
         )
 
 
-# =======
+# ==================================================
 # phase 6
-# =======
-# - pair last 8-edges in y-plane and z-plane
-# - solve center (LR and FB will be vertical bars)
+# pair the last eight edges and solve the centers
+# ==================================================
 class Build555PairLastEightEdgesEdgesOnly(BFS):
     """
     Should be (8!^2)/2 812,851,200
@@ -1901,9 +1908,10 @@ class Build555Phase6LowEdgeMidge(BFS):
         )
 
 
-# ====================
-# Centers Solve Staged
-# ====================
+# ==================================================
+# solve remaining centers
+# used by cubes larger than 5x5
+# ==================================================
 class Build555UDCenterSolve(BFS):
     """
     (8! / (4! * 4!))^3 = 343,000 states

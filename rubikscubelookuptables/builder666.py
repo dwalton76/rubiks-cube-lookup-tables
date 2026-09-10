@@ -8,28 +8,6 @@ from rubikscubennnsolver.RubiksCube666 import moves_666
 
 log = logging.getLogger(__name__)
 
-"""
-phase 1
-    stage the inner-x centers via 444 solver
-
-phase 2
-    pair the LR oblique edges
-    This happens via C via a heuristic formula based on unpaired LR oblique count so there is no table to build
-
-phase 3
-    stage LR centers via 555
-
-phase 4
-    pair the UD oblique edges and outer x-centers to finish staging centers
-
-phase 5
-    solve the UD inner x-centers and pair the UD oblique edges
-
-phase 6
-    solve the LR inner x-centers and pair the LR oblique edges
-    solve the FB inner x-centers and pair the FB oblique edges
-"""
-
 
 # fmt: off
 PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES = (
@@ -118,9 +96,10 @@ PHASE6_ILLEGAL_MOVES = (
 # fmt: on
 
 
-# =======
+# ==================================================
 # phase 1
-# =======
+# stage inner x-centers and pair the LR obliques
+# ==================================================
 class Build666LRInnerXCentersStage(BFS):
     """
     24! / (8! * 16!) = 735,471 states
@@ -231,9 +210,10 @@ class Build666InnerXCentersStageOnePhase(BFS):
         # fmt: on
 
 
-# =======
+# ==================================================
 # phase 3
-# =======
+# stage UD left/right obliques and outer x-centers
+# ==================================================
 # fmt: off
 UFBD_OUTER_X_CENTERS_666 = (
     8, 11, 26, 29,
@@ -460,6 +440,10 @@ class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
         )
 
 
+# ==================================================
+# phase 3 --low-memory
+# pair the UD obliques
+# ==================================================
 class Build666UDInnerXCentersStage(BFS):
     """
     16! / (8! * 8!) = 12,870 states
@@ -767,9 +751,10 @@ class Build666UDRightObliqueInnerXCentersStage(BFS):
         # fmt: on
 
 
-# =======
+# ==================================================
 # phase 5
-# =======
+# LR centers to daisy and EO the inside wings
+# ==================================================
 # - put LR centers such that they can be solved with L L' R R'
 # - EO the inside oribit of edges to prep for the 444 solver to pair those edge
 class StartingStates666Step50LRCenters(BFS):
@@ -950,9 +935,10 @@ class Build666Step50HighLowEdges(BFS):
         )
 
 
-# =======
+# ==================================================
 # phase 6
-# =======
+# solve UD/FB inner x-centers and pair remaining obliques
+# ==================================================
 # - solve the UD inner x-centers and pair the LR oblique edges
 # - solve the FB inner x-centers and pair the FB oblique edges
 class Build666UDInnerXCenterAndObliqueEdges(BFS):

@@ -70,6 +70,10 @@ PHASE4_ILLEGAL_MOVES = (
 # fmt: on
 
 
+# ==================================================
+# phase 1
+# stage LR centers
+# ==================================================
 class Build444UDCentersStage(BFS):
     """
     lookup-table-4x4x4-step11-UD-centers-stage.txt
@@ -168,6 +172,10 @@ class Build444LRCentersStage(BFS):
         # fmt: on
 
 
+# ==================================================
+# phase 2
+# stage the remaining centers and EO the wings
+# ==================================================
 class StartingStates444HighLowEdgesCenters(BFS):
     def __init__(self):
         BFS.__init__(
@@ -284,10 +292,10 @@ class Build444HighLowEdgesCenters(BFS):
         # fmt: on
 
 
-# =======================================================================
+# ==================================================
 # phase 3
-# pair 4 edges in the x-plane and put the LFRB centers into vertical bars
-# =======================================================================
+# pair four x-plane edges; LFRB centers to vertical bars
+# ==================================================
 
 
 # We want the LFRB centers to be vertical bars, there should be 36 states
@@ -428,7 +436,10 @@ class Build444Reduce333FirstFourEdges(BFS):
         )
 
 
+# ==================================================
 # phase 4
+# pair the last eight edges and solve the centers
+# ==================================================
 class Build444Reduce333Centers(BFS):
     """
     lookup-table-4x4x4-step41-centers.txt

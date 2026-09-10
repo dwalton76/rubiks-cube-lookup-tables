@@ -147,9 +147,10 @@ PHASE9_ILLEGAL_MOVES = (
 # fmt: on
 
 
-# =======================================================
-# phase 4 - stage UD inner centers, pair UD oblique edges
-# =======================================================
+# ==================================================
+# phase 4
+# stage UD inner centers, pair UD oblique edges
+# ==================================================
 class Build777Phase4TCenters(BFS):
     """
     16! / (8! * 8!) = 12,870 states
@@ -632,9 +633,10 @@ class Build777Phase4LeftMiddleOblique(BFS):
         # fmt: on
 
 
-# ===============================
-# phase 5 - pair UD oblique edges
-# ===============================
+# ==================================================
+# phase 5
+# pair UD oblique edges
+# ==================================================
 class Build777Phase5LeftOblique(BFS):
     """
     16! / (8! * 8!) = 12,870 states
@@ -951,9 +953,10 @@ class Build777Phase5LeftMiddleOblique(BFS):
         # fmt: on
 
 
-# =====================================
-# phase 7 - LR centers to vertical bars
-# =====================================
+# ==================================================
+# phase 7
+# LR centers to vertical bars
+# ==================================================
 class StartingStates777Step41(BFS):
     def __init__(self):
         # fmt: off
@@ -2024,9 +2027,10 @@ class Build777Step44(BFS):
         # fmt: on
 
 
-# =====================================
-# phase 8 - UD centers to vertical bars
-# =====================================
+# ==================================================
+# phase 8
+# UD centers to vertical bars
+# ==================================================
 class StartingStates777Step51(BFS):
     def __init__(self):
         # fmt: off
@@ -3164,9 +3168,10 @@ class Build777Step55(BFS):
         # fmt: on
 
 
-# =============================
-# phase 9 - centers daisy solve
-# =============================
+# ==================================================
+# phase 9
+# daisy-solve the centers
+# ==================================================
 class Build777Step61(BFS):
     """
     lookup-table-7x7x7-step61.txt
@@ -3519,9 +3524,10 @@ class Build777Step66(BFS):
         # fmt: on
 
 
-# =================================================
-# phase solve t-centers (for cubes larger than 777)
-# =================================================
+# ==================================================
+# solve t-centers
+# used by cubes larger than 7x7
+# ==================================================
 class Build777Step71(BFS):
     """
     lookup-table-7x7x7-step71.txt
