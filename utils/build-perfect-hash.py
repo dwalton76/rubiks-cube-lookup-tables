@@ -10,8 +10,6 @@ import click
 # rubiks cube libraries
 from rubikscubennnsolver.RubiksCube777 import (
     RubiksCube777,
-    UFBD_inner_t_centers_777,
-    UFBD_inner_x_centers_777,
     UFBD_left_oblique_777,
     UFBD_middle_oblique_777,
     UFBD_right_oblique_777,
@@ -35,33 +33,8 @@ def main(file_in: str, file_out: str) -> None:
     if file_out is None:
         file_out = file_in.replace(".txt", ".perfect-hash")
 
-    # 777 phase 4
-    if file_in.endswith("lookup-table-7x7x7-phase4-inner-centers.txt"):
-        cube = RubiksCube777(solved_777, "URFDLB")
-        cube.lt_init()
-
-        lt_file_a = cube.lt_phase4_t_centers
-        lt_file_b = cube.lt_phase4_x_centers
-        positions = sorted(list(UFBD_inner_t_centers_777) + list(UFBD_inner_x_centers_777))
-
-    elif file_in.endswith("lookup-table-7x7x7-phase4-left-right-oblique.txt"):
-        cube = RubiksCube777(solved_777, "URFDLB")
-        cube.lt_init()
-
-        lt_file_a = cube.lt_phase4_left_oblique
-        lt_file_b = cube.lt_phase4_right_oblique
-        positions = sorted(list(UFBD_left_oblique_777) + list(UFBD_right_oblique_777))
-
-    elif file_in.endswith("lookup-table-7x7x7-phase4-left-middle-oblique.txt"):
-        cube = RubiksCube777(solved_777, "URFDLB")
-        cube.lt_init()
-
-        lt_file_a = cube.lt_phase4_left_oblique
-        lt_file_b = cube.lt_phase4_middle_oblique
-        positions = sorted(list(UFBD_left_oblique_777) + list(UFBD_middle_oblique_777))
-
     # 777 phase 5
-    elif file_in.endswith("lookup-table-7x7x7-phase5-left-right-oblique.txt"):
+    if file_in.endswith("lookup-table-7x7x7-phase5-left-right-oblique.txt"):
         cube = RubiksCube777(solved_777, "URFDLB")
         cube.lt_init()
 

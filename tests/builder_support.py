@@ -54,8 +54,6 @@ SKIPPED_BUILDERS = {
     "Build555Phase5FBCentersHighEdgeMidge": "576 million states; used only to build a perfect-hash file",
     "Build555Phase5FBCentersLowEdgeMidge": "576 million states; used only to build a perfect-hash file",
     "Build555PairLastEightEdgesEdgesOnly": "813 million states; used only to build a perfect-hash file",
-    "Build777Phase4LeftRightOblique": "starting states are too large to build at a test depth",
-    "Build777Phase4LeftMiddleOblique": "starting states are too large to build at a test depth",
 }
 
 
