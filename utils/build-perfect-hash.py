@@ -8,13 +8,6 @@ import os
 import click
 
 # rubiks cube libraries
-from rubikscubennnsolver.RubiksCube666 import (
-    RubiksCube666,
-    UFBD_inner_x_centers_666,
-    UFBD_left_oblique_edges_666,
-    UFBD_right_oblique_edges_666,
-    solved_666,
-)
 from rubikscubennnsolver.RubiksCube777 import (
     RubiksCube777,
     UFBD_inner_t_centers_777,
@@ -34,8 +27,7 @@ logger = logging.getLogger(__name__)
 def main(file_in: str, file_out: str) -> None:
     """
     \b
-    Example:
-        ./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt
+    Build a combined perfect-hash table from two 7x7x7 prune tables.
     """
     if not os.path.exists(file_in):
         raise FileNotFoundError(file_in)
@@ -43,32 +35,8 @@ def main(file_in: str, file_out: str) -> None:
     if file_out is None:
         file_out = file_in.replace(".txt", ".perfect-hash")
 
-    if file_in.endswith("lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt"):
-        cube = RubiksCube666(solved_666, "URFDLB")
-        cube.lt_init()
-
-        lt_file_a = cube.lt_UD_inner_x_centers_stage
-        lt_file_b = cube.lt_UD_left_oblique_edges_stage
-        positions = sorted(list(UFBD_inner_x_centers_666) + list(UFBD_left_oblique_edges_666))
-
-    elif file_in.endswith("lookup-table-6x6x6-step17-UD-right-oblique-inner-x-centers.txt"):
-        cube = RubiksCube666(solved_666, "URFDLB")
-        cube.lt_init()
-
-        lt_file_a = cube.lt_UD_inner_x_centers_stage
-        lt_file_b = cube.lt_UD_right_oblique_edges_stage
-        positions = sorted(list(UFBD_inner_x_centers_666) + list(UFBD_right_oblique_edges_666))
-
-    elif file_in.endswith("lookup-table-6x6x6-step15-UD-oblique-centers.txt"):
-        cube = RubiksCube666(solved_666, "URFDLB")
-        cube.lt_init()
-
-        lt_file_a = cube.lt_UD_left_oblique_edges_stage
-        lt_file_b = cube.lt_UD_right_oblique_edges_stage
-        positions = sorted(list(UFBD_left_oblique_edges_666) + list(UFBD_right_oblique_edges_666))
-
     # 777 phase 4
-    elif file_in.endswith("lookup-table-7x7x7-phase4-inner-centers.txt"):
+    if file_in.endswith("lookup-table-7x7x7-phase4-inner-centers.txt"):
         cube = RubiksCube777(solved_777, "URFDLB")
         cube.lt_init()
 

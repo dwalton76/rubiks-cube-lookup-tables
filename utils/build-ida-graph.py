@@ -72,12 +72,6 @@ from rubikscubennnsolver.RubiksCube777 import (
     RubiksCube777,
     solved_777,
 )
-from rubikscubennnsolver.RubiksCubeNNNEven import (
-    LookupTable666LRInnerXCentersStage,
-    LookupTable666UDInnerXCentersStage,
-    LookupTable666UDLeftObliqueCentersStage,
-    LookupTable666UDRightObliqueCentersStage,
-)
 from rubikscubennnsolver.RubiksCubeNNNOdd import (
     LookupTable777Step71,
     LookupTable777Step72,
@@ -190,22 +184,8 @@ elif lt_class.startswith("Build555"):
 elif lt_class.startswith("Build666"):
     cube = RubiksCube666(solved_666, "URFDLB")
 
-    # phase 1
-    if lt_class == "Build666LRInnerXCentersStage":
-        cube.lt = LookupTable666LRInnerXCentersStage(cube, build_state_index=True)
-
-    # phase 3
-    elif lt_class == "Build666UDInnerXCentersStage":
-        cube.lt = LookupTable666UDInnerXCentersStage(cube, build_state_index=True)
-
-    elif lt_class == "Build666UDLeftObliqueCentersStage":
-        cube.lt = LookupTable666UDLeftObliqueCentersStage(cube, build_state_index=True)
-
-    elif lt_class == "Build666UDRightObliqueCentersStage":
-        cube.lt = LookupTable666UDRightObliqueCentersStage(cube, build_state_index=True)
-
     # phase 5
-    elif lt_class == "Build666Step50LRCenters":
+    if lt_class == "Build666Step50LRCenters":
         cube.lt = LookupTable666Step50LRCenters(cube, build_state_index=True)
 
     elif lt_class == "Build666Step50HighLowEdges":

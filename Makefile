@@ -188,38 +188,12 @@ wheel:
 555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6 555-solve-staged-centers
 
 666-phase1: clean
-	./utils/builderui.py Build666LRInnerXCentersStage
-	./utils/build-ida-graph.py Build666LRInnerXCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step00-inner-x-centers-stage.json
-
 	./utils/builderui.py Build666InnerXCentersStageOnePhase
 
 666-phase3-preserve-inner-x: clean
 	./utils/builderui.py Build666Phase3UDLeftRightObliqueCentersStage
 	./utils/builderui.py Build666Phase3UDLeftObliqueOuterXCentersStage
 	./utils/builderui.py Build666Phase3UDRightObliqueOuterXCentersStage
-
-666-phase3: clean
-	./utils/builderui.py Build666UDInnerXCentersStage
-	./utils/build-ida-graph.py Build666UDInnerXCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step11-UD-inner-x-centers-stage.json
-
-	./utils/builderui.py Build666UDLeftObliqueCentersStage
-	./utils/build-ida-graph.py Build666UDLeftObliqueCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step13-UD-left-oblique-centers.json
-
-	./utils/builderui.py Build666UDRightObliqueCentersStage
-	./utils/build-ida-graph.py Build666UDRightObliqueCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step14-UD-right-oblique-centers.json
-
-	./utils/builderui.py Build666UDObliqueCentersStage
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step15-UD-oblique-centers.txt
-
-	./utils/builderui.py Build666UDLeftObliqueInnerXCentersStage
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt
-
-	./utils/builderui.py Build666UDRightObliqueInnerXCentersStage
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-6x6x6-step17-UD-right-oblique-inner-x-centers.txt
 
 666-phase5: clean
 	./utils/builderui.py Build666Step50LRCenters

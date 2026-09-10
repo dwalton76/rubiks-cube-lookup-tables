@@ -463,19 +463,6 @@
     "states_md5": "9ceb50863492348615e5d034fd45eadb",
     "depth": 4
   },
-  "Build666LRInnerXCentersStage": {
-    "filename": "lookup-tables/lookup-table-6x6x6-step00-inner-x-centers-stage.txt",
-    "lines": 15409,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 82,
-      "3": 1206,
-      "4": 14116
-    },
-    "states_md5": "476419dccfa3380bedfff5fc72bea91d",
-    "depth": 4
-  },
   "Build666LRObliqueEdges": {
     "filename": "lookup-tables/lookup-table-6x6x6-step63-LR-oblique-edges.txt",
     "lines": 4284,
@@ -526,84 +513,6 @@
       "4": 1218
     },
     "states_md5": "90f7ad3f01f572b36c78d8d48587505e",
-    "depth": 4
-  },
-  "Build666UDInnerXCentersStage": {
-    "filename": "lookup-tables/lookup-table-6x6x6-step11-UD-inner-x-centers-stage.txt",
-    "lines": 1512,
-    "states_per_depth": {
-      "0": 1,
-      "1": 2,
-      "2": 29,
-      "3": 234,
-      "4": 1246
-    },
-    "states_md5": "02bbe88281b35c8bd82005e95db436dd",
-    "depth": 4
-  },
-  "Build666UDLeftObliqueCentersStage": {
-    "filename": "lookup-tables/lookup-table-6x6x6-step13-UD-left-oblique-centers.txt",
-    "lines": 5494,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 70,
-      "3": 804,
-      "4": 4615
-    },
-    "states_md5": "c2f068674b63e3410645ced8caad8bba",
-    "depth": 4
-  },
-  "Build666UDLeftObliqueInnerXCentersStage": {
-    "filename": "lookup-tables/lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt",
-    "lines": 11816,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 70,
-      "3": 968,
-      "4": 10773
-    },
-    "states_md5": "bf910c43070bbee6aaf45c6f3a3cedfe",
-    "depth": 4
-  },
-  "Build666UDObliqueCentersStage": {
-    "filename": "lookup-tables/lookup-table-6x6x6-step15-UD-oblique-centers.txt",
-    "lines": 15656,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 70,
-      "3": 1064,
-      "4": 14517
-    },
-    "states_md5": "ec6c9b6efa307425613c4587b4202a2e",
-    "depth": 4
-  },
-  "Build666UDRightObliqueCentersStage": {
-    "filename": "lookup-tables/lookup-table-6x6x6-step14-UD-right-oblique-centers.txt",
-    "lines": 5494,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 70,
-      "3": 804,
-      "4": 4615
-    },
-    "states_md5": "c2f068674b63e3410645ced8caad8bba",
-    "depth": 4
-  },
-  "Build666UDRightObliqueInnerXCentersStage": {
-    "filename": "lookup-tables/lookup-table-6x6x6-step17-UD-right-oblique-inner-x-centers.txt",
-    "lines": 11816,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 70,
-      "3": 968,
-      "4": 10773
-    },
-    "states_md5": "5e689d2067c0c9ffb6b5ae86a0b00df1",
     "depth": 4
   },
   "Build777Phase4Centers": {
