@@ -7,6 +7,69 @@ from rubikscubelookuptables.buildercore import BFS
 log = logging.getLogger(__name__)
 
 
+# fmt: off
+PHASE2_ILLEGAL_MOVES = (
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+)
+
+PHASE2_STARTING_STATES_ILLEGAL_MOVES = (
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Lw", "Lw'",
+    "Rw", "Rw'",
+    "L", "L'",
+    "R", "R'",
+)
+
+PHASE3_ILLEGAL_MOVES = (
+    "Uw", "Uw'",
+    "Lw", "Lw'",
+    "Fw", "Fw'",
+    "Rw", "Rw'",
+    "Bw", "Bw'",
+    "Dw", "Dw'",
+    "L", "L'",
+    "R", "R'",
+)
+
+PHASE3_STARTING_STATES_ILLEGAL_MOVES = (
+    "Uw", "Uw'", "Uw2",
+    "Dw", "Dw'", "Dw2",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Lw", "Lw'",
+    "Rw", "Rw'",
+    "L", "L'",
+    "R", "R'",
+    "U", "U'",
+    "D", "D'",
+    "F", "F'",
+    "B", "B'",
+)
+
+PHASE4_ILLEGAL_MOVES = (
+    "Uw", "Uw'",
+    "Lw", "Lw'",
+    "Fw", "Fw'",
+    "Rw", "Rw'",
+    "Bw", "Bw'",
+    "Dw", "Dw'",
+    "L", "L'",
+    "R", "R'",
+    "Uw2",
+    "Dw2",
+    "F", "F'",
+    "B", "B'",
+)
+
+# fmt: on
+
+
 class Build444UDCentersStage(BFS):
     """
     lookup-table-4x4x4-step11-UD-centers-stage.txt
@@ -110,7 +173,7 @@ class StartingStates444HighLowEdgesCenters(BFS):
         BFS.__init__(
             self,
             "444-highlow-edges-centers",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "L", "L'", "R", "R'"),
+            PHASE2_STARTING_STATES_ILLEGAL_MOVES,
             "4x4x4",
             "starting-states-lookup-table-4x4x4-step22-highlow-edges-centers.txt",
             False,  # store_as_hex
@@ -144,7 +207,7 @@ class Build444HighLowEdgesEdges(BFS):
         BFS.__init__(
             self,
             "444-highlow-edges-edges",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'"),
+            PHASE2_ILLEGAL_MOVES,
             "4x4x4",
             "lookup-table-4x4x4-step21-highlow-edges-edges.txt",
             False,  # store_as_hex
@@ -197,7 +260,7 @@ class Build444HighLowEdgesCenters(BFS):
         BFS.__init__(
             self,
             "444-highlow-edges-centers",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'"),
+            PHASE2_ILLEGAL_MOVES,
             "4x4x4",
             "lookup-table-4x4x4-step22-highlow-edges-centers.txt",
             False,  # store_as_hex
@@ -233,20 +296,7 @@ class StartingStates444Reduce333FirstTwoCenters(BFS):
         BFS.__init__(
             self,
             "444-phase3-centers",
-            # fmt: off
-            (
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-                "Fw", "Fw'", "Bw",
-                "Bw'", "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-                "F", "F'",
-                "B", "B'",
-            ),
+            PHASE3_STARTING_STATES_ILLEGAL_MOVES,
             # fmt: on
             "4x4x4",
             "starting-states-lookup-table-4x4x4-step31-centers.txt",
@@ -295,7 +345,7 @@ class Build444Reduce333FirstTwoCenters(BFS):
         BFS.__init__(
             self,
             "444-phase3-centers",
-            ("Uw", "Uw'", "Lw", "Lw'", "Fw", "Fw'", "Rw", "Rw'", "Bw", "Bw'", "Dw", "Dw'", "L", "L'", "R", "R'"),
+            PHASE3_ILLEGAL_MOVES,
             "4x4x4",
             "lookup-table-4x4x4-step31-centers.txt",
             False,  # store_as_hex
@@ -349,7 +399,7 @@ class Build444Reduce333FirstFourEdges(BFS):
         BFS.__init__(
             self,
             "444-reduce333-edges",
-            ("Uw", "Uw'", "Lw", "Lw'", "Fw", "Fw'", "Rw", "Rw'", "Bw", "Bw'", "Dw", "Dw'", "L", "L'", "R", "R'"),
+            PHASE3_ILLEGAL_MOVES,
             "4x4x4",
             "lookup-table-4x4x4-step32-first-four-edges.txt",
             False,  # store_as_hex
@@ -400,21 +450,7 @@ class Build444Reduce333Centers(BFS):
         BFS.__init__(
             self,
             "444-phase4-centers",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Rw", "Rw'",
-                "Bw", "Bw'",
-                "Dw", "Dw'",
-                "L", "L'",
-                "R", "R'",
-                "Uw2",
-                "Dw2",
-                "F", "F'",
-                "B", "B'",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             # fmt: on
             "4x4x4",
             "lookup-table-4x4x4-step41-centers.txt",
@@ -449,21 +485,7 @@ class Build444Reduce333LastEightEdges(BFS):
         BFS.__init__(
             self,
             "444-phase4-edges",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Rw", "Rw'",
-                "Bw", "Bw'",
-                "Dw", "Dw'",
-                "L", "L'",
-                "R", "R'",
-                "Uw2",
-                "Dw2",
-                "F", "F'",
-                "B", "B'",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             # fmt: on
             "4x4x4",
             "lookup-table-4x4x4-step42-last-eight-edges.txt",

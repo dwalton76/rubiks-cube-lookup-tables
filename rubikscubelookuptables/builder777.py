@@ -38,6 +38,146 @@ phase 9
 """
 
 
+# fmt: off
+PHASE4_ILLEGAL_MOVES = (
+    # keep LR inside centers staged
+    "3Uw", "3Uw'",
+    "3Dw", "3Dw'",
+    "3Fw", "3Fw'",
+    "3Bw", "3Bw'",
+    # keep LR centers staged
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    # we are not manipulating anything on L or R
+    "L", "L'", "L2",
+    "R", "R'", "R2",
+)
+
+PHASE4_STARTING_STATES_ILLEGAL_MOVES = (
+    "3Uw", "3Uw'", "3Uw2",
+    "3Dw", "3Dw'", "3Dw2",
+    "3Fw", "3Fw'", "3Fw2",
+    "3Bw", "3Bw'", "3Bw2",
+    "3Lw", "3Lw'", "3Lw2",
+    "3Rw", "3Rw'", "3Rw2",
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "L", "L'", "L2",
+    "R", "R'", "R2",
+)
+
+PHASE5_STARTING_STATES_ILLEGAL_MOVES = PHASE4_STARTING_STATES_ILLEGAL_MOVES
+
+PHASE5_ILLEGAL_MOVES = (
+    # keep LR inside centers staged
+    "3Uw", "3Uw'",
+    "3Dw", "3Dw'",
+    "3Fw", "3Fw'",
+    "3Bw", "3Bw'",
+    "3Lw", "3Lw'",
+    "3Rw", "3Rw'",
+    # keep LR centers staged
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    # we are not manipulating anything on L or R
+    "L", "L'", "L2",
+    "R", "R'", "R2",
+)
+
+PHASE7_ILLEGAL_MOVES = (
+    # keep all centers staged
+    "3Uw", "3Uw'", "Uw", "Uw'",
+    "3Lw", "3Lw'", "Lw", "Lw'",
+    "3Fw", "3Fw'", "Fw", "Fw'",
+    "3Rw", "3Rw'", "Rw", "Rw'",
+    "3Bw", "3Bw'", "Bw", "Bw'",
+    "3Dw", "3Dw'", "Dw", "Dw'",
+    "U", "U'", "U2",
+    "D", "D'", "D2",
+    "F", "F'", "F2",
+    "D", "D'", "D2",
+)
+
+PHASE7_STARTING_STATES_ILLEGAL_MOVES = (
+    "3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
+    "3Lw", "3Lw'", "3Lw2", "Lw", "Lw'", "Lw2",
+    "3Fw", "3Fw'", "Fw", "Fw'",
+    "3Rw", "3Rw'", "3Rw2", "Rw", "Rw'", "Rw2",
+    "3Bw", "3Bw'", "Bw", "Bw'",
+    "3Dw", "3Dw'", "3Dw2", "Dw", "Dw'", "Dw2",
+    "L", "L'",
+    "R", "R'",
+)
+
+PHASE8_ILLEGAL_MOVES = (
+    "3Uw", "3Uw'", "Uw", "Uw'",
+    "3Lw", "3Lw'", "Lw", "Lw'",
+    "3Fw", "3Fw'", "Fw", "Fw'",
+    "3Rw", "3Rw'", "Rw", "Rw'",
+    "3Bw", "3Bw'", "Bw", "Bw'",
+    "3Dw", "3Dw'", "Dw", "Dw'",
+    "L", "L'",
+    "R", "R'",
+    "3Uw2", "Uw2",
+    "3Dw2", "Dw2",
+    "F", "F'", "F2",
+    "D", "D'", "D2",
+)
+
+PHASE8_STARTING_STATES_ILLEGAL_MOVES = (
+    "3Uw", "3Uw'", "3Uw2", "Uw", "Uw'", "Uw2",
+    "3Lw", "3Lw'", "Lw", "Lw'",
+    "3Fw", "3Fw'", "3Fw2", "Fw", "Fw'", "Fw2",
+    "3Rw", "3Rw'", "Rw", "Rw'",
+    "3Bw", "3Bw'", "3Bw2", "Bw", "Bw'", "Bw2",
+    "3Dw", "3Dw'", "3Dw2", "Dw", "Dw'", "Dw2",
+    "U", "U'",
+    "D", "D'",
+)
+
+PHASE8_STEP55_ILLEGAL_MOVES = (
+    "3Uw", "3Uw'", "Uw", "Uw'",
+    "3Lw", "3Lw'", "Lw", "Lw'",
+    "3Fw", "3Fw'", "Fw", "Fw'",
+    "3Rw", "3Rw'", "Rw", "Rw'",
+    "3Bw", "3Bw'", "Bw", "Bw'",
+    "3Dw", "3Dw'", "Dw", "Dw'",
+    "L", "L'",
+    "R", "R'",
+    "3Uw2",
+    "3Dw2",
+    "Uw2",
+    "Dw2",
+    "F", "F'", "F2",
+    "D", "D'", "D2",
+)
+
+PHASE9_ILLEGAL_MOVES = (
+    "3Uw", "3Uw'", "Uw", "Uw'",
+    "3Lw", "3Lw'", "Lw", "Lw'",
+    "3Fw", "3Fw'", "Fw", "Fw'",
+    "3Rw", "3Rw'", "Rw", "Rw'",
+    "3Bw", "3Bw'", "Bw", "Bw'",
+    "3Dw", "3Dw'", "Dw", "Dw'",
+    "L", "L'",
+    "R", "R'",
+    "3Fw2",
+    "3Bw2",
+    "Fw2",
+    "Bw2",
+    "U", "U'",
+    "D", "D'",
+)
+
+# fmt: on
+
+
 # =======================================================
 # phase 4 - stage UD inner centers, pair UD oblique edges
 # =======================================================
@@ -67,23 +207,7 @@ class Build777Phase4TCenters(BFS):
         BFS.__init__(
             self,
             "7x7x7-step-phase4-t-centers",
-            (
-                # keep LR inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase4-t-centers.txt",
             False,  # store_as_hex
@@ -145,23 +269,7 @@ class Build777Phase4XCenters(BFS):
         BFS.__init__(
             self,
             "7x7x7-step-phase4-x-centers",
-            (
-                # keep LR inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase4-x-centers.txt",
             False,  # store_as_hex
@@ -206,23 +314,7 @@ class Build777Phase4Centers(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase4-inner-centers",
-            (
-                # keep LR inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase4-inner-centers.txt",
             False,  # store_as_hex
@@ -284,23 +376,7 @@ class Build777Phase4LeftOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase4-left-oblique",
-            (
-                # keep LR inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase4-left-oblique.txt",
             False,  # store_as_hex
@@ -361,23 +437,7 @@ class Build777Phase4RightOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase4-right-oblique",
-            (
-                # keep LR inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase4-right-oblique.txt",
             False,  # store_as_hex
@@ -441,23 +501,7 @@ class Build777Phase4MiddleOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase4-middle-oblique",
-            (
-                # keep LR inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase4-middle-oblique.txt",
             False,  # store_as_hex
@@ -501,25 +545,7 @@ class StartingStates777Phase4LeftRightOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase4-left-right-oblique",
-            (
-                # do not break an oblique edge
-                "3Uw", "3Uw'", "3Uw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "3Fw", "3Fw'", "3Fw2",
-                "3Bw", "3Bw'", "3Bw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "3Rw", "3Rw'", "3Rw2",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-phase4-left-right-oblique.txt",
             False,  # store_as_hex
@@ -565,23 +591,7 @@ class Build777Phase4LeftRightOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase4-left-right-oblique",
-            (
-                # keep LR inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase4-left-right-oblique.txt",
             False,  # store_as_hex
@@ -597,25 +607,7 @@ class StartingStates777Phase4LeftMiddleOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase4-left-middle-oblique",
-            (
-                # do not break an oblique edge
-                "3Uw", "3Uw'", "3Uw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "3Fw", "3Fw'", "3Fw2",
-                "3Bw", "3Bw'", "3Bw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "3Rw", "3Rw'", "3Rw2",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-phase4-left-middle-oblique.txt",
             False,  # store_as_hex
@@ -661,23 +653,7 @@ class Build777Phase4LeftMiddleOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase4-left-middle-oblique",
-            (
-                # keep LR inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE4_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase4-left-middle-oblique.txt",
             False,  # store_as_hex
@@ -716,25 +692,7 @@ class Build777Phase5LeftOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase5-left-oblique",
-            (
-                # keep inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Lw", "3Lw'",
-                "3Rw", "3Rw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase5-left-oblique.txt",
             False,  # store_as_hex
@@ -798,25 +756,7 @@ class Build777Phase5RightOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase5-right-oblique",
-            (
-                # keep inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Lw", "3Lw'",
-                "3Rw", "3Rw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase5-right-oblique.txt",
             False,  # store_as_hex
@@ -880,25 +820,7 @@ class Build777Phase5MiddleOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase5-middle-oblique",
-            (
-                # keep inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Lw", "3Lw'",
-                "3Rw", "3Rw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase5-middle-oblique.txt",
             False,  # store_as_hex
@@ -942,25 +864,7 @@ class StartingStates777Phase5LeftRightOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase5-left-right-oblique",
-            (
-                # do not break an oblique edge
-                "3Uw", "3Uw'", "3Uw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "3Fw", "3Fw'", "3Fw2",
-                "3Bw", "3Bw'", "3Bw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "3Rw", "3Rw'", "3Rw2",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE5_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-phase5-left-right-oblique.txt",
             False,  # store_as_hex
@@ -1006,25 +910,7 @@ class Build777Phase5LeftRightOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase5",
-            (
-                # keep inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Lw", "3Lw'",
-                "3Rw", "3Rw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase5-left-right-oblique.txt",
             False,  # store_as_hex
@@ -1040,25 +926,7 @@ class StartingStates777Phase5LeftMiddleOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase5-left-middle-oblique",
-            (
-                # do not break an oblique edge
-                "3Uw", "3Uw'", "3Uw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "3Fw", "3Fw'", "3Fw2",
-                "3Bw", "3Bw'", "3Bw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "3Rw", "3Rw'", "3Rw2",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE5_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-phase5-left-middle-oblique.txt",
             False,  # store_as_hex
@@ -1104,25 +972,7 @@ class Build777Phase5LeftMiddleOblique(BFS):
         BFS.__init__(
             self,
             "7x7x7-phase5",
-            (
-                # keep inside centers staged
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Lw", "3Lw'",
-                "3Rw", "3Rw'",
-
-                # keep LR centers staged
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-
-                # we are not manipulating anyting on L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-phase5-left-middle-oblique.txt",
             False,  # store_as_hex
@@ -1141,22 +991,7 @@ class StartingStates777Step41(BFS):
         BFS.__init__(
             self,
             "7x7x7-step41",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "Uw", "Uw'", "Uw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "Lw", "Lw'", "Lw2",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'", "3Rw2",
-                "Rw", "Rw'", "Rw2",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'", "3Dw2",
-                "Dw", "Dw'", "Dw2",
-                "L", "L'",
-                "R", "R'",
-            ),
+            PHASE7_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-step41.txt",
             False,  # store_as_hex
@@ -1246,25 +1081,7 @@ class Build777Step41(BFS):
         BFS.__init__(
             self,
             "7x7x7-step41",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-                "U", "U'", "U2",
-                "D", "D'", "D2",
-                "F", "F'", "F2",
-                "D", "D'", "D2",
-            ),
+            PHASE7_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step41.txt",
             False,  # store_as_hex
@@ -1569,22 +1386,7 @@ class StartingStates777Step42(BFS):
         BFS.__init__(
             self,
             "7x7x7-step42",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "Uw", "Uw'", "Uw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "Lw", "Lw'", "Lw2",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'", "3Rw2",
-                "Rw", "Rw'", "Rw2",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'", "3Dw2",
-                "Dw", "Dw'", "Dw2",
-                "L", "L'",
-                "R", "R'",
-            ),
+            PHASE7_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-step42.txt",
             False,  # store_as_hex
@@ -1648,25 +1450,7 @@ class Build777Step42(BFS):
         BFS.__init__(
             self,
             "7x7x7-step42",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-                "U", "U'", "U2",
-                "D", "D'", "D2",
-                "F", "F'", "F2",
-                "D", "D'", "D2",
-            ),
+            PHASE7_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step42.txt",
             False,  # store_as_hex
@@ -1827,22 +1611,7 @@ class StartingStates777Step43(BFS):
         BFS.__init__(
             self,
             "7x7x7-step43",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "Uw", "Uw'", "Uw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "Lw", "Lw'", "Lw2",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'", "3Rw2",
-                "Rw", "Rw'", "Rw2",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'", "3Dw2",
-                "Dw", "Dw'", "Dw2",
-                "L", "L'",
-                "R", "R'",
-            ),
+            PHASE7_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-step43.txt",
             False,  # store_as_hex
@@ -1906,25 +1675,7 @@ class Build777Step43(BFS):
         BFS.__init__(
             self,
             "7x7x7-step43",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-                "U", "U'", "U2",
-                "D", "D'", "D2",
-                "F", "F'", "F2",
-                "D", "D'", "D2",
-            ),
+            PHASE7_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step43.txt",
             False,  # store_as_hex
@@ -2085,22 +1836,7 @@ class StartingStates777Step44(BFS):
         BFS.__init__(
             self,
             "7x7x7-step44",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "Uw", "Uw'", "Uw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "Lw", "Lw'", "Lw2",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'", "3Rw2",
-                "Rw", "Rw'", "Rw2",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'", "3Dw2",
-                "Dw", "Dw'", "Dw2",
-                "L", "L'",
-                "R", "R'",
-            ),
+            PHASE7_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-step44.txt",
             False,  # store_as_hex
@@ -2164,25 +1900,7 @@ class Build777Step44(BFS):
         BFS.__init__(
             self,
             "7x7x7-step44",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-                "U", "U'", "U2",
-                "D", "D'", "D2",
-                "F", "F'", "F2",
-                "D", "D'", "D2",
-            ),
+            PHASE7_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step44.txt",
             False,  # store_as_hex
@@ -2346,22 +2064,7 @@ class StartingStates777Step51(BFS):
         BFS.__init__(
             self,
             "7x7x7-step51",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "Uw", "Uw'", "Uw2",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'", "3Fw2",
-                "Fw", "Fw'", "Fw2",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'", "3Bw2",
-                "Bw", "Bw'", "Bw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "Dw", "Dw'", "Dw2",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE8_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-step51.txt",
             False,  # store_as_hex
@@ -2452,29 +2155,7 @@ class Build777Step51(BFS):
         BFS.__init__(
             self,
             "7x7x7-step51",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in vertical stripes
-                "L", "L'",
-                "R", "R'",
-                "3Uw2", "Uw2",
-                "3Dw2", "Dw2",
-                "F", "F'", "F2",
-                "D", "D'", "D2",
-            ),
+            PHASE8_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step51.txt",
             False,  # store_as_hex
@@ -2779,22 +2460,7 @@ class StartingStates777Step52(BFS):
         BFS.__init__(
             self,
             "7x7x7-step52",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "Uw", "Uw'", "Uw2",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'", "3Fw2",
-                "Fw", "Fw'", "Fw2",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'", "3Bw2",
-                "Bw", "Bw'", "Bw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "Dw", "Dw'", "Dw2",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE8_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-step52.txt",
             False,  # store_as_hex
@@ -2859,29 +2525,7 @@ class Build777Step52(BFS):
         BFS.__init__(
             self,
             "7x7x7-step52",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in vertical stripes
-                "L", "L'",
-                "R", "R'",
-                "3Uw2", "Uw2",
-                "3Dw2", "Dw2",
-                "F", "F'", "F2",
-                "D", "D'", "D2",
-            ),
+            PHASE8_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step52.txt",
             False,  # store_as_hex
@@ -3042,22 +2686,7 @@ class StartingStates777Step53(BFS):
         BFS.__init__(
             self,
             "7x7x7-step53",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "Uw", "Uw'", "Uw2",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'", "3Fw2",
-                "Fw", "Fw'", "Fw2",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'", "3Bw2",
-                "Bw", "Bw'", "Bw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "Dw", "Dw'", "Dw2",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE8_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-step53.txt",
             False,  # store_as_hex
@@ -3101,29 +2730,7 @@ class Build777Step53(BFS):
         BFS.__init__(
             self,
             "7x7x7-step53",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in vertical stripes
-                "L", "L'",
-                "R", "R'",
-                "3Uw2", "Uw2",
-                "3Dw2", "Dw2",
-                "F", "F'", "F2",
-                "D", "D'", "D2",
-            ),
+            PHASE8_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step53.txt",
             False,  # store_as_hex
@@ -3284,22 +2891,7 @@ class StartingStates777Step54(BFS):
         BFS.__init__(
             self,
             "7x7x7-step54",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "Uw", "Uw'", "Uw2",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'", "3Fw2",
-                "Fw", "Fw'", "Fw2",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'", "3Bw2",
-                "Bw", "Bw'", "Bw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "Dw", "Dw'", "Dw2",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE8_STARTING_STATES_ILLEGAL_MOVES,
             "7x7x7",
             "starting-states-lookup-table-7x7x7-step54.txt",
             False,  # store_as_hex
@@ -3364,29 +2956,7 @@ class Build777Step54(BFS):
         BFS.__init__(
             self,
             "7x7x7-step54",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in vertical stripes
-                "L", "L'",
-                "R", "R'",
-                "3Uw2", "Uw2",
-                "3Dw2", "Dw2",
-                "F", "F'", "F2",
-                "D", "D'", "D2",
-            ),
+            PHASE8_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step54.txt",
             False,  # store_as_hex
@@ -3560,31 +3130,7 @@ class Build777Step55(BFS):
         BFS.__init__(
             self,
             "7x7x7-step55",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in vertical stripes
-                "L", "L'",
-                "R", "R'",
-                "3Uw2",
-                "3Dw2",
-                "Uw2",
-                "Dw2",
-                "F", "F'", "F2",
-                "D", "D'", "D2",
-            ),
+            PHASE8_STEP55_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step55.txt",
             False,  # store_as_hex
@@ -3671,33 +3217,7 @@ class Build777Step61(BFS):
         BFS.__init__(
             self,
             "7x7x7-step61",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in horizontal stripes
-                "L", "L'",
-                "R", "R'",
-                "3Fw2",
-                "3Bw2",
-                "Fw2",
-                "Bw2",
-
-                # keep UD in vertical stripes
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE9_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step61.txt",
             False,  # store_as_hex
@@ -3781,33 +3301,7 @@ class Build777Step62(BFS):
         BFS.__init__(
             self,
             "7x7x7-step62",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in horizontal stripes
-                "L", "L'",
-                "R", "R'",
-                "3Fw2",
-                "3Bw2",
-                "Fw2",
-                "Bw2",
-
-                # keep UD in vertical stripes
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE9_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step62.txt",
             False,  # store_as_hex
@@ -3899,33 +3393,7 @@ class Build777Step65(BFS):
         BFS.__init__(
             self,
             "7x7x7-step65",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in horizontal stripes
-                "L", "L'",
-                "R", "R'",
-                "3Fw2",
-                "3Bw2",
-                "Fw2",
-                "Bw2",
-
-                # keep UD in vertical stripes
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE9_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step65.txt",
             False,  # store_as_hex
@@ -4017,33 +3485,7 @@ class Build777Step66(BFS):
         BFS.__init__(
             self,
             "7x7x7-step66",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in horizontal stripes
-                "L", "L'",
-                "R", "R'",
-                "3Fw2",
-                "3Bw2",
-                "Fw2",
-                "Bw2",
-
-                # keep UD in vertical stripes
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE9_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step66.txt",
             False,  # store_as_hex
@@ -4130,33 +3572,7 @@ class Build777Step71(BFS):
         BFS.__init__(
             self,
             "7x7x7-step71",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in horizontal stripes
-                "L", "L'",
-                "R", "R'",
-                "3Fw2",
-                "3Bw2",
-                "Fw2",
-                "Bw2",
-
-                # keep UD in vertical stripes
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE9_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step71.txt",
             False,  # store_as_hex
@@ -4213,33 +3629,7 @@ class Build777Step72(BFS):
         BFS.__init__(
             self,
             "7x7x7-step72",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in horizontal stripes
-                "L", "L'",
-                "R", "R'",
-                "3Fw2",
-                "3Bw2",
-                "Fw2",
-                "Bw2",
-
-                # keep UD in vertical stripes
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE9_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step72.txt",
             False,  # store_as_hex
@@ -4306,33 +3696,7 @@ class Build777Step75(BFS):
         BFS.__init__(
             self,
             "7x7x7-step75",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in horizontal stripes
-                "L", "L'",
-                "R", "R'",
-                "3Fw2",
-                "3Bw2",
-                "Fw2",
-                "Bw2",
-
-                # keep UD in vertical stripes
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE9_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step75.txt",
             False,  # store_as_hex
@@ -4398,33 +3762,7 @@ class Build777Step76(BFS):
         BFS.__init__(
             self,
             "7x7x7-step76",
-            # keep all centers staged
-            (
-                "3Uw", "3Uw'",
-                "Uw", "Uw'",
-                "3Lw", "3Lw'",
-                "Lw", "Lw'",
-                "3Fw", "3Fw'",
-                "Fw", "Fw'",
-                "3Rw", "3Rw'",
-                "Rw", "Rw'",
-                "3Bw", "3Bw'",
-                "Bw", "Bw'",
-                "3Dw", "3Dw'",
-                "Dw", "Dw'",
-
-                # keep LR in horizontal stripes
-                "L", "L'",
-                "R", "R'",
-                "3Fw2",
-                "3Bw2",
-                "Fw2",
-                "Bw2",
-
-                # keep UD in vertical stripes
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE9_ILLEGAL_MOVES,
             "7x7x7",
             "lookup-table-7x7x7-step76.txt",
             False,  # store_as_hex

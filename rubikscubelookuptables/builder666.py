@@ -4,6 +4,7 @@ import logging
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
 from rubikscubennnsolver.LookupTableIDAViaGraph import LookupTableIDAViaGraph
+from rubikscubennnsolver.RubiksCube666 import moves_666
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +29,93 @@ phase 6
     solve the LR inner x-centers and pair the LR oblique edges
     solve the FB inner x-centers and pair the FB oblique edges
 """
+
+
+# fmt: off
+PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES = (
+    # keep inner x-centers and LR staging
+    "3Uw", "3Uw'",
+    "3Lw", "3Lw'",
+    "3Fw", "3Fw'",
+    "3Rw", "3Rw'",
+    "3Bw", "3Bw'",
+    "3Dw", "3Dw'",
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "L", "L'", "L2",
+    "R", "R'", "R2",
+)
+
+UD_STAGE_ILLEGAL_MOVES = (
+    # keep LR staged; do not turn L or R
+    "3Uw", "3Uw'",
+    "3Dw", "3Dw'",
+    "3Fw", "3Fw'",
+    "3Bw", "3Bw'",
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "L", "L'", "L2",
+    "R", "R'", "R2",
+)
+
+PHASE5_ILLEGAL_MOVES = (
+    "3Rw", "3Rw'",
+    "3Lw", "3Lw'",
+    "3Fw", "3Fw'",
+    "3Bw", "3Bw'",
+    "3Uw", "3Uw'",
+    "3Dw", "3Dw'",
+    "Rw", "Rw'",
+    "Lw", "Lw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+)
+
+PHASE5_STARTING_STATES_ILLEGAL_MOVES = (
+    "3Uw", "3Uw'", "3Uw2",
+    "3Lw", "3Lw'", "3Lw2",
+    "3Fw", "3Fw'", "3Fw2",
+    "3Rw", "3Rw'", "3Rw2",
+    "3Bw", "3Bw'", "3Bw2",
+    "3Dw", "3Dw'", "3Dw2",
+    "Uw", "Uw'",
+    "Lw", "Lw'",
+    "Fw", "Fw'",
+    "Rw", "Rw'",
+    "Bw", "Bw'",
+    "Dw", "Dw'",
+    "L", "L'",
+    "R", "R'",
+)
+
+PHASE6_ILLEGAL_MOVES = (
+    "3Rw", "3Rw'",
+    "3Lw", "3Lw'",
+    "3Fw", "3Fw'",
+    "3Bw", "3Bw'",
+    "3Uw", "3Uw'",
+    "3Dw", "3Dw'",
+    "Rw", "Rw'",
+    "Lw", "Lw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "3Uw2",
+    "3Dw2",
+    "3Fw2",
+    "3Bw2",
+    "L", "L'",
+    "R", "R'",
+)
+
+# fmt: on
 
 
 # =======
@@ -147,22 +235,6 @@ class Build666InnerXCentersStageOnePhase(BFS):
 # phase 3
 # =======
 # fmt: off
-PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES = (
-    "3Uw", "3Uw'",
-    "3Lw", "3Lw'",
-    "3Fw", "3Fw'",
-    "3Rw", "3Rw'",
-    "3Bw", "3Bw'",
-    "3Dw", "3Dw'",
-    "Uw", "Uw'",
-    "Dw", "Dw'",
-    "Fw", "Fw'",
-    "Bw", "Bw'",
-    "L", "L'",
-    "L2",
-    "R", "R'", "R2",
-)
-
 UFBD_OUTER_X_CENTERS_666 = (
     8, 11, 26, 29,
     80, 83, 98, 101,
@@ -181,7 +253,7 @@ UFBD_RIGHT_OBLIQUE_EDGES_666 = (
     154, 158, 167, 171,
     190, 194, 203, 207,
 )
-# fmt: off
+# fmt: on
 
 
 class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
@@ -412,18 +484,7 @@ class Build666UDInnerXCentersStage(BFS):
         BFS.__init__(
             self,
             "6x6x6-UD-inner-x-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            UD_STAGE_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step11-UD-inner-x-centers-stage.txt",
             False,  # store_as_hex
@@ -482,18 +543,7 @@ class Build666UDLeftObliqueCentersStage(BFS):
         BFS.__init__(
             self,
             "6x6x6-UD-left-oblique-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            UD_STAGE_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step13-UD-left-oblique-centers.txt",
             False,  # store_as_hex
@@ -552,18 +602,7 @@ class Build666UDRightObliqueCentersStage(BFS):
         BFS.__init__(
             self,
             "6x6x6-UD-right-oblique-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            UD_STAGE_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step14-UD-right-oblique-centers.txt",
             False,  # store_as_hex
@@ -606,18 +645,7 @@ class Build666UDObliqueCentersStage(BFS):
         BFS.__init__(
             self,
             "6x6x6-UD-oblique-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            UD_STAGE_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step15-UD-oblique-centers.txt",
             False,  # store_as_hex
@@ -660,18 +688,7 @@ class Build666UDLeftObliqueInnerXCentersStage(BFS):
         BFS.__init__(
             self,
             "6x6x6-UD-left-oblique-inner-x-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            UD_STAGE_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step16-UD-left-oblique-inner-x-centers.txt",
             False,  # store_as_hex
@@ -714,18 +731,7 @@ class Build666UDRightObliqueInnerXCentersStage(BFS):
         BFS.__init__(
             self,
             "6x6x6-UD-right-oblique-inner-x-centers-stage",
-            (
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            UD_STAGE_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step17-UD-right-oblique-inner-x-centers.txt",
             False,  # store_as_hex
@@ -772,22 +778,7 @@ class StartingStates666Step50LRCenters(BFS):
         BFS.__init__(
             self,
             "6x6x6-step50",
-            (
-                "3Uw", "3Uw'", "3Uw2",
-                "3Lw", "3Lw'", "3Lw2",
-                "3Fw", "3Fw'", "3Fw2",
-                "3Rw", "3Rw'", "3Rw2",
-                "3Bw", "3Bw'", "3Bw2",
-                "3Dw", "3Dw'", "3Dw2",
-                "Uw", "Uw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Rw", "Rw'",
-                "Bw", "Bw'",
-                "Dw", "Dw'",
-                "L", "L'",
-                "R", "R'",
-            ),
+            PHASE5_STARTING_STATES_ILLEGAL_MOVES,
             "6x6x6",
             "starting-states-6x6x6-step50.txt",
             False,  # store_as_hex
@@ -849,20 +840,7 @@ class Build666Step50LRCenters(BFS):
         BFS.__init__(
             self,
             "6x6x6-step50",
-            (
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step50-LR-solve-inner-x-center-and-oblique-edges.txt",
             False,  # store_as_hex
@@ -936,21 +914,7 @@ class Build666Step50HighLowEdges(BFS):
         BFS.__init__(
             self,
             "666-highlow-edges",
-            # fmt: off
-            (
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             # fmt: on
             "6x6x6",
             "lookup-table-6x6x6-step51-highlow-edges.txt",
@@ -1019,33 +983,7 @@ class Build666UDInnerXCenterAndObliqueEdges(BFS):
         BFS.__init__(
             self,
             "6x6x6-UD-solve-inner-x-center-and-oblique-edges",
-            (
-                # do not mess up staged centers
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-
-                # do not mess up staged centers
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-
-                # do not mess up solved LR
-                "3Uw2",
-                "3Dw2",
-                "3Fw2",
-                "3Bw2",
-
-                # do not mess up the EOed edges
-                "L", "L'",
-                "R", "R'",
-            ),
+            PHASE6_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step61-UD-solve-inner-x-center-and-oblique-edges.txt",
             False,  # store_as_hex
@@ -1128,33 +1066,7 @@ class Build666FBInnerXCenterAndObliqueEdges(BFS):
         BFS.__init__(
             self,
             "6x6x6-FB-solve-inner-x-center-and-oblique-edges",
-            (
-                # do not mess up staged centers
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-
-                # do not mess up staged centers
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-
-                # do not mess up solved LR
-                "3Uw2",
-                "3Dw2",
-                "3Fw2",
-                "3Bw2",
-
-                # do not mess up the EOed edges
-                "L", "L'",
-                "R", "R'",
-            ),
+            PHASE6_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.txt",
             False,  # store_as_hex
@@ -1242,33 +1154,7 @@ class Build666LRObliqueEdges(BFS):
         BFS.__init__(
             self,
             "6x6x6-LR-oblique-edges",
-            (
-                # do not mess up staged centers
-                "3Rw", "3Rw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Bw", "3Bw'",
-                "3Uw", "3Uw'",
-                "3Dw", "3Dw'",
-
-                # do not mess up staged centers
-                "Rw", "Rw'",
-                "Lw", "Lw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-
-                # do not mess up solved LR
-                "3Uw2",
-                "3Dw2",
-                "3Fw2",
-                "3Bw2",
-
-                # do not mess up the EOed edges
-                "L", "L'",
-                "R", "R'",
-            ),
+            PHASE6_ILLEGAL_MOVES,
             "6x6x6",
             "lookup-table-6x6x6-step63-LR-oblique-edges.txt",
             False,  # store_as_hex
@@ -1354,9 +1240,9 @@ class LookupTableIDA666UDObliqueEdgesStage(LookupTableIDAViaGraph):
     Total: 165,636,900 entries
     Average: 10.61 moves
     """
-    state_targets = (
-        "UUUUUUUUxxxxxxxxxxxxxxxxUUUUUUUU",
-    )
+
+    state_targets = ("UUUUUUUUxxxxxxxxxxxxxxxxUUUUUUUU",)
+
     def __init__(self, parent):
         # fmt: off
         LookupTableIDAViaGraph.__init__(
@@ -1367,21 +1253,7 @@ class LookupTableIDA666UDObliqueEdgesStage(LookupTableIDAViaGraph):
             linecount=165636900,
             max_depth=15,
             all_moves=moves_666,
-            illegal_moves=(
-                "3Uw", "3Uw'",
-                "3Lw", "3Lw'",
-                "3Fw", "3Fw'",
-                "3Rw", "3Rw'",
-                "3Bw", "3Bw'",
-                "3Dw", "3Dw'",
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                # we are not manipulating anything on sides L or R
-                "L", "L'", "L2",
-                "R", "R'", "R2",
-            ),
+            illegal_moves=PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
             prune_tables=(
                 parent.lt_UD_left_oblique_edges_stage,
                 parent.lt_UD_right_oblique_edges_stage,

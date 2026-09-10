@@ -4,6 +4,7 @@ import logging
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
 from rubikscubennnsolver.LookupTableIDAViaGraph import LookupTableIDAViaGraph
+from rubikscubennnsolver.RubiksCube555 import FB_centers_555, moves_555
 
 log = logging.getLogger(__name__)
 
@@ -88,6 +89,100 @@ If we dropped phase 4 then phase 5 would become
     But there wouldn't be two tables we could use to create a perfect-hash...heck the current
     phase 5 is super slow if you don't use the perfect-hash
 """
+
+
+# fmt: off
+PHASE2_ILLEGAL_MOVES = (
+    "Uw", "Uw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Dw", "Dw'",
+)
+
+PHASE3_ILLEGAL_MOVES = (
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Lw", "Lw'",
+    "Rw", "Rw'",
+)
+
+PHASE4_ILLEGAL_MOVES = (
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Lw", "Lw'",
+    "Rw", "Rw'",
+    "L", "L'",
+    "R", "R'",
+)
+
+PHASE5_ILLEGAL_MOVES = (
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Lw", "Lw'",
+    "Rw", "Rw'",
+    "L", "L'",
+    "R", "R'",
+    "U", "U'",
+    "D", "D'",
+)
+
+PHASE5_STARTING_STATES_ILLEGAL_MOVES = (
+    "Uw", "Uw'", "Uw2",
+    "Dw", "Dw'", "Dw2",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Lw", "Lw'",
+    "Rw", "Rw'",
+    "L", "L'",
+    "R", "R'",
+    "U", "U'",
+    "D", "D'",
+    "F", "F'",
+    "B", "B'",
+)
+
+PHASE6_ILLEGAL_MOVES = (
+    "Uw", "Uw'", "Uw2",
+    "Dw", "Dw'", "Dw2",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Lw", "Lw'",
+    "Rw", "Rw'",
+    "L", "L'",
+    "R", "R'",
+    "F", "F'",
+    "B", "B'",
+)
+
+PHASE6_EDGES_ONLY_ILLEGAL_MOVES = (
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Lw", "Lw'",
+    "Rw", "Rw'",
+    "Uw", "Uw'", "Uw2",
+    "Dw", "Dw'", "Dw2",
+    "L", "L'",
+    "R", "R'",
+    "F", "F'",
+    "B", "B'",
+)
+
+CENTERS_SOLVE_ILLEGAL_MOVES = (
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "Lw", "Lw'",
+    "Rw", "Rw'",
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+)
+
+# fmt: on
 
 
 # =======
@@ -233,7 +328,7 @@ class Build555FBTCenterStage(BFS):
         BFS.__init__(
             self,
             "5x5x5-FB-t-center-stage",
-            ("Uw", "Uw'", "Fw", "Fw'", "Bw", "Bw'", "Dw", "Dw'"),
+            PHASE2_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step21-FB-t-centers-stage.txt",
             True,  # store_as_hex
@@ -288,7 +383,7 @@ class Build555FBXCenterStage(BFS):
         BFS.__init__(
             self,
             "5x5x5-FB-x-center-stage",
-            ("Uw", "Uw'", "Fw", "Fw'", "Bw", "Bw'", "Dw", "Dw'"),
+            PHASE2_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step22-FB-x-centers-stage.txt",
             True,  # store_as_hex
@@ -342,7 +437,7 @@ class Build555Phase3LRCenterStage(BFS):
         BFS.__init__(
             self,
             "5x5x5-LR-center-stage",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'"),
+            PHASE3_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step901-LR-center-stage.txt",
             False,  # store_as_hex
@@ -812,7 +907,7 @@ class Build555EdgeOrientOuterOrbit(BFS):
         BFS.__init__(
             self,
             "5x5x5-EO-outer-orbit",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'"),
+            PHASE3_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step902-EO-outer-orbit.txt",
             False,  # store_as_hex
@@ -867,7 +962,7 @@ class Build555EdgeOrientInnerOrbit(BFS):
         BFS.__init__(
             self,
             "5x5x5-EO-inner-orbit",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'"),
+            PHASE3_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step903-EO-inner-orbit.txt",
             False,  # store_as_hex
@@ -906,19 +1001,7 @@ class StartingStatesBuild555Phase4(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase4",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "starting-states-lookup-table-5x5x5-step40-phase4.txt",
@@ -974,7 +1057,7 @@ class Build555Phase4(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase4",
-            ("Uw", "Uw'", "Dw", "Dw'", "Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "L", "L'", "R", "R'"),
+            PHASE4_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step40-phase4.txt",
             True,  # store_as_hex
@@ -991,21 +1074,7 @@ class StartingStatesBuild555Phase5Centers(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-centers",
-            # fmt: off
-            (
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-                "F", "F'",
-                "B", "B'",
-            ),
+            PHASE5_STARTING_STATES_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "starting-states-lookup-table-5x5x5-step51-phase5-centers.txt",
@@ -1065,18 +1134,7 @@ class Build555Phase5Centers(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-centers",
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step51-phase5-centers.txt",
             False,  # store_as_hex
@@ -1150,19 +1208,7 @@ class Build555Phase5HighEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-high-edge-and-midge",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt",
@@ -1221,19 +1267,7 @@ class Build555Phase5LowEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-low-edge-and-midge",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step54-phase5-low-edge-and-midge.txt",
@@ -1277,19 +1311,7 @@ class Build555Phase5FBCentersHighEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-fb-centers-high-edge-and-midge",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.txt",
@@ -1438,19 +1460,7 @@ class Build555Phase5FBCentersLowEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-fb-centers-low-edge-and-midge",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step57-phase5-fb-centers-low-edge-and-midge.txt",
@@ -1613,19 +1623,7 @@ class Build555Phase5FBCenters(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase5-fb-centers",
-            # fmt: off
-            (
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
+            PHASE5_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step56-phase5-fb-centers.txt",
@@ -1777,20 +1775,7 @@ class Build555PairLastEightEdgesEdgesOnly(BFS):
         BFS.__init__(
             self,
             "5x5x5-pair-last-eight-edges-edges-only",
-            # illegal moves
-            # fmt: off
-            (
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-                "L", "L'",
-                "R", "R'",
-                "F", "F'",
-                "B", "B'",
-            ),
+            PHASE6_EDGES_ONLY_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt",
@@ -1848,19 +1833,7 @@ class Build555Phase6Centers(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase6-centers",
-            # fmt: off
-            (
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "F", "F'",
-                "B", "B'",
-            ),
+            PHASE6_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step61-phase6-centers.txt",
@@ -1919,19 +1892,7 @@ class Build555Phase6HighEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase6-high-edge-midge",
-            # fmt: off
-            (
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "F", "F'",
-                "B", "B'",
-            ),
+            PHASE6_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step62-phase6-high-edge-midge.txt",
@@ -1990,19 +1951,7 @@ class Build555Phase6LowEdgeMidge(BFS):
         BFS.__init__(
             self,
             "5x5x5-phase6-low-edge-midge",
-            # fmt: off
-            (
-                "Uw", "Uw'", "Uw2",
-                "Dw", "Dw'", "Dw2",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "F", "F'",
-                "B", "B'",
-            ),
+            PHASE6_ILLEGAL_MOVES,
             # fmt: on
             "5x5x5",
             "lookup-table-5x5x5-step63-phase6-low-edge-midge.txt",
@@ -2064,7 +2013,7 @@ class Build555UDCenterSolve(BFS):
         BFS.__init__(
             self,
             "5x5x5-UD-centers-solve",
-            ("Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "Uw", "Uw'", "Dw", "Dw'"),
+            CENTERS_SOLVE_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step34-UD-centers-solve.txt",
             False,  # store_as_hex
@@ -2123,7 +2072,7 @@ class Build555LRCenterSolve(BFS):
         BFS.__init__(
             self,
             "5x5x5-LR-centers-solve",
-            ("Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "Uw", "Uw'", "Dw", "Dw'"),
+            CENTERS_SOLVE_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step35-LR-centers-solve.txt",
             False,  # store_as_hex
@@ -2181,7 +2130,7 @@ class Build555FBCenterSolve(BFS):
         BFS.__init__(
             self,
             "5x5x5-FB-centers-solve",
-            ("Fw", "Fw'", "Bw", "Bw'", "Lw", "Lw'", "Rw", "Rw'", "Uw", "Uw'", "Dw", "Dw'"),
+            CENTERS_SOLVE_ILLEGAL_MOVES,
             "5x5x5",
             "lookup-table-5x5x5-step36-FB-centers-solve.txt",
             False,  # store_as_hex
@@ -2246,18 +2195,7 @@ class LookupTable555Phase5FBCentersHighEdgeMidge(LookupTableIDAViaGraph):
             linecount=576240000,
             max_depth=13,
             all_moves=moves_555,
-            illegal_moves=(
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
+            illegal_moves=PHASE5_ILLEGAL_MOVES,
             prune_tables=(
                 parent.lt_phase5_fb_centers,
                 parent.lt_phase5_high_edge_midge,
@@ -2318,18 +2256,7 @@ class LookupTable555Phase5FBCentersLowEdgeMidge(LookupTableIDAViaGraph):
             linecount=576240000,
             max_depth=13,
             all_moves=moves_555,
-            illegal_moves=(
-                "Uw", "Uw'",
-                "Dw", "Dw'",
-                "Fw", "Fw'",
-                "Bw", "Bw'",
-                "Lw", "Lw'",
-                "Rw", "Rw'",
-                "L", "L'",
-                "R", "R'",
-                "U", "U'",
-                "D", "D'",
-            ),
+            illegal_moves=PHASE5_ILLEGAL_MOVES,
             prune_tables=(
                 parent.lt_phase5_fb_centers,
                 parent.lt_phase5_low_edge_midge,

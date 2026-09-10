@@ -39,6 +39,30 @@ This should averge 31 moves
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
 
+# fmt: off
+PHASE2_ILLEGAL_MOVES = (
+    "L", "L'",
+    "R", "R'",
+)
+
+PHASE3_ILLEGAL_MOVES = (
+    "L", "L'",
+    "R", "R'",
+    "F", "F'",
+    "B", "B'",
+)
+
+PHASE4_ILLEGAL_MOVES = (
+    "R", "R'",
+    "L", "L'",
+    "F", "F'",
+    "B", "B'",
+    "U", "U'",
+    "D", "D'",
+)
+
+# fmt: on
+
 
 class Build333MicroPythonPhase1(BFS):
     """
@@ -108,8 +132,7 @@ class Build333MicroPythonPhase2(BFS):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase2",
-            # illegal moves
-            ("L", "L'", "R", "R'"),
+            PHASE2_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step120.txt",
             False,  # store_as_hex
@@ -154,8 +177,7 @@ class Build333MicroPythonPhase2Edges(BFS):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase2-edges",
-            # illegal moves
-            ("L", "L'", "R", "R'"),
+            PHASE2_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step121-edges.txt",
             False,  # store_as_hex
@@ -202,8 +224,7 @@ class Build333MicroPythonPhase2Corners(BFS):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase2-corners",
-            # illegal moves
-            ("L", "L'", "R", "R'"),
+            PHASE2_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step122-corners.txt",
             False,  # store_as_hex
@@ -256,8 +277,7 @@ class Build333MicroPythonPhase3(BFS):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase3",
-            # illegal moves
-            ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
+            PHASE3_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step130.txt",
             False,  # store_as_hex
@@ -382,8 +402,7 @@ class Build333MicroPythonPhase3Edges(BFS):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase3-edges",
-            # illegal moves
-            ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
+            PHASE3_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step131-edges.txt",
             False,  # store_as_hex
@@ -435,8 +454,7 @@ class Build333MicroPythonPhase3Corners(BFS):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase3-corners",
-            # illegal moves
-            ("L", "L'", "R", "R'", "F", "F'", "B", "B'"),
+            PHASE3_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step132-corners.txt",
             False,  # store_as_hex
@@ -572,8 +590,7 @@ class Build333MicroPythonPhase4(BFS):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase4",
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+            PHASE4_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step140.txt",
             False,  # store_as_hex
@@ -621,8 +638,7 @@ class Build333MicroPythonPhase4Edges(BFS):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase4-edges",
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+            PHASE4_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step141-edges.txt",
             False,  # store_as_hex
@@ -666,8 +682,7 @@ class Build333MicroPythonPhase4Corners(BFS):
         BFS.__init__(
             self,
             "3x3x3-micropython-phase4-corners",
-            # illegal moves
-            ("R", "R'", "L", "L'", "F", "F'", "B", "B'", "U", "U'", "D", "D'"),
+            PHASE4_ILLEGAL_MOVES,
             "3x3x3",
             "lookup-table-3x3x3-step142-corners.txt",
             False,  # store_as_hex
