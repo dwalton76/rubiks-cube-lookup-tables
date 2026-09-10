@@ -42,6 +42,26 @@ phase 9
 # phase 4 - stage UD inner centers, pair UD oblique edges
 # =======================================================
 class Build777Phase4TCenters(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-7x7x7-phase4-t-centers.txt
+    =======================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 25 entries (0 percent, 12.50x previous step)
+    3 steps has 210 entries (1 percent, 8.40x previous step)
+    4 steps has 722 entries (5 percent, 3.44x previous step)
+    5 steps has 1,752 entries (13 percent, 2.43x previous step)
+    6 steps has 4,033 entries (31 percent, 2.30x previous step)
+    7 steps has 4,014 entries (31 percent, 1.00x previous step)
+    8 steps has 1,977 entries (15 percent, 0.49x previous step)
+    9 steps has 134 entries (1 percent, 0.07x previous step)
+
+    Total: 12,870 entries
+    Average: 6.34 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -102,6 +122,24 @@ class Build777Phase4TCenters(BFS):
 
 
 class Build777Phase4XCenters(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-7x7x7-phase4-x-centers.txt
+    =======================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 234 entries (1 percent, 8.07x previous step)
+    4 steps has 1,246 entries (9 percent, 5.32x previous step)
+    5 steps has 4,466 entries (34 percent, 3.58x previous step)
+    6 steps has 6,236 entries (48 percent, 1.40x previous step)
+    7 steps has 656 entries (5 percent, 0.11x previous step)
+
+    Total: 12,870 entries
+    Average: 5.45 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -224,6 +262,23 @@ class Build777Phase4Centers(BFS):
 
 # dwalton
 class Build777Phase4LeftOblique(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-7x7x7-phase4-left-oblique.txt
+    ==========================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 70 entries (0 percent, 17.50x previous step)
+    3 steps has 804 entries (6 percent, 11.49x previous step)
+    4 steps has 4,615 entries (35 percent, 5.74x previous step)
+    5 steps has 7,048 entries (54 percent, 1.53x previous step)
+    6 steps has 328 entries (2 percent, 0.05x previous step)
+
+    Total: 12,870 entries
+    Average: 4.52 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -284,6 +339,23 @@ class Build777Phase4LeftOblique(BFS):
 
 
 class Build777Phase4RightOblique(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-7x7x7-phase4-right-oblique.txt
+    ===========================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 70 entries (0 percent, 17.50x previous step)
+    3 steps has 804 entries (6 percent, 11.49x previous step)
+    4 steps has 4,615 entries (35 percent, 5.74x previous step)
+    5 steps has 7,048 entries (54 percent, 1.53x previous step)
+    6 steps has 328 entries (2 percent, 0.05x previous step)
+
+    Total: 12,870 entries
+    Average: 4.52 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -344,6 +416,26 @@ class Build777Phase4RightOblique(BFS):
 
 
 class Build777Phase4MiddleOblique(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-7x7x7-phase4-middle-oblique.txt
+    ============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 25 entries (0 percent, 12.50x previous step)
+    3 steps has 210 entries (1 percent, 8.40x previous step)
+    4 steps has 722 entries (5 percent, 3.44x previous step)
+    5 steps has 1,752 entries (13 percent, 2.43x previous step)
+    6 steps has 4,033 entries (31 percent, 2.30x previous step)
+    7 steps has 4,014 entries (31 percent, 1.00x previous step)
+    8 steps has 1,977 entries (15 percent, 0.49x previous step)
+    9 steps has 134 entries (1 percent, 0.07x previous step)
+
+    Total: 12,870 entries
+    Average: 6.34 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -599,6 +691,26 @@ class Build777Phase4LeftMiddleOblique(BFS):
 # phase 5 - pair UD oblique edges
 # ===============================
 class Build777Phase5LeftOblique(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-7x7x7-phase5-left-oblique.txt
+    ==========================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 238 entries (1 percent, 8.21x previous step)
+    4 steps has 742 entries (5 percent, 3.12x previous step)
+    5 steps has 1,836 entries (14 percent, 2.47x previous step)
+    6 steps has 4,405 entries (34 percent, 2.40x previous step)
+    7 steps has 3,774 entries (29 percent, 0.86x previous step)
+    8 steps has 1,721 entries (13 percent, 0.46x previous step)
+    9 steps has 122 entries (0 percent, 0.07x previous step)
+
+    Total: 12,870 entries
+    Average: 6.27 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -661,6 +773,26 @@ class Build777Phase5LeftOblique(BFS):
 
 
 class Build777Phase5RightOblique(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-7x7x7-phase5-right-oblique.txt
+    ===========================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 238 entries (1 percent, 8.21x previous step)
+    4 steps has 742 entries (5 percent, 3.12x previous step)
+    5 steps has 1,836 entries (14 percent, 2.47x previous step)
+    6 steps has 4,405 entries (34 percent, 2.40x previous step)
+    7 steps has 3,774 entries (29 percent, 0.86x previous step)
+    8 steps has 1,721 entries (13 percent, 0.46x previous step)
+    9 steps has 122 entries (0 percent, 0.07x previous step)
+
+    Total: 12,870 entries
+    Average: 6.27 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -723,6 +855,26 @@ class Build777Phase5RightOblique(BFS):
 
 
 class Build777Phase5MiddleOblique(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-7x7x7-phase5-middle-oblique.txt
+    ============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 25 entries (0 percent, 12.50x previous step)
+    3 steps has 210 entries (1 percent, 8.40x previous step)
+    4 steps has 722 entries (5 percent, 3.44x previous step)
+    5 steps has 1,752 entries (13 percent, 2.43x previous step)
+    6 steps has 4,033 entries (31 percent, 2.30x previous step)
+    7 steps has 4,014 entries (31 percent, 1.00x previous step)
+    8 steps has 1,977 entries (15 percent, 0.49x previous step)
+    9 steps has 134 entries (1 percent, 0.07x previous step)
+
+    Total: 12,870 entries
+    Average: 6.34 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -1070,6 +1222,25 @@ class StartingStates777Step41(BFS):
 
 
 class Build777Step41(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step41.txt
+    =============================
+    0 steps has 72 entries (0 percent, 0.00x previous step)
+    1 steps has 306 entries (0 percent, 4.25x previous step)
+    2 steps has 2,000 entries (0 percent, 6.54x previous step)
+    3 steps has 10,166 entries (2 percent, 5.08x previous step)
+    4 steps has 43,316 entries (12 percent, 4.26x previous step)
+    5 steps has 115,392 entries (33 percent, 2.66x previous step)
+    6 steps has 135,856 entries (39 percent, 1.18x previous step)
+    7 steps has 34,484 entries (10 percent, 0.25x previous step)
+    8 steps has 1,408 entries (0 percent, 0.04x previous step)
+
+    Total: 343,000 entries
+    Average: 5.40 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -1452,6 +1623,26 @@ class StartingStates777Step42(BFS):
 
 
 class Build777Step42(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step42.txt
+    =============================
+    0 steps has 36 entries (0 percent, 0.00x previous step)
+    1 steps has 190 entries (0 percent, 5.28x previous step)
+    2 steps has 1,289 entries (0 percent, 6.78x previous step)
+    3 steps has 6,178 entries (1 percent, 4.79x previous step)
+    4 steps has 24,456 entries (7 percent, 3.96x previous step)
+    5 steps has 73,866 entries (21 percent, 3.02x previous step)
+    6 steps has 131,607 entries (38 percent, 1.78x previous step)
+    7 steps has 90,214 entries (26 percent, 0.69x previous step)
+    8 steps has 14,832 entries (4 percent, 0.16x previous step)
+    9 steps has 332 entries (0 percent, 0.02x previous step)
+
+    Total: 343,000 entries
+    Average: 5.92 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -1690,6 +1881,26 @@ class StartingStates777Step43(BFS):
 
 
 class Build777Step43(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step43.txt
+    =============================
+    0 steps has 36 entries (0 percent, 0.00x previous step)
+    1 steps has 214 entries (0 percent, 5.94x previous step)
+    2 steps has 1,405 entries (0 percent, 6.57x previous step)
+    3 steps has 6,372 entries (1 percent, 4.54x previous step)
+    4 steps has 25,225 entries (7 percent, 3.96x previous step)
+    5 steps has 77,525 entries (22 percent, 3.07x previous step)
+    6 steps has 135,173 entries (39 percent, 1.74x previous step)
+    7 steps has 85,458 entries (24 percent, 0.63x previous step)
+    8 steps has 11,492 entries (3 percent, 0.13x previous step)
+    9 steps has 100 entries (0 percent, 0.01x previous step)
+
+    Total: 343,000 entries
+    Average: 5.87 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -1928,6 +2139,26 @@ class StartingStates777Step44(BFS):
 
 
 class Build777Step44(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step44.txt
+    =============================
+    0 steps has 36 entries (0 percent, 0.00x previous step)
+    1 steps has 190 entries (0 percent, 5.28x previous step)
+    2 steps has 1,289 entries (0 percent, 6.78x previous step)
+    3 steps has 6,178 entries (1 percent, 4.79x previous step)
+    4 steps has 24,456 entries (7 percent, 3.96x previous step)
+    5 steps has 73,866 entries (21 percent, 3.02x previous step)
+    6 steps has 131,607 entries (38 percent, 1.78x previous step)
+    7 steps has 90,214 entries (26 percent, 0.69x previous step)
+    8 steps has 14,832 entries (4 percent, 0.16x previous step)
+    9 steps has 332 entries (0 percent, 0.02x previous step)
+
+    Total: 343,000 entries
+    Average: 5.92 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -2196,6 +2427,26 @@ class StartingStates777Step51(BFS):
 
 
 class Build777Step51(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step51.txt
+    =============================
+    0 steps has 72 entries (0 percent, 0.00x previous step)
+    1 steps has 238 entries (0 percent, 3.31x previous step)
+    2 steps has 1,328 entries (0 percent, 5.58x previous step)
+    3 steps has 6,846 entries (1 percent, 5.16x previous step)
+    4 steps has 32,296 entries (9 percent, 4.72x previous step)
+    5 steps has 99,008 entries (28 percent, 3.07x previous step)
+    6 steps has 148,952 entries (43 percent, 1.50x previous step)
+    7 steps has 51,980 entries (15 percent, 0.35x previous step)
+    8 steps has 2,272 entries (0 percent, 0.04x previous step)
+    9 steps has 8 entries (0 percent, 0.00x previous step)
+
+    Total: 343,000 entries
+    Average: 5.61 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -2582,6 +2833,27 @@ class StartingStates777Step52(BFS):
 
 
 class Build777Step52(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step52.txt
+    =============================
+    0 steps has 36 entries (0 percent, 0.00x previous step)
+    1 steps has 155 entries (0 percent, 4.31x previous step)
+    2 steps has 876 entries (0 percent, 5.65x previous step)
+    3 steps has 4,080 entries (1 percent, 4.66x previous step)
+    4 steps has 16,546 entries (4 percent, 4.06x previous step)
+    5 steps has 54,737 entries (15 percent, 3.31x previous step)
+    6 steps has 121,824 entries (35 percent, 2.23x previous step)
+    7 steps has 115,046 entries (33 percent, 0.94x previous step)
+    8 steps has 28,763 entries (8 percent, 0.25x previous step)
+    9 steps has 927 entries (0 percent, 0.03x previous step)
+    10 steps has 10 entries (0 percent, 0.01x previous step)
+
+    Total: 343,000 entries
+    Average: 6.21 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3066,6 +3338,27 @@ class StartingStates777Step54(BFS):
 
 
 class Build777Step54(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step54.txt
+    =============================
+    0 steps has 36 entries (0 percent, 0.00x previous step)
+    1 steps has 155 entries (0 percent, 4.31x previous step)
+    2 steps has 876 entries (0 percent, 5.65x previous step)
+    3 steps has 4,080 entries (1 percent, 4.66x previous step)
+    4 steps has 16,546 entries (4 percent, 4.06x previous step)
+    5 steps has 54,737 entries (15 percent, 3.31x previous step)
+    6 steps has 121,824 entries (35 percent, 2.23x previous step)
+    7 steps has 115,046 entries (33 percent, 0.94x previous step)
+    8 steps has 28,763 entries (8 percent, 0.25x previous step)
+    9 steps has 927 entries (0 percent, 0.03x previous step)
+    10 steps has 10 entries (0 percent, 0.01x previous step)
+
+    Total: 343,000 entries
+    Average: 6.21 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3249,6 +3542,19 @@ class Build777Step54(BFS):
 
 
 class Build777Step55(BFS):
+    """
+    lookup-table-7x7x7-step55.txt
+    =============================
+    0 steps has 2 entries (2 percent, 0.00x previous step)
+    1 steps has 8 entries (11 percent, 4.00x previous step)
+    2 steps has 20 entries (27 percent, 2.50x previous step)
+    3 steps has 24 entries (33 percent, 1.20x previous step)
+    4 steps has 18 entries (25 percent, 0.75x previous step)
+
+    Total: 72 entries
+    Average: 2.67 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3347,6 +3653,19 @@ class Build777Step55(BFS):
 # phase 9 - centers daisy solve
 # =============================
 class Build777Step61(BFS):
+    """
+    lookup-table-7x7x7-step61.txt
+    =============================
+    0 steps has 2 entries (2 percent, 0.00x previous step)
+    1 steps has 9 entries (12 percent, 4.50x previous step)
+    2 steps has 20 entries (27 percent, 2.22x previous step)
+    3 steps has 24 entries (32 percent, 1.20x previous step)
+    4 steps has 18 entries (24 percent, 0.75x previous step)
+
+    Total: 73 entries
+    Average: 2.64 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3444,6 +3763,19 @@ class Build777Step61(BFS):
 
 
 class Build777Step62(BFS):
+    """
+    lookup-table-7x7x7-step62.txt
+    =============================
+    0 steps has 2 entries (2 percent, 0.00x previous step)
+    1 steps has 8 entries (11 percent, 4.00x previous step)
+    2 steps has 20 entries (27 percent, 2.50x previous step)
+    3 steps has 24 entries (33 percent, 1.20x previous step)
+    4 steps has 18 entries (25 percent, 0.75x previous step)
+
+    Total: 72 entries
+    Average: 2.67 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3541,6 +3873,27 @@ class Build777Step62(BFS):
 
 
 class Build777Step65(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step65.txt
+    =============================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 17 entries (0 percent, 8.50x previous step)
+    2 steps has 106 entries (0 percent, 6.24x previous step)
+    3 steps has 538 entries (0 percent, 5.08x previous step)
+    4 steps has 2,308 entries (0 percent, 4.29x previous step)
+    5 steps has 9,244 entries (2 percent, 4.01x previous step)
+    6 steps has 31,742 entries (9 percent, 3.43x previous step)
+    7 steps has 84,464 entries (24 percent, 2.66x previous step)
+    8 steps has 128,270 entries (37 percent, 1.52x previous step)
+    9 steps has 75,830 entries (22 percent, 0.59x previous step)
+    10 steps has 10,480 entries (3 percent, 0.14x previous step)
+
+    Total: 343,001 entries
+    Average: 7.73 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3638,6 +3991,27 @@ class Build777Step65(BFS):
 
 
 class Build777Step66(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step66.txt
+    =============================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 17 entries (0 percent, 8.50x previous step)
+    2 steps has 82 entries (0 percent, 4.82x previous step)
+    3 steps has 450 entries (0 percent, 5.49x previous step)
+    4 steps has 2,406 entries (0 percent, 5.35x previous step)
+    5 steps has 11,960 entries (3 percent, 4.97x previous step)
+    6 steps has 43,430 entries (12 percent, 3.63x previous step)
+    7 steps has 108,510 entries (31 percent, 2.50x previous step)
+    8 steps has 133,124 entries (38 percent, 1.23x previous step)
+    9 steps has 40,908 entries (11 percent, 0.31x previous step)
+    10 steps has 2,112 entries (0 percent, 0.05x previous step)
+
+    Total: 343,001 entries
+    Average: 7.42 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3738,6 +4112,19 @@ class Build777Step66(BFS):
 # phase solve t-centers (for cubes larger than 777)
 # =================================================
 class Build777Step71(BFS):
+    """
+    lookup-table-7x7x7-step71.txt
+    =============================
+    0 steps has 1 entries (2 percent, 0.00x previous step)
+    1 steps has 4 entries (11 percent, 4.00x previous step)
+    2 steps has 10 entries (27 percent, 2.50x previous step)
+    3 steps has 12 entries (33 percent, 1.20x previous step)
+    4 steps has 9 entries (25 percent, 0.75x previous step)
+
+    Total: 36 entries
+    Average: 2.67 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3808,6 +4195,19 @@ class Build777Step71(BFS):
 
 
 class Build777Step72(BFS):
+    """
+    lookup-table-7x7x7-step72.txt
+    =============================
+    0 steps has 1 entries (2 percent, 0.00x previous step)
+    1 steps has 4 entries (11 percent, 4.00x previous step)
+    2 steps has 10 entries (27 percent, 2.50x previous step)
+    3 steps has 12 entries (33 percent, 1.20x previous step)
+    4 steps has 9 entries (25 percent, 0.75x previous step)
+
+    Total: 36 entries
+    Average: 2.67 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3878,6 +4278,29 @@ class Build777Step72(BFS):
 
 
 class Build777Step75(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step75.txt
+    =============================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 8 entries (0 percent, 8.00x previous step)
+    2 steps has 56 entries (0 percent, 7.00x previous step)
+    3 steps has 300 entries (0 percent, 5.36x previous step)
+    4 steps has 1,317 entries (0 percent, 4.39x previous step)
+    5 steps has 5,382 entries (1 percent, 4.09x previous step)
+    6 steps has 19,083 entries (5 percent, 3.55x previous step)
+    7 steps has 55,022 entries (16 percent, 2.88x previous step)
+    8 steps has 104,894 entries (30 percent, 1.91x previous step)
+    9 steps has 106,324 entries (30 percent, 1.01x previous step)
+    10 steps has 44,533 entries (12 percent, 0.42x previous step)
+    11 steps has 5,880 entries (1 percent, 0.13x previous step)
+    12 steps has 200 entries (0 percent, 0.03x previous step)
+
+    Total: 343,000 entries
+    Average: 8.28 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -3948,6 +4371,28 @@ class Build777Step75(BFS):
 
 
 class Build777Step76(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-7x7x7-step76.txt
+    =============================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 8 entries (0 percent, 8.00x previous step)
+    2 steps has 48 entries (0 percent, 6.00x previous step)
+    3 steps has 276 entries (0 percent, 5.75x previous step)
+    4 steps has 1,572 entries (0 percent, 5.70x previous step)
+    5 steps has 8,134 entries (2 percent, 5.17x previous step)
+    6 steps has 33,187 entries (9 percent, 4.08x previous step)
+    7 steps has 94,826 entries (27 percent, 2.86x previous step)
+    8 steps has 141,440 entries (41 percent, 1.49x previous step)
+    9 steps has 59,620 entries (17 percent, 0.42x previous step)
+    10 steps has 3,808 entries (1 percent, 0.06x previous step)
+    11 steps has 80 entries (0 percent, 0.02x previous step)
+
+    Total: 343,000 entries
+    Average: 7.63 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(

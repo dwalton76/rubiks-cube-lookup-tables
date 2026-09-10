@@ -93,6 +93,25 @@ If we dropped phase 4 then phase 5 would become
 # phase 1
 # =======
 class Build555LRCenterStageTCenter(BFS):
+    """
+    24! / (8! * 16!) = 735,471 states
+
+    lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.txt
+    ============================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 66 entries (0 percent, 16.50x previous step)
+    3 steps has 900 entries (0 percent, 13.64x previous step)
+    4 steps has 9,626 entries (1 percent, 10.70x previous step)
+    5 steps has 80,202 entries (10 percent, 8.33x previous step)
+    6 steps has 329,202 entries (44 percent, 4.10x previous step)
+    7 steps has 302,146 entries (41 percent, 0.92x previous step)
+    8 steps has 13,324 entries (1 percent, 0.04x previous step)
+
+    Total: 735,471 entries
+    Average: 6.31 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -130,6 +149,25 @@ class Build555LRCenterStageTCenter(BFS):
 
 
 class Build555LRCenterStageXCenter(BFS):
+    """
+    24! / (8! * 16!) = 735,471 states
+
+    lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.txt
+    ============================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 82 entries (0 percent, 20.50x previous step)
+    3 steps has 1,206 entries (0 percent, 14.71x previous step)
+    4 steps has 14,116 entries (1 percent, 11.70x previous step)
+    5 steps has 123,404 entries (16 percent, 8.74x previous step)
+    6 steps has 422,508 entries (57 percent, 3.42x previous step)
+    7 steps has 173,254 entries (23 percent, 0.41x previous step)
+    8 steps has 896 entries (0 percent, 0.01x previous step)
+
+    Total: 735,471 entries
+    Average: 6.03 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -170,6 +208,26 @@ class Build555LRCenterStageXCenter(BFS):
 # phase 2
 # =======
 class Build555FBTCenterStage(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-5x5x5-step21-FB-t-centers-stage.txt
+    ================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 25 entries (0 percent, 12.50x previous step)
+    3 steps has 210 entries (1 percent, 8.40x previous step)
+    4 steps has 722 entries (5 percent, 3.44x previous step)
+    5 steps has 1,752 entries (13 percent, 2.43x previous step)
+    6 steps has 4,033 entries (31 percent, 2.30x previous step)
+    7 steps has 4,014 entries (31 percent, 1.00x previous step)
+    8 steps has 1,977 entries (15 percent, 0.49x previous step)
+    9 steps has 134 entries (1 percent, 0.07x previous step)
+
+    Total: 12,870 entries
+    Average: 6.34 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -207,6 +265,24 @@ class Build555FBTCenterStage(BFS):
 
 
 class Build555FBXCenterStage(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-5x5x5-step22-FB-x-centers-stage.txt
+    ================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 234 entries (1 percent, 8.07x previous step)
+    4 steps has 1,246 entries (9 percent, 5.32x previous step)
+    5 steps has 4,466 entries (34 percent, 3.58x previous step)
+    6 steps has 6,236 entries (48 percent, 1.40x previous step)
+    7 steps has 656 entries (5 percent, 0.11x previous step)
+
+    Total: 12,870 entries
+    Average: 5.45 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -244,6 +320,22 @@ class Build555FBXCenterStage(BFS):
 
 
 class Build555Phase3LRCenterStage(BFS):
+    """
+    (8! / (4! * 4!))^2 = 4,900 states
+
+    lookup-table-5x5x5-step901-LR-center-stage.txt
+    ==============================================
+    0 steps has 432 entries (8 percent, 0.00x previous step)
+    1 steps has 396 entries (8 percent, 0.92x previous step)
+    2 steps has 1,064 entries (21 percent, 2.69x previous step)
+    3 steps has 1,692 entries (34 percent, 1.59x previous step)
+    4 steps has 1,220 entries (24 percent, 0.72x previous step)
+    5 steps has 96 entries (1 percent, 0.08x previous step)
+
+    Total: 4,900 entries
+    Average: 2.64 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -694,6 +786,27 @@ class Build555Phase3LRCenterStage(BFS):
 
 
 class Build555EdgeOrientOuterOrbit(BFS):
+    """
+    24! / (12! * 12!) = 2,704,156 states
+
+    lookup-table-5x5x5-step902-EO-outer-orbit.txt
+    =============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 278 entries (0 percent, 9.59x previous step)
+    4 steps has 1,934 entries (0 percent, 6.96x previous step)
+    5 steps has 15,640 entries (0 percent, 8.09x previous step)
+    6 steps has 124,249 entries (4 percent, 7.94x previous step)
+    7 steps has 609,241 entries (22 percent, 4.90x previous step)
+    8 steps has 1,224,098 entries (45 percent, 2.01x previous step)
+    9 steps has 688,124 entries (25 percent, 0.56x previous step)
+    10 steps has 40,560 entries (1 percent, 0.06x previous step)
+
+    Total: 2,704,156 entries
+    Average: 7.95 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -731,6 +844,24 @@ class Build555EdgeOrientOuterOrbit(BFS):
 
 
 class Build555EdgeOrientInnerOrbit(BFS):
+    """
+    2^12 / 2 = 2,048 states
+
+    lookup-table-5x5x5-step903-EO-inner-orbit.txt
+    =============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 25 entries (1 percent, 12.50x previous step)
+    3 steps has 202 entries (9 percent, 8.08x previous step)
+    4 steps has 620 entries (30 percent, 3.07x previous step)
+    5 steps has 900 entries (43 percent, 1.45x previous step)
+    6 steps has 285 entries (13 percent, 0.32x previous step)
+    7 steps has 13 entries (0 percent, 0.05x previous step)
+
+    Total: 2,048 entries
+    Average: 4.61 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -822,6 +953,16 @@ class StartingStatesBuild555Phase4(BFS):
 class Build555Phase4(BFS):
     """
     Move one group of 4-edges out of the z-plane
+
+    lookup-table-5x5x5-step40-phase4.txt
+    ====================================
+    0 steps has 343,000 entries (1 percent, 0.00x previous step)
+    1 steps has 679,250 entries (2 percent, 1.98x previous step)
+    2 steps has 6,276,787 entries (19 percent, 9.24x previous step)
+    3 steps has 25,090,688 entries (77 percent, 4.00x previous step)
+
+    Total: 32,389,725 entries
+    Average: 2.73 moves
     """
 
     def __init__(self):
@@ -899,6 +1040,23 @@ class StartingStatesBuild555Phase5Centers(BFS):
 class Build555Phase5Centers(BFS):
     """
     432 * 4900 = 2,116,800 states
+
+    lookup-table-5x5x5-step51-phase5-centers.txt
+    ============================================
+    0 steps has 36 entries (0 percent, 0.00x previous step)
+    1 steps has 132 entries (0 percent, 3.67x previous step)
+    2 steps has 1,146 entries (0 percent, 8.68x previous step)
+    3 steps has 7,176 entries (0 percent, 6.26x previous step)
+    4 steps has 36,836 entries (1 percent, 5.13x previous step)
+    5 steps has 171,754 entries (8 percent, 4.66x previous step)
+    6 steps has 503,484 entries (23 percent, 2.93x previous step)
+    7 steps has 749,808 entries (35 percent, 1.49x previous step)
+    8 steps has 483,736 entries (22 percent, 0.65x previous step)
+    9 steps has 158,924 entries (7 percent, 0.33x previous step)
+    10 steps has 3,768 entries (0 percent, 0.02x previous step)
+
+    Total: 2,116,800 entries
+    Average: 6.91 moves
     """
 
     def __init__(self):
@@ -968,6 +1126,23 @@ class Build555Phase5Centers(BFS):
 class Build555Phase5HighEdgeMidge(BFS):
     """
     (8*7*6*5)*70 = 117,600 states
+
+    lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt
+    ========================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 30 entries (0 percent, 7.50x previous step)
+    3 steps has 184 entries (0 percent, 6.13x previous step)
+    4 steps has 992 entries (0 percent, 5.39x previous step)
+    5 steps has 4,845 entries (4 percent, 4.88x previous step)
+    6 steps has 17,792 entries (15 percent, 3.67x previous step)
+    7 steps has 40,048 entries (34 percent, 2.25x previous step)
+    8 steps has 43,400 entries (36 percent, 1.08x previous step)
+    9 steps has 10,252 entries (8 percent, 0.24x previous step)
+    10 steps has 52 entries (0 percent, 0.01x previous step)
+
+    Total: 117,600 entries
+    Average: 7.28 moves
     """
 
     def __init__(self):
@@ -1022,6 +1197,23 @@ class Build555Phase5HighEdgeMidge(BFS):
 class Build555Phase5LowEdgeMidge(BFS):
     """
     (8*7*6*5)*70 = 117,600 states
+
+    lookup-table-5x5x5-step54-phase5-low-edge-and-midge.txt
+    =======================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 30 entries (0 percent, 7.50x previous step)
+    3 steps has 184 entries (0 percent, 6.13x previous step)
+    4 steps has 992 entries (0 percent, 5.39x previous step)
+    5 steps has 4,845 entries (4 percent, 4.88x previous step)
+    6 steps has 17,792 entries (15 percent, 3.67x previous step)
+    7 steps has 40,048 entries (34 percent, 2.25x previous step)
+    8 steps has 43,400 entries (36 percent, 1.08x previous step)
+    9 steps has 10,252 entries (8 percent, 0.24x previous step)
+    10 steps has 52 entries (0 percent, 0.01x previous step)
+
+    Total: 117,600 entries
+    Average: 7.28 moves
     """
 
     def __init__(self):
@@ -1397,7 +1589,23 @@ class Build555Phase5FBCentersLowEdgeMidge(BFS):
 
 class Build555Phase5FBCenters(BFS):
     """
+    (8! / (4! * 4!))^2 = 4,900 states
+
     4,900 FB centers
+
+    lookup-table-5x5x5-step56-phase5-fb-centers.txt
+    ===============================================
+    0 steps has 6 entries (0 percent, 0.00x previous step)
+    1 steps has 22 entries (0 percent, 3.67x previous step)
+    2 steps has 110 entries (2 percent, 5.00x previous step)
+    3 steps has 396 entries (8 percent, 3.60x previous step)
+    4 steps has 1,196 entries (24 percent, 3.02x previous step)
+    5 steps has 2,102 entries (42 percent, 1.76x previous step)
+    6 steps has 1,016 entries (20 percent, 0.48x previous step)
+    7 steps has 52 entries (1 percent, 0.05x previous step)
+
+    Total: 4,900 entries
+    Average: 4.73 moves
     """
 
     def __init__(self):
@@ -1615,6 +1823,26 @@ class Build555PairLastEightEdgesEdgesOnly(BFS):
 
 
 class Build555Phase6Centers(BFS):
+    """
+    6 * 6 * 4,900 = 176,400 states
+
+    lookup-table-5x5x5-step61-phase6-centers.txt
+    ============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 42 entries (0 percent, 10.50x previous step)
+    3 steps has 280 entries (0 percent, 6.67x previous step)
+    4 steps has 1,691 entries (0 percent, 6.04x previous step)
+    5 steps has 8,806 entries (4 percent, 5.21x previous step)
+    6 steps has 36,264 entries (20 percent, 4.12x previous step)
+    7 steps has 77,966 entries (44 percent, 2.15x previous step)
+    8 steps has 46,518 entries (26 percent, 0.60x previous step)
+    9 steps has 4,828 entries (2 percent, 0.10x previous step)
+
+    Total: 176,400 entries
+    Average: 6.98 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -1665,6 +1893,27 @@ class Build555Phase6Centers(BFS):
 
 
 class Build555Phase6HighEdgeMidge(BFS):
+    """
+    8! = 40,320 states
+
+    lookup-table-5x5x5-step62-phase6-high-edge-midge.txt
+    ====================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 26 entries (0 percent, 6.50x previous step)
+    3 steps has 128 entries (0 percent, 4.92x previous step)
+    4 steps has 511 entries (1 percent, 3.99x previous step)
+    5 steps has 1,772 entries (4 percent, 3.47x previous step)
+    6 steps has 5,404 entries (13 percent, 3.05x previous step)
+    7 steps has 11,596 entries (28 percent, 2.15x previous step)
+    8 steps has 14,656 entries (36 percent, 1.26x previous step)
+    9 steps has 6,146 entries (15 percent, 0.42x previous step)
+    10 steps has 76 entries (0 percent, 0.01x previous step)
+
+    Total: 40,320 entries
+    Average: 7.40 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -1715,6 +1964,27 @@ class Build555Phase6HighEdgeMidge(BFS):
 
 
 class Build555Phase6LowEdgeMidge(BFS):
+    """
+    8! = 40,320 states
+
+    lookup-table-5x5x5-step63-phase6-low-edge-midge.txt
+    ===================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 26 entries (0 percent, 6.50x previous step)
+    3 steps has 128 entries (0 percent, 4.92x previous step)
+    4 steps has 511 entries (1 percent, 3.99x previous step)
+    5 steps has 1,772 entries (4 percent, 3.47x previous step)
+    6 steps has 5,404 entries (13 percent, 3.05x previous step)
+    7 steps has 11,596 entries (28 percent, 2.15x previous step)
+    8 steps has 14,656 entries (36 percent, 1.26x previous step)
+    9 steps has 6,146 entries (15 percent, 0.42x previous step)
+    10 steps has 76 entries (0 percent, 0.01x previous step)
+
+    Total: 40,320 entries
+    Average: 7.40 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -1768,6 +2038,27 @@ class Build555Phase6LowEdgeMidge(BFS):
 # Centers Solve Staged
 # ====================
 class Build555UDCenterSolve(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-5x5x5-step34-UD-centers-solve.txt
+    ==============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 71 entries (0 percent, 11.83x previous step)
+    3 steps has 560 entries (0 percent, 7.89x previous step)
+    4 steps has 3,136 entries (0 percent, 5.60x previous step)
+    5 steps has 15,246 entries (4 percent, 4.86x previous step)
+    6 steps has 58,108 entries (16 percent, 3.81x previous step)
+    7 steps has 130,214 entries (37 percent, 2.24x previous step)
+    8 steps has 109,626 entries (31 percent, 0.84x previous step)
+    9 steps has 24,832 entries (7 percent, 0.23x previous step)
+    10 steps has 1,200 entries (0 percent, 0.05x previous step)
+
+    Total: 343,000 entries
+    Average: 7.18 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -1805,6 +2096,28 @@ class Build555UDCenterSolve(BFS):
 
 
 class Build555LRCenterSolve(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-5x5x5-step35-LR-centers-solve.txt
+    ==============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 67 entries (0 percent, 11.17x previous step)
+    3 steps has 476 entries (0 percent, 7.10x previous step)
+    4 steps has 2,571 entries (0 percent, 5.40x previous step)
+    5 steps has 11,792 entries (3 percent, 4.59x previous step)
+    6 steps has 43,263 entries (12 percent, 3.67x previous step)
+    7 steps has 98,148 entries (28 percent, 2.27x previous step)
+    8 steps has 111,960 entries (32 percent, 1.14x previous step)
+    9 steps has 61,836 entries (18 percent, 0.55x previous step)
+    10 steps has 12,336 entries (3 percent, 0.20x previous step)
+    11 steps has 544 entries (0 percent, 0.04x previous step)
+
+    Total: 343,000 entries
+    Average: 7.58 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -1842,6 +2155,27 @@ class Build555LRCenterSolve(BFS):
 
 
 class Build555FBCenterSolve(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-5x5x5-step36-FB-centers-solve.txt
+    ==============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 71 entries (0 percent, 11.83x previous step)
+    3 steps has 560 entries (0 percent, 7.89x previous step)
+    4 steps has 3,136 entries (0 percent, 5.60x previous step)
+    5 steps has 15,246 entries (4 percent, 4.86x previous step)
+    6 steps has 58,108 entries (16 percent, 3.81x previous step)
+    7 steps has 130,214 entries (37 percent, 2.24x previous step)
+    8 steps has 109,626 entries (31 percent, 0.84x previous step)
+    9 steps has 24,832 entries (7 percent, 0.23x previous step)
+    10 steps has 1,200 entries (0 percent, 0.05x previous step)
+
+    Total: 343,000 entries
+    Average: 7.18 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,

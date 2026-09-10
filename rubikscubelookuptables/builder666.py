@@ -33,6 +33,25 @@ phase 6
 # phase 1
 # =======
 class Build666LRInnerXCentersStage(BFS):
+    """
+    24! / (8! * 16!) = 735,471 states
+
+    lookup-table-6x6x6-step00-inner-x-centers-stage.txt
+    ===================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 82 entries (0 percent, 20.50x previous step)
+    3 steps has 1,206 entries (0 percent, 14.71x previous step)
+    4 steps has 14,116 entries (1 percent, 11.70x previous step)
+    5 steps has 123,404 entries (16 percent, 8.74x previous step)
+    6 steps has 422,508 entries (57 percent, 3.42x previous step)
+    7 steps has 173,254 entries (23 percent, 0.41x previous step)
+    8 steps has 896 entries (0 percent, 0.01x previous step)
+
+    Total: 735,471 entries
+    Average: 6.03 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -178,6 +197,32 @@ UFBD_RIGHT_OBLIQUE_EDGES_666 = (
 
 
 class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
+    """
+    (16! / (8! * 8!))^2 = 165,636,900 states
+
+    lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage.cost-only.bin
+    ===========================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 286 entries (0 percent, 9.86x previous step)
+    4 steps has 2,052 entries (0 percent, 7.17x previous step)
+    5 steps has 16,348 entries (0 percent, 7.97x previous step)
+    6 steps has 127,859 entries (0 percent, 7.82x previous step)
+    7 steps has 844,248 entries (0 percent, 6.60x previous step)
+    8 steps has 4,623,585 entries (2 percent, 5.48x previous step)
+    9 steps has 19,019,322 entries (11 percent, 4.11x previous step)
+    10 steps has 47,544,426 entries (28 percent, 2.50x previous step)
+    11 steps has 61,805,656 entries (37 percent, 1.30x previous step)
+    12 steps has 28,890,234 entries (17 percent, 0.47x previous step)
+    13 steps has 2,722,462 entries (1 percent, 0.09x previous step)
+    14 steps has 40,242 entries (0 percent, 0.01x previous step)
+    15 steps has 148 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 10.58 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -222,6 +267,29 @@ class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
 
 
 class Build666Phase3UDLeftObliqueOuterXCentersStage(BFS):
+    """
+    (16! / (8! * 8!))^2 = 165,636,900 states
+
+    lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage.cost-only.bin
+    =============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 37 entries (0 percent, 18.50x previous step)
+    3 steps has 426 entries (0 percent, 11.51x previous step)
+    4 steps has 4,552 entries (0 percent, 10.69x previous step)
+    5 steps has 48,826 entries (0 percent, 10.73x previous step)
+    6 steps has 497,305 entries (0 percent, 10.19x previous step)
+    7 steps has 4,366,446 entries (2 percent, 8.78x previous step)
+    8 steps has 25,800,644 entries (15 percent, 5.91x previous step)
+    9 steps has 71,891,909 entries (43 percent, 2.79x previous step)
+    10 steps has 57,817,231 entries (34 percent, 0.80x previous step)
+    11 steps has 5,204,126 entries (3 percent, 0.09x previous step)
+    12 steps has 5,395 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.19 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -266,6 +334,29 @@ class Build666Phase3UDLeftObliqueOuterXCentersStage(BFS):
 
 
 class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
+    """
+    (16! / (8! * 8!))^2 = 165,636,900 states
+
+    lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage.cost-only.bin
+    ==============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 37 entries (0 percent, 18.50x previous step)
+    3 steps has 426 entries (0 percent, 11.51x previous step)
+    4 steps has 4,552 entries (0 percent, 10.69x previous step)
+    5 steps has 48,826 entries (0 percent, 10.73x previous step)
+    6 steps has 497,305 entries (0 percent, 10.19x previous step)
+    7 steps has 4,366,446 entries (2 percent, 8.78x previous step)
+    8 steps has 25,800,644 entries (15 percent, 5.91x previous step)
+    9 steps has 71,891,909 entries (43 percent, 2.79x previous step)
+    10 steps has 57,817,231 entries (34 percent, 0.80x previous step)
+    11 steps has 5,204,126 entries (3 percent, 0.09x previous step)
+    12 steps has 5,395 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.19 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -310,6 +401,24 @@ class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
 
 
 class Build666UDInnerXCentersStage(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-6x6x6-step11-UD-inner-x-centers-stage.txt
+    ======================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 234 entries (1 percent, 8.07x previous step)
+    4 steps has 1,246 entries (9 percent, 5.32x previous step)
+    5 steps has 4,466 entries (34 percent, 3.58x previous step)
+    6 steps has 6,236 entries (48 percent, 1.40x previous step)
+    7 steps has 656 entries (5 percent, 0.11x previous step)
+
+    Total: 12,870 entries
+    Average: 5.45 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -363,6 +472,23 @@ class Build666UDInnerXCentersStage(BFS):
 
 
 class Build666UDLeftObliqueCentersStage(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-6x6x6-step13-UD-left-oblique-centers.txt
+    =====================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 70 entries (0 percent, 17.50x previous step)
+    3 steps has 804 entries (6 percent, 11.49x previous step)
+    4 steps has 4,615 entries (35 percent, 5.74x previous step)
+    5 steps has 7,048 entries (54 percent, 1.53x previous step)
+    6 steps has 328 entries (2 percent, 0.05x previous step)
+
+    Total: 12,870 entries
+    Average: 4.52 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -416,6 +542,23 @@ class Build666UDLeftObliqueCentersStage(BFS):
 
 
 class Build666UDRightObliqueCentersStage(BFS):
+    """
+    16! / (8! * 8!) = 12,870 states
+
+    lookup-table-6x6x6-step14-UD-right-oblique-centers.txt
+    ======================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 70 entries (0 percent, 17.50x previous step)
+    3 steps has 804 entries (6 percent, 11.49x previous step)
+    4 steps has 4,615 entries (35 percent, 5.74x previous step)
+    5 steps has 7,048 entries (54 percent, 1.53x previous step)
+    6 steps has 328 entries (2 percent, 0.05x previous step)
+
+    Total: 12,870 entries
+    Average: 4.52 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -692,6 +835,27 @@ class StartingStates666Step50LRCenters(BFS):
 
 
 class Build666Step50LRCenters(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-6x6x6-step50-LR-solve-inner-x-center-and-oblique-edges.txt
+    =======================================================================
+    0 steps has 36 entries (0 percent, 0.00x previous step)
+    1 steps has 162 entries (0 percent, 4.50x previous step)
+    2 steps has 748 entries (0 percent, 4.62x previous step)
+    3 steps has 2,914 entries (0 percent, 3.90x previous step)
+    4 steps has 12,388 entries (3 percent, 4.25x previous step)
+    5 steps has 44,604 entries (13 percent, 3.60x previous step)
+    6 steps has 109,148 entries (31 percent, 2.45x previous step)
+    7 steps has 132,424 entries (38 percent, 1.21x previous step)
+    8 steps has 37,920 entries (11 percent, 0.29x previous step)
+    9 steps has 2,624 entries (0 percent, 0.07x previous step)
+    10 steps has 32 entries (0 percent, 0.01x previous step)
+
+    Total: 343,000 entries
+    Average: 6.39 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -759,6 +923,27 @@ class Build666Step50LRCenters(BFS):
 
 
 class Build666Step50HighLowEdges(BFS):
+    """
+    24! / (12! * 12!) = 2,704,156 states
+
+    lookup-table-6x6x6-step51-highlow-edges.txt
+    ===========================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 278 entries (0 percent, 9.59x previous step)
+    4 steps has 1,934 entries (0 percent, 6.96x previous step)
+    5 steps has 15,640 entries (0 percent, 8.09x previous step)
+    6 steps has 124,249 entries (4 percent, 7.94x previous step)
+    7 steps has 609,241 entries (22 percent, 4.90x previous step)
+    8 steps has 1,224,098 entries (45 percent, 2.01x previous step)
+    9 steps has 688,124 entries (25 percent, 0.56x previous step)
+    10 steps has 40,560 entries (1 percent, 0.06x previous step)
+
+    Total: 2,704,156 entries
+    Average: 7.95 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -819,6 +1004,28 @@ class Build666Step50HighLowEdges(BFS):
 # - solve the UD inner x-centers and pair the LR oblique edges
 # - solve the FB inner x-centers and pair the FB oblique edges
 class Build666UDInnerXCenterAndObliqueEdges(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-6x6x6-step61-UD-solve-inner-x-center-and-oblique-edges.txt
+    =======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 13 entries (0 percent, 6.50x previous step)
+    2 steps has 68 entries (0 percent, 5.23x previous step)
+    3 steps has 282 entries (0 percent, 4.15x previous step)
+    4 steps has 1,218 entries (0 percent, 4.32x previous step)
+    5 steps has 5,382 entries (1 percent, 4.42x previous step)
+    6 steps has 20,484 entries (5 percent, 3.81x previous step)
+    7 steps has 62,640 entries (18 percent, 3.06x previous step)
+    8 steps has 118,196 entries (34 percent, 1.89x previous step)
+    9 steps has 104,328 entries (30 percent, 0.88x previous step)
+    10 steps has 29,872 entries (8 percent, 0.29x previous step)
+    11 steps has 516 entries (0 percent, 0.02x previous step)
+
+    Total: 343,001 entries
+    Average: 8.11 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -906,6 +1113,28 @@ class Build666UDInnerXCenterAndObliqueEdges(BFS):
 
 
 class Build666FBInnerXCenterAndObliqueEdges(BFS):
+    """
+    (8! / (4! * 4!))^3 = 343,000 states
+
+    lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.txt
+    =======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 12 entries (0 percent, 6.00x previous step)
+    2 steps has 68 entries (0 percent, 5.67x previous step)
+    3 steps has 282 entries (0 percent, 4.15x previous step)
+    4 steps has 1,218 entries (0 percent, 4.32x previous step)
+    5 steps has 5,382 entries (1 percent, 4.42x previous step)
+    6 steps has 20,484 entries (5 percent, 3.81x previous step)
+    7 steps has 62,640 entries (18 percent, 3.06x previous step)
+    8 steps has 118,196 entries (34 percent, 1.89x previous step)
+    9 steps has 104,328 entries (30 percent, 0.88x previous step)
+    10 steps has 29,872 entries (8 percent, 0.29x previous step)
+    11 steps has 516 entries (0 percent, 0.02x previous step)
+
+    Total: 343,000 entries
+    Average: 8.11 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(
@@ -998,6 +1227,28 @@ class Build666FBInnerXCenterAndObliqueEdges(BFS):
 
 
 class Build666LRObliqueEdges(BFS):
+    """
+    6 * 6 * 4,900 = 176,400 states
+
+    lookup-table-6x6x6-step63-LR-oblique-edges.txt
+    ==============================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 12 entries (0 percent, 6.00x previous step)
+    2 steps has 96 entries (0 percent, 8.00x previous step)
+    3 steps has 728 entries (0 percent, 7.58x previous step)
+    4 steps has 3,446 entries (1 percent, 4.73x previous step)
+    5 steps has 10,036 entries (5 percent, 2.91x previous step)
+    6 steps has 26,472 entries (15 percent, 2.64x previous step)
+    7 steps has 44,832 entries (25 percent, 1.69x previous step)
+    8 steps has 41,312 entries (23 percent, 0.92x previous step)
+    9 steps has 32,560 entries (18 percent, 0.79x previous step)
+    10 steps has 15,176 entries (8 percent, 0.47x previous step)
+    11 steps has 1,728 entries (0 percent, 0.11x previous step)
+
+    Total: 176,400 entries
+    Average: 7.56 moves
+    """
+
     def __init__(self):
         # fmt: off
         BFS.__init__(

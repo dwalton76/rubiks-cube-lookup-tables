@@ -1,5 +1,7 @@
+# third party libraries
 import pytest
 
+# rubiks cube libraries
 from rubikscubelookuptables.builder666 import (
     UFBD_LEFT_OBLIQUE_EDGES_666,
     UFBD_OUTER_X_CENTERS_666,
@@ -8,7 +10,6 @@ from rubikscubelookuptables.builder666 import (
     Build666Phase3UDLeftRightObliqueCentersStage,
     Build666Phase3UDRightObliqueOuterXCentersStage,
 )
-
 
 PAIRINGS = (
     (
