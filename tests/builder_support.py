@@ -47,8 +47,6 @@ BUILD_TIMEOUT = 300
 # builderui call in the Makefile.
 SKIPPED_BUILDERS = {
     "Build555Phase4": "starting states are too large to build at a test depth",
-    "Build555XCenterStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
-    "Build555TCenterStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666InnerXCentersStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666Phase3UDLeftRightObliqueCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666Phase3UDLeftObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",

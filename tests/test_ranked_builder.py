@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import os
 import unittest
+from collections import Counter
 from pathlib import Path
 
 # rubiks cube libraries
@@ -22,7 +23,7 @@ class RankedBuilderTests(unittest.TestCase):
     """The ranked C search agrees with direct Python expansion at shallow depth."""
 
     def setUp(self):
-        self.builder = builder_class("Build555XCenterStageOnePhase")()
+        self.builder = builder_class("Build666InnerXCentersStageOnePhase")()
         self.cost_path = output_path(self.builder.ranked_cost_filename)
         self.metadata_path = output_path(self.builder.ranked_metadata_filename)
         self.addCleanup(self._remove_outputs)
@@ -55,16 +56,16 @@ class RankedBuilderTests(unittest.TestCase):
             frontier = following
         return depths
 
-    def test_x_centers_depth_two_matches_direct_expansion(self):
+    def test_inner_x_centers_depth_two_matches_direct_expansion(self):
         expected = self.expected_states(2)
-        status, output, timed_out = build_table("Build555XCenterStageOnePhase", depth=2, cores=4, timeout=60)
+        status, output, timed_out = build_table("Build666InnerXCentersStageOnePhase", depth=2, cores=4, timeout=60)
         self.assertFalse(timed_out, output)
         self.assertEqual(status, 0, output)
         self.assertEqual(os.path.getsize(self.cost_path), 9_465_511_770)
 
         metadata = json.loads(self.metadata_path.read_text(encoding="utf-8"))
-        self.assertEqual(metadata["states_per_depth"], {"0": 1, "1": 6, "2": 135})
-        self.assertEqual(len(expected), 142)
+        expected_per_depth = {str(depth): count for depth, count in sorted(Counter(expected.values()).items())}
+        self.assertEqual(metadata["states_per_depth"], expected_per_depth)
 
         with self.cost_path.open("rb", buffering=0) as costs:
             for state, depth in expected.items():
