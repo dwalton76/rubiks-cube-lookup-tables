@@ -3,6 +3,7 @@ import logging
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
+from rubikscubennnsolver.LookupTableIDAViaGraph import LookupTableIDAViaGraph
 
 log = logging.getLogger(__name__)
 
@@ -142,38 +143,24 @@ class Build666InnerXCentersStageOnePhase(BFS):
         # fmt: on
 
 
-
 # =======
 # phase 3
 # =======
-
+# fmt: off
 PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES = (
-    "3Uw",
-    "3Uw'",
-    "3Lw",
-    "3Lw'",
-    "3Fw",
-    "3Fw'",
-    "3Rw",
-    "3Rw'",
-    "3Bw",
-    "3Bw'",
-    "3Dw",
-    "3Dw'",
-    "Uw",
-    "Uw'",
-    "Dw",
-    "Dw'",
-    "Fw",
-    "Fw'",
-    "Bw",
-    "Bw'",
-    "L",
-    "L'",
+    "3Uw", "3Uw'",
+    "3Lw", "3Lw'",
+    "3Fw", "3Fw'",
+    "3Rw", "3Rw'",
+    "3Bw", "3Bw'",
+    "3Dw", "3Dw'",
+    "Uw", "Uw'",
+    "Dw", "Dw'",
+    "Fw", "Fw'",
+    "Bw", "Bw'",
+    "L", "L'",
     "L2",
-    "R",
-    "R'",
-    "R2",
+    "R", "R'", "R2",
 )
 
 UFBD_OUTER_X_CENTERS_666 = (
@@ -194,6 +181,7 @@ UFBD_RIGHT_OBLIQUE_EDGES_666 = (
     154, 158, 167, 171,
     190, 194, 203, 207,
 )
+# fmt: off
 
 
 class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
@@ -1337,5 +1325,66 @@ class Build666LRObliqueEdges(BFS):
 
             ),
             use_c=True,
+        )
+        # fmt: on
+
+
+class LookupTableIDA666UDObliqueEdgesStage(LookupTableIDAViaGraph):
+    """
+    This was only used to build the lookup-table-6x6x6-step14-UD-oblique-stage.pt_state
+    file which was then converted to lookup-table-6x6x6-step14-UD-oblique-stage.pt-state-perfect-hash
+    lookup-table-6x6x6-step14-UD-oblique-stage.txt
+    ==============================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 286 entries (0 percent, 9.86x previous step)
+    4 steps has 2,020 entries (0 percent, 7.06x previous step)
+    5 steps has 15,992 entries (0 percent, 7.92x previous step)
+    6 steps has 123,071 entries (0 percent, 7.70x previous step)
+    7 steps has 805,821 entries (0 percent, 6.55x previous step)
+    8 steps has 4,379,750 entries (2 percent, 5.44x previous step)
+    9 steps has 18,300,990 entries (11 percent, 4.18x previous step)
+    10 steps has 46,881,308 entries (28 percent, 2.56x previous step)
+    11 steps has 62,357,957 entries (37 percent, 1.33x previous step)
+    12 steps has 29,875,621 entries (18 percent, 0.48x previous step)
+    13 steps has 2,852,222 entries (1 percent, 0.10x previous step)
+    14 steps has 41,682 entries (0 percent, 0.01x previous step)
+    15 steps has 148 entries (0 percent, 0.00x previous step)
+    Total: 165,636,900 entries
+    Average: 10.61 moves
+    """
+    state_targets = (
+        "UUUUUUUUxxxxxxxxxxxxxxxxUUUUUUUU",
+    )
+    def __init__(self, parent):
+        # fmt: off
+        LookupTableIDAViaGraph.__init__(
+            self,
+            parent,
+            filename="lookup-table-6x6x6-step14-UD-oblique-stage.txt",
+            state_target=self.state_targets,
+            linecount=165636900,
+            max_depth=15,
+            all_moves=moves_666,
+            illegal_moves=(
+                "3Uw", "3Uw'",
+                "3Lw", "3Lw'",
+                "3Fw", "3Fw'",
+                "3Rw", "3Rw'",
+                "3Bw", "3Bw'",
+                "3Dw", "3Dw'",
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                # we are not manipulating anything on sides L or R
+                "L", "L'", "L2",
+                "R", "R'", "R2",
+            ),
+            prune_tables=(
+                parent.lt_UD_left_oblique_edges_stage,
+                parent.lt_UD_right_oblique_edges_stage,
+            ),
         )
         # fmt: on

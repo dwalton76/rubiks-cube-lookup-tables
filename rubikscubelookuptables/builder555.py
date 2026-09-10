@@ -3,6 +3,7 @@ import logging
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
+from rubikscubennnsolver.LookupTableIDAViaGraph import LookupTableIDAViaGraph
 
 log = logging.getLogger(__name__)
 
@@ -2210,3 +2211,139 @@ class Build555FBCenterSolve(BFS):
             ),
             use_c=True,
         )
+
+
+# Only used to create a perfect hash file
+class LookupTable555Phase5FBCentersHighEdgeMidge(LookupTableIDAViaGraph):
+    """
+    lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.txt
+    ===================================================================
+    1 steps has 30 entries (0 percent, 0.00x previous step)
+    2 steps has 216 entries (0 percent, 7.20x previous step)
+    3 steps has 1,622 entries (0 percent, 7.51x previous step)
+    4 steps has 11,198 entries (0 percent, 6.90x previous step)
+    5 steps has 75,990 entries (0 percent, 6.79x previous step)
+    6 steps has 498,774 entries (0 percent, 6.56x previous step)
+    7 steps has 3,105,912 entries (0 percent, 6.23x previous step)
+    8 steps has 17,585,391 entries (3 percent, 5.66x previous step)
+    9 steps has 81,079,954 entries (14 percent, 4.61x previous step)
+    10 steps has 230,361,431 entries (39 percent, 2.84x previous step)
+    11 steps has 220,472,982 entries (38 percent, 0.96x previous step)
+    12 steps has 23,022,104 entries (3 percent, 0.10x previous step)
+    13 steps has 24,396 entries (0 percent, 0.00x previous step)
+
+    Total: 576,240,000 entries
+    Average: 10.24 moves
+    """
+
+    def __init__(self, parent):
+        # fmt: off
+        LookupTableIDAViaGraph.__init__(
+            self,
+            parent,
+            filename='lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.txt',
+            state_target=self.state_targets,
+            linecount=576240000,
+            max_depth=13,
+            all_moves=moves_555,
+            illegal_moves=(
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
+            ),
+            prune_tables=(
+                parent.lt_phase5_fb_centers,
+                parent.lt_phase5_high_edge_midge,
+            ),
+        )
+        # fmt: on
+
+    def build_ida_graph_set_cube_state(self, state, steps_to_scramble):
+        # Use the normal approach for populating the edges state
+        self.parent.re_init()
+        for step in steps_to_scramble:
+            self.parent.rotate(step)
+
+        # The FB centers have multiple goal states though so set those explicitly
+        FB_state = state[0:18]
+        for pos, x in zip(FB_centers_555, FB_state):
+            self.parent.state[pos] = x
+
+
+class LookupTable555Phase5FBCentersLowEdgeMidge(LookupTableIDAViaGraph):
+    """
+    lookup-table-5x5x5-step57-phase5-fb-centers-low-edge-and-midge.txt
+    ==================================================================
+    1 steps has 30 entries (0 percent, 0.00x previous step)
+    2 steps has 216 entries (0 percent, 7.20x previous step)
+    3 steps has 1,622 entries (0 percent, 7.51x previous step)
+    4 steps has 11,198 entries (0 percent, 6.90x previous step)
+    5 steps has 75,990 entries (0 percent, 6.79x previous step)
+    6 steps has 498,774 entries (0 percent, 6.56x previous step)
+    7 steps has 3,105,912 entries (0 percent, 6.23x previous step)
+    8 steps has 17,585,391 entries (3 percent, 5.66x previous step)
+    9 steps has 81,079,954 entries (14 percent, 4.61x previous step)
+    10 steps has 230,361,431 entries (39 percent, 2.84x previous step)
+    11 steps has 220,472,982 entries (38 percent, 0.96x previous step)
+    12 steps has 23,022,104 entries (3 percent, 0.10x previous step)
+    13 steps has 24,396 entries (0 percent, 0.00x previous step)
+
+    Total: 576,240,000 entries
+    Average: 10.24 moves
+    """
+
+    state_targets = (
+        "BFBBFBBFBFBFFBFFBF------------sS--TtuU--Vv------------",
+        "BFFBFFBFFBBFBBFBBF------------sS--TtuU--Vv------------",
+        "BFFBFFBFFFBBFBBFBB------------sS--TtuU--Vv------------",
+        "FFBFFBFFBBBFBBFBBF------------sS--TtuU--Vv------------",
+        "FFBFFBFFBFBBFBBFBB------------sS--TtuU--Vv------------",
+        "FFFFFFFFFBBBBBBBBB------------sS--TtuU--Vv------------",
+    )
+
+    def __init__(self, parent):
+        # fmt: off
+        LookupTableIDAViaGraph.__init__(
+            self,
+            parent,
+            filename='lookup-table-5x5x5-step57-phase5-fb-centers-low-edge-and-midge.txt',
+            state_target=self.state_targets,
+            linecount=576240000,
+            max_depth=13,
+            all_moves=moves_555,
+            illegal_moves=(
+                "Uw", "Uw'",
+                "Dw", "Dw'",
+                "Fw", "Fw'",
+                "Bw", "Bw'",
+                "Lw", "Lw'",
+                "Rw", "Rw'",
+                "L", "L'",
+                "R", "R'",
+                "U", "U'",
+                "D", "D'",
+            ),
+            prune_tables=(
+                parent.lt_phase5_fb_centers,
+                parent.lt_phase5_low_edge_midge,
+            ),
+        )
+        # fmt: on
+
+    def build_ida_graph_set_cube_state(self, state, steps_to_scramble):
+        # Use the normal approach for populating the edges state
+        self.parent.re_init()
+        for step in steps_to_scramble:
+            self.parent.rotate(step)
+
+        # The FB centers have multiple goal states though so set those explicitly
+        FB_state = state[0:18]
+        for pos, x in zip(FB_centers_555, FB_state):
+            self.parent.state[pos] = x
