@@ -220,6 +220,9 @@ wheel:
 
 666: 666-phase4 666-phase5 666-phase6
 
+777-phase2: clean
+	./utils/builderui.py Build777Phase2UDInnerCentersStage
+
 777-phase5:
 	./utils/builderui.py Build777Phase5LeftOblique
 	./utils/build-ida-graph.py Build777Phase5LeftOblique
@@ -311,4 +314,4 @@ wheel:
 	./utils/build-ida-graph.py Build777Step76
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step76.json
 
-777: 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers
+777: 777-phase2 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers

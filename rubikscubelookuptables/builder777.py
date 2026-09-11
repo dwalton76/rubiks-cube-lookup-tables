@@ -8,6 +8,14 @@ log = logging.getLogger(__name__)
 
 
 # fmt: off
+PHASE2_ILLEGAL_MOVES = (
+    # preserve the staged L/R inner centers
+    "3Uw", "3Uw'",
+    "3Dw", "3Dw'",
+    "3Fw", "3Fw'",
+    "3Bw", "3Bw'",
+)
+
 PHASE5_STARTING_STATES_ILLEGAL_MOVES = (
     "3Uw", "3Uw'", "3Uw2",
     "3Dw", "3Dw'", "3Dw2",
@@ -127,6 +135,75 @@ PHASE9_ILLEGAL_MOVES = (
 )
 
 # fmt: on
+
+
+# ==================================================
+# phase 2
+# stage UD inner t/x centers while pairing LR obliques
+# ==================================================
+# fmt: off
+UFBD_INNER_T_CENTERS_777 = (
+    18, 24, 26, 32,
+    116, 122, 124, 130,
+    214, 220, 222, 228,
+    263, 269, 271, 277,
+)
+UFBD_INNER_X_CENTERS_777 = (
+    17, 19, 31, 33,
+    115, 117, 129, 131,
+    213, 215, 227, 229,
+    262, 264, 276, 278,
+)
+# fmt: on
+
+
+class Build777Phase2UDInnerCentersStage(BFS):
+    """Build the (16! / (8! * 8!))^2 = 165,636,900-state ranked table."""
+
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "7x7x7-phase2-UD-inner-centers-stage",
+            PHASE2_ILLEGAL_MOVES,
+            "7x7x7",
+            "lookup-table-7x7x7-step20-UD-inner-centers-stage.txt",
+            False,
+            (
+                (
+                    """
+                . . . . . . .
+                . . . . . . .
+                . . U U U . .
+                . . U . U . .
+                . . U U U . .
+                . . . . . . .
+                . . . . . . .
+
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+ . . . . . . .  . . x x x . .  . . . . . . .  . . x x x . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+ . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                . . . . . . .
+                . . . . . . .
+                . . U U U . .
+                . . U . U . .
+                . . U U U . .
+                . . . . . . .
+                . . . . . . .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=(
+                UFBD_INNER_T_CENTERS_777,
+                UFBD_INNER_X_CENTERS_777,
+            ),
+        )
 
 
 # ==================================================

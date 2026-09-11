@@ -51,6 +51,7 @@ SKIPPED_BUILDERS = {
     "Build666Phase3UDLeftRightObliqueCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666Phase3UDLeftObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666Phase3UDRightObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase2UDInnerCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build555Phase5FBCentersHighEdgeMidge": "576 million states; used only to build a perfect-hash file",
     "Build555Phase5FBCentersLowEdgeMidge": "576 million states; used only to build a perfect-hash file",
     "Build555PairLastEightEdgesEdgesOnly": "813 million states; used only to build a perfect-hash file",
