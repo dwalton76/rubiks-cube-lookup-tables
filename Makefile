@@ -223,6 +223,14 @@ wheel:
 777-phase2: clean
 	./utils/builderui.py Build777Phase2UDInnerCentersStage
 
+777-phase5-6-ranked: clean
+	./utils/builderui.py Build777Phase56UDLeftRightObliqueCentersStage --cores 22
+	./utils/builderui.py Build777Phase56UDLeftMiddleObliqueCentersStage --cores 22
+	./utils/builderui.py Build777Phase56UDLeftObliqueOuterXCentersStage --cores 22
+	./utils/builderui.py Build777Phase56UDMiddleRightObliqueCentersStage --cores 22
+	./utils/builderui.py Build777Phase56UDRightObliqueOuterXCentersStage --cores 22
+	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXCentersStage --cores 22
+
 777-phase5:
 	./utils/builderui.py Build777Phase5LeftOblique
 	./utils/build-ida-graph.py Build777Phase5LeftOblique
@@ -314,4 +322,4 @@ wheel:
 	./utils/build-ida-graph.py Build777Step76
 	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step76.json
 
-777: 777-phase2 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers
+777: 777-phase2 777-phase5-6-ranked 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers

@@ -154,6 +154,30 @@ UFBD_INNER_X_CENTERS_777 = (
     213, 215, 227, 229,
     262, 264, 276, 278,
 )
+UFBD_OUTER_X_CENTERS_777 = (
+    9, 13, 37, 41,
+    107, 111, 135, 139,
+    205, 209, 233, 237,
+    254, 258, 282, 286,
+)
+UFBD_LEFT_OBLIQUE_EDGES_777 = (
+    10, 20, 30, 40,
+    108, 118, 128, 138,
+    206, 216, 226, 236,
+    255, 265, 275, 285,
+)
+UFBD_MIDDLE_OBLIQUE_EDGES_777 = (
+    11, 23, 27, 39,
+    109, 121, 125, 137,
+    207, 219, 223, 235,
+    256, 268, 272, 284,
+)
+UFBD_RIGHT_OBLIQUE_EDGES_777 = (
+    12, 16, 34, 38,
+    110, 114, 132, 136,
+    208, 212, 230, 234,
+    257, 261, 279, 283,
+)
 # fmt: on
 
 
@@ -204,6 +228,238 @@ class Build777Phase2UDInnerCentersStage(BFS):
                 UFBD_INNER_X_CENTERS_777,
             ),
         )
+
+
+# ==================================================
+# combined phases 5/6
+# stage UD outer x-centers and pair UD obliques
+# ==================================================
+def _ranked_ud_pair_starting_state_777(first_group, second_group):
+    """Return a solved U/D-vs-other state for two 16-sticker coordinates."""
+    state = ["."] * (6 * 7 * 7)
+
+    for square in first_group + second_group:
+        # U and D occupy indexes 1..49 and 246..294 in the builder's ULFRBD numbering.
+        state[square - 1] = "U" if square <= 49 or square >= 246 else "x"
+
+    return (("".join(state), "ULFRBD"),)
+
+
+class _Build777Phase56UDPairStage(BFS):
+    """Shared ranked-cost setup for a pair of 12,870-state coordinates."""
+
+    table_slug = None
+    first_group = ()
+    second_group = ()
+
+    def __init__(self):
+        BFS.__init__(
+            self,
+            f"7x7x7-phase5-6-UD-{self.table_slug}-centers-stage",
+            PHASE5_ILLEGAL_MOVES,
+            "7x7x7",
+            f"lookup-table-7x7x7-phase5-6-UD-{self.table_slug}-centers-stage.txt",
+            False,
+            _ranked_ud_pair_starting_state_777(self.first_group, self.second_group),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=(self.first_group, self.second_group),
+        )
+
+
+class Build777Phase56UDLeftRightObliqueCentersStage(_Build777Phase56UDPairStage):
+    """
+    Rank the left and right oblique coordinates.
+
+    (16! / (8! * 8!))^2 = 165,636,900 states
+
+    lookup-table-7x7x7-phase5-6-UD-left-right-oblique-centers-stage.cost-only.bin
+    =============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 286 entries (0 percent, 9.86x previous step)
+    4 steps has 2,052 entries (0 percent, 7.17x previous step)
+    5 steps has 16,348 entries (0 percent, 7.97x previous step)
+    6 steps has 127,859 entries (0 percent, 7.82x previous step)
+    7 steps has 844,248 entries (0 percent, 6.60x previous step)
+    8 steps has 4,623,585 entries (2 percent, 5.48x previous step)
+    9 steps has 19,019,322 entries (11 percent, 4.11x previous step)
+    10 steps has 47,544,426 entries (28 percent, 2.50x previous step)
+    11 steps has 61,805,656 entries (37 percent, 1.30x previous step)
+    12 steps has 28,890,234 entries (17 percent, 0.47x previous step)
+    13 steps has 2,722,462 entries (1 percent, 0.09x previous step)
+    14 steps has 40,242 entries (0 percent, 0.01x previous step)
+    15 steps has 148 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 10.58 moves
+    """
+
+    table_slug = "left-right-oblique"
+    first_group = UFBD_LEFT_OBLIQUE_EDGES_777
+    second_group = UFBD_RIGHT_OBLIQUE_EDGES_777
+
+
+class Build777Phase56UDLeftMiddleObliqueCentersStage(_Build777Phase56UDPairStage):
+    """
+    Rank the left and middle oblique coordinates.
+
+    (16! / (8! * 8!))^2 = 165,636,900 states
+
+    lookup-table-7x7x7-phase5-6-UD-left-middle-oblique-centers-stage.cost-only.bin
+    ==============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 33 entries (0 percent, 16.50x previous step)
+    3 steps has 358 entries (0 percent, 10.85x previous step)
+    4 steps has 2,934 entries (0 percent, 8.20x previous step)
+    5 steps has 23,262 entries (0 percent, 7.93x previous step)
+    6 steps has 155,679 entries (0 percent, 6.69x previous step)
+    7 steps has 893,008 entries (0 percent, 5.74x previous step)
+    8 steps has 4,447,409 entries (2 percent, 4.98x previous step)
+    9 steps has 17,048,560 entries (10 percent, 3.83x previous step)
+    10 steps has 41,869,962 entries (25 percent, 2.46x previous step)
+    11 steps has 57,876,856 entries (34 percent, 1.38x previous step)
+    12 steps has 35,846,966 entries (21 percent, 0.62x previous step)
+    13 steps has 7,122,098 entries (4 percent, 0.20x previous step)
+    14 steps has 346,646 entries (0 percent, 0.05x previous step)
+    15 steps has 3,126 entries (0 percent, 0.01x previous step)
+
+    Total: 165,636,900 entries
+    Average: 10.74 moves
+    """
+
+    table_slug = "left-middle-oblique"
+    first_group = UFBD_LEFT_OBLIQUE_EDGES_777
+    second_group = UFBD_MIDDLE_OBLIQUE_EDGES_777
+
+
+class Build777Phase56UDLeftObliqueOuterXCentersStage(_Build777Phase56UDPairStage):
+    """
+    Rank the left oblique and outer-x coordinates.
+
+    (16! / (8! * 8!))^2 = 165,636,900 states
+
+    lookup-table-7x7x7-phase5-6-UD-left-oblique-outer-x-centers-stage.cost-only.bin
+    ===============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 37 entries (0 percent, 18.50x previous step)
+    3 steps has 426 entries (0 percent, 11.51x previous step)
+    4 steps has 4,552 entries (0 percent, 10.69x previous step)
+    5 steps has 48,826 entries (0 percent, 10.73x previous step)
+    6 steps has 497,305 entries (0 percent, 10.19x previous step)
+    7 steps has 4,366,446 entries (2 percent, 8.78x previous step)
+    8 steps has 25,800,644 entries (15 percent, 5.91x previous step)
+    9 steps has 71,891,909 entries (43 percent, 2.79x previous step)
+    10 steps has 57,817,231 entries (34 percent, 0.80x previous step)
+    11 steps has 5,204,126 entries (3 percent, 0.09x previous step)
+    12 steps has 5,395 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.19 moves
+    """
+
+    table_slug = "left-oblique-outer-x"
+    first_group = UFBD_LEFT_OBLIQUE_EDGES_777
+    second_group = UFBD_OUTER_X_CENTERS_777
+
+
+class Build777Phase56UDMiddleRightObliqueCentersStage(_Build777Phase56UDPairStage):
+    """
+    Rank the middle and right oblique coordinates.
+
+    (16! / (8! * 8!))^2 = 165,636,900 states
+
+    lookup-table-7x7x7-phase5-6-UD-middle-right-oblique-centers-stage.cost-only.bin
+    ===============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 33 entries (0 percent, 16.50x previous step)
+    3 steps has 358 entries (0 percent, 10.85x previous step)
+    4 steps has 2,934 entries (0 percent, 8.20x previous step)
+    5 steps has 23,262 entries (0 percent, 7.93x previous step)
+    6 steps has 155,679 entries (0 percent, 6.69x previous step)
+    7 steps has 893,008 entries (0 percent, 5.74x previous step)
+    8 steps has 4,447,409 entries (2 percent, 4.98x previous step)
+    9 steps has 17,048,560 entries (10 percent, 3.83x previous step)
+    10 steps has 41,869,962 entries (25 percent, 2.46x previous step)
+    11 steps has 57,876,856 entries (34 percent, 1.38x previous step)
+    12 steps has 35,846,966 entries (21 percent, 0.62x previous step)
+    13 steps has 7,122,098 entries (4 percent, 0.20x previous step)
+    14 steps has 346,646 entries (0 percent, 0.05x previous step)
+    15 steps has 3,126 entries (0 percent, 0.01x previous step)
+
+    Total: 165,636,900 entries
+    Average: 10.74 moves
+    """
+
+    table_slug = "middle-right-oblique"
+    first_group = UFBD_MIDDLE_OBLIQUE_EDGES_777
+    second_group = UFBD_RIGHT_OBLIQUE_EDGES_777
+
+
+class Build777Phase56UDRightObliqueOuterXCentersStage(_Build777Phase56UDPairStage):
+    """
+    Rank the right oblique and outer-x coordinates.
+
+    (16! / (8! * 8!))^2 = 165,636,900 states
+
+    lookup-table-7x7x7-phase5-6-UD-right-oblique-outer-x-centers-stage.cost-only.bin
+    ================================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 37 entries (0 percent, 18.50x previous step)
+    3 steps has 426 entries (0 percent, 11.51x previous step)
+    4 steps has 4,552 entries (0 percent, 10.69x previous step)
+    5 steps has 48,826 entries (0 percent, 10.73x previous step)
+    6 steps has 497,305 entries (0 percent, 10.19x previous step)
+    7 steps has 4,366,446 entries (2 percent, 8.78x previous step)
+    8 steps has 25,800,644 entries (15 percent, 5.91x previous step)
+    9 steps has 71,891,909 entries (43 percent, 2.79x previous step)
+    10 steps has 57,817,231 entries (34 percent, 0.80x previous step)
+    11 steps has 5,204,126 entries (3 percent, 0.09x previous step)
+    12 steps has 5,395 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.19 moves
+    """
+
+    table_slug = "right-oblique-outer-x"
+    first_group = UFBD_RIGHT_OBLIQUE_EDGES_777
+    second_group = UFBD_OUTER_X_CENTERS_777
+
+
+class Build777Phase56UDMiddleObliqueOuterXCentersStage(_Build777Phase56UDPairStage):
+    """
+    Rank the middle oblique and outer-x coordinates.
+
+    (16! / (8! * 8!))^2 = 165,636,900 states
+
+    lookup-table-7x7x7-phase5-6-UD-middle-oblique-outer-x-centers-stage.cost-only.bin
+    =================================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 33 entries (0 percent, 16.50x previous step)
+    3 steps has 374 entries (0 percent, 11.33x previous step)
+    4 steps has 3,838 entries (0 percent, 10.26x previous step)
+    5 steps has 39,254 entries (0 percent, 10.23x previous step)
+    6 steps has 387,357 entries (0 percent, 9.87x previous step)
+    7 steps has 3,374,380 entries (2 percent, 8.71x previous step)
+    8 steps has 20,851,334 entries (12 percent, 6.18x previous step)
+    9 steps has 65,556,972 entries (39 percent, 3.14x previous step)
+    10 steps has 66,986,957 entries (40 percent, 1.02x previous step)
+    11 steps has 8,423,610 entries (5 percent, 0.13x previous step)
+    12 steps has 12,788 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.33 moves
+    """
+
+    table_slug = "middle-oblique-outer-x"
+    first_group = UFBD_MIDDLE_OBLIQUE_EDGES_777
+    second_group = UFBD_OUTER_X_CENTERS_777
 
 
 # ==================================================
