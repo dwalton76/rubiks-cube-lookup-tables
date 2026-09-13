@@ -22,6 +22,11 @@ from rubikscubelookuptables.buildercore import (
     convert_state_to_hex,
     convert_to_cost_only,
     convert_to_hash_cost_only,
+    edge_pairing_rank,
+    edge_pairing_unrank,
+    even_permutation_rank,
+    even_permutation_size,
+    even_permutation_unrank,
     get_line_number_splits,
     lookup_table_dir,
     mixed_radix_rank,
@@ -243,6 +248,34 @@ class MultisetRankTests(unittest.TestCase):
 
         self.assertEqual(metadata["symbols"], "AB")
         self.assertEqual(metadata["counts"], [2, 2])
+
+
+class EdgePairingRankTests(unittest.TestCase):
+    """Dense ranks for the even matching between high and low wing slots."""
+
+    def test_twelve_pairs_have_the_expected_universe(self):
+        self.assertEqual(even_permutation_size(12), 239_500_800)
+
+    def test_every_small_even_permutation_round_trips(self):
+        for rank in range(even_permutation_size(5)):
+            permutation = even_permutation_unrank(rank, 5)
+            self.assertEqual(even_permutation_rank(permutation), rank)
+
+    def test_odd_permutations_are_rejected(self):
+        with self.assertRaisesRegex(ValueError, "even permutation"):
+            even_permutation_rank((1, 0, 2, 3))
+
+    def test_symbol_names_do_not_change_the_matching_rank(self):
+        self.assertEqual(edge_pairing_rank("abcdacdb"), edge_pairing_rank("WXYZWYZX"))
+
+    def test_every_small_matching_round_trips(self):
+        for rank in range(even_permutation_size(5)):
+            state = edge_pairing_unrank(rank, 5)
+            self.assertEqual(edge_pairing_rank(state), rank)
+
+    def test_pairing_groups_must_have_the_same_symbols(self):
+        with self.assertRaisesRegex(ValueError, "same unique symbols"):
+            edge_pairing_rank("abcdabce")
 
 
 class ConvertToCostOnlyTests(unittest.TestCase):

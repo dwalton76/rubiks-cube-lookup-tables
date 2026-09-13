@@ -46,6 +46,7 @@ BUILD_TIMEOUT = 300
 # listed rather than dropped so the coverage test still accounts for every
 # builderui call in the Makefile.
 SKIPPED_BUILDERS = {
+    "Build444PairAllEdges": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build555Phase4": "starting states are too large to build at a test depth",
     "Build666InnerXCentersStageOnePhase": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666Phase3UDLeftRightObliqueCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",

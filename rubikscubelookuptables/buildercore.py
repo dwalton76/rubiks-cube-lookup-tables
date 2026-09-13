@@ -20,6 +20,7 @@ from typing import List, Tuple
 from pyhashxx import hashxx
 
 # rubiks cube libraries
+from rubikscubennnsolver import wing_str_map
 from rubikscubennnsolver.misc import (
     parse_ascii_222,
     parse_ascii_333,
@@ -97,6 +98,96 @@ def multiset_size(counts: Tuple[int, ...]) -> int:
         remaining -= count
 
     return result
+
+
+def even_permutation_size(length: int) -> int:
+    """Return the number of even permutations of ``length`` symbols."""
+    if length < 2:
+        raise ValueError("even permutation ranks require at least two symbols")
+    return math.factorial(length) // 2
+
+
+def even_permutation_rank(permutation: Tuple[int, ...]) -> int:
+    """
+    Rank an even permutation densely in ``[0, n! / 2)``.
+
+    The first n-2 Lehmer digits identify an even permutation uniquely; the
+    final binary digit is fixed by the parity of those prefix digits.
+    """
+    length = len(permutation)
+    if length < 2 or set(permutation) != set(range(length)):
+        raise ValueError("expected a permutation of range(n), n >= 2")
+
+    remaining = list(range(length))
+    digits = []
+    for value in permutation:
+        digit = remaining.index(value)
+        digits.append(digit)
+        remaining.pop(digit)
+
+    if sum(digits) % 2:
+        raise ValueError("expected an even permutation")
+
+    rank = 0
+    for index, digit in enumerate(digits[:-2]):
+        rank = (rank * (length - index)) + digit
+    return rank
+
+
+def even_permutation_unrank(rank: int, length: int) -> Tuple[int, ...]:
+    """Inverse of :func:`even_permutation_rank`."""
+    universe = even_permutation_size(length)
+    if rank < 0 or rank >= universe:
+        raise ValueError(f"rank must be in [0, {universe})")
+
+    digits = [0] * length
+    remainder = rank
+    for index in range(length - 3, -1, -1):
+        radix = length - index
+        digits[index] = remainder % radix
+        remainder //= radix
+    digits[-2] = sum(digits[:-2]) % 2
+
+    remaining = list(range(length))
+    permutation = []
+    for digit in digits:
+        permutation.append(remaining.pop(digit))
+    return tuple(permutation)
+
+
+def edge_pairing_rank(state: str) -> int:
+    """
+    Rank the even matching between equal-sized high- and low-wing slot groups.
+
+    ``state`` contains the high slots followed by the low slots. Each group
+    must contain the same set of unique symbols. Symbol names are quotiented
+    out; only the matching from high positions to low positions is ranked.
+    """
+    if len(state) < 4 or len(state) % 2:
+        raise ValueError("edge-pairing state must contain two equal groups of at least two slots")
+
+    pair_count = len(state) // 2
+    high = state[:pair_count]
+    low = state[pair_count:]
+    if len(set(high)) != pair_count or set(high) != set(low):
+        raise ValueError("edge-pairing groups must contain the same unique symbols")
+
+    low_position = {symbol: index for index, symbol in enumerate(low)}
+    permutation = tuple(low_position[symbol] for symbol in high)
+    return even_permutation_rank(permutation)
+
+
+def edge_pairing_unrank(rank: int, pair_count: int) -> str:
+    """Return a canonical two-group state for an even matching rank."""
+    if pair_count > 32:
+        raise ValueError("edge-pairing ranks support at most 32 pairs")
+
+    symbols = "0123456789abcdefghijklmnopqrstuv"[:pair_count]
+    permutation = even_permutation_unrank(rank, pair_count)
+    low = [""] * pair_count
+    for high_position, low_position in enumerate(permutation):
+        low[low_position] = symbols[high_position]
+    return symbols + "".join(low)
 
 
 def multiset_rank(state: str, symbols: str, counts: Tuple[int, ...]) -> int:
@@ -488,6 +579,8 @@ class BFS(object):
         use_c=False,
         use_ranked_cost=False,
         ranked_cost_square_groups=None,
+        ranked_cost_type="multiset",
+        edge_pairing_partners=None,
     ):
         self.name = name
         self.illegal_moves = illegal_moves
@@ -505,6 +598,8 @@ class BFS(object):
         self.use_c = use_c
         self.use_ranked_cost = use_ranked_cost
         self.ranked_cost_square_groups = tuple(tuple(group) for group in (ranked_cost_square_groups or ()))
+        self.ranked_cost_type = ranked_cost_type
+        self.edge_pairing_partners = tuple(edge_pairing_partners or ())
         # Cube-state indexes (matching cube.state / rotate_xxx) that this table actually
         # cares about. Empty means we carry the full cube, including the "." placeholders.
         self.compact_squares = ()
@@ -534,6 +629,10 @@ class BFS(object):
         assert isinstance(self.use_cost_only, bool)
         assert isinstance(self.use_hash_cost_only, bool)
         assert isinstance(self.use_ranked_cost, bool)
+        if self.ranked_cost_type not in ("multiset", "edge-pairing-even"):
+            raise ValueError(f"{self}: unsupported ranked cost type {self.ranked_cost_type!r}")
+        if self.ranked_cost_type != "multiset" and not self.use_ranked_cost:
+            raise ValueError(f"{self}: ranked_cost_type requires use_ranked_cost=True")
         if self.ranked_cost_square_groups and not self.use_ranked_cost:
             raise ValueError(f"{self}: ranked_cost_square_groups requires use_ranked_cost=True")
         assert not (self.use_cost_only and self.use_hash_cost_only), "Both cannot be true"
@@ -724,6 +823,23 @@ class BFS(object):
         if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
             return ()
 
+        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            if len(self.ranked_cost_square_groups) != 2:
+                raise ValueError(f"{self}: edge pairing requires high- and low-slot square groups")
+            high, low = self.ranked_cost_square_groups
+            if len(high) < 2 or len(high) != len(low):
+                raise ValueError(f"{self}: edge-pairing groups must have the same length of at least two")
+            flat_squares = high + low
+            if len(set(flat_squares)) != len(flat_squares):
+                raise ValueError(f"{self}: edge-pairing square groups overlap")
+            if len(self.edge_pairing_partners) != len(flat_squares):
+                raise ValueError(f"{self}: each edge-pairing square needs its partner square")
+            if set(flat_squares) & set(self.edge_pairing_partners):
+                raise ValueError(f"{self}: edge-pairing squares and partner squares overlap")
+            if len(set(self.edge_pairing_partners)) != len(self.edge_pairing_partners):
+                raise ValueError(f"{self}: edge-pairing partner squares contain duplicates")
+            return flat_squares
+
         squares = self._interesting_squares()
         full_squares = 6 * self.size_number * self.size_number
 
@@ -753,13 +869,30 @@ class BFS(object):
         return tuple(squares)
 
     def _state_for_workq(self, cube) -> str:
+        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            if self.size != "4x4x4":
+                raise ValueError("edge-pairing recoloring is currently implemented only for 4x4x4")
+            partner_by_square = {square: partner for _, square, partner in wings_for_edges_recolor_pattern_444}
+            edge_names = [
+                wing_str_map[cube.state[square] + cube.state[partner_by_square[square]]]
+                for square in self.compact_squares
+            ]
+            pair_count = len(edge_names) // 2
+            if len(set(edge_names[:pair_count])) != pair_count or set(edge_names[:pair_count]) != set(
+                edge_names[pair_count:]
+            ):
+                raise ValueError(f"{self}: high and low slots do not contain the same 12 edges")
+            symbols = "0123456789abcdefghijklmnopqrstuv"
+            symbol_by_edge = {edge: symbols[index] for index, edge in enumerate(edge_names[:pair_count])}
+            return "".join(symbol_by_edge[edge] for edge in edge_names)
+
         if self.compact_squares:
             return "".join(cube.state[index] for index in self.compact_squares)
 
         return "".join(cube.state)
 
     def _configure_ranked_cost(self) -> None:
-        """Validate and describe the dense multiset-ranked state space."""
+        """Validate and describe the dense ranked state space."""
         if not self.use_c:
             raise ValueError(f"{self}: ranked costs require use_c=True")
         if not self.compact_squares:
@@ -770,6 +903,17 @@ class BFS(object):
         states = [self._state_for_workq(cube) for cube in self.starting_cubes]
         if not states:
             raise ValueError(f"{self}: ranked costs require at least one starting state")
+
+        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            pair_count = len(self.compact_squares) // 2
+            for state in states:
+                edge_pairing_rank(state)
+            self.edge_pairing_pair_count = pair_count
+            self.rank_groups = ()
+            self.rank_universes = ()
+            self.rank_universe = even_permutation_size(pair_count)
+            self._configure_ranked_output()
+            return
 
         group_sizes = (
             tuple(len(group) for group in self.ranked_cost_square_groups)
@@ -815,6 +959,9 @@ class BFS(object):
             self.rank_symbols = self.rank_groups[0]["symbols"]
             self.rank_counts = self.rank_groups[0]["counts"]
 
+        self._configure_ranked_output()
+
+    def _configure_ranked_output(self) -> None:
         output = Path(self.filename)
         self.ranked_cost_filename = str(output.with_suffix(".cost-only.bin"))
         self.ranked_metadata_filename = f"{self.ranked_cost_filename}.json"
@@ -834,30 +981,46 @@ class BFS(object):
             )
 
     def _write_ranked_metadata(self) -> None:
-        metadata = {
-            "format": "dense-multiset-cost-v1",
-            "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
-            "record_format": "<QB",
-            "rank_order": "left-to-right mixed radix",
-            "rank_groups": [
-                {
-                    "squares": group["squares"],
-                    "offset": group["offset"],
-                    "length": group["length"],
-                    "symbols": group["symbols"],
-                    "counts": list(group["counts"]),
-                    "universe_size": group["universe_size"],
-                }
-                for group in self.rank_groups
-            ],
-            "universe_size": self.rank_universe,
-            "stored_entry_count": self._table_linecount(),
-            "completed_depth": max(self.stats),
-            "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
-        }
-        if len(self.rank_groups) == 1:
-            metadata["symbols"] = self.rank_symbols
-            metadata["counts"] = list(self.rank_counts)
+        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            metadata = {
+                "format": "dense-edge-pairing-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": "even Lehmer prefix",
+                "pair_count": self.edge_pairing_pair_count,
+                "high_squares": list(self.ranked_cost_square_groups[0]),
+                "low_squares": list(self.ranked_cost_square_groups[1]),
+                "partner_squares": list(self.edge_pairing_partners),
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+        else:
+            metadata = {
+                "format": "dense-multiset-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": "left-to-right mixed radix",
+                "rank_groups": [
+                    {
+                        "squares": group["squares"],
+                        "offset": group["offset"],
+                        "length": group["length"],
+                        "symbols": group["symbols"],
+                        "counts": list(group["counts"]),
+                        "universe_size": group["universe_size"],
+                    }
+                    for group in self.rank_groups
+                ],
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+            if len(self.rank_groups) == 1:
+                metadata["symbols"] = self.rank_symbols
+                metadata["counts"] = list(self.rank_counts)
         temporary = f"{self.ranked_metadata_filename}.tmp"
         with open(temporary, "w") as fh:
             json.dump(metadata, fh, indent=2, sort_keys=True)
@@ -1387,7 +1550,10 @@ class BFS(object):
         self._write_ranked_metadata()
 
     def _ranked_state_rank(self, state: str) -> int:
-        """Rank a compact state by ranking each configured group, then mixing its radix."""
+        """Rank a compact state in the configured dense coordinate."""
+        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            return edge_pairing_rank(state)
+
         ranks = tuple(
             multiset_rank(
                 state[group["offset"] : group["offset"] + group["length"]],
@@ -1399,7 +1565,10 @@ class BFS(object):
         return mixed_radix_rank(ranks, self.rank_universes)
 
     def _ranked_state_unrank(self, rank: int) -> str:
-        """Reconstruct the compact state represented by a grouped mixed-radix rank."""
+        """Reconstruct the canonical compact state represented by a dense rank."""
+        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            return edge_pairing_unrank(rank, self.edge_pairing_pair_count)
+
         component_ranks = mixed_radix_unrank(rank, self.rank_universes)
         state = [""] * len(self.compact_squares)
         for component_rank, group in zip(component_ranks, self.rank_groups):
@@ -1445,7 +1614,16 @@ class BFS(object):
                 "--squares",
                 ",".join(str(index) for index in self.compact_squares),
             ]
-            if len(self.rank_groups) == 1:
+            if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+                cmd.extend(
+                    [
+                        "--rank-type",
+                        "edge-pairing-even",
+                        "--pairing-partners",
+                        ",".join(str(index) for index in self.edge_pairing_partners),
+                    ]
+                )
+            elif len(self.rank_groups) == 1:
                 cmd.extend(
                     [
                         "--rank-symbols",

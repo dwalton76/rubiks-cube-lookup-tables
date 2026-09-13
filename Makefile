@@ -91,6 +91,9 @@ wheel:
 	./utils/build-ida-graph.py Build444Reduce333LastEightEdges
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step42-last-eight-edges.json
 
+444-pair-all-edges: clean
+	./utils/builderui.py Build444PairAllEdges
+
 444: 444-phase1 444-phase2 444-phase3
 
 555-phase1: clean

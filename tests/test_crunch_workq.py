@@ -364,6 +364,52 @@ class RankedCrunchWorkqTests(ScratchTestCase):
         costs = cost.read_bytes()
         self.assertTrue(all(costs[rank] == 2 for rank in expected))
 
+    def test_even_edge_pairing_rank_expands_without_named_edge_identities(self):
+        cost = self.scratch / "pairing-cost.bin"
+        cost.write_bytes(b"\0" * 12)  # 4! / 2 even matchings.
+        with cost.open("r+b") as fh:
+            fh.write(b"\1")
+        workq = self.scratch / "pairing-workq.bin"
+        workq.write_bytes(RANKED_RECORD.pack(0, 0))
+        output = self.scratch / "pairing-next.bin"
+        command = [
+            str(CRUNCHER),
+            "--ranked-cost",
+            str(cost),
+            "--ranked-input",
+            str(workq),
+            "--ranked-output",
+            str(output),
+            "--ranked-depth",
+            "1",
+            "--rank-type",
+            "edge-pairing-even",
+            "--rank-universe",
+            "12",
+            "--size",
+            "2",
+            "--start",
+            "0",
+            "--end",
+            "0",
+            "--moves",
+            "U U' U2",
+            "--squares",
+            "1,2,4,3,5,9,13,17",
+            "--pairing-partners",
+            "21,22,24,23,6,10,14,18",
+        ]
+        completed = subprocess.run(command, cwd=REPO_ROOT, capture_output=True, text=True, check=False)
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+
+        records = self.read_records(output)
+        ranks = [rank for rank, _ in records]
+        self.assertTrue(ranks)
+        self.assertEqual(len(ranks), len(set(ranks)))
+        self.assertTrue(all(0 <= rank < 12 for rank in ranks))
+        costs = cost.read_bytes()
+        self.assertTrue(all(costs[rank] == 2 for rank in ranks))
+
 
 if __name__ == "__main__":
     unittest.main()

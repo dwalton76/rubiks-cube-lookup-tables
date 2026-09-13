@@ -3,8 +3,30 @@ import logging
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
+from rubikscubennnsolver import wing_str_map
+from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, wings_for_edges_recolor_pattern_444
+from rubikscubennnsolver.RubiksCube444Misc import high_edges_444, low_edges_444
 
 log = logging.getLogger(__name__)
+
+
+def _edge_pairing_square_groups():
+    """Order low slots so the solved all-edge matching is permutation zero."""
+    solved_state = RubiksCube444(solved_444, "URFDLB").state
+    high_squares = tuple(square for _, square, _ in sorted(high_edges_444))
+    low_candidates = tuple(square for _, square, _ in sorted(low_edges_444))
+    partner_by_square = {square: partner for _, square, partner in wings_for_edges_recolor_pattern_444}
+
+    def edge_at(square):
+        return wing_str_map[solved_state[square] + solved_state[partner_by_square[square]]]
+
+    low_by_edge = {edge_at(square): square for square in low_candidates}
+    low_squares = tuple(low_by_edge[edge_at(square)] for square in high_squares)
+    partners = tuple(partner_by_square[square] for square in high_squares + low_squares)
+    return high_squares, low_squares, partners
+
+
+EDGE_PAIRING_HIGH_SQUARES_444, EDGE_PAIRING_LOW_SQUARES_444, EDGE_PAIRING_PARTNERS_444 = _edge_pairing_square_groups()
 
 
 # fmt: off
@@ -433,6 +455,55 @@ class Build444Reduce333FirstFourEdges(BFS):
                 ),
             ),
             use_edges_pattern=True,
+        )
+
+
+class Build444PairAllEdges(BFS):
+    """
+    Pair all 12 edges under the phase-3 move set.
+
+    The coordinate is the even matching between 12 high-wing slots and 12
+    low-wing slots. Named edge identities are quotiented out, giving 12! / 2
+    = 239,500,800 dense states.
+    """
+
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "444-pair-all-edges",
+            PHASE3_ILLEGAL_MOVES,
+            "4x4x4",
+            "lookup-table-4x4x4-step33-all-edges-paired.txt",
+            False,  # store_as_hex
+            # starting cubes
+            (
+                (
+                    """
+          . U U .
+          U . . U
+          U . . U
+          . U U .
+
+ . L L .  . F F .  . R R .  . B B .
+ L . . L  F . . F  R . . R  B . . B
+ L . . L  F . . F  R . . R  B . . B
+ . L L .  . F F .  . R R .  . B B .
+
+          . D D .
+          D . . D
+          D . . D
+          . D D .""",
+                    "ascii",
+                ),
+            ),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_type="edge-pairing-even",
+            ranked_cost_square_groups=(
+                EDGE_PAIRING_HIGH_SQUARES_444,
+                EDGE_PAIRING_LOW_SQUARES_444,
+            ),
+            edge_pairing_partners=EDGE_PAIRING_PARTNERS_444,
         )
 
 
