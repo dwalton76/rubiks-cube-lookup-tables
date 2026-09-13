@@ -876,7 +876,6 @@ process_ranked_workq(
         }
     }
 
-    printf("%" PRIu64 "\n", winners);
     free(perm);
     free(state);
     free(child);
@@ -884,8 +883,12 @@ process_ranked_workq(
     close(cost_fd);
     fclose(input);
     if (output) {
-        fclose(output);
+        if (fflush(output) != 0 || fclose(output) != 0) {
+            fprintf(stderr, "ERROR: could not flush ranked workq output\n");
+            exit(1);
+        }
     }
+    printf("%" PRIu64 "\n", winners);
 }
 
 

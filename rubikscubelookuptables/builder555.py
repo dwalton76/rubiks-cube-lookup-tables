@@ -332,6 +332,7 @@ class Build555FBXCenterStage(BFS):
             ),
             use_c=True,
         )
+        # fmt: on
 
 
 # ==================================================

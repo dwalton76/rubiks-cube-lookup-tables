@@ -38,40 +38,12 @@ from rubikscubennnsolver.RubiksCube555 import (
     RubiksCube555,
     solved_555,
 )
-from rubikscubennnsolver.RubiksCube666 import (
-    LookupTable666FBInnerXCenterAndObliqueEdges,
-    LookupTable666LRObliqueEdges,
-    LookupTable666Step50HighLowEdges,
-    LookupTable666Step50LRCenters,
-    LookupTable666UDInnerXCenterAndObliqueEdges,
-    RubiksCube666,
-    solved_666,
-)
 from rubikscubennnsolver.RubiksCube777 import (
     LookupTable777Phase5LeftOblique,
     LookupTable777Phase5MiddleOblique,
     LookupTable777Phase5RightOblique,
-    LookupTable777Step41,
-    LookupTable777Step42,
-    LookupTable777Step43,
-    LookupTable777Step44,
-    LookupTable777Step51,
-    LookupTable777Step52,
-    LookupTable777Step53,
-    LookupTable777Step54,
-    LookupTable777Step55,
-    LookupTable777Step61,
-    LookupTable777Step62,
-    LookupTable777Step65,
-    LookupTable777Step66,
     RubiksCube777,
     solved_777,
-)
-from rubikscubennnsolver.RubiksCubeNNNOdd import (
-    LookupTable777Step71,
-    LookupTable777Step72,
-    LookupTable777Step75,
-    LookupTable777Step76,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")
@@ -177,27 +149,7 @@ elif lt_class.startswith("Build555"):
         raise NotImplementedError(lt_class)
 
 elif lt_class.startswith("Build666"):
-    cube = RubiksCube666(solved_666, "URFDLB")
-
-    # phase 5
-    if lt_class == "Build666Step50LRCenters":
-        cube.lt = LookupTable666Step50LRCenters(cube, build_state_index=True)
-
-    elif lt_class == "Build666Step50HighLowEdges":
-        cube.lt = LookupTable666Step50HighLowEdges(cube, build_state_index=True)
-
-    # phase 6
-    elif lt_class == "Build666UDInnerXCenterAndObliqueEdges":
-        cube.lt = LookupTable666UDInnerXCenterAndObliqueEdges(cube, build_state_index=True)
-
-    elif lt_class == "Build666FBInnerXCenterAndObliqueEdges":
-        cube.lt = LookupTable666FBInnerXCenterAndObliqueEdges(cube, build_state_index=True)
-
-    elif lt_class == "Build666LRObliqueEdges":
-        cube.lt = LookupTable666LRObliqueEdges(cube, build_state_index=True)
-
-    else:
-        raise NotImplementedError(lt_class)
+    raise NotImplementedError(lt_class)
 
 elif lt_class.startswith("Build777"):
     cube = RubiksCube777(solved_777, "URFDLB")
@@ -211,61 +163,6 @@ elif lt_class.startswith("Build777"):
 
     elif lt_class == "Build777Phase5MiddleOblique":
         cube.lt = LookupTable777Phase5MiddleOblique(cube, build_state_index=True)
-
-    # phase 7
-    elif lt_class == "Build777Step41":
-        cube.lt = LookupTable777Step41(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step42":
-        cube.lt = LookupTable777Step42(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step43":
-        cube.lt = LookupTable777Step43(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step44":
-        cube.lt = LookupTable777Step44(cube, build_state_index=True)
-
-    # phase 8
-    elif lt_class == "Build777Step51":
-        cube.lt = LookupTable777Step51(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step52":
-        cube.lt = LookupTable777Step52(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step53":
-        cube.lt = LookupTable777Step53(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step54":
-        cube.lt = LookupTable777Step54(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step55":
-        cube.lt = LookupTable777Step55(cube, build_state_index=True)
-
-    # phase 9
-    elif lt_class == "Build777Step61":
-        cube.lt = LookupTable777Step61(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step62":
-        cube.lt = LookupTable777Step62(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step65":
-        cube.lt = LookupTable777Step65(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step66":
-        cube.lt = LookupTable777Step66(cube, build_state_index=True)
-
-    # solve t-centers
-    elif lt_class == "Build777Step71":
-        cube.lt = LookupTable777Step71(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step72":
-        cube.lt = LookupTable777Step72(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step75":
-        cube.lt = LookupTable777Step75(cube, build_state_index=True)
-
-    elif lt_class == "Build777Step76":
-        cube.lt = LookupTable777Step76(cube, build_state_index=True)
 
     else:
         raise NotImplementedError(lt_class)

@@ -99,7 +99,7 @@ class BuilderUiTests(ScratchTestCase):
     def test_it_reports_where_the_time_went(self):
         # A tiny table so the run stays quick, checked for the timing summary that
         # every build prints when it finishes.
-        completed = run_utils_script("builderui.py", "Build777Step71", "--depth", "2")
+        completed = run_utils_script("builderui.py", "Build777Phase5LeftOblique", "--depth", "2")
         for heading in ("Time in crunching workq", "Time in save", "Time total"):
             with self.subTest(heading=heading):
                 self.assertIn(heading, completed.stdout)

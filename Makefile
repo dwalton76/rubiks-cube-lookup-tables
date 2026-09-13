@@ -195,30 +195,27 @@ wheel:
 	./utils/builderui.py Build666Phase3UDLeftObliqueOuterXCentersStage
 	./utils/builderui.py Build666Phase3UDRightObliqueOuterXCentersStage
 
-666-phase5: clean
-	./utils/builderui.py Build666Step50LRCenters
-	./utils/build-ida-graph.py Build666Step50LRCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step50-LR-solve-inner-x-center-and-oblique-edges.json
+666-phase5:
+	./utils/builderui.py Build666DaisyUDPlusLRLeftObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyUDPlusLRRightObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyUDPlusLRInnerXCenters --cores 22
+	./utils/builderui.py Build666DaisyUDPlusFBLeftObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyUDPlusFBRightObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyUDPlusFBInnerXCenters --cores 22
+	./utils/builderui.py Build666DaisyLRPlusUDLeftObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyLRPlusUDRightObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyLRPlusUDInnerXCenters --cores 22
+	./utils/builderui.py Build666DaisyLRPlusFBLeftObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyLRPlusFBRightObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyLRPlusFBInnerXCenters --cores 22
+	./utils/builderui.py Build666DaisyFBPlusUDLeftObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyFBPlusUDRightObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyFBPlusUDInnerXCenters --cores 22
+	./utils/builderui.py Build666DaisyFBPlusLRLeftObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyFBPlusLRRightObliqueCenters --cores 22
+	./utils/builderui.py Build666DaisyFBPlusLRInnerXCenters --cores 22
 
-	./utils/builderui.py Build666Step50HighLowEdges
-	./utils/build-ida-graph.py Build666Step50HighLowEdges
-	./utils/json-combine.py lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step51-highlow-edges.json
-
-666-phase6: clean
-	./utils/builderui.py Build666UDInnerXCenterAndObliqueEdges
-	./utils/build-ida-graph.py Build666UDInnerXCenterAndObliqueEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step61-UD-solve-inner-x-center-and-oblique-edges.json
-
-	./utils/builderui.py Build666FBInnerXCenterAndObliqueEdges
-	./utils/build-ida-graph.py Build666FBInnerXCenterAndObliqueEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step62-FB-solve-inner-x-center-and-oblique-edges.json
-
-	./utils/builderui.py Build666LRObliqueEdges
-	./utils/build-ida-graph.py Build666LRObliqueEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-6x6x6-step63-LR-oblique-edges.json
-
-666: 666-phase4 666-phase5 666-phase6
+666: 666-phase1 666-phase3-preserve-inner-x 666-phase5
 
 777-phase2: clean
 	./utils/builderui.py Build777Phase2UDInnerCentersStage
@@ -230,6 +227,35 @@ wheel:
 	./utils/builderui.py Build777Phase56UDMiddleRightObliqueCentersStage --cores 22
 	./utils/builderui.py Build777Phase56UDRightObliqueOuterXCentersStage --cores 22
 	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXCentersStage --cores 22
+
+777-daisy-ranked:
+	./utils/builderui.py Build777DaisyUDWithoutLeftObliqueCenters --cores 22
+	./utils/builderui.py Build777DaisyUDWithoutMiddleObliqueCenters --cores 22
+	./utils/builderui.py Build777DaisyUDWithoutRightObliqueCenters --cores 22
+	./utils/builderui.py Build777DaisyUDWithoutInnerTCenters --cores 22
+	./utils/builderui.py Build777DaisyUDWithoutInnerXCenters --cores 22
+	./utils/builderui.py Build777DaisyLRWithoutLeftObliqueCenters --cores 22
+	./utils/builderui.py Build777DaisyLRWithoutMiddleObliqueCenters --cores 22
+	./utils/builderui.py Build777DaisyLRWithoutRightObliqueCenters --cores 22
+	./utils/builderui.py Build777DaisyLRWithoutInnerTCenters --cores 22
+	./utils/builderui.py Build777DaisyLRWithoutInnerXCenters --cores 22
+	./utils/builderui.py Build777DaisyFBWithoutLeftObliqueCenters --cores 22
+	./utils/builderui.py Build777DaisyFBWithoutMiddleObliqueCenters --cores 22
+	./utils/builderui.py Build777DaisyFBWithoutRightObliqueCenters --cores 22
+	./utils/builderui.py Build777DaisyFBWithoutInnerTCenters --cores 22
+	./utils/builderui.py Build777DaisyFBWithoutInnerXCenters --cores 22
+
+# Optional fallback: each table is 70^5 bytes. Build only if 70^4 search is too slow.
+777-daisy-perfect:
+	./utils/builderui.py Build777DaisyUDPerfectCenters --cores 22
+	./utils/builderui.py Build777DaisyLRPerfectCenters --cores 22
+	./utils/builderui.py Build777DaisyFBPerfectCenters --cores 22
+
+# Native-goal twins of 777-daisy-perfect, used by 9x9x9 and larger. 70^5 bytes each.
+777-solve-perfect:
+	./utils/builderui.py Build777SolveUDPerfectCenters --cores 22
+	./utils/builderui.py Build777SolveLRPerfectCenters --cores 22
+	./utils/builderui.py Build777SolveFBPerfectCenters --cores 22
 
 777-phase5:
 	./utils/builderui.py Build777Phase5LeftOblique
@@ -250,76 +276,4 @@ wheel:
 	./utils/builderui.py Build777Phase5LeftMiddleOblique
 	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase5-left-middle-oblique.txt
 
-777-phase7: clean
-	./utils/builderui.py Build777Step41
-	./utils/build-ida-graph.py Build777Step41
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step41.json
-
-	./utils/builderui.py Build777Step42
-	./utils/build-ida-graph.py Build777Step42
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step42.json
-
-	./utils/builderui.py Build777Step43
-	./utils/build-ida-graph.py Build777Step43
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step43.json
-
-	./utils/builderui.py Build777Step44
-	./utils/build-ida-graph.py Build777Step44
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step44.json
-
-777-phase8: clean
-	./utils/builderui.py Build777Step51
-	./utils/build-ida-graph.py Build777Step51
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step51.json
-
-	./utils/builderui.py Build777Step52
-	./utils/build-ida-graph.py Build777Step52
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step52.json
-
-	./utils/builderui.py Build777Step53
-	./utils/build-ida-graph.py Build777Step53
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step53.json
-
-	./utils/builderui.py Build777Step54
-	./utils/build-ida-graph.py Build777Step54
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step54.json
-
-	./utils/builderui.py Build777Step55
-	./utils/build-ida-graph.py Build777Step55
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step55.json
-
-777-phase9: clean
-	./utils/builderui.py Build777Step61
-	./utils/build-ida-graph.py Build777Step61
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step61.json
-
-	./utils/builderui.py Build777Step62
-	./utils/build-ida-graph.py Build777Step62
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step62.json
-
-	./utils/builderui.py Build777Step65
-	./utils/build-ida-graph.py Build777Step65
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step65.json
-
-	./utils/builderui.py Build777Step66
-	./utils/build-ida-graph.py Build777Step66
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step66.json
-
-777-phase-solve-t-centers: clean
-	./utils/builderui.py Build777Step71
-	./utils/build-ida-graph.py Build777Step71
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step71.json
-
-	./utils/builderui.py Build777Step72
-	./utils/build-ida-graph.py Build777Step72
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step72.json
-
-	./utils/builderui.py Build777Step75
-	./utils/build-ida-graph.py Build777Step75
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step75.json
-
-	./utils/builderui.py Build777Step76
-	./utils/build-ida-graph.py Build777Step76
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-step76.json
-
-777: 777-phase2 777-phase5-6-ranked 777-phase7 777-phase8 777-phase9 777-phase-solve-t-centers
+777: 777-phase2 777-phase5-6-ranked

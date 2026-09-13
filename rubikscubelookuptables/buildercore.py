@@ -80,6 +80,9 @@ LOOKUP_TABLE_DIR = DEFAULT_LOOKUP_TABLE_DIR
 SORT_BUFFER_SIZE = "16G"
 RANKED_WORKQ_RECORD = struct.Struct("<QB")
 RANKED_COST_TMPFS = Path("/dev/shm")
+# Keep the ranked frontier off the Cursor/Windows-watched workspace tree. Concurrent
+# 9p access of multi-gigabyte workq files has produced empty replacements.
+RANKED_WORKQ_DIR = Path("/tmp/rubiks-ranked-workq")
 
 
 def multiset_size(counts: Tuple[int, ...]) -> int:
@@ -451,9 +454,12 @@ class BackgroundProcess(Thread):
         log.debug(f"Running {' '.join(self.cmd)}")
         try:
             self.result = subprocess.check_output(self.cmd)
-
-            if self.result is not None and self.result.isdigit():
-                self.result = int(self.result)
+            if isinstance(self.result, bytes):
+                self.result = self.result.decode("utf-8")
+            if self.result is not None:
+                self.result = self.result.strip()
+                if self.result.isdigit():
+                    self.result = int(self.result)
             self.ok = True
         except subprocess.CalledProcessError as e:
             self.ok = False
@@ -816,7 +822,8 @@ class BFS(object):
         self.ranked_cost_live_filename = str(cost_dir / f"{self.name}.cost-only.bin.live")
         # The frontier is only ever read and appended to sequentially, so it belongs on
         # disk. It outgrows tmpfs long before the cost array does.
-        self.ranked_workq_filename = str(TMPDIR / f"{self}.ranked-workq.bin")
+        RANKED_WORKQ_DIR.mkdir(parents=True, exist_ok=True)
+        self.ranked_workq_filename = str(RANKED_WORKQ_DIR / f"{self.name}.ranked-workq.bin")
 
         if cost_dir == RANKED_COST_TMPFS:
             log.info(f"ranked cost array in {cost_dir}")
@@ -844,6 +851,7 @@ class BFS(object):
                 for group in self.rank_groups
             ],
             "universe_size": self.rank_universe,
+            "stored_entry_count": self._table_linecount(),
             "completed_depth": max(self.stats),
             "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
         }
@@ -1491,6 +1499,8 @@ class BFS(object):
                 for filename in core_files:
                     with open(filename, "rb") as source:
                         shutil.copyfileobj(source, destination, 16 * 1024 * 1024)
+            destination.flush()
+            os.fsync(destination.fileno())
 
         if os.path.exists(self.ranked_workq_filename):
             os.remove(self.ranked_workq_filename)
@@ -1499,6 +1509,14 @@ class BFS(object):
         os.replace(next_workq, self.ranked_workq_filename)
 
         self.workq_size = new_states_count if build_workq else 0
+        if build_workq:
+            actual_bytes = os.path.getsize(self.ranked_workq_filename)
+            expected_bytes = self.workq_size * RANKED_WORKQ_RECORD.size
+            if actual_bytes != expected_bytes:
+                raise RuntimeError(
+                    f"ranked workq is {actual_bytes} bytes after depth {self.depth}, "
+                    f"expected {expected_bytes} ({self.workq_size} records)"
+                )
         self.stats[self.depth] = new_states_count
         self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
         self._write_ranked_metadata()

@@ -21,7 +21,8 @@ BASELINES = json.loads(BASELINES_PATH.read_text(encoding="utf-8"))
 
 
 # Split a class name into words without breaking up runs of digits, so that
-# Build777Step53 becomes build_777_step_53 rather than build_7_7_7_step_5_3.
+# Build777Phase5LeftOblique becomes build_777_phase_5_left_oblique rather than
+# build_7_7_7_phase_5_left_oblique.
 WORD_BOUNDARY = re.compile(
     r"(?<=[a-z])(?=[A-Z])" r"|(?<=[A-Z])(?=[A-Z][a-z])" r"|(?<=[A-Za-z])(?=\d)" r"|(?<=\d)(?=[A-Za-z])"
 )
