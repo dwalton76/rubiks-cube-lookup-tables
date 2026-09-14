@@ -164,19 +164,6 @@
     "states_md5": "c9c9f0f580a367a843ff866e97642946",
     "depth": 4
   },
-  "Build555FBCenterSolve": {
-    "filename": "lookup-tables/lookup-table-5x5x5-step36-FB-centers-solve.txt",
-    "lines": 3774,
-    "states_per_depth": {
-      "0": 1,
-      "1": 6,
-      "2": 71,
-      "3": 560,
-      "4": 3136
-    },
-    "states_md5": "700b8205e099adc1d9e61bb816d2b8b0",
-    "depth": 4
-  },
   "Build555FBTCenterStage": {
     "filename": "lookup-tables/lookup-table-5x5x5-step21-FB-t-centers-stage.txt",
     "lines": 960,
@@ -201,19 +188,6 @@
       "4": 1246
     },
     "states_md5": "b83dcf325a8c00cd2c57380be1cb8ff6",
-    "depth": 4
-  },
-  "Build555LRCenterSolve": {
-    "filename": "lookup-tables/lookup-table-5x5x5-step35-LR-centers-solve.txt",
-    "lines": 3121,
-    "states_per_depth": {
-      "0": 1,
-      "1": 6,
-      "2": 67,
-      "3": 476,
-      "4": 2571
-    },
-    "states_md5": "7d62e143d96f425fb20eae4f50a9d781",
     "depth": 4
   },
   "Build555LRCenterStageTCenter": {
@@ -344,19 +318,6 @@
       "4": 511
     },
     "states_md5": "fcc1dbf6659a3a23220e6e04214fcba4",
-    "depth": 4
-  },
-  "Build555UDCenterSolve": {
-    "filename": "lookup-tables/lookup-table-5x5x5-step34-UD-centers-solve.txt",
-    "lines": 3774,
-    "states_per_depth": {
-      "0": 1,
-      "1": 6,
-      "2": 71,
-      "3": 560,
-      "4": 3136
-    },
-    "states_md5": "57190ae626c41f1d96493e29ad643be9",
     "depth": 4
   },
   "Build777Phase5LeftMiddleOblique": {

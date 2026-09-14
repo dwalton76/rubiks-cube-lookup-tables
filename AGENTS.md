@@ -95,7 +95,6 @@ Copy or upload the solver-facing artifact (`.bin`, `.cost-only.bin`, perfect-has
 | `333` | MicroPython 3x3 phases | 3x3 / EV3 path |
 | `444-phase12-ranked`, `444-lfrb-centers`, `444-pair-all-edges` | 4x4 ranked phase 1+2, LFRB-center graph, all-edge pairing | `ida_search_444_phase1_and_2`, `ida_search_444_phase3_and_4` |
 | `555-phase1` … `555-phase6` | 5x5 prune + perfect hashes | graph IDA; phase5/6 combo hashes |
-| `555-solve-staged-centers` | UD/LR/FB center solve | 5x5 after staging |
 | `666-phase1` | Inner x + LR obliques, one-phase ranked | `ida_search_666_centers_stage` |
 | `666-phase3-preserve-inner-x` | UD oblique / outer-x pairs | same, phase 3 |
 | `666-phase5` | 18 daisy overlapping 70^4 tables | `ida_search_666_daisy_centers` |

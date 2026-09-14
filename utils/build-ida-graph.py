@@ -9,10 +9,8 @@ from rubikscubennnsolver.RubiksCube444 import LookupTable444Reduce333LFRBCenters
 from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555EdgeOrientInnerOrbit,
     LookupTable555EdgeOrientOuterOrbit,
-    LookupTable555FBCenterSolve,
     LookupTable555FBTCenterStage,
     LookupTable555FBXCenterStage,
-    LookupTable555LRCenterSolve,
     LookupTable555LRTCenterStage,
     LookupTable555LRXCenterStage,
     LookupTable555Phase3LRCenterStage,
@@ -23,7 +21,6 @@ from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555Phase6Centers,
     LookupTable555Phase6HighEdgeMidge,
     LookupTable555Phase6LowEdgeMidge,
-    LookupTable555UDCenterSolve,
     RubiksCube555,
     solved_555,
 )
@@ -97,16 +94,6 @@ elif lt_class.startswith("Build555"):
 
     elif lt_class == "Build555Phase6LowEdgeMidge":
         cube.lt = LookupTable555Phase6LowEdgeMidge(cube, build_state_index=True)
-
-    # solve staged centers
-    elif lt_class == "Build555UDCenterSolve":
-        cube.lt = LookupTable555UDCenterSolve(cube, build_state_index=True)
-
-    elif lt_class == "Build555LRCenterSolve":
-        cube.lt = LookupTable555LRCenterSolve(cube, build_state_index=True)
-
-    elif lt_class == "Build555FBCenterSolve":
-        cube.lt = LookupTable555FBCenterSolve(cube, build_state_index=True)
 
     else:
         raise NotImplementedError(lt_class)

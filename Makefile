@@ -149,20 +149,7 @@ wheel:
 	./utils/build-ida-graph.py Build555Phase6LowEdgeMidge
 	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step63-phase6-low-edge-midge.json
 
-555-solve-staged-centers: clean
-	./utils/builderui.py Build555UDCenterSolve
-	./utils/build-ida-graph.py Build555UDCenterSolve
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step34-UD-centers-solve.json
-
-	./utils/builderui.py Build555LRCenterSolve
-	./utils/build-ida-graph.py Build555LRCenterSolve
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step35-LR-centers-solve.json
-
-	./utils/builderui.py Build555FBCenterSolve
-	./utils/build-ida-graph.py Build555FBCenterSolve
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step36-FB-centers-solve.json
-
-555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6 555-solve-staged-centers
+555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6
 
 666-phase1: clean
 	./utils/builderui.py Build666InnerXCentersStageOnePhase
