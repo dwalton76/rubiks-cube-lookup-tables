@@ -3,6 +3,7 @@
 # standard libraries
 import datetime as dt
 import glob
+import itertools
 import json
 import logging
 import math
@@ -220,6 +221,68 @@ def multiset_rank(state: str, symbols: str, counts: Tuple[int, ...]) -> int:
     if any(remaining):
         raise ValueError("state does not contain the expected symbol counts")
     return rank
+
+
+CENTER_COORDINATES_444 = (
+    (-1, 2, -1),
+    (1, 2, -1),
+    (-1, 2, 1),
+    (1, 2, 1),
+    (-2, 1, -1),
+    (-2, 1, 1),
+    (-2, -1, -1),
+    (-2, -1, 1),
+    (-1, 1, 2),
+    (1, 1, 2),
+    (-1, -1, 2),
+    (1, -1, 2),
+    (2, 1, 1),
+    (2, 1, -1),
+    (2, -1, 1),
+    (2, -1, -1),
+    (1, 1, -2),
+    (-1, 1, -2),
+    (1, -1, -2),
+    (-1, -1, -2),
+    (-1, -2, 1),
+    (1, -2, 1),
+    (-1, -2, -1),
+    (1, -2, -1),
+)
+
+
+def center_symmetries_444():
+    """Return all 48 simultaneous position/axis-symbol cube symmetries."""
+    by_coordinate = {coordinate: index for index, coordinate in enumerate(CENTER_COORDINATES_444)}
+    symbol_axis = {"L": 0, "U": 1, "F": 2}
+    symbol_by_axis = {axis: symbol for symbol, axis in symbol_axis.items()}
+    result = []
+    for axes in itertools.permutations(range(3)):
+        symbol_map = {symbol: symbol_by_axis[axes[axis]] for symbol, axis in symbol_axis.items()}
+        for signs in itertools.product((-1, 1), repeat=3):
+            positions = []
+            for coordinate in CENTER_COORDINATES_444:
+                destination = [0, 0, 0]
+                for source_axis in range(3):
+                    destination[axes[source_axis]] = signs[source_axis] * coordinate[source_axis]
+                positions.append(by_coordinate[tuple(destination)])
+            result.append((tuple(positions), symbol_map))
+    return tuple(result)
+
+
+CENTER_SYMMETRIES_444 = center_symmetries_444()
+
+
+def center_symmetry_rank_444(state: str) -> int:
+    """Canonical raw 8/8/8 multiset rank under all 48 cube symmetries."""
+    canonical = None
+    for positions, symbol_map in CENTER_SYMMETRIES_444:
+        transformed = [""] * 24
+        for source, destination in enumerate(positions):
+            transformed[destination] = symbol_map[state[source]]
+        transformed = "".join(transformed)
+        canonical = transformed if canonical is None or transformed < canonical else canonical
+    return multiset_rank(canonical, "FLU", (8, 8, 8))
 
 
 def multiset_unrank(rank: int, symbols: str, counts: Tuple[int, ...]) -> str:
@@ -581,6 +644,8 @@ class BFS(object):
         ranked_cost_square_groups=None,
         ranked_cost_type="multiset",
         edge_pairing_partners=None,
+        ranked_cost_move_flip_masks=None,
+        ranked_cost_partner_flip_mask=0,
     ):
         self.name = name
         self.illegal_moves = illegal_moves
@@ -600,6 +665,8 @@ class BFS(object):
         self.ranked_cost_square_groups = tuple(tuple(group) for group in (ranked_cost_square_groups or ()))
         self.ranked_cost_type = ranked_cost_type
         self.edge_pairing_partners = tuple(edge_pairing_partners or ())
+        self.ranked_cost_move_flip_masks = tuple(ranked_cost_move_flip_masks or ())
+        self.ranked_cost_partner_flip_mask = ranked_cost_partner_flip_mask
         # Cube-state indexes (matching cube.state / rotate_xxx) that this table actually
         # cares about. Empty means we carry the full cube, including the "." placeholders.
         self.compact_squares = ()
@@ -629,10 +696,17 @@ class BFS(object):
         assert isinstance(self.use_cost_only, bool)
         assert isinstance(self.use_hash_cost_only, bool)
         assert isinstance(self.use_ranked_cost, bool)
-        if self.ranked_cost_type not in ("multiset", "edge-pairing-even"):
+        if self.ranked_cost_type not in (
+            "multiset",
+            "edge-pairing-even",
+            "wing-binary",
+            "center-symmetry-444",
+        ):
             raise ValueError(f"{self}: unsupported ranked cost type {self.ranked_cost_type!r}")
         if self.ranked_cost_type != "multiset" and not self.use_ranked_cost:
             raise ValueError(f"{self}: ranked_cost_type requires use_ranked_cost=True")
+        if self.ranked_cost_move_flip_masks and self.ranked_cost_type != "wing-binary":
+            raise ValueError(f"{self}: move flip masks are supported only for wing-binary ranking")
         if self.ranked_cost_square_groups and not self.use_ranked_cost:
             raise ValueError(f"{self}: ranked_cost_square_groups requires use_ranked_cost=True")
         assert not (self.use_cost_only and self.use_hash_cost_only), "Both cannot be true"
@@ -840,6 +914,18 @@ class BFS(object):
                 raise ValueError(f"{self}: edge-pairing partner squares contain duplicates")
             return flat_squares
 
+        if getattr(self, "ranked_cost_type", "multiset") == "wing-binary":
+            if len(self.ranked_cost_square_groups) != 1:
+                raise ValueError(f"{self}: wing-binary ranking requires one square group")
+            squares = self.ranked_cost_square_groups[0]
+            if len(squares) < 2 or len(set(squares)) != len(squares):
+                raise ValueError(f"{self}: wing-binary squares must be distinct")
+            if len(self.edge_pairing_partners) != len(squares):
+                raise ValueError(f"{self}: every wing-binary square needs one partner")
+            if set(squares) & set(self.edge_pairing_partners):
+                raise ValueError(f"{self}: wing-binary squares and partners overlap")
+            return tuple(squares)
+
         squares = self._interesting_squares()
         full_squares = 6 * self.size_number * self.size_number
 
@@ -965,6 +1051,7 @@ class BFS(object):
         output = Path(self.filename)
         self.ranked_cost_filename = str(output.with_suffix(".cost-only.bin"))
         self.ranked_metadata_filename = f"{self.ranked_cost_filename}.json"
+        self.ranked_symmetry_index_filename = f"{self.ranked_cost_filename}.symmetry-index.bin"
         cost_dir = self._ranked_cost_dir()
         self.ranked_cost_live_filename = str(cost_dir / f"{self.name}.cost-only.bin.live")
         # The frontier is only ever read and appended to sequentially, so it belongs on
@@ -981,7 +1068,20 @@ class BFS(object):
             )
 
     def _write_ranked_metadata(self) -> None:
-        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+        if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
+            metadata = {
+                "format": "center-symmetry-444-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "rank_order": "minimum raw FLU 8/8/8 multiset rank under 48 symmetries",
+                "raw_universe_size": self.rank_universe,
+                "symmetry_count": 48,
+                "orbit_count": 197221662,
+                "stored_entry_count": self._table_linecount(),
+                "symmetry_index": os.path.basename(self.ranked_symmetry_index_filename),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+        elif getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
             metadata = {
                 "format": "dense-edge-pairing-cost-v1",
                 "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
@@ -998,7 +1098,11 @@ class BFS(object):
             }
         else:
             metadata = {
-                "format": "dense-multiset-cost-v1",
+                "format": (
+                    "dense-wing-binary-cost-v1"
+                    if getattr(self, "ranked_cost_type", "multiset") == "wing-binary"
+                    else "dense-multiset-cost-v1"
+                ),
                 "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
                 "record_format": "<QB",
                 "rank_order": "left-to-right mixed radix",
@@ -1021,6 +1125,12 @@ class BFS(object):
             if len(self.rank_groups) == 1:
                 metadata["symbols"] = self.rank_symbols
                 metadata["counts"] = list(self.rank_counts)
+            if getattr(self, "ranked_cost_type", "multiset") == "wing-binary":
+                metadata["partner_squares"] = list(self.edge_pairing_partners)
+                metadata["move_flip_masks"] = {
+                    move: mask for move, mask in zip(self.legal_moves, self.ranked_cost_move_flip_masks)
+                }
+                metadata["partner_flip_mask"] = self.ranked_cost_partner_flip_mask
         temporary = f"{self.ranked_metadata_filename}.tmp"
         with open(temporary, "w") as fh:
             json.dump(metadata, fh, indent=2, sort_keys=True)
@@ -1054,6 +1164,19 @@ class BFS(object):
     def _publish_ranked_cost_file(self) -> None:
         live = self.ranked_cost_live_filename
         dest = self.ranked_cost_filename
+        if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
+            Path(dest).parent.mkdir(parents=True, exist_ok=True)
+            log.info(f"{self}: compact 48-symmetry cost table {live} -> {dest}")
+            subprocess.check_call(
+                [
+                    "./rubikscubelookuptables/compact-center-symmetry-cost",
+                    live,
+                    dest,
+                    self.ranked_symmetry_index_filename,
+                ]
+            )
+            os.remove(live)
+            return
         if os.path.abspath(live) == os.path.abspath(dest):
             return
         Path(dest).parent.mkdir(parents=True, exist_ok=True)
@@ -1152,14 +1275,7 @@ class BFS(object):
         if self.use_edges_pattern:
             pattern = None
 
-            if self.size == "4x4x4":
-                # pattern = "10425376a8b9ecfdhgkiljnm"
-                if self.filename.endswith("lookup-table-4x4x4-step32-first-four-edges.txt"):
-                    pattern = "--------a8b9ecfd--------"
-                elif self.filename.endswith("lookup-table-4x4x4-step42-last-eight-edges.txt"):
-                    pattern = "10425376--------hgkiljnm"
-
-            elif self.size == "5x5x5":
+            if self.size == "5x5x5":
                 if self.filename.endswith("lookup-table-5x5x5-step53-phase5-high-edge-and-midge.txt"):
                     pattern = "-------------SSTT--UUVV-------------"
 
@@ -1522,6 +1638,7 @@ class BFS(object):
             self.ranked_cost_live_filename,
             self.ranked_cost_filename,
             self.ranked_metadata_filename,
+            self.ranked_symmetry_index_filename,
         ):
             if os.path.exists(filename):
                 os.remove(filename)
@@ -1553,6 +1670,8 @@ class BFS(object):
         """Rank a compact state in the configured dense coordinate."""
         if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
             return edge_pairing_rank(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
+            return center_symmetry_rank_444(state)
 
         ranks = tuple(
             multiset_rank(
@@ -1614,13 +1733,42 @@ class BFS(object):
                 "--squares",
                 ",".join(str(index) for index in self.compact_squares),
             ]
-            if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
+            if getattr(self, "ranked_cost_type", "multiset") in (
+                "edge-pairing-even",
+                "wing-binary",
+            ):
                 cmd.extend(
                     [
                         "--rank-type",
-                        "edge-pairing-even",
+                        self.ranked_cost_type,
                         "--pairing-partners",
                         ",".join(str(index) for index in self.edge_pairing_partners),
+                    ]
+                )
+                if self.ranked_cost_type == "wing-binary":
+                    if len(self.ranked_cost_move_flip_masks) != len(self.legal_moves):
+                        raise ValueError(f"{self}: wing-binary ranking needs one flip mask per legal move")
+                    cmd.extend(
+                        [
+                            "--rank-symbols",
+                            self.rank_symbols,
+                            "--rank-counts",
+                            ",".join(str(count) for count in self.rank_counts),
+                            "--wing-flip-masks",
+                            ",".join(str(mask) for mask in self.ranked_cost_move_flip_masks),
+                            "--wing-partner-flip-mask",
+                            str(self.ranked_cost_partner_flip_mask),
+                        ]
+                    )
+            elif self.ranked_cost_type == "center-symmetry-444":
+                cmd.extend(
+                    [
+                        "--rank-type",
+                        self.ranked_cost_type,
+                        "--rank-symbols",
+                        self.rank_symbols,
+                        "--rank-counts",
+                        ",".join(str(count) for count in self.rank_counts),
                     ]
                 )
             elif len(self.rank_groups) == 1:

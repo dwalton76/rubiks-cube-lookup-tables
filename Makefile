@@ -6,8 +6,9 @@ clean:
 
 init: clean
 	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
-	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-find-new-states utils/pad-lines
+	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/builder-find-new-states utils/pad-lines
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
+	gcc -O3 -o rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/compact-center-symmetry-cost.c
 	gcc -O3 -o rubikscubelookuptables/builder-find-new-states rubikscubelookuptables/builder-find-new-states.c
 	gcc -O3 -o utils/pad-lines utils/pad-lines.c
 	python3 -m venv venv
@@ -54,47 +55,20 @@ wheel:
 	./utils/builderui.py Build333MicroPythonPhase4Edges
 	./utils/builderui.py Build333MicroPythonPhase4Corners
 
-444-phase1: clean
-	./utils/builderui.py Build444UDCentersStage
-	./utils/build-ida-graph.py Build444UDCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step11-UD-centers-stage.json
+444-phase12-ranked:
+	./utils/builderui.py Build444AllCentersStageSymmetryRanked --cores 22
+	./utils/builderui.py Build444LRCentersStageRanked --cores 22
+	./utils/builderui.py Build444HighLowEdgesEdgesAllMoves --cores 22
 
-	./utils/builderui.py Build444LRCentersStage
-	./utils/build-ida-graph.py Build444LRCentersStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step12-LR-centers-stage.json
-
-444-phase2: clean
-	./utils/builderui.py Build444HighLowEdgesEdges
-	./utils/build-ida-graph.py Build444HighLowEdgesEdges
-	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.json
-
-	./utils/builderui.py Build444HighLowEdgesCenters
-	./utils/build-ida-graph.py Build444HighLowEdgesCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step22-highlow-edges-centers.json
-
-444-phase3: clean
-	./utils/builderui.py Build444Reduce333FirstTwoCenters
-	./utils/build-ida-graph.py Build444Reduce333FirstTwoCenters
+444-lfrb-centers: clean
+	./utils/builderui.py Build444Reduce333LFRBCenters
+	./utils/build-ida-graph.py Build444Reduce333LFRBCenters
 	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-centers.json
-
-	./utils/builderui.py Build444Reduce333FirstFourEdges
-	./utils/build-ida-graph.py Build444Reduce333FirstFourEdges
-	./utils/json-combine.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step32-first-four-edges.json
-
-	./utils/builderui.py Build444Reduce333Centers
-	./utils/build-ida-graph.py Build444Reduce333Centers
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step41-centers.json
-
-	./utils/builderui.py Build444Reduce333LastEightEdges
-	./utils/build-ida-graph.py Build444Reduce333LastEightEdges
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step42-last-eight-edges.json
 
 444-pair-all-edges: clean
 	./utils/builderui.py Build444PairAllEdges
 
-444: 444-phase1 444-phase2 444-phase3
+444: 444-phase12-ranked 444-lfrb-centers 444-pair-all-edges
 
 555-phase1: clean
 	./utils/builderui.py Build555LRCenterStageTCenter

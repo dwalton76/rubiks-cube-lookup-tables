@@ -4,7 +4,13 @@ import logging
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
 from rubikscubennnsolver import wing_str_map
-from rubikscubennnsolver.RubiksCube444 import RubiksCube444, solved_444, wings_for_edges_recolor_pattern_444
+from rubikscubennnsolver.RubiksCube444 import (
+    RubiksCube444,
+    centers_444,
+    moves_444,
+    solved_444,
+    wings_for_edges_recolor_pattern_444,
+)
 from rubikscubennnsolver.RubiksCube444Misc import high_edges_444, low_edges_444
 
 log = logging.getLogger(__name__)
@@ -27,28 +33,120 @@ def _edge_pairing_square_groups():
 
 
 EDGE_PAIRING_HIGH_SQUARES_444, EDGE_PAIRING_LOW_SQUARES_444, EDGE_PAIRING_PARTNERS_444 = _edge_pairing_square_groups()
+WING_BINARY_SQUARES_444 = tuple(square for _, square, _ in wings_for_edges_recolor_pattern_444)
+WING_BINARY_PARTNERS_444 = tuple(partner for _, _, partner in wings_for_edges_recolor_pattern_444)
+PHASE12_HIGHLOW_TARGET_444 = "UDDUUDDUDUDUUDUDDUUDDUUDDUDUUDUDDUUDDUUDUDDUUDDU"
+PHASE2_CENTER_TARGETS_444 = (
+    "UUUULLLLxxxxRRRRxxxxUUUU",
+    "UUUULLRRxxxxLLRRxxxxUUUU",
+    "UUUULLRRxxxxRRLLxxxxUUUU",
+    "UUUULRLRxxxxLRLRxxxxUUUU",
+    "UUUULRLRxxxxRLRLxxxxUUUU",
+    "UUUULRRLxxxxRLLRxxxxUUUU",
+    "UUUURLLRxxxxLRRLxxxxUUUU",
+    "UUUURLRLxxxxLRLRxxxxUUUU",
+    "UUUURLRLxxxxRLRLxxxxUUUU",
+    "UUUURRLLxxxxLLRRxxxxUUUU",
+    "UUUURRLLxxxxRRLLxxxxUUUU",
+    "UUUURRRRxxxxLLLLxxxxUUUU",
+)
+
+
+def _ranked_all_axis_center_starting_state():
+    cube = RubiksCube444(solved_444, "URFDLB")
+    state = ["."] * len(cube.state)
+    axis_by_color = {
+        "U": "U",
+        "D": "U",
+        "L": "L",
+        "R": "L",
+        "F": "F",
+        "B": "F",
+    }
+    for square in centers_444:
+        state[square] = axis_by_color[cube.state[square]]
+    return (("".join(state[1:]), "ULFRBD"),)
+
+
+def _ranked_lr_center_starting_states():
+    states = []
+    for target in PHASE2_CENTER_TARGETS_444:
+        state = ["."] * 97
+        for square, value in zip(centers_444, target):
+            state[square] = value if value in ("L", "R") else "x"
+        states.append(("".join(state[1:]), "ULFRBD"))
+    return tuple(states)
+
+
+def _highlow_target_starting_state():
+    """
+    Only the canonical high/low split.
+
+    The other 2,047 even edge mappings are equally valid goals, but they cannot
+    be seeded here: this table is ranked by which *slots* hold high wings, and
+    an edge mapping flips wings by *piece*. Which slots pair up as one edge
+    depends on the wing permutation, so the goal set is not fixed in this
+    coordinate. The solver applies the mappings at its root instead.
+    """
+    cube = RubiksCube444(solved_444, "URFDLB")
+    state = ["."] * len(cube.state)
+    for (square, _), target in zip(cube.reduce333_orient_edges_tuples, PHASE12_HIGHLOW_TARGET_444):
+        state[square] = target
+    return (("".join(state[1:]), "ULFRBD"),)
+
+
+def _highlow_move_flip_masks():
+    masks = []
+    scramble = ("Uw", "L", "F2", "Rw'", "B", "D2", "Fw", "U'", "Lw2")
+    for move in moves_444:
+        actual = RubiksCube444(solved_444, "URFDLB")
+        for step in scramble:
+            actual.rotate(step)
+        pattern = ["."] * len(actual.state)
+        highlow_by_square = dict(
+            zip(
+                (square for square, _ in actual.reduce333_orient_edges_tuples),
+                actual.highlow_edges_state(None),
+            )
+        )
+        for square, value in highlow_by_square.items():
+            pattern[square] = value
+        pattern_cube = RubiksCube444(solved_444, "URFDLB")
+        pattern_cube.state = pattern
+        actual.rotate(move)
+        pattern_cube.rotate(move)
+        expected = dict(
+            zip(
+                (square for square, _ in actual.reduce333_orient_edges_tuples),
+                actual.highlow_edges_state(None),
+            )
+        )
+        mask = 0
+        for index, (square, partner) in enumerate(zip(WING_BINARY_SQUARES_444, WING_BINARY_PARTNERS_444)):
+            square_differs = pattern_cube.state[square] != expected[square]
+            if square_differs:
+                mask |= 1 << index
+        masks.append(mask)
+    return tuple(masks)
+
+
+def _highlow_partner_flip_mask():
+    cube = RubiksCube444(solved_444, "URFDLB")
+    highlow_by_square = dict(
+        zip(
+            (square for square, _ in cube.reduce333_orient_edges_tuples),
+            cube.highlow_edges_state(None),
+        )
+    )
+    mask = 0
+    for index, (square, partner) in enumerate(zip(WING_BINARY_SQUARES_444, WING_BINARY_PARTNERS_444)):
+        if highlow_by_square[square] != highlow_by_square[partner]:
+            mask |= 1 << index
+    return mask
 
 
 # fmt: off
-PHASE2_ILLEGAL_MOVES = (
-    "Uw", "Uw'",
-    "Dw", "Dw'",
-    "Fw", "Fw'",
-    "Bw", "Bw'",
-)
-
-PHASE2_STARTING_STATES_ILLEGAL_MOVES = (
-    "Uw", "Uw'",
-    "Dw", "Dw'",
-    "Fw", "Fw'",
-    "Bw", "Bw'",
-    "Lw", "Lw'",
-    "Rw", "Rw'",
-    "L", "L'",
-    "R", "R'",
-)
-
-PHASE3_ILLEGAL_MOVES = (
+PHASE34_ILLEGAL_MOVES = (
     "Uw", "Uw'",
     "Lw", "Lw'",
     "Fw", "Fw'",
@@ -59,7 +157,7 @@ PHASE3_ILLEGAL_MOVES = (
     "R", "R'",
 )
 
-PHASE3_STARTING_STATES_ILLEGAL_MOVES = (
+PHASE34_STARTING_STATES_ILLEGAL_MOVES = (
     "Uw", "Uw'", "Uw2",
     "Dw", "Dw'", "Dw2",
     "Fw", "Fw'",
@@ -74,20 +172,6 @@ PHASE3_STARTING_STATES_ILLEGAL_MOVES = (
     "B", "B'",
 )
 
-PHASE4_ILLEGAL_MOVES = (
-    "Uw", "Uw'",
-    "Lw", "Lw'",
-    "Fw", "Fw'",
-    "Rw", "Rw'",
-    "Bw", "Bw'",
-    "Dw", "Dw'",
-    "L", "L'",
-    "R", "R'",
-    "Uw2",
-    "Dw2",
-    "F", "F'",
-    "B", "B'",
-)
 
 # fmt: on
 
@@ -96,237 +180,77 @@ PHASE4_ILLEGAL_MOVES = (
 # phase 1
 # stage LR centers
 # ==================================================
-class Build444UDCentersStage(BFS):
-    """
-    lookup-table-4x4x4-step11-UD-centers-stage.txt
-    ==============================================
-    0 steps has 1 entries (0 percent, 0.00x previous step)
-    1 steps has 4 entries (0 percent, 4.00x previous step)
-    2 steps has 82 entries (0 percent, 20.50x previous step)
-    3 steps has 1,206 entries (0 percent, 14.71x previous step)
-    4 steps has 14,116 entries (1 percent, 11.70x previous step)
-    5 steps has 123,404 entries (16 percent, 8.74x previous step)
-    6 steps has 422,508 entries (57 percent, 3.42x previous step)
-    7 steps has 173,254 entries (23 percent, 0.41x previous step)
-    8 steps has 896 entries (0 percent, 0.01x previous step)
-
-    Total: 735,471 entries
-    Average: 6.03 moves
-    """
+class Build444AllCentersStageSymmetryRanked(BFS):
+    """Exact 8/8/8 axis-center staging, quotiented by all 48 cube symmetries."""
 
     def __init__(self):
-        # fmt: off
         BFS.__init__(
             self,
-            "4x4x4-UD-centers-stage",
+            "4x4x4-all-centers-stage-symmetry-ranked",
             (),
             "4x4x4",
-            "lookup-table-4x4x4-step11-UD-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (("""
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . x x .  . x x .  . x x .  . x x .
- . x x .  . x x .  . x x .  . x x .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""",
-                    "ascii"),),
+            "lookup-table-4x4x4-step12-all-centers-stage-symmetry.txt",
+            False,
+            _ranked_all_axis_center_starting_state(),
             use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_type="center-symmetry-444",
         )
-        # fmt: on
 
 
-class Build444LRCentersStage(BFS):
-    """
-    lookup-table-4x4x4-step12-LR-centers-stage.txt
-    ==============================================
-    0 steps has 1 entries (0 percent, 0.00x previous step)
-    1 steps has 4 entries (0 percent, 4.00x previous step)
-    2 steps has 82 entries (0 percent, 20.50x previous step)
-    3 steps has 1,206 entries (0 percent, 14.71x previous step)
-    4 steps has 14,116 entries (1 percent, 11.70x previous step)
-    5 steps has 123,404 entries (16 percent, 8.74x previous step)
-    6 steps has 422,508 entries (57 percent, 3.42x previous step)
-    7 steps has 173,254 entries (23 percent, 0.41x previous step)
-    8 steps has 896 entries (0 percent, 0.01x previous step)
-
-    Total: 735,471 entries
-    Average: 6.03 moves
-    """
-
+class Build444LRCentersStageRanked(BFS):
     def __init__(self):
-        # fmt: off
         BFS.__init__(
             self,
-            "4x4x4-LR-centers-stage",
+            "4x4x4-LR-centers-stage-ranked",
             (),
             "4x4x4",
-            "lookup-table-4x4x4-step12-LR-centers-stage.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (("""
-          . . . .
-          . x x .
-          . x x .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . x x .  . L L .  . x x .
- . L L .  . x x .  . L L .  . x x .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . x x .
-          . x x .
-          . . . .""",
-                    "ascii"),),
+            "lookup-table-4x4x4-step14-LR-centers-stage.txt",
+            False,
+            _ranked_lr_center_starting_states(),
             use_c=True,
+            use_ranked_cost=True,
         )
-        # fmt: on
 
 
 # ==================================================
 # phase 2
 # stage the remaining centers and EO the wings
 # ==================================================
-class StartingStates444HighLowEdgesCenters(BFS):
+class Build444HighLowEdgesEdgesAllMoves(BFS):
+    """High/low edges with the full 4x4x4 move set for combined phase 1+2."""
+
     def __init__(self):
         BFS.__init__(
             self,
-            "444-highlow-edges-centers",
-            PHASE2_STARTING_STATES_ILLEGAL_MOVES,
+            "444-highlow-edges-edges-all-moves",
+            (),
             "4x4x4",
-            "starting-states-lookup-table-4x4x4-step22-highlow-edges-centers.txt",
+            "lookup-table-4x4x4-step23-highlow-edges-edges.txt",
             False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . x x .  . R R .  . x x .
- . L L .  . x x .  . R R .  . x x .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . U U .
-          . U U .
-          . . . .""",
-                    "ascii",
-                ),
-            ),
+            _highlow_target_starting_state(),
             use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_type="wing-binary",
+            ranked_cost_square_groups=(WING_BINARY_SQUARES_444,),
+            edge_pairing_partners=WING_BINARY_PARTNERS_444,
+            ranked_cost_move_flip_masks=_highlow_move_flip_masks(),
+            ranked_cost_partner_flip_mask=_highlow_partner_flip_mask(),
         )
 
 
-class Build444HighLowEdgesEdges(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "444-highlow-edges-edges",
-            PHASE2_ILLEGAL_MOVES,
-            "4x4x4",
-            "lookup-table-4x4x4-step21-highlow-edges-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          . U D .
-          D . . U
-          U . . D
-          . D U .
-
- . D U .  . D U .  . D U .  . D U .
- D . . U  U . . D  D . . U  U . . D
- U . . D  D . . U  U . . D  D . . U
- . U D .  . U D .  . U D .  . U D .
-
-          . U D .
-          D . . U
-          U . . D
-          . D U .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-
-
-class Build444HighLowEdgesCenters(BFS):
-    """
-    lookup-table-4x4x4-step22-highlow-edges-centers.txt
-    ===================================================
-    0 steps has 12 entries (0 percent, 0.00x previous step)
-    1 steps has 34 entries (0 percent, 2.83x previous step)
-    2 steps has 384 entries (0 percent, 11.29x previous step)
-    3 steps has 3,354 entries (0 percent, 8.73x previous step)
-    4 steps has 22,324 entries (2 percent, 6.66x previous step)
-    5 steps has 113,276 entries (12 percent, 5.07x previous step)
-    6 steps has 338,860 entries (37 percent, 2.99x previous step)
-    7 steps has 388,352 entries (43 percent, 1.15x previous step)
-    8 steps has 34,048 entries (3 percent, 0.09x previous step)
-    9 steps has 256 entries (0 percent, 0.01x previous step)
-
-    Total: 900,900 entries
-    Average: 6.32 moves
-    """
-
-    def __init__(self):
-        # fmt: off
-        BFS.__init__(
-            self,
-            "444-highlow-edges-centers",
-            PHASE2_ILLEGAL_MOVES,
-            "4x4x4",
-            "lookup-table-4x4x4-step22-highlow-edges-centers.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                ('.....UU..UU..........LL..LL..........xx..xx..........RR..RR..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........LL..RR..........xx..xx..........LL..RR..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........LL..RR..........xx..xx..........RR..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........LR..LR..........xx..xx..........LR..LR..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........LR..LR..........xx..xx..........RL..RL..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........LR..RL..........xx..xx..........RL..LR..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........RL..LR..........xx..xx..........LR..RL..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........RL..RL..........xx..xx..........LR..LR..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........RL..RL..........xx..xx..........RL..RL..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........RR..LL..........xx..xx..........LL..RR..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........RR..LL..........xx..xx..........RR..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
-                ('.....UU..UU..........RR..RR..........xx..xx..........LL..LL..........xx..xx..........UU..UU.....', 'ULFRBD'),
-            ),
-            use_c=True,
-        )
-        # fmt: on
-
-
-# ==================================================
-# phase 3
-# pair four x-plane edges; LFRB centers to vertical bars
+# phase 3+4
+# LFRB centers (840 states); all 12 edges paired
 # ==================================================
 
 
 # We want the LFRB centers to be vertical bars, there should be 36 states
-class StartingStates444Reduce333FirstTwoCenters(BFS):
+class StartingStates444Reduce333LFRBCenters(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "444-phase3-centers",
-            PHASE3_STARTING_STATES_ILLEGAL_MOVES,
+            "444-lfrb-centers",
+            PHASE34_STARTING_STATES_ILLEGAL_MOVES,
             # fmt: on
             "4x4x4",
             "starting-states-lookup-table-4x4x4-step31-centers.txt",
@@ -356,7 +280,7 @@ class StartingStates444Reduce333FirstTwoCenters(BFS):
         )
 
 
-class Build444Reduce333FirstTwoCenters(BFS):
+class Build444Reduce333LFRBCenters(BFS):
     """
     lookup-table-4x4x4-step31-centers.txt
     =====================================
@@ -374,8 +298,8 @@ class Build444Reduce333FirstTwoCenters(BFS):
     def __init__(self):
         BFS.__init__(
             self,
-            "444-phase3-centers",
-            PHASE3_ILLEGAL_MOVES,
+            "444-lfrb-centers",
+            PHASE34_ILLEGAL_MOVES,
             "4x4x4",
             "lookup-table-4x4x4-step31-centers.txt",
             False,  # store_as_hex
@@ -424,40 +348,6 @@ class Build444Reduce333FirstTwoCenters(BFS):
         )
 
 
-class Build444Reduce333FirstFourEdges(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "444-reduce333-edges",
-            PHASE3_ILLEGAL_MOVES,
-            "4x4x4",
-            "lookup-table-4x4x4-step32-first-four-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          . - - .
-          - . . -
-          - . . -
-          . - - .
-
- . - - .  . - - .  . - - .  . - - .
- L . . L  F . . F  R . . R  B . . B
- L . . L  F . . F  R . . R  B . . B
- . - - .  . - - .  . - - .  . - - .
-
-          . - - .
-          - . . -
-          - . . -
-          . - - .""",
-                    "ascii",
-                ),
-            ),
-            use_edges_pattern=True,
-        )
-
-
 class Build444PairAllEdges(BFS):
     """
     Pair all 12 edges under the phase-3 move set.
@@ -471,7 +361,7 @@ class Build444PairAllEdges(BFS):
         BFS.__init__(
             self,
             "444-pair-all-edges",
-            PHASE3_ILLEGAL_MOVES,
+            PHASE34_ILLEGAL_MOVES,
             "4x4x4",
             "lookup-table-4x4x4-step33-all-edges-paired.txt",
             False,  # store_as_hex
@@ -504,94 +394,4 @@ class Build444PairAllEdges(BFS):
                 EDGE_PAIRING_LOW_SQUARES_444,
             ),
             edge_pairing_partners=EDGE_PAIRING_PARTNERS_444,
-        )
-
-
-# ==================================================
-# phase 4
-# pair the last eight edges and solve the centers
-# ==================================================
-class Build444Reduce333Centers(BFS):
-    """
-    lookup-table-4x4x4-step41-centers.txt
-    =====================================
-    0 steps has 1 entries (0 percent, 0.00x previous step)
-    1 steps has 4 entries (0 percent, 4.00x previous step)
-    2 steps has 42 entries (1 percent, 10.50x previous step)
-    3 steps has 244 entries (9 percent, 5.81x previous step)
-    4 steps has 774 entries (30 percent, 3.17x previous step)
-    5 steps has 878 entries (34 percent, 1.13x previous step)
-    6 steps has 569 entries (22 percent, 0.65x previous step)
-    7 steps has 8 entries (0 percent, 0.01x previous step)
-
-    Total: 2,520 entries
-    Average: 4.67 moves
-    """
-
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "444-phase4-centers",
-            PHASE4_ILLEGAL_MOVES,
-            # fmt: on
-            "4x4x4",
-            "lookup-table-4x4x4-step41-centers.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          . . . .
-          . U U .
-          . U U .
-          . . . .
-
- . . . .  . . . .  . . . .  . . . .
- . L L .  . F F .  . R R .  . B B .
- . L L .  . F F .  . R R .  . B B .
- . . . .  . . . .  . . . .  . . . .
-
-          . . . .
-          . D D .
-          . D D .
-          . . . .""",
-                    "ascii",
-                ),
-            ),
-            use_c=True,
-        )
-
-
-class Build444Reduce333LastEightEdges(BFS):
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "444-phase4-edges",
-            PHASE4_ILLEGAL_MOVES,
-            # fmt: on
-            "4x4x4",
-            "lookup-table-4x4x4-step42-last-eight-edges.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-          . U U .
-          U . . U
-          U . . U
-          . U U .
-
- . L L .  . F F .  . R R .  . B B .
- - . . -  - . . -  - . . -  - . . -
- - . . -  - . . -  - . . -  - . . -
- . L L .  . F F .  . R R .  . B B .
-
-          . D D .
-          D . . D
-          D . . D
-          . D D .""",
-                    "ascii",
-                ),
-            ),
-            use_edges_pattern=True,
         )

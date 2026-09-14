@@ -125,72 +125,7 @@
     "states_md5": "1b97162f1a7486f3e406f90b4a7e5eac",
     "depth": 4
   },
-  "Build444HighLowEdgesCenters": {
-    "filename": "lookup-tables/lookup-table-4x4x4-step22-highlow-edges-centers.txt",
-    "lines": 26108,
-    "states_per_depth": {
-      "0": 12,
-      "1": 34,
-      "2": 384,
-      "3": 3354,
-      "4": 22324
-    },
-    "states_md5": "7e105aa99704ccd8d7b4b7c5da2d3ed9",
-    "depth": 4
-  },
-  "Build444HighLowEdgesEdges": {
-    "filename": "lookup-tables/lookup-table-4x4x4-step21-highlow-edges-edges.txt",
-    "lines": 12136,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 62,
-      "3": 906,
-      "4": 11163
-    },
-    "states_md5": "1657770a581fbaf97dc103f7eb33c4ec",
-    "depth": 4
-  },
-  "Build444LRCentersStage": {
-    "filename": "lookup-tables/lookup-table-4x4x4-step12-LR-centers-stage.txt",
-    "lines": 15409,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 82,
-      "3": 1206,
-      "4": 14116
-    },
-    "states_md5": "476419dccfa3380bedfff5fc72bea91d",
-    "depth": 4
-  },
-  "Build444Reduce333Centers": {
-    "filename": "lookup-tables/lookup-table-4x4x4-step41-centers.txt",
-    "lines": 1065,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 42,
-      "3": 244,
-      "4": 774
-    },
-    "states_md5": "7ec0df315e76e92b3459925c929efdee",
-    "depth": 4
-  },
-  "Build444Reduce333FirstFourEdges": {
-    "filename": "lookup-tables/lookup-table-4x4x4-step32-first-four-edges.txt",
-    "lines": 1665,
-    "states_per_depth": {
-      "0": 1,
-      "1": 3,
-      "2": 27,
-      "3": 216,
-      "4": 1418
-    },
-    "states_md5": "51b3290aca89e365ffd6534ab0cae101",
-    "depth": 4
-  },
-  "Build444Reduce333FirstTwoCenters": {
+  "Build444Reduce333LFRBCenters": {
     "filename": "lookup-tables/lookup-table-4x4x4-step31-centers.txt",
     "lines": 808,
     "states_per_depth": {
@@ -201,32 +136,6 @@
       "4": 192
     },
     "states_md5": "1c9d3ac96c4e019d50d6b4707b084408",
-    "depth": 4
-  },
-  "Build444Reduce333LastEightEdges": {
-    "filename": "lookup-tables/lookup-table-4x4x4-step42-last-eight-edges.txt",
-    "lines": 214,
-    "states_per_depth": {
-      "0": 1,
-      "1": 2,
-      "2": 10,
-      "3": 36,
-      "4": 165
-    },
-    "states_md5": "fba04af00402e05cbabc082f60db00a9",
-    "depth": 4
-  },
-  "Build444UDCentersStage": {
-    "filename": "lookup-tables/lookup-table-4x4x4-step11-UD-centers-stage.txt",
-    "lines": 15409,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 82,
-      "3": 1206,
-      "4": 14116
-    },
-    "states_md5": "345d99225b939ff44ba35b74062d1abf",
     "depth": 4
   },
   "Build555EdgeOrientInnerOrbit": {

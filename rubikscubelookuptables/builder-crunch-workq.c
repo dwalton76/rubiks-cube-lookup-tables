@@ -13,6 +13,7 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "center_symmetry_444.h"
 #include "ida_search_core.h"
 
 // If by some miracle we ever start building lookup-tables deeper than 20 moves
@@ -72,6 +73,8 @@ typedef struct {
 typedef enum {
     RANK_MULTISET,
     RANK_EDGE_PAIRING_EVEN,
+    RANK_WING_BINARY,
+    RANK_CENTER_SYMMETRY_444,
 } rank_type;
 
 
@@ -313,6 +316,23 @@ parse_squares(char *arg, unsigned int *squares)
         ptr = strtok(NULL, ",");
     }
 
+    return count;
+}
+
+
+static unsigned int
+parse_unsigned_list(char *arg, unsigned int *values, unsigned int maximum_count)
+{
+    unsigned int count = 0;
+    char *ptr = strtok(arg, ",");
+    while (ptr != NULL) {
+        if (count >= maximum_count) {
+            fprintf(stderr, "ERROR: too many unsigned-list entries\n");
+            exit(1);
+        }
+        values[count++] = (unsigned int) strtoul(ptr, NULL, 10);
+        ptr = strtok(NULL, ",");
+    }
     return count;
 }
 
@@ -695,6 +715,24 @@ grouped_multiset_rank(
     return rank;
 }
 
+static uint64_t
+center_symmetry_rank_444(
+    const unsigned char *state,
+    const int symbol_of[MAX_RANK_GROUPS][256],
+    const rank_group_type *groups)
+{
+    unsigned char transformed[CENTER_SYMMETRY_STICKERS_444];
+    unsigned char canonical[CENTER_SYMMETRY_STICKERS_444];
+
+    for (unsigned int symmetry = 0; symmetry < CENTER_SYMMETRY_COUNT_444; symmetry++) {
+        transform_centers_444(state, transformed, symmetry);
+        if (!symmetry || memcmp(transformed, canonical, sizeof(canonical)) < 0) {
+            memcpy(canonical, transformed, sizeof(canonical));
+        }
+    }
+    return grouped_multiset_rank(canonical, symbol_of, groups, 1);
+}
+
 
 static uint64_t
 even_permutation_universe(unsigned int length)
@@ -833,6 +871,47 @@ edge_pairing_rank_cube(
 }
 
 
+static void
+wing_binary_unrank_cube(
+    uint64_t rank,
+    unsigned char *cube,
+    unsigned int full_size,
+    const unsigned int *squares,
+    const unsigned int *partners,
+    unsigned int partner_flip_mask,
+    const rank_group_type *groups,
+    unsigned int group_count,
+    uint64_t universe)
+{
+    unsigned char compact[MAX_RANK_SYMBOLS];
+    memset(cube, '.', full_size);
+    cube[0] = 'x';
+    grouped_multiset_unrank(rank, compact, groups, group_count, universe);
+    for (unsigned int i = 0; i < groups[0].length; i++) {
+        cube[squares[i]] = compact[i];
+        cube[partners[i]] = (partner_flip_mask & (1U << i))
+            ? (compact[i] == 'U' ? 'D' : 'U')
+            : compact[i];
+    }
+}
+
+
+static uint64_t
+wing_binary_rank_cube(
+    const unsigned char *cube,
+    const unsigned int *squares,
+    const int symbol_of[MAX_RANK_GROUPS][256],
+    const rank_group_type *groups,
+    unsigned int group_count)
+{
+    unsigned char compact[MAX_RANK_SYMBOLS];
+    for (unsigned int i = 0; i < groups[0].length; i++) {
+        compact[i] = cube[squares[i]];
+    }
+    return grouped_multiset_rank(compact, symbol_of, groups, group_count);
+}
+
+
 static uint64_t
 read_rank(FILE *fh)
 {
@@ -879,6 +958,9 @@ process_ranked_workq(
     unsigned int square_count,
     const unsigned int *pairing_partners,
     unsigned int pairing_partner_count,
+    const unsigned int *wing_flip_masks,
+    unsigned int wing_flip_mask_count,
+    unsigned int wing_partner_flip_mask,
     rank_type configured_rank_type,
     const rank_group_type *groups,
     unsigned int group_count,
@@ -924,6 +1006,20 @@ process_ranked_workq(
         if (!group_count || !square_count || square_count != state_length) {
             fprintf(stderr, "ERROR: ranked mode requires --squares matching --rank-counts\n");
             exit(1);
+        }
+        if (configured_rank_type == RANK_WING_BINARY) {
+            if (group_count != 1 || pairing_partner_count != square_count ||
+                    wing_flip_mask_count != moves_count) {
+                fprintf(stderr, "ERROR: wing-binary rank requires partners and one flip mask per move\n");
+                exit(1);
+            }
+            for (unsigned int i = 0; i < square_count; i++) {
+                if (squares[i] >= full_size || pairing_partners[i] >= full_size) {
+                    fprintf(stderr, "ERROR: wing-binary square is outside the cube\n");
+                    exit(1);
+                }
+            }
+            state_length = full_size;
         }
     }
     if (configured_universe != universe) {
@@ -991,7 +1087,8 @@ process_ranked_workq(
         }
     }
 
-    unsigned int *perm = configured_rank_type == RANK_MULTISET
+    unsigned int *perm = (configured_rank_type == RANK_MULTISET ||
+            configured_rank_type == RANK_CENTER_SYMMETRY_444)
         ? build_compact_permutations(cube_size, squares, square_count, moves, moves_count)
         : NULL;
     unsigned char *state = malloc(state_length);
@@ -1013,6 +1110,11 @@ process_ranked_workq(
         if (configured_rank_type == RANK_EDGE_PAIRING_EVEN) {
             edge_pairing_unrank_cube(
                 parent_rank, state, full_size, squares, pairing_partners, pair_count);
+        } else if (configured_rank_type == RANK_WING_BINARY) {
+            wing_binary_unrank_cube(
+                parent_rank, state, full_size, squares, pairing_partners,
+                wing_partner_flip_mask,
+                groups, group_count, universe);
         } else {
             grouped_multiset_unrank(parent_rank, state, groups, group_count, universe);
         }
@@ -1027,11 +1129,23 @@ process_ranked_workq(
             if (configured_rank_type == RANK_EDGE_PAIRING_EVEN) {
                 rotate_full_cube((char *) child, (char *) state, full_size, cube_size, move);
                 child_rank = edge_pairing_rank_cube(child, squares, pair_count);
+            } else if (configured_rank_type == RANK_WING_BINARY) {
+                rotate_full_cube((char *) child, (char *) state, full_size, cube_size, move);
+                for (unsigned int i = 0; i < square_count; i++) {
+                    if (wing_flip_masks[move_index] & (1U << i)) {
+                        child[squares[i]] = child[squares[i]] == 'U' ? 'D' : 'U';
+                        child[pairing_partners[i]] =
+                            child[pairing_partners[i]] == 'U' ? 'D' : 'U';
+                    }
+                }
+                child_rank = wing_binary_rank_cube(child, squares, symbol_of, groups, group_count);
             } else {
                 for (unsigned int i = 0; i < square_count; i++) {
                     child[perm[(move_index * square_count) + i]] = state[i];
                 }
-                child_rank = grouped_multiset_rank(child, symbol_of, groups, group_count);
+                child_rank = configured_rank_type == RANK_CENTER_SYMMETRY_444
+                    ? center_symmetry_rank_444(child, symbol_of, groups)
+                    : grouped_multiset_rank(child, symbol_of, groups, group_count);
             }
             if (child_rank == parent_rank) {
                 continue;
@@ -1334,12 +1448,16 @@ main (int argc, char *argv[])
     char rank_groups_buffer[MAX_SQUARES_ARG];
     char rank_type_buffer[64];
     char pairing_partners_buffer[MAX_SQUARES_ARG];
+    char wing_flip_masks_buffer[MAX_SQUARES_ARG];
     unsigned int squares[MAX_COMPACT_SQUARES];
     unsigned int pairing_partners[MAX_COMPACT_SQUARES];
+    unsigned int wing_flip_masks[MOVE_MAX];
     unsigned int rank_counts[MAX_RANK_SYMBOLS];
     rank_group_type rank_groups[MAX_RANK_GROUPS];
     unsigned int square_count = 0;
     unsigned int pairing_partner_count = 0;
+    unsigned int wing_flip_mask_count = 0;
+    unsigned int wing_partner_flip_mask = 0;
     unsigned int rank_symbol_count = 0;
     unsigned int rank_group_count = 0;
     int ranked_no_workq = 0;
@@ -1355,6 +1473,7 @@ main (int argc, char *argv[])
     memset(rank_groups_buffer, '\0', sizeof(rank_groups_buffer));
     memset(rank_type_buffer, '\0', sizeof(rank_type_buffer));
     memset(pairing_partners_buffer, '\0', sizeof(pairing_partners_buffer));
+    memset(wing_flip_masks_buffer, '\0', sizeof(wing_flip_masks_buffer));
     memset(rank_groups, 0, sizeof(rank_groups));
 
     for (int i = 1; i < argc; i++) {
@@ -1426,6 +1545,14 @@ main (int argc, char *argv[])
             i++;
             strncpy(pairing_partners_buffer, argv[i], MAX_SQUARES_ARG - 1);
 
+        } else if (strmatch(argv[i], "--wing-flip-masks")) {
+            i++;
+            strncpy(wing_flip_masks_buffer, argv[i], MAX_SQUARES_ARG - 1);
+
+        } else if (strmatch(argv[i], "--wing-partner-flip-mask")) {
+            i++;
+            wing_partner_flip_mask = (unsigned int) strtoul(argv[i], NULL, 10);
+
         } else if (strmatch(argv[i], "--rank-universe")) {
             i++;
             rank_universe = strtoull(argv[i], NULL, 10);
@@ -1482,12 +1609,19 @@ main (int argc, char *argv[])
     if (pairing_partners_buffer[0]) {
         pairing_partner_count = parse_squares(pairing_partners_buffer, pairing_partners);
     }
+    if (wing_flip_masks_buffer[0]) {
+        wing_flip_mask_count = parse_unsigned_list(wing_flip_masks_buffer, wing_flip_masks, MOVE_MAX);
+    }
 
     if (ranked_cost[0]) {
         if (!rank_type_buffer[0] || strmatch(rank_type_buffer, "multiset")) {
             configured_rank_type = RANK_MULTISET;
         } else if (strmatch(rank_type_buffer, "edge-pairing-even")) {
             configured_rank_type = RANK_EDGE_PAIRING_EVEN;
+        } else if (strmatch(rank_type_buffer, "wing-binary")) {
+            configured_rank_type = RANK_WING_BINARY;
+        } else if (strmatch(rank_type_buffer, "center-symmetry-444")) {
+            configured_rank_type = RANK_CENTER_SYMMETRY_444;
         } else {
             fprintf(stderr, "ERROR: unsupported --rank-type %s\n", rank_type_buffer);
             exit(1);
@@ -1495,7 +1629,7 @@ main (int argc, char *argv[])
 
         if (configured_rank_type == RANK_EDGE_PAIRING_EVEN) {
             if (rank_groups_buffer[0] || rank_symbols[0] || rank_counts_buffer[0]) {
-                fprintf(stderr, "ERROR: edge-pairing rank cannot use multiset rank options\n");
+                fprintf(stderr, "ERROR: edge rank cannot use multiset rank options\n");
                 exit(1);
             }
         } else if (rank_groups_buffer[0]) {
@@ -1522,7 +1656,7 @@ main (int argc, char *argv[])
             rank_groups[0].universe = rank_universe;
         }
         if (!ranked_input[0] || (!ranked_no_workq && !ranked_output[0]) ||
-                (configured_rank_type == RANK_MULTISET && !rank_group_count) || !rank_universe) {
+                (configured_rank_type != RANK_EDGE_PAIRING_EVEN && !rank_group_count) || !rank_universe) {
             fprintf(stderr, "ERROR: ranked mode requires input/output, symbols, counts and universe\n");
             exit(1);
         }
@@ -1534,6 +1668,18 @@ main (int argc, char *argv[])
                 }
             }
         }
+        if (configured_rank_type == RANK_CENTER_SYMMETRY_444) {
+            if (cube_size != 4 || rank_group_count != 1 ||
+                    rank_groups[0].length != CENTER_SYMMETRY_STICKERS_444 ||
+                    strcmp((const char *) rank_groups[0].symbols, "FLU") ||
+                    rank_groups[0].counts[0] != 8 ||
+                    rank_groups[0].counts[1] != 8 ||
+                    rank_groups[0].counts[2] != 8) {
+                fprintf(stderr, "ERROR: center-symmetry-444 requires a 4x4x4 FLU 8,8,8 rank group\n");
+                exit(1);
+            }
+            init_center_symmetry_444();
+        }
         if (ranked_depth > 254) {
             fprintf(stderr, "ERROR: ranked depth must be <= 254\n");
             exit(1);
@@ -1541,7 +1687,9 @@ main (int argc, char *argv[])
         process_ranked_workq(
             ranked_input, ranked_output, ranked_cost, start, end, (unsigned char) ranked_depth,
             cube_size, moves, moves_index, squares, square_count,
-            pairing_partners, pairing_partner_count, configured_rank_type,
+            pairing_partners, pairing_partner_count, wing_flip_masks, wing_flip_mask_count,
+            wing_partner_flip_mask,
+            configured_rank_type,
             rank_groups, rank_group_count,
             rank_universe, !ranked_no_workq);
     } else {

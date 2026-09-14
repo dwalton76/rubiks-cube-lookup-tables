@@ -20,7 +20,7 @@ from tests.builder_support import build_table, builder_output_path, read_table
 
 # Small enough to build twice quickly, big enough that several states are reachable
 # by more than one shortest move sequence.
-BUILDER = "Build444UDCentersStage"
+BUILDER = "Build444Reduce333LFRBCenters"
 DEPTH = 4
 
 

@@ -5,18 +5,7 @@ import logging
 import sys
 
 # rubiks cube libraries
-from rubikscubennnsolver.RubiksCube444 import (
-    LookupTable444HighLowEdgesCenters,
-    LookupTable444HighLowEdgesEdges,
-    LookupTable444LRCentersStage,
-    LookupTable444Reduce333Centers,
-    LookupTable444Reduce333FirstFourEdges,
-    LookupTable444Reduce333FirstTwoCenters,
-    LookupTable444Reduce333LastEightEdges,
-    LookupTable444UDCentersStage,
-    RubiksCube444,
-    solved_444,
-)
+from rubikscubennnsolver.RubiksCube444 import LookupTable444Reduce333LFRBCenters, RubiksCube444, solved_444
 from rubikscubennnsolver.RubiksCube555 import (
     LookupTable555EdgeOrientInnerOrbit,
     LookupTable555EdgeOrientOuterOrbit,
@@ -54,34 +43,8 @@ lt_class = sys.argv[1]
 if lt_class.startswith("Build444"):  # noqa: C901
     cube = RubiksCube444(solved_444, "URFDLB")
 
-    # phase 1
-    if lt_class == "Build444UDCentersStage":
-        cube.lt = LookupTable444UDCentersStage(cube, build_state_index=True)
-
-    elif lt_class == "Build444LRCentersStage":
-        cube.lt = LookupTable444LRCentersStage(cube, build_state_index=True)
-
-    # phase 2
-    elif lt_class == "Build444HighLowEdgesEdges":
-        cube.lt = LookupTable444HighLowEdgesEdges(cube, build_state_index=True)
-
-    elif lt_class == "Build444HighLowEdgesCenters":
-        cube.lt = LookupTable444HighLowEdgesCenters(cube, build_state_index=True)
-
-    # phase 3
-    elif lt_class == "Build444Reduce333FirstTwoCenters":
-        cube.lt = LookupTable444Reduce333FirstTwoCenters(cube, build_state_index=True)
-
-    elif lt_class == "Build444Reduce333FirstFourEdges":
-        cube.lt = LookupTable444Reduce333FirstFourEdges(cube, build_state_index=True)
-
-    # phase 4
-    elif lt_class == "Build444Reduce333Centers":
-        cube.lt = LookupTable444Reduce333Centers(cube, build_state_index=True)
-
-    elif lt_class == "Build444Reduce333LastEightEdges":
-        cube.lt = LookupTable444Reduce333LastEightEdges(cube, build_state_index=True)
-
+    if lt_class == "Build444Reduce333LFRBCenters":
+        cube.lt = LookupTable444Reduce333LFRBCenters(cube, build_state_index=True)
     else:
         raise ValueError(lt_class)
 

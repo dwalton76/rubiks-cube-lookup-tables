@@ -16,7 +16,7 @@ Python + C BFS/IDA builders for the prune tables consumed by `../rubiks-cube-NxN
 
 | Path | Role |
 | --- | --- |
-| `rubikscubelookuptables/builder{333,444,555,666,777}.py` | Builder classes (`Build444UDCentersStage`, …) |
+| `rubikscubelookuptables/builder{333,444,555,666,777}.py` | Builder classes (`Build444LRCentersStageRanked`, …) |
 | `rubikscubelookuptables/buildercore.py` | Search, ranked mmap, save, histogram, JSON sidecars |
 | `rubikscubelookuptables/builder-crunch-workq.c` | C work-queue expander used by Python builders |
 | `rubikscubelookuptables/builder-find-new-states.c` | Frontier helper |
@@ -81,9 +81,9 @@ Typical **ranked** invocation (only when asked):
 Typical **classic graph** chain (only when asked):
 
 ```bash
-./utils/builderui.py Build444UDCentersStage
-./utils/build-ida-graph.py Build444UDCentersStage
-./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step11-UD-centers-stage.json
+./utils/builderui.py Build444Reduce333LFRBCenters
+./utils/build-ida-graph.py Build444Reduce333LFRBCenters
+./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-centers.json
 ```
 
 Copy or upload the solver-facing artifact (`.bin`, `.cost-only.bin`, perfect-hash) so `download_file_if_needed()` in the solver can see it. The solver wget path is the **basename** + `.gz` on S3.
@@ -93,7 +93,7 @@ Copy or upload the solver-facing artifact (`.bin`, `.cost-only.bin`, perfect-has
 | Make target | What it builds | Solver consumer |
 | --- | --- | --- |
 | `333` | MicroPython 3x3 phases | 3x3 / EV3 path |
-| `444-phase1` … `444-phase3` | 4x4 prune graphs | `ida_search_via_graph` |
+| `444-phase12-ranked`, `444-lfrb-centers`, `444-pair-all-edges` | 4x4 ranked phase 1+2, LFRB-center graph, all-edge pairing | `ida_search_444_phase1_and_2`, `ida_search_444_phase3_and_4` |
 | `555-phase1` … `555-phase6` | 5x5 prune + perfect hashes | graph IDA; phase5/6 combo hashes |
 | `555-solve-staged-centers` | UD/LR/FB center solve | 5x5 after staging |
 | `666-phase1` | Inner x + LR obliques, one-phase ranked | `ida_search_666_centers_stage` |
