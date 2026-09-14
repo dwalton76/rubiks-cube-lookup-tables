@@ -271,6 +271,7 @@ def center_symmetries_444():
 
 
 CENTER_SYMMETRIES_444 = center_symmetries_444()
+CENTER_SYMMETRY_ORBIT_COUNT_444 = 197221662
 
 
 def center_symmetry_rank_444(state: str) -> int:
@@ -1045,6 +1046,15 @@ class BFS(object):
             self.rank_symbols = self.rank_groups[0]["symbols"]
             self.rank_counts = self.rank_groups[0]["counts"]
 
+        if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
+            if (
+                len(self.compact_squares) != 24
+                or len(self.rank_groups) != 1
+                or self.rank_symbols != "FLU"
+                or self.rank_counts != (8, 8, 8)
+            ):
+                raise ValueError(f"{self}: center-symmetry-444 requires one FLU 8/8/8 group of 24 stickers")
+
         self._configure_ranked_output()
 
     def _configure_ranked_output(self) -> None:
@@ -1075,7 +1085,7 @@ class BFS(object):
                 "rank_order": "minimum raw FLU 8/8/8 multiset rank under 48 symmetries",
                 "raw_universe_size": self.rank_universe,
                 "symmetry_count": 48,
-                "orbit_count": 197221662,
+                "orbit_count": CENTER_SYMMETRY_ORBIT_COUNT_444,
                 "stored_entry_count": self._table_linecount(),
                 "symmetry_index": os.path.basename(self.ranked_symmetry_index_filename),
                 "completed_depth": max(self.stats),
@@ -1166,17 +1176,22 @@ class BFS(object):
         dest = self.ranked_cost_filename
         if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
             Path(dest).parent.mkdir(parents=True, exist_ok=True)
-            log.info(f"{self}: compact 48-symmetry cost table {live} -> {dest}")
-            subprocess.check_call(
-                [
-                    "./rubikscubelookuptables/compact-center-symmetry-cost",
-                    live,
-                    dest,
-                    self.ranked_symmetry_index_filename,
-                ]
+            if self._table_linecount() == CENTER_SYMMETRY_ORBIT_COUNT_444:
+                log.info(f"{self}: compact 48-symmetry cost table {live} -> {dest}")
+                subprocess.check_call(
+                    [
+                        "./rubikscubelookuptables/compact-center-symmetry-cost",
+                        live,
+                        dest,
+                        self.ranked_symmetry_index_filename,
+                    ]
+                )
+                os.remove(live)
+                return
+            log.warning(
+                f"{self}: incomplete symmetry table ({self._table_linecount()} orbits); "
+                "publishing canonical raw ranks without compacting"
             )
-            os.remove(live)
-            return
         if os.path.abspath(live) == os.path.abspath(dest):
             return
         Path(dest).parent.mkdir(parents=True, exist_ok=True)

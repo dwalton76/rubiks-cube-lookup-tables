@@ -1669,13 +1669,13 @@ main (int argc, char *argv[])
             }
         }
         if (configured_rank_type == RANK_CENTER_SYMMETRY_444) {
-            if (cube_size != 4 || rank_group_count != 1 ||
+            if ((cube_size != 4 && cube_size != 6) || rank_group_count != 1 ||
                     rank_groups[0].length != CENTER_SYMMETRY_STICKERS_444 ||
                     strcmp((const char *) rank_groups[0].symbols, "FLU") ||
                     rank_groups[0].counts[0] != 8 ||
                     rank_groups[0].counts[1] != 8 ||
                     rank_groups[0].counts[2] != 8) {
-                fprintf(stderr, "ERROR: center-symmetry-444 requires a 4x4x4 FLU 8,8,8 rank group\n");
+                fprintf(stderr, "ERROR: center-symmetry-444 requires a 4x4x4 or 6x6x6 FLU 8,8,8 rank group\n");
                 exit(1);
             }
             init_center_symmetry_444();

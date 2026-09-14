@@ -152,7 +152,7 @@ wheel:
 555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6
 
 666-phase1: clean
-	./utils/builderui.py Build666InnerXCentersStageOnePhase
+	./utils/builderui.py Build666InnerXCentersStageOnePhase --cores 22
 
 666-phase3-preserve-inner-x: clean
 	./utils/builderui.py Build666Phase3UDLeftRightObliqueCentersStage

@@ -3,6 +3,7 @@ import logging
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
+from rubikscubennnsolver.RubiksCube666 import inner_x_centers_666
 
 log = logging.getLogger(__name__)
 
@@ -50,7 +51,10 @@ class Build666InnerXCentersStageOnePhase(BFS):
     """
     Stage all 24 inner x-centers in one phase (8 UD, 8 LR, 8 FB).
 
-    24! / (8!^3) = 9,465,511,770 states. Built as a ranked cost-only table.
+    24! / (8!^3) = 9,465,511,770 raw colorings, stored as the 197,221,662
+    orbits under the 48 cube symmetries (same geometry as 4x4 centers).
+    The live BFS still needs the 9.47 GiB canonical-rank mmap; save() then
+    compact-center-symmetry-cost writes ~188 MiB plus the symmetry index.
     """
 
     def __init__(self):
@@ -91,6 +95,8 @@ class Build666InnerXCentersStageOnePhase(BFS):
             ),
             use_c=True,
             use_ranked_cost=True,
+            ranked_cost_type="center-symmetry-444",
+            ranked_cost_square_groups=(inner_x_centers_666,),
         )
         # fmt: on
 

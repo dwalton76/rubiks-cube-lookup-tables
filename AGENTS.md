@@ -112,9 +112,10 @@ Cost **matrices** that combine per-axis table costs are **not** built here. They
 ## Ranked table formats
 
 Sidecar `*.cost-only.bin.json` uses `dense-multiset-cost-v1` for sticker
-multisets and `dense-edge-pairing-cost-v1` for the even matching between high
-and low wing slots. The latter has \(n!/2\) entries; the 4x4x4 all-edge table
-has \(12!/2 = 239,500,800\).
+multisets, `dense-edge-pairing-cost-v1` for the even matching between high
+and low wing slots (\(n!/2\) entries; 4x4 all-edge is \(12!/2 = 239,500,800\)),
+and `center-symmetry-444-cost-v1` for 24-sticker 8/8/8 centers quotiented by
+the 48 cube symmetries (4x4 all-centers and 6x6 inner-x: 197,221,662 orbits).
 
 | Field | Meaning |
 | --- | --- |
