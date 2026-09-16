@@ -205,23 +205,4 @@ wheel:
 777-solve-perfect: rubikscubelookuptables/compact-center-symmetry-777
 	./utils/builderui.py Build777SolvePerfectCenters --cores 22
 
-777-phase5:
-	./utils/builderui.py Build777Phase5LeftOblique
-	./utils/build-ida-graph.py Build777Phase5LeftOblique
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase5-left-oblique.json
-
-	./utils/builderui.py Build777Phase5RightOblique
-	./utils/build-ida-graph.py Build777Phase5RightOblique
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase5-right-oblique.json
-
-	./utils/builderui.py Build777Phase5MiddleOblique
-	./utils/build-ida-graph.py Build777Phase5MiddleOblique
-	./utils/json-to-binary.py lookup-tables/lookup-table-7x7x7-phase5-middle-oblique.json
-
-	./utils/builderui.py Build777Phase5LeftRightOblique
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase5-left-right-oblique.txt
-
-	./utils/builderui.py Build777Phase5LeftMiddleOblique
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-7x7x7-phase5-left-middle-oblique.txt
-
 777: 777-phase2 777-phase5-6-ranked

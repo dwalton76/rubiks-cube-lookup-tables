@@ -24,13 +24,6 @@ from rubikscubennnsolver.RubiksCube555 import (
     RubiksCube555,
     solved_555,
 )
-from rubikscubennnsolver.RubiksCube777 import (
-    LookupTable777Phase5LeftOblique,
-    LookupTable777Phase5MiddleOblique,
-    LookupTable777Phase5RightOblique,
-    RubiksCube777,
-    solved_777,
-)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(filename)20s %(levelname)8s: %(message)s")
 log = logging.getLogger(__name__)
@@ -100,22 +93,6 @@ elif lt_class.startswith("Build555"):
 
 elif lt_class.startswith("Build666"):
     raise NotImplementedError(lt_class)
-
-elif lt_class.startswith("Build777"):
-    cube = RubiksCube777(solved_777, "URFDLB")
-
-    # phase 5
-    if lt_class == "Build777Phase5LeftOblique":
-        cube.lt = LookupTable777Phase5LeftOblique(cube, build_state_index=True)
-
-    elif lt_class == "Build777Phase5RightOblique":
-        cube.lt = LookupTable777Phase5RightOblique(cube, build_state_index=True)
-
-    elif lt_class == "Build777Phase5MiddleOblique":
-        cube.lt = LookupTable777Phase5MiddleOblique(cube, build_state_index=True)
-
-    else:
-        raise NotImplementedError(lt_class)
 
 else:
     raise NotImplementedError(lt_class)

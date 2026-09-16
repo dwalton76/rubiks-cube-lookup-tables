@@ -103,7 +103,6 @@ Copy or upload the solver-facing artifact (`.bin`, `.cost-only.bin`, perfect-has
 | `777-daisy-ranked` | 15 leave-one-out daisy tables | `ida_search_777_daisy_centers` |
 | `777-daisy-perfect` | One symmetry-reduced 70^5 daisy table (optional) | daisy with `use_perfect_tables` |
 | `777-solve-perfect` | Native-orientation twin of daisy-perfect | `--native-only` for 9x9+ |
-| `777-phase5` | Older graph/perfect-hash UD obliques | leftover graph path |
 
 `777-daisy-perfect` / `777-solve-perfect` each run a BFS over 70^5 ranks, so the
 build needs that much scratch, but they publish a 314 MiB pair instead: the cost
