@@ -644,6 +644,7 @@ class BFS(object):
         use_ranked_cost=False,
         ranked_cost_square_groups=None,
         ranked_cost_type="multiset",
+        compact_center_symmetry_777=False,
         edge_pairing_partners=None,
         ranked_cost_move_flip_masks=None,
         ranked_cost_partner_flip_mask=0,
@@ -665,6 +666,7 @@ class BFS(object):
         self.use_ranked_cost = use_ranked_cost
         self.ranked_cost_square_groups = tuple(tuple(group) for group in (ranked_cost_square_groups or ()))
         self.ranked_cost_type = ranked_cost_type
+        self.compact_center_symmetry_777 = compact_center_symmetry_777
         self.edge_pairing_partners = tuple(edge_pairing_partners or ())
         self.ranked_cost_move_flip_masks = tuple(ranked_cost_move_flip_masks or ())
         self.ranked_cost_partner_flip_mask = ranked_cost_partner_flip_mask
@@ -1174,6 +1176,22 @@ class BFS(object):
     def _publish_ranked_cost_file(self) -> None:
         live = self.ranked_cost_live_filename
         dest = self.ranked_cost_filename
+        # Unlike the 4x4x4 table, the BFS here ranks states normally and every raw
+        # rank gets a cost. The symmetry only shows up at publish time, where the
+        # cost of each orbit is kept once. See compact-center-symmetry-777.c.
+        if getattr(self, "compact_center_symmetry_777", False):
+            Path(dest).parent.mkdir(parents=True, exist_ok=True)
+            log.info(f"{self}: compact 16-symmetry cost table {live} -> {dest}")
+            subprocess.check_call(
+                [
+                    "./rubikscubelookuptables/compact-center-symmetry-777",
+                    live,
+                    dest,
+                    self.ranked_symmetry_index_filename,
+                ]
+            )
+            os.remove(live)
+            return
         if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
             Path(dest).parent.mkdir(parents=True, exist_ok=True)
             if self._table_linecount() == CENTER_SYMMETRY_ORBIT_COUNT_444:

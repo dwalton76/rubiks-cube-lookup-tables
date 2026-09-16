@@ -7,8 +7,8 @@ from rubikscubelookuptables.builder666 import (
     DAISY_CENTER_ORBITS_666,
     DAISY_CENTERS_ILLEGAL_MOVES_666,
     DAISY_ORBIT_NAMES_666,
-    _Build666DaisyCenters,
-    daisy_plus_table_specs_666,
+    _Build666DaisyInnerXSpineCenters,
+    daisy_inner_x_spine_table_specs_666,
 )
 
 
@@ -29,25 +29,30 @@ def test_daisy_defines_exactly_nine_disjoint_eight_sticker_orbits():
     assert len(set().union(*(set(squares) for squares in all_squares))) == 72
 
 
-def test_there_are_eighteen_axis_plus_foreign_orbit_tables():
-    specs = daisy_plus_table_specs_666()
-    assert len(specs) == 18
-    assert len({spec[-1] for spec in specs}) == 18
+def test_there_are_three_inner_x_spine_tables():
+    specs = daisy_inner_x_spine_table_specs_666()
+    assert tuple(axis for axis, _, _ in specs) == DAISY_AXES_666
+    assert len({class_name for _, _, class_name in specs}) == 3
 
 
-@pytest.mark.parametrize("axis,extra_axis,extra_orbit,slug,class_name", daisy_plus_table_specs_666())
-def test_plus_builders_are_dense_70_to_the_four(axis, extra_axis, extra_orbit, slug, class_name):
-    builder = _builder_class(class_name)()
-    expected_orbits = DAISY_CENTER_ORBITS_666[axis] + tuple(
-        orbit for orbit in DAISY_CENTER_ORBITS_666[extra_axis] if orbit[0] == extra_orbit
+@pytest.mark.parametrize("axis,slug,class_name", daisy_inner_x_spine_table_specs_666())
+def test_inner_x_spine_builders_are_dense_70_to_the_five(axis, slug, class_name):
+    builder_class = _builder_class(class_name)
+    builder = builder_class()
+    inner_x = tuple(
+        orbit
+        for candidate_axis in DAISY_AXES_666
+        for orbit in DAISY_CENTER_ORBITS_666[candidate_axis]
+        if orbit[0] == "inner-x"
     )
+    axis_obliques = tuple(orbit for orbit in DAISY_CENTER_ORBITS_666[axis] if orbit[0] != "inner-x")
 
-    assert issubclass(_builder_class(class_name), _Build666DaisyCenters)
+    assert issubclass(builder_class, _Build666DaisyInnerXSpineCenters)
     assert builder.use_ranked_cost
-    assert builder.rank_universes == (70, 70, 70, 70)
-    assert builder.rank_universe == 70**4 == 24_010_000
-    assert builder.selected_orbits == expected_orbits
+    assert builder.rank_universes == (70, 70, 70, 70, 70)
+    assert builder.rank_universe == 70**5 == 1_680_700_000
+    assert builder.selected_orbits == inner_x + axis_obliques
     assert builder.table_slug == slug
     assert builder.filename.endswith(f"lookup-table-6x6x6-daisy-{slug}-centers.txt")
     assert builder.illegal_moves == DAISY_CENTERS_ILLEGAL_MOVES_666
-    assert len(builder.starting_cubes) == 4
+    assert len(builder.starting_cubes) == 2

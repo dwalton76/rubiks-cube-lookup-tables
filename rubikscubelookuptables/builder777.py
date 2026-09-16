@@ -479,6 +479,7 @@ class _Build777DaisyCenters(BFS):
     table_slug = None
     table_prefix = "daisy"
     goal_orientations = ("native", "obliques-swapped")
+    compact_center_symmetry = False
 
     def __init__(self):
         selected_orbits = tuple(orbit for orbit in DAISY_CENTER_ORBITS_777[self.axis] if orbit[0] != self.omitted_orbit)
@@ -495,6 +496,7 @@ class _Build777DaisyCenters(BFS):
             use_c=True,
             use_ranked_cost=True,
             ranked_cost_square_groups=tuple(squares for _, squares in selected_orbits),
+            compact_center_symmetry_777=self.compact_center_symmetry,
         )
 
 
@@ -558,16 +560,17 @@ class Build777DaisyFBWithoutInnerXCenters(_Build777DaisyCenters):
     axis, omitted_orbit, table_slug = "FB", "inner-x", "FB-without-inner-x"
 
 
-class Build777DaisyUDPerfectCenters(_Build777DaisyCenters):
-    axis, table_slug = "UD", "UD-perfect"
+class Build777DaisyPerfectCenters(_Build777DaisyCenters):
+    """
+    One table for all three axes.
 
+    The UD, LR and FB perfect tables were the same cost function written out
+    three times under different square orderings, so only UD is built. The
+    searcher rotates an LR or FB state onto the UD coordinate before probing.
+    """
 
-class Build777DaisyLRPerfectCenters(_Build777DaisyCenters):
-    axis, table_slug = "LR", "LR-perfect"
-
-
-class Build777DaisyFBPerfectCenters(_Build777DaisyCenters):
-    axis, table_slug = "FB", "FB-perfect"
+    axis, table_slug = "UD", "perfect"
+    compact_center_symmetry = True
 
 
 # ==================================================
@@ -588,16 +591,11 @@ class _Build777SolveCenters(_Build777DaisyCenters):
     goal_orientations = ("native",)
 
 
-class Build777SolveUDPerfectCenters(_Build777SolveCenters):
-    axis, table_slug = "UD", "UD-perfect"
+class Build777SolvePerfectCenters(_Build777SolveCenters):
+    """Shared across the three axes the same way Build777DaisyPerfectCenters is."""
 
-
-class Build777SolveLRPerfectCenters(_Build777SolveCenters):
-    axis, table_slug = "LR", "LR-perfect"
-
-
-class Build777SolveFBPerfectCenters(_Build777SolveCenters):
-    axis, table_slug = "FB", "FB-perfect"
+    axis, table_slug = "UD", "perfect"
+    compact_center_symmetry = True
 
 
 # ==================================================

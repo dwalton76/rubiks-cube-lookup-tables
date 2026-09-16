@@ -333,11 +333,9 @@ class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
 
 # ==================================================
 # phase 5
-# daisy-solve all centers with overlapping 70^4 ranked tables
+# daisy-solve all remaining centers with three 70^5 ranked tables:
+# all inner-x orbits plus both obliques from one axis.
 # ==================================================
-# Nine (4,4) orbits: left-oblique, right-oblique, and inner-x on each of UD, LR,
-# and FB. C(9,4) = 126 tables of 24,010,000 states exist. The first attempt
-# keeps the 18 tables that contain one complete axis plus one foreign orbit.
 
 # fmt: off
 DAISY_LEFT_OBLIQUE_UD_666 = (9, 17, 28, 20, 189, 197, 208, 200)
@@ -375,22 +373,16 @@ DAISY_CENTER_ORBITS_666 = {
 }
 
 
-def _daisy_orbit_token_666(orbit):
-    return "".join(part.title() for part in orbit.split("-"))
-
-
-def daisy_plus_table_specs_666():
-    """One complete axis plus one orbit from a different axis: 3 * 6 = 18 tables."""
-    specs = []
-    for axis in DAISY_AXES_666:
-        for extra_axis in DAISY_AXES_666:
-            if extra_axis == axis:
-                continue
-            for orbit in DAISY_ORBIT_NAMES_666:
-                slug = f"{axis}-plus-{extra_axis}-{orbit}"
-                class_name = f"Build666Daisy{axis}Plus{extra_axis}{_daisy_orbit_token_666(orbit)}Centers"
-                specs.append((axis, extra_axis, orbit, slug, class_name))
-    return tuple(specs)
+def daisy_inner_x_spine_table_specs_666():
+    """All three inner-x orbits plus both obliques from one axis: three 70^5 tables."""
+    return tuple(
+        (
+            axis,
+            f"all-inner-x-plus-{axis}-obliques",
+            f"Build666DaisyAllInnerXPlus{axis}ObliquesCenters",
+        )
+        for axis in DAISY_AXES_666
+    )
 
 
 def _daisy_starting_states_666(selected_orbits):
@@ -424,28 +416,16 @@ def _daisy_starting_states_666(selected_orbits):
     return tuple(result)
 
 
-class _Build666DaisyCenters(BFS):
-    """
-    Dense ranked-cost 70^4 builder: one complete axis plus one foreign orbit.
-
-    Extra oblique (four starting states). Average 8.50 moves, max 12:
-    0:4 1:44 2:588 3:4,904 4:29,792 5:155,444 6:752,892 7:3,004,980
-    8:7,417,368 9:8,651,032 10:3,621,656 11:369,888 12:1,408
-
-    Extra inner-x (two starting states). Average 9.43 moves, max 13:
-    0:2 1:20 2:220 3:1,746 4:11,510 5:64,150 6:316,284 7:1,274,168
-    8:3,676,310 9:6,634,726 10:7,000,712 11:4,202,184 12:808,704 13:19,264
-    """
+class _Build666DaisyInnerXSpineCenters(BFS):
+    """Dense ranked-cost 70^5 builder: every inner-x orbit plus one axis's obliques."""
 
     axis = None
-    extra_axis = None
-    extra_orbit = None
     table_slug = None
 
     def __init__(self):
-        selected_orbits = DAISY_CENTER_ORBITS_666[self.axis] + tuple(
-            orbit for orbit in DAISY_CENTER_ORBITS_666[self.extra_axis] if orbit[0] == self.extra_orbit
-        )
+        selected_orbits = tuple(
+            orbit for axis in DAISY_AXES_666 for orbit in DAISY_CENTER_ORBITS_666[axis] if orbit[0] == "inner-x"
+        ) + tuple(orbit for orbit in DAISY_CENTER_ORBITS_666[self.axis] if orbit[0] != "inner-x")
         self.selected_orbits = selected_orbits
         self.goal_orientations = ("native", "obliques-swapped")
 
@@ -456,25 +436,23 @@ class _Build666DaisyCenters(BFS):
             "6x6x6",
             f"lookup-table-6x6x6-daisy-{self.table_slug}-centers.txt",
             False,
-            _daisy_starting_states_666(selected_orbits),
+            tuple(dict.fromkeys(_daisy_starting_states_666(selected_orbits))),
             use_c=True,
             use_ranked_cost=True,
             ranked_cost_square_groups=tuple(squares for _, squares in selected_orbits),
         )
 
 
-def _install_daisy_plus_builders_666():
-    for axis, extra_axis, extra_orbit, slug, class_name in daisy_plus_table_specs_666():
+def _install_daisy_inner_x_spine_builders_666():
+    for axis, slug, class_name in daisy_inner_x_spine_table_specs_666():
         globals()[class_name] = type(
             class_name,
-            (_Build666DaisyCenters,),
+            (_Build666DaisyInnerXSpineCenters,),
             {
                 "axis": axis,
-                "extra_axis": extra_axis,
-                "extra_orbit": extra_orbit,
                 "table_slug": slug,
             },
         )
 
 
-_install_daisy_plus_builders_666()
+_install_daisy_inner_x_spine_builders_666()

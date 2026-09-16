@@ -6,9 +6,10 @@ clean:
 
 init: clean
 	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
-	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/builder-find-new-states utils/pad-lines
+	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/compact-center-symmetry-777 rubikscubelookuptables/builder-find-new-states utils/pad-lines
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	gcc -O3 -o rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/compact-center-symmetry-cost.c
+	gcc -O3 -pthread -o rubikscubelookuptables/compact-center-symmetry-777 rubikscubelookuptables/compact-center-symmetry-777.c
 	gcc -O3 -o rubikscubelookuptables/builder-find-new-states rubikscubelookuptables/builder-find-new-states.c
 	gcc -O3 -o utils/pad-lines utils/pad-lines.c
 	python3 -m venv venv
@@ -160,24 +161,9 @@ wheel:
 	./utils/builderui.py Build666Phase3UDRightObliqueOuterXCentersStage
 
 666-phase5:
-	./utils/builderui.py Build666DaisyUDPlusLRLeftObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyUDPlusLRRightObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyUDPlusLRInnerXCenters --cores 22
-	./utils/builderui.py Build666DaisyUDPlusFBLeftObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyUDPlusFBRightObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyUDPlusFBInnerXCenters --cores 22
-	./utils/builderui.py Build666DaisyLRPlusUDLeftObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyLRPlusUDRightObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyLRPlusUDInnerXCenters --cores 22
-	./utils/builderui.py Build666DaisyLRPlusFBLeftObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyLRPlusFBRightObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyLRPlusFBInnerXCenters --cores 22
-	./utils/builderui.py Build666DaisyFBPlusUDLeftObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyFBPlusUDRightObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyFBPlusUDInnerXCenters --cores 22
-	./utils/builderui.py Build666DaisyFBPlusLRLeftObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyFBPlusLRRightObliqueCenters --cores 22
-	./utils/builderui.py Build666DaisyFBPlusLRInnerXCenters --cores 22
+	./utils/builderui.py Build666DaisyAllInnerXPlusUDObliquesCenters --cores 22
+	./utils/builderui.py Build666DaisyAllInnerXPlusLRObliquesCenters --cores 22
+	./utils/builderui.py Build666DaisyAllInnerXPlusFBObliquesCenters --cores 22
 
 666: 666-phase1 666-phase3-preserve-inner-x 666-phase5
 
@@ -209,17 +195,15 @@ wheel:
 	./utils/builderui.py Build777DaisyFBWithoutInnerTCenters --cores 22
 	./utils/builderui.py Build777DaisyFBWithoutInnerXCenters --cores 22
 
-# Optional fallback: each table is 70^5 bytes. Build only if 70^4 search is too slow.
-777-daisy-perfect:
-	./utils/builderui.py Build777DaisyUDPerfectCenters --cores 22
-	./utils/builderui.py Build777DaisyLRPerfectCenters --cores 22
-	./utils/builderui.py Build777DaisyFBPerfectCenters --cores 22
+# Optional fallback, built only if the 70^4 search is too slow. The BFS needs 70^5
+# bytes of scratch but publishes a 314 MiB cost table plus symmetry index, shared
+# by all three axes.
+777-daisy-perfect: rubikscubelookuptables/compact-center-symmetry-777
+	./utils/builderui.py Build777DaisyPerfectCenters --cores 22
 
-# Native-goal twins of 777-daisy-perfect, used by 9x9x9 and larger. 70^5 bytes each.
-777-solve-perfect:
-	./utils/builderui.py Build777SolveUDPerfectCenters --cores 22
-	./utils/builderui.py Build777SolveLRPerfectCenters --cores 22
-	./utils/builderui.py Build777SolveFBPerfectCenters --cores 22
+# Native-goal twin of 777-daisy-perfect, used by 9x9x9 and larger.
+777-solve-perfect: rubikscubelookuptables/compact-center-symmetry-777
+	./utils/builderui.py Build777SolvePerfectCenters --cores 22
 
 777-phase5:
 	./utils/builderui.py Build777Phase5LeftOblique

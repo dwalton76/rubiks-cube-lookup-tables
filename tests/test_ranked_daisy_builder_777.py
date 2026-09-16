@@ -10,30 +10,28 @@ from rubikscubelookuptables.builder777 import (
     DAISY_CENTER_ORBITS_777,
     DAISY_CENTERS_ILLEGAL_MOVES_777,
     DAISY_OBLIQUE_ORBITS_777,
-    Build777DaisyFBPerfectCenters,
     Build777DaisyFBWithoutInnerTCenters,
     Build777DaisyFBWithoutInnerXCenters,
     Build777DaisyFBWithoutLeftObliqueCenters,
     Build777DaisyFBWithoutMiddleObliqueCenters,
     Build777DaisyFBWithoutRightObliqueCenters,
-    Build777DaisyLRPerfectCenters,
     Build777DaisyLRWithoutInnerTCenters,
     Build777DaisyLRWithoutInnerXCenters,
     Build777DaisyLRWithoutLeftObliqueCenters,
     Build777DaisyLRWithoutMiddleObliqueCenters,
     Build777DaisyLRWithoutRightObliqueCenters,
-    Build777DaisyUDPerfectCenters,
+    Build777DaisyPerfectCenters,
     Build777DaisyUDWithoutInnerTCenters,
     Build777DaisyUDWithoutInnerXCenters,
     Build777DaisyUDWithoutLeftObliqueCenters,
     Build777DaisyUDWithoutMiddleObliqueCenters,
     Build777DaisyUDWithoutRightObliqueCenters,
-    Build777SolveFBPerfectCenters,
-    Build777SolveLRPerfectCenters,
-    Build777SolveUDPerfectCenters,
+    Build777SolvePerfectCenters,
+    _Build777DaisyCenters,
 )
 
 ORBIT_NAMES = ("left-oblique", "middle-oblique", "right-oblique", "inner-t", "inner-x")
+AXES = ("UD", "LR", "FB")
 
 LEAVE_ONE_OUT_BUILDERS = (
     ("UD", "left-oblique", Build777DaisyUDWithoutLeftObliqueCenters),
@@ -53,17 +51,16 @@ LEAVE_ONE_OUT_BUILDERS = (
     ("FB", "inner-x", Build777DaisyFBWithoutInnerXCenters),
 )
 
-PERFECT_BUILDERS = (
-    ("UD", Build777DaisyUDPerfectCenters),
-    ("LR", Build777DaisyLRPerfectCenters),
-    ("FB", Build777DaisyFBPerfectCenters),
-)
 
-SOLVE_BUILDERS = (
-    ("UD", Build777SolveUDPerfectCenters),
-    ("LR", Build777SolveLRPerfectCenters),
-    ("FB", Build777SolveFBPerfectCenters),
-)
+def full_orbit_builder(axis):
+    """
+    The five-orbit builder for one axis.
+
+    Only UD is built and shipped, since the searcher rotates LR and FB onto the
+    UD coordinate, but the goal and orbit geometry of all three axes is still
+    worth asserting.
+    """
+    return type(f"_Full{axis}", (_Build777DaisyCenters,), {"axis": axis, "table_slug": f"{axis}-perfect"})()
 
 
 def test_daisy_defines_exactly_five_disjoint_eight_sticker_orbits_per_axis():
@@ -80,15 +77,15 @@ def test_daisy_defines_exactly_five_disjoint_eight_sticker_orbits_per_axis():
     assert len(set().union(*(set(squares) for _, _, squares in all_groups))) == 120
 
 
-@pytest.mark.parametrize("axis,builder_class", PERFECT_BUILDERS)
-def test_daisy_rank_groups_are_closed_physical_center_orbits(axis, builder_class):
-    builder = builder_class()
+@pytest.mark.parametrize("axis", AXES)
+def test_daisy_rank_groups_are_closed_physical_center_orbits(axis):
+    builder = full_orbit_builder(axis)
 
     assert all(builder._squares_are_closed_orbit(list(squares)) for _, squares in DAISY_CENTER_ORBITS_777[axis])
 
 
 def test_daisy_move_set_preserves_staging():
-    builder = Build777DaisyUDPerfectCenters()
+    builder = Build777DaisyPerfectCenters()
     outer_moves = {f"{face}{suffix}" for face in "ULFRBD" for suffix in ("", "'", "2")}
     wide_half_turns = {f"{width}{face}w2" for width in ("", "3") for face in "ULFRBD"}
 
@@ -113,21 +110,34 @@ def test_leave_one_out_builders_are_dense_70_to_the_four_projections(axis, omitt
     assert builder.filename.endswith(f"lookup-table-7x7x7-daisy-{builder.table_slug}-centers.txt")
 
 
-@pytest.mark.parametrize("axis,builder_class", PERFECT_BUILDERS)
-def test_optional_perfect_builders_are_dense_70_to_the_five(axis, builder_class):
+@pytest.mark.parametrize(
+    "prefix,builder_class", (("daisy", Build777DaisyPerfectCenters), ("solve", Build777SolvePerfectCenters))
+)
+def test_optional_perfect_builders_are_dense_70_to_the_five(prefix, builder_class):
     builder = builder_class()
 
     assert builder.rank_universes == (70, 70, 70, 70, 70)
     assert builder.rank_universe == 70**5 == 1_680_700_000
-    assert builder.selected_orbits == DAISY_CENTER_ORBITS_777[axis]
-    assert builder.table_slug == f"{axis}-perfect"
+    assert builder.selected_orbits == DAISY_CENTER_ORBITS_777["UD"]
+    assert builder.table_slug == "perfect"
+    assert builder.filename.endswith(f"lookup-table-7x7x7-{prefix}-perfect-centers.txt")
+
+
+@pytest.mark.parametrize("builder_class", (Build777DaisyPerfectCenters, Build777SolvePerfectCenters))
+def test_perfect_builders_publish_one_compacted_table_for_all_three_axes(builder_class):
+    builder = builder_class()
+
+    # 70^5 raw ranks fall into 105,356,972 orbits of the 16 axis-preserving
+    # symmetries, so the published table is a 27th the size of the BFS scratch.
+    assert builder.compact_center_symmetry_777
+    assert "UD" not in builder.ranked_cost_filename
+    assert builder.ranked_symmetry_index_filename == f"{builder.ranked_cost_filename}.symmetry-index.bin"
 
 
 @pytest.mark.parametrize("axis,omitted_orbit,builder_class", LEAVE_ONE_OUT_BUILDERS)
 def test_leave_one_out_goal_is_exact_projection_of_full_goal(axis, omitted_orbit, builder_class):
     projected = builder_class()
-    perfect_class = dict(PERFECT_BUILDERS)[axis]
-    perfect = perfect_class()
+    perfect = full_orbit_builder(axis)
     perfect_offsets = {name: index * 8 for index, (name, _) in enumerate(DAISY_CENTER_ORBITS_777[axis])}
 
     for orientation in range(2):
@@ -140,9 +150,9 @@ def test_leave_one_out_goal_is_exact_projection_of_full_goal(axis, omitted_orbit
         assert projected._state_for_workq(projected.starting_cubes[orientation]) == expected
 
 
-@pytest.mark.parametrize("axis,builder_class", PERFECT_BUILDERS)
-def test_daisy_goals_have_two_coordinated_orientations(axis, builder_class):
-    builder = builder_class()
+@pytest.mark.parametrize("axis", AXES)
+def test_daisy_goals_have_two_coordinated_orientations(axis):
+    builder = full_orbit_builder(axis)
     primary, opposite = DAISY_AXIS_COLORS_777[axis]
 
     assert builder.goal_orientations == ("native", "obliques-swapped")
@@ -161,20 +171,17 @@ def test_daisy_goals_have_two_coordinated_orientations(axis, builder_class):
         assert builder._ranked_state_unrank(rank) == builder._state_for_workq(cube)
 
 
-@pytest.mark.parametrize("axis,builder_class", SOLVE_BUILDERS)
-def test_solve_builders_match_the_perfect_daisy_shape_with_only_the_native_goal(axis, builder_class):
-    builder = builder_class()
-    daisy = dict(PERFECT_BUILDERS)[axis]()
+def test_solve_builder_matches_the_perfect_daisy_shape_with_only_the_native_goal():
+    axis = "UD"
+    builder = Build777SolvePerfectCenters()
+    daisy = Build777DaisyPerfectCenters()
     primary, opposite = DAISY_AXIS_COLORS_777[axis]
 
     assert builder.goal_orientations == ("native",)
     assert len(builder.starting_cubes) == 1
-    assert builder.rank_universes == (70, 70, 70, 70, 70)
-    assert builder.rank_universe == 70**5 == 1_680_700_000
     assert builder.selected_orbits == DAISY_CENTER_ORBITS_777[axis]
     assert builder.illegal_moves == DAISY_CENTERS_ILLEGAL_MOVES_777
     assert set(builder.legal_moves) == set(daisy.legal_moves)
-    assert builder.filename.endswith(f"lookup-table-7x7x7-solve-{axis}-perfect-centers.txt")
 
     for orbit_name, squares in DAISY_CENTER_ORBITS_777[axis]:
         assert {builder.starting_cubes[0].state[square] for square in squares[:4]} == {primary}
@@ -190,7 +197,7 @@ def test_solve_builders_match_the_perfect_daisy_shape_with_only_the_native_goal(
     "builder_class,expected_universe,expected_group_count",
     (
         (Build777DaisyUDWithoutInnerXCenters, 70**4, 4),
-        (Build777DaisyUDPerfectCenters, 70**5, 5),
+        (Build777DaisyPerfectCenters, 70**5, 5),
     ),
 )
 def test_daisy_ranked_metadata(builder_class, expected_universe, expected_group_count, tmp_path):
