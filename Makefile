@@ -56,7 +56,7 @@ wheel:
 	./utils/builderui.py Build333MicroPythonPhase4Edges
 	./utils/builderui.py Build333MicroPythonPhase4Corners
 
-444-phase12-ranked:
+444-phase12-ranked: clean
 	./utils/builderui.py Build444AllCentersStageSymmetryRanked --cores 22
 	./utils/builderui.py Build444LRCentersStageRanked --cores 22
 	./utils/builderui.py Build444HighLowEdgesEdgesAllMoves --cores 22
@@ -152,8 +152,11 @@ wheel:
 
 555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6
 
-666-phase1: clean
-	./utils/builderui.py Build666InnerXCentersStageOnePhase --cores 22
+666-phase1:
+	./utils/builderui.py Build666Phase1LRInnerXCentersStageBinary --cores 10
+
+666-phase2:
+	./utils/builderui.py Build666Phase2UDInnerXCentersStageBinary --cores 10
 
 666-phase3-preserve-inner-x: clean
 	./utils/builderui.py Build666Phase3UDLeftRightObliqueCentersStage
@@ -165,7 +168,7 @@ wheel:
 	./utils/builderui.py Build666DaisyAllInnerXPlusLRObliquesCenters --cores 22
 	./utils/builderui.py Build666DaisyAllInnerXPlusFBObliquesCenters --cores 22
 
-666: 666-phase1 666-phase3-preserve-inner-x 666-phase5
+666: 666-phase1 666-phase2 666-phase3-preserve-inner-x 666-phase5
 
 777-phase2: clean
 	./utils/builderui.py Build777Phase2UDInnerCentersStage
@@ -178,7 +181,7 @@ wheel:
 	./utils/builderui.py Build777Phase56UDRightObliqueOuterXCentersStage --cores 22
 	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXCentersStage --cores 22
 
-777-daisy-ranked:
+777-daisy-ranked: clean
 	./utils/builderui.py Build777DaisyUDWithoutLeftObliqueCenters --cores 22
 	./utils/builderui.py Build777DaisyUDWithoutMiddleObliqueCenters --cores 22
 	./utils/builderui.py Build777DaisyUDWithoutRightObliqueCenters --cores 22

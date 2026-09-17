@@ -23,7 +23,7 @@ class RankedBuilderTests(unittest.TestCase):
     """The ranked C search agrees with orbit-min Python expansion at shallow depth."""
 
     def setUp(self):
-        self.builder = builder_class("Build666InnerXCentersStageOnePhase")()
+        self.builder = builder_class("Build444AllCentersStageSymmetryRanked")()
         self.cost_path = output_path(self.builder.ranked_cost_filename)
         self.metadata_path = output_path(self.builder.ranked_metadata_filename)
         self.index_path = output_path(self.builder.ranked_symmetry_index_filename)
@@ -57,13 +57,13 @@ class RankedBuilderTests(unittest.TestCase):
             frontier = following
         return depths
 
-    def test_inner_x_builder_uses_center_symmetry(self):
+    def test_all_center_builder_uses_center_symmetry(self):
         self.assertEqual(self.builder.ranked_cost_type, "center-symmetry-444")
         self.assertEqual(self.builder.rank_universe, 9_465_511_770)
         self.assertEqual(self.builder.rank_symbols, "FLU")
         self.assertEqual(self.builder.rank_counts, (8, 8, 8))
 
-    def test_inner_x_centers_depth_two_matches_direct_expansion(self):
+    def test_all_centers_depth_two_matches_direct_expansion(self):
         expected = self.expected_states(2)
         orbit_depth = {}
         for state, depth in expected.items():
@@ -72,7 +72,7 @@ class RankedBuilderTests(unittest.TestCase):
             if previous is None or depth < previous:
                 orbit_depth[rank] = depth
 
-        status, output, timed_out = build_table("Build666InnerXCentersStageOnePhase", depth=2, cores=4, timeout=60)
+        status, output, timed_out = build_table("Build444AllCentersStageSymmetryRanked", depth=2, cores=4, timeout=60)
         self.assertFalse(timed_out, output)
         self.assertEqual(status, 0, output)
         self.assertEqual(os.path.getsize(self.cost_path), 9_465_511_770)

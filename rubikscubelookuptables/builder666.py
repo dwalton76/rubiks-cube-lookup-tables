@@ -3,7 +3,7 @@ import logging
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
-from rubikscubennnsolver.RubiksCube666 import inner_x_centers_666
+from rubikscubennnsolver.RubiksCube666 import RubiksCube666, inner_x_centers_666, solved_666
 
 log = logging.getLogger(__name__)
 
@@ -43,66 +43,50 @@ PHASE5_ILLEGAL_MOVES = (
 # fmt: on
 
 
-# ==================================================
-# phase 1
-# stage all inner x-centers and pair the LR obliques
-# ==================================================
-class Build666InnerXCentersStageOnePhase(BFS):
-    """
-    Stage all 24 inner x-centers in one phase (8 UD, 8 LR, 8 FB).
+def _ranked_inner_x_axis_starting_state(axis):
+    cube = RubiksCube666(solved_666, "URFDLB")
+    state = ["."] * len(cube.state)
+    for square in inner_x_centers_666:
+        state[square] = axis[0] if cube.state[square] in axis else "x"
+    return (("".join(state[1:]), "ULFRBD"),)
 
-    24! / (8!^3) = 9,465,511,770 raw colorings, stored as the 197,221,662
-    orbits under the 48 cube symmetries (same geometry as 4x4 centers).
-    The live BFS still needs the 9.47 GiB canonical-rank mmap; save() then
-    compact-center-symmetry-cost writes ~188 MiB plus the symmetry index.
-    """
 
+# ==================================================
+# phases 1 and 2
+# phase 1 stages LR inner x; phase 2 stages UD inner x while pairing LR obliques
+# ==================================================
+class Build666Phase2UDInnerXCentersStageBinary(BFS):
     def __init__(self):
-        # fmt: off
         BFS.__init__(
             self,
-            "6x6x6-inner-x-centers-stage-one-phase",
+            "6x6x6-phase2-UD-inner-x-centers-stage-binary",
             (),
             "6x6x6",
-            "lookup-table-6x6x6-step05-inner-x-centers-stage-one-phase.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-              . . . . . .
-              . . . . . .
-              . . U U . .
-              . . U U . .
-              . . . . . .
-              . . . . . .
-
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . L L . .  . . F F . .  . . L L . .  . . F F . .
- . . L L . .  . . F F . .  . . L L . .  . . F F . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
- . . . . . .  . . . . . .  . . . . . .  . . . . . .
-
-              . . . . . .
-              . . . . . .
-              . . U U . .
-              . . U U . .
-              . . . . . .
-              . . . . . .""",
-                    "ascii",
-                ),
-            ),
+            "lookup-table-6x6x6-step11-UD-inner-x-centers-stage-binary.txt",
+            False,
+            _ranked_inner_x_axis_starting_state("UD"),
             use_c=True,
             use_ranked_cost=True,
-            ranked_cost_type="center-symmetry-444",
-            ranked_cost_square_groups=(inner_x_centers_666,),
         )
-        # fmt: on
+
+
+class Build666Phase1LRInnerXCentersStageBinary(BFS):
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "6x6x6-phase1-LR-inner-x-centers-stage-binary",
+            (),
+            "6x6x6",
+            "lookup-table-6x6x6-step12-LR-inner-x-centers-stage-binary.txt",
+            False,
+            _ranked_inner_x_axis_starting_state("LR"),
+            use_c=True,
+            use_ranked_cost=True,
+        )
 
 
 # ==================================================
-# phase 3
+# phase 4
 # stage UD left/right obliques and outer x-centers
 # ==================================================
 # fmt: off
