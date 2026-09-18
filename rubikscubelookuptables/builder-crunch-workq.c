@@ -72,8 +72,10 @@ typedef struct {
 
 typedef enum {
     RANK_MULTISET,
+    RANK_PAIRED_MULTISET,
     RANK_EDGE_PAIRING_EVEN,
     RANK_WING_BINARY,
+    RANK_ORIENTATION_BITS,
     RANK_CENTER_SYMMETRY_444,
 } rank_type;
 
@@ -883,7 +885,7 @@ wing_binary_unrank_cube(
     unsigned int group_count,
     uint64_t universe)
 {
-    unsigned char compact[MAX_RANK_SYMBOLS];
+    unsigned char compact[MAX_COMPACT_SQUARES];
     memset(cube, '.', full_size);
     cube[0] = 'x';
     grouped_multiset_unrank(rank, compact, groups, group_count, universe);
@@ -904,11 +906,79 @@ wing_binary_rank_cube(
     const rank_group_type *groups,
     unsigned int group_count)
 {
-    unsigned char compact[MAX_RANK_SYMBOLS];
-    for (unsigned int i = 0; i < groups[0].length; i++) {
+    unsigned char compact[MAX_COMPACT_SQUARES];
+    unsigned int square_count = 0;
+    for (unsigned int group = 0; group < group_count; group++) {
+        square_count += groups[group].length;
+    }
+    for (unsigned int i = 0; i < square_count; i++) {
         compact[i] = cube[squares[i]];
     }
     return grouped_multiset_rank(compact, symbol_of, groups, group_count);
+}
+
+
+static void
+paired_multiset_unrank_cube(
+    uint64_t rank,
+    unsigned char *cube,
+    unsigned int full_size,
+    const unsigned int *squares,
+    const unsigned int *partners,
+    const rank_group_type *groups,
+    unsigned int group_count,
+    uint64_t universe)
+{
+    unsigned char compact[MAX_COMPACT_SQUARES];
+    unsigned int square_count = 0;
+    memset(cube, '.', full_size);
+    cube[0] = 'x';
+    grouped_multiset_unrank(rank, compact, groups, group_count, universe);
+    for (unsigned int group = 0; group < group_count; group++) {
+        square_count += groups[group].length;
+    }
+    for (unsigned int i = 0; i < square_count; i++) {
+        cube[squares[i]] = compact[i];
+        cube[partners[i]] = compact[i];
+    }
+}
+
+
+static void
+orientation_bits_unrank_cube(
+    uint64_t rank,
+    unsigned char *cube,
+    unsigned int full_size,
+    const unsigned int *squares,
+    const unsigned int *partners,
+    unsigned int square_count,
+    unsigned int partner_flip_mask)
+{
+    memset(cube, '.', full_size);
+    cube[0] = 'x';
+    for (unsigned int i = 0; i < square_count; i++) {
+        unsigned char value = (rank & (1ULL << i)) ? 'D' : 'U';
+        cube[squares[i]] = value;
+        cube[partners[i]] = (partner_flip_mask & (1U << i))
+            ? (value == 'U' ? 'D' : 'U')
+            : value;
+    }
+}
+
+
+static uint64_t
+orientation_bits_rank_cube(
+    const unsigned char *cube,
+    const unsigned int *squares,
+    unsigned int square_count)
+{
+    uint64_t rank = 0;
+    for (unsigned int i = 0; i < square_count; i++) {
+        if (cube[squares[i]] == 'D') {
+            rank |= 1ULL << i;
+        }
+    }
+    return rank;
 }
 
 
@@ -986,6 +1056,24 @@ process_ranked_workq(
                 exit(1);
             }
         }
+    } else if (configured_rank_type == RANK_ORIENTATION_BITS) {
+        if (!square_count || square_count > 32 || pairing_partner_count != square_count ||
+                wing_flip_mask_count != moves_count) {
+            fprintf(stderr, "ERROR: orientation-bits rank requires partners and one flip mask per move\n");
+            exit(1);
+        }
+        if (universe != (1ULL << square_count)) {
+            fprintf(stderr, "ERROR: orientation-bits universe must be 2^square_count\n");
+            exit(1);
+        }
+        configured_universe = universe;
+        state_length = full_size;
+        for (unsigned int i = 0; i < square_count; i++) {
+            if (squares[i] >= full_size || pairing_partners[i] >= full_size) {
+                fprintf(stderr, "ERROR: orientation-bits square is outside the cube\n");
+                exit(1);
+            }
+        }
     } else {
         for (unsigned int i = 0; i < group_count; i++) {
             state_length += groups[i].length;
@@ -1007,15 +1095,17 @@ process_ranked_workq(
             fprintf(stderr, "ERROR: ranked mode requires --squares matching --rank-counts\n");
             exit(1);
         }
-        if (configured_rank_type == RANK_WING_BINARY) {
-            if (group_count != 1 || pairing_partner_count != square_count ||
-                    wing_flip_mask_count != moves_count) {
-                fprintf(stderr, "ERROR: wing-binary rank requires partners and one flip mask per move\n");
+        if (configured_rank_type == RANK_WING_BINARY ||
+                configured_rank_type == RANK_PAIRED_MULTISET) {
+            if (pairing_partner_count != square_count ||
+                    (configured_rank_type == RANK_WING_BINARY &&
+                     (group_count != 1 || wing_flip_mask_count != moves_count))) {
+                fprintf(stderr, "ERROR: paired rank requires partners (and wing-binary needs one group and flip mask per move)\n");
                 exit(1);
             }
             for (unsigned int i = 0; i < square_count; i++) {
                 if (squares[i] >= full_size || pairing_partners[i] >= full_size) {
-                    fprintf(stderr, "ERROR: wing-binary square is outside the cube\n");
+                    fprintf(stderr, "ERROR: paired square is outside the cube\n");
                     exit(1);
                 }
             }
@@ -1115,6 +1205,14 @@ process_ranked_workq(
                 parent_rank, state, full_size, squares, pairing_partners,
                 wing_partner_flip_mask,
                 groups, group_count, universe);
+        } else if (configured_rank_type == RANK_PAIRED_MULTISET) {
+            paired_multiset_unrank_cube(
+                parent_rank, state, full_size, squares, pairing_partners,
+                groups, group_count, universe);
+        } else if (configured_rank_type == RANK_ORIENTATION_BITS) {
+            orientation_bits_unrank_cube(
+                parent_rank, state, full_size, squares, pairing_partners,
+                square_count, wing_partner_flip_mask);
         } else {
             grouped_multiset_unrank(parent_rank, state, groups, group_count, universe);
         }
@@ -1129,7 +1227,11 @@ process_ranked_workq(
             if (configured_rank_type == RANK_EDGE_PAIRING_EVEN) {
                 rotate_full_cube((char *) child, (char *) state, full_size, cube_size, move);
                 child_rank = edge_pairing_rank_cube(child, squares, pair_count);
-            } else if (configured_rank_type == RANK_WING_BINARY) {
+            } else if (configured_rank_type == RANK_PAIRED_MULTISET) {
+                rotate_full_cube((char *) child, (char *) state, full_size, cube_size, move);
+                child_rank = wing_binary_rank_cube(child, squares, symbol_of, groups, group_count);
+            } else if (configured_rank_type == RANK_WING_BINARY ||
+                    configured_rank_type == RANK_ORIENTATION_BITS) {
                 rotate_full_cube((char *) child, (char *) state, full_size, cube_size, move);
                 for (unsigned int i = 0; i < square_count; i++) {
                     if (wing_flip_masks[move_index] & (1U << i)) {
@@ -1138,7 +1240,9 @@ process_ranked_workq(
                             child[pairing_partners[i]] == 'U' ? 'D' : 'U';
                     }
                 }
-                child_rank = wing_binary_rank_cube(child, squares, symbol_of, groups, group_count);
+                child_rank = configured_rank_type == RANK_WING_BINARY
+                    ? wing_binary_rank_cube(child, squares, symbol_of, groups, group_count)
+                    : orientation_bits_rank_cube(child, squares, square_count);
             } else {
                 for (unsigned int i = 0; i < square_count; i++) {
                     child[perm[(move_index * square_count) + i]] = state[i];
@@ -1616,10 +1720,14 @@ main (int argc, char *argv[])
     if (ranked_cost[0]) {
         if (!rank_type_buffer[0] || strmatch(rank_type_buffer, "multiset")) {
             configured_rank_type = RANK_MULTISET;
+        } else if (strmatch(rank_type_buffer, "paired-multiset")) {
+            configured_rank_type = RANK_PAIRED_MULTISET;
         } else if (strmatch(rank_type_buffer, "edge-pairing-even")) {
             configured_rank_type = RANK_EDGE_PAIRING_EVEN;
         } else if (strmatch(rank_type_buffer, "wing-binary")) {
             configured_rank_type = RANK_WING_BINARY;
+        } else if (strmatch(rank_type_buffer, "orientation-bits")) {
+            configured_rank_type = RANK_ORIENTATION_BITS;
         } else if (strmatch(rank_type_buffer, "center-symmetry-444")) {
             configured_rank_type = RANK_CENTER_SYMMETRY_444;
         } else {
@@ -1630,6 +1738,11 @@ main (int argc, char *argv[])
         if (configured_rank_type == RANK_EDGE_PAIRING_EVEN) {
             if (rank_groups_buffer[0] || rank_symbols[0] || rank_counts_buffer[0]) {
                 fprintf(stderr, "ERROR: edge rank cannot use multiset rank options\n");
+                exit(1);
+            }
+        } else if (configured_rank_type == RANK_ORIENTATION_BITS) {
+            if (rank_groups_buffer[0] || rank_symbols[0] || rank_counts_buffer[0]) {
+                fprintf(stderr, "ERROR: orientation-bits rank cannot use multiset rank options\n");
                 exit(1);
             }
         } else if (rank_groups_buffer[0]) {
@@ -1656,7 +1769,8 @@ main (int argc, char *argv[])
             rank_groups[0].universe = rank_universe;
         }
         if (!ranked_input[0] || (!ranked_no_workq && !ranked_output[0]) ||
-                (configured_rank_type != RANK_EDGE_PAIRING_EVEN && !rank_group_count) || !rank_universe) {
+                (configured_rank_type != RANK_EDGE_PAIRING_EVEN &&
+                 configured_rank_type != RANK_ORIENTATION_BITS && !rank_group_count) || !rank_universe) {
             fprintf(stderr, "ERROR: ranked mode requires input/output, symbols, counts and universe\n");
             exit(1);
         }

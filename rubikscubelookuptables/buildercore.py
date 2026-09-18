@@ -178,6 +178,28 @@ def edge_pairing_rank(state: str) -> int:
     return even_permutation_rank(permutation)
 
 
+def orientation_bits_rank(state: str) -> int:
+    """Rank a U/D orientation string as a bit mask of D stickers."""
+    if not state or len(state) > 32:
+        raise ValueError("orientation-bits states must contain between 1 and 32 stickers")
+    rank = 0
+    for index, char in enumerate(state):
+        if char == "D":
+            rank |= 1 << index
+        elif char != "U":
+            raise ValueError(f"orientation-bits state contains {char!r}, expected U or D")
+    return rank
+
+
+def orientation_bits_unrank(rank: int, square_count: int) -> str:
+    """Return the U/D string for an orientation-bits rank."""
+    if square_count < 1 or square_count > 32:
+        raise ValueError("orientation-bits ranks support between 1 and 32 stickers")
+    if rank < 0 or rank >= (1 << square_count):
+        raise ValueError("orientation-bits rank is outside the universe")
+    return "".join("D" if rank & (1 << index) else "U" for index in range(square_count))
+
+
 def edge_pairing_unrank(rank: int, pair_count: int) -> str:
     """Return a canonical two-group state for an even matching rank."""
     if pair_count > 32:
@@ -687,8 +709,9 @@ class BFS(object):
                 "5x5x5-EO-inner-orbit",
                 "5x5x5-EO-both-orbits",
             )
-            for marker in python_only_markers:
-                assert marker not in name, f"{name} needs the Python cruncher ({marker})"
+            if not self.use_ranked_cost:
+                for marker in python_only_markers:
+                    assert marker not in name, f"{name} needs the Python cruncher ({marker})"
 
         assert isinstance(self.name, str)
         assert isinstance(self.illegal_moves, tuple)
@@ -701,15 +724,20 @@ class BFS(object):
         assert isinstance(self.use_ranked_cost, bool)
         if self.ranked_cost_type not in (
             "multiset",
+            "paired-multiset",
             "edge-pairing-even",
             "wing-binary",
+            "orientation-bits",
             "center-symmetry-444",
         ):
             raise ValueError(f"{self}: unsupported ranked cost type {self.ranked_cost_type!r}")
         if self.ranked_cost_type != "multiset" and not self.use_ranked_cost:
             raise ValueError(f"{self}: ranked_cost_type requires use_ranked_cost=True")
-        if self.ranked_cost_move_flip_masks and self.ranked_cost_type != "wing-binary":
-            raise ValueError(f"{self}: move flip masks are supported only for wing-binary ranking")
+        if self.ranked_cost_move_flip_masks and self.ranked_cost_type not in (
+            "wing-binary",
+            "orientation-bits",
+        ):
+            raise ValueError(f"{self}: move flip masks are supported only for wing-binary or orientation-bits ranking")
         if self.ranked_cost_square_groups and not self.use_ranked_cost:
             raise ValueError(f"{self}: ranked_cost_square_groups requires use_ranked_cost=True")
         assert not (self.use_cost_only and self.use_hash_cost_only), "Both cannot be true"
@@ -917,16 +945,23 @@ class BFS(object):
                 raise ValueError(f"{self}: edge-pairing partner squares contain duplicates")
             return flat_squares
 
-        if getattr(self, "ranked_cost_type", "multiset") == "wing-binary":
-            if len(self.ranked_cost_square_groups) != 1:
-                raise ValueError(f"{self}: wing-binary ranking requires one square group")
-            squares = self.ranked_cost_square_groups[0]
+        if getattr(self, "ranked_cost_type", "multiset") in (
+            "paired-multiset",
+            "wing-binary",
+            "orientation-bits",
+        ):
+            label = self.ranked_cost_type
+            if label != "paired-multiset" and len(self.ranked_cost_square_groups) != 1:
+                raise ValueError(f"{self}: {label} ranking requires one square group")
+            squares = tuple(square for group in self.ranked_cost_square_groups for square in group)
             if len(squares) < 2 or len(set(squares)) != len(squares):
-                raise ValueError(f"{self}: wing-binary squares must be distinct")
+                raise ValueError(f"{self}: {label} squares must be distinct")
+            if label == "orientation-bits" and len(squares) > 32:
+                raise ValueError(f"{self}: orientation-bits ranking supports at most 32 squares")
             if len(self.edge_pairing_partners) != len(squares):
-                raise ValueError(f"{self}: every wing-binary square needs one partner")
+                raise ValueError(f"{self}: every {label} square needs one partner")
             if set(squares) & set(self.edge_pairing_partners):
-                raise ValueError(f"{self}: wing-binary squares and partners overlap")
+                raise ValueError(f"{self}: {label} squares and partners overlap")
             return tuple(squares)
 
         squares = self._interesting_squares()
@@ -1001,6 +1036,20 @@ class BFS(object):
             self.rank_groups = ()
             self.rank_universes = ()
             self.rank_universe = even_permutation_size(pair_count)
+            self._configure_ranked_output()
+            return
+
+        if getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
+            square_count = len(self.compact_squares)
+            for state in states:
+                if len(state) != square_count:
+                    raise ValueError(f"{self}: orientation-bits state length must match the square group")
+                orientation_bits_rank(state)
+            self.rank_groups = ()
+            self.rank_universes = ()
+            self.rank_universe = 1 << square_count
+            self.rank_symbols = "DU"
+            self.rank_counts = (square_count,)
             self._configure_ranked_output()
             return
 
@@ -1093,6 +1142,24 @@ class BFS(object):
                 "completed_depth": max(self.stats),
                 "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
             }
+        elif getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
+            metadata = {
+                "format": "dense-orientation-bits-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": "bit mask of D stickers",
+                "squares": list(self.ranked_cost_square_groups[0]),
+                "partner_squares": list(self.edge_pairing_partners),
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+            if self.ranked_cost_move_flip_masks:
+                metadata["move_flip_masks"] = {
+                    move: mask for move, mask in zip(self.legal_moves, self.ranked_cost_move_flip_masks)
+                }
+                metadata["partner_flip_mask"] = self.ranked_cost_partner_flip_mask
         elif getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
             metadata = {
                 "format": "dense-edge-pairing-cost-v1",
@@ -1113,7 +1180,11 @@ class BFS(object):
                 "format": (
                     "dense-wing-binary-cost-v1"
                     if getattr(self, "ranked_cost_type", "multiset") == "wing-binary"
-                    else "dense-multiset-cost-v1"
+                    else (
+                        "dense-paired-multiset-cost-v1"
+                        if getattr(self, "ranked_cost_type", "multiset") == "paired-multiset"
+                        else "dense-multiset-cost-v1"
+                    )
                 ),
                 "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
                 "record_format": "<QB",
@@ -1137,12 +1208,13 @@ class BFS(object):
             if len(self.rank_groups) == 1:
                 metadata["symbols"] = self.rank_symbols
                 metadata["counts"] = list(self.rank_counts)
-            if getattr(self, "ranked_cost_type", "multiset") == "wing-binary":
+            if getattr(self, "ranked_cost_type", "multiset") in ("paired-multiset", "wing-binary"):
                 metadata["partner_squares"] = list(self.edge_pairing_partners)
-                metadata["move_flip_masks"] = {
-                    move: mask for move, mask in zip(self.legal_moves, self.ranked_cost_move_flip_masks)
-                }
-                metadata["partner_flip_mask"] = self.ranked_cost_partner_flip_mask
+                if self.ranked_cost_type == "wing-binary":
+                    metadata["move_flip_masks"] = {
+                        move: mask for move, mask in zip(self.legal_moves, self.ranked_cost_move_flip_masks)
+                    }
+                    metadata["partner_flip_mask"] = self.ranked_cost_partner_flip_mask
         temporary = f"{self.ranked_metadata_filename}.tmp"
         with open(temporary, "w") as fh:
             json.dump(metadata, fh, indent=2, sort_keys=True)
@@ -1703,6 +1775,8 @@ class BFS(object):
         """Rank a compact state in the configured dense coordinate."""
         if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
             return edge_pairing_rank(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
+            return orientation_bits_rank(state)
         if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
             return center_symmetry_rank_444(state)
 
@@ -1720,6 +1794,8 @@ class BFS(object):
         """Reconstruct the canonical compact state represented by a dense rank."""
         if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
             return edge_pairing_unrank(rank, self.edge_pairing_pair_count)
+        if getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
+            return orientation_bits_unrank(rank, len(self.compact_squares))
 
         component_ranks = mixed_radix_unrank(rank, self.rank_universes)
         state = [""] * len(self.compact_squares)
@@ -1767,8 +1843,10 @@ class BFS(object):
                 ",".join(str(index) for index in self.compact_squares),
             ]
             if getattr(self, "ranked_cost_type", "multiset") in (
+                "paired-multiset",
                 "edge-pairing-even",
                 "wing-binary",
+                "orientation-bits",
             ):
                 cmd.extend(
                     [
@@ -1778,19 +1856,39 @@ class BFS(object):
                         ",".join(str(index) for index in self.edge_pairing_partners),
                     ]
                 )
-                if self.ranked_cost_type == "wing-binary":
+                if self.ranked_cost_type in ("wing-binary", "orientation-bits"):
                     if len(self.ranked_cost_move_flip_masks) != len(self.legal_moves):
-                        raise ValueError(f"{self}: wing-binary ranking needs one flip mask per legal move")
+                        raise ValueError(f"{self}: {self.ranked_cost_type} ranking needs one flip mask per legal move")
                     cmd.extend(
                         [
-                            "--rank-symbols",
-                            self.rank_symbols,
-                            "--rank-counts",
-                            ",".join(str(count) for count in self.rank_counts),
                             "--wing-flip-masks",
                             ",".join(str(mask) for mask in self.ranked_cost_move_flip_masks),
                             "--wing-partner-flip-mask",
                             str(self.ranked_cost_partner_flip_mask),
+                        ]
+                    )
+                    if self.ranked_cost_type == "wing-binary":
+                        cmd.extend(
+                            [
+                                "--rank-symbols",
+                                self.rank_symbols,
+                                "--rank-counts",
+                                ",".join(str(count) for count in self.rank_counts),
+                            ]
+                        )
+                elif self.ranked_cost_type == "paired-multiset":
+                    cmd.extend(
+                        [
+                            "--rank-groups",
+                            ";".join(
+                                "{}:{}:{}:{}".format(
+                                    group["length"],
+                                    group["symbols"],
+                                    ",".join(str(count) for count in group["counts"]),
+                                    group["universe_size"],
+                                )
+                                for group in self.rank_groups
+                            ),
                         ]
                     )
             elif self.ranked_cost_type == "center-symmetry-444":

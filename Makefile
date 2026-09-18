@@ -71,65 +71,27 @@ wheel:
 
 555-phase1: clean
 	./utils/builderui.py Build555LRCenterStageTCenter
-	./utils/build-ida-graph.py Build555LRCenterStageTCenter
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.json
 
 	./utils/builderui.py Build555LRCenterStageXCenter
-	./utils/build-ida-graph.py Build555LRCenterStageXCenter
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.json
 
 555-phase2: clean
 	./utils/builderui.py Build555FBTCenterStage
-	./utils/build-ida-graph.py Build555FBTCenterStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step21-FB-t-centers-stage.json
 
 	./utils/builderui.py Build555FBXCenterStage
-	./utils/build-ida-graph.py Build555FBXCenterStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step22-FB-x-centers-stage.json
 
 555-phase3: clean
 	./utils/builderui.py Build555Phase3LRCenterStage
-	./utils/build-ida-graph.py Build555Phase3LRCenterStage
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step901-LR-center-stage.json
-
-	# The json-to-binary.py steps take ~16G of RAM
 	./utils/builderui.py Build555EdgeOrientOuterOrbit
-	./utils/build-ida-graph.py Build555EdgeOrientOuterOrbit
-	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step902-EO-outer-orbit.json
-
 	./utils/builderui.py Build555EdgeOrientInnerOrbit
-	./utils/build-ida-graph.py Build555EdgeOrientInnerOrbit
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step903-EO-inner-orbit.json
 
 555-phase4: clean
-	./utils/builderui.py Build555Phase4 --depth 3
+	./utils/builderui.py Build555Phase4 --depth 7 --cores 10
 
 555-phase5: clean
-	# This takes a lot of RAM...run on an ec2 instance
-	./utils/builderui.py Build555Phase5Centers
-	./utils/build-ida-graph.py Build555Phase5Centers
-	./utils/json-combine.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step51-phase5-centers.json
-
-	./utils/builderui.py Build555Phase5HighEdgeMidge
-	./utils/build-ida-graph.py Build555Phase5HighEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step53-phase5-high-edge-and-midge.json
-
-	./utils/builderui.py Build555Phase5LowEdgeMidge
-	./utils/build-ida-graph.py Build555Phase5LowEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step54-phase5-low-edge-and-midge.json
-
-	./utils/builderui.py Build555Phase5FBCenters
-	./utils/build-ida-graph.py Build555Phase5FBCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step56-phase5-fb-centers.json
-
-	# Combo tables used only to build perfect-hash files for IDA (~576 million states).
-	./utils/builderui.py Build555Phase5FBCentersHighEdgeMidge
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.txt
-
-	./utils/builderui.py Build555Phase5FBCentersLowEdgeMidge
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step57-phase5-fb-centers-low-edge-and-midge.txt
+	# Combo tables are 576,240,000-byte ranked cost arrays; centers is 24,010,000.
+	./utils/builderui.py Build555Phase5Centers --cores 10
+	./utils/builderui.py Build555Phase5FBCentersHighEdgeMidge --cores 10
+	./utils/builderui.py Build555Phase5FBCentersLowEdgeMidge --cores 10
 
 555-phase6: clean
 	# Combo table used only to build a perfect-hash file for IDA (~813 million states).
