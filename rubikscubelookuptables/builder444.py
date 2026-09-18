@@ -35,8 +35,8 @@ def _edge_pairing_square_groups():
 EDGE_PAIRING_HIGH_SQUARES_444, EDGE_PAIRING_LOW_SQUARES_444, EDGE_PAIRING_PARTNERS_444 = _edge_pairing_square_groups()
 WING_BINARY_SQUARES_444 = tuple(square for _, square, _ in wings_for_edges_recolor_pattern_444)
 WING_BINARY_PARTNERS_444 = tuple(partner for _, _, partner in wings_for_edges_recolor_pattern_444)
-PHASE12_HIGHLOW_TARGET_444 = "UDDUUDDUDUDUUDUDDUUDDUUDDUDUUDUDDUUDDUUDUDDUUDDU"
-PHASE2_CENTER_TARGETS_444 = (
+PHASE1_HIGHLOW_TARGET_444 = "UDDUUDDUDUDUUDUDDUUDDUUDDUDUUDUDDUUDDUUDUDDUUDDU"
+PHASE1_CENTER_TARGETS_444 = (
     "UUUULLLLxxxxRRRRxxxxUUUU",
     "UUUULLRRxxxxLLRRxxxxUUUU",
     "UUUULLRRxxxxRRLLxxxxUUUU",
@@ -70,7 +70,7 @@ def _ranked_all_axis_center_starting_state():
 
 def _ranked_lr_center_starting_states():
     states = []
-    for target in PHASE2_CENTER_TARGETS_444:
+    for target in PHASE1_CENTER_TARGETS_444:
         state = ["."] * 97
         for square, value in zip(centers_444, target):
             state[square] = value if value in ("L", "R") else "x"
@@ -90,7 +90,7 @@ def _highlow_target_starting_state():
     """
     cube = RubiksCube444(solved_444, "URFDLB")
     state = ["."] * len(cube.state)
-    for (square, _), target in zip(cube.reduce333_orient_edges_tuples, PHASE12_HIGHLOW_TARGET_444):
+    for (square, _), target in zip(cube.reduce333_orient_edges_tuples, PHASE1_HIGHLOW_TARGET_444):
         state[square] = target
     return (("".join(state[1:]), "ULFRBD"),)
 
@@ -146,7 +146,7 @@ def _highlow_partner_flip_mask():
 
 
 # fmt: off
-PHASE34_ILLEGAL_MOVES = (
+PHASE2_ILLEGAL_MOVES = (
     "Uw", "Uw'",
     "Lw", "Lw'",
     "Fw", "Fw'",
@@ -202,7 +202,7 @@ class Build444LRCentersStageRanked(BFS):
 # stage the remaining centers and EO the wings
 # ==================================================
 class Build444HighLowEdgesEdgesAllMoves(BFS):
-    """High/low edges with the full 4x4x4 move set for combined phase 1+2."""
+    """High/low edges with the full 4x4x4 move set for phase 1."""
 
     def __init__(self):
         BFS.__init__(
@@ -223,11 +223,11 @@ class Build444HighLowEdgesEdgesAllMoves(BFS):
         )
 
 
-# phase 3+4
+# phase 2
 # all centers (70^3 = 343,000 ranked; 58,800 reachable); all 12 edges paired
 # ==================================================
 
-PHASE34_CENTER_RANK_GROUPS_444 = (
+PHASE2_CENTER_RANK_GROUPS_444 = (
     centers_444[0:4] + centers_444[20:24],  # UD
     centers_444[4:8] + centers_444[12:16],  # LR
     centers_444[8:12] + centers_444[16:20],  # FB
@@ -239,7 +239,7 @@ class Build444Reduce333Centers(BFS):
     lookup-table-4x4x4-step31-all-centers.cost-only.bin
     ==================================================
     Dense mixed-radix rank of three C(8,4)=70 axis groups (UD, LR, FB).
-    343,000 ranks; 58,800 reachable under the phase-3 move set.
+    343,000 ranks; 58,800 reachable under the phase-2 move set.
 
     0 steps has      1 entries ( 0 percent, 0.00x previous step)
     1 steps has      6 entries ( 0 percent, 6.00x previous step)
@@ -260,7 +260,7 @@ class Build444Reduce333Centers(BFS):
         BFS.__init__(
             self,
             "444-all-centers",
-            PHASE34_ILLEGAL_MOVES,
+            PHASE2_ILLEGAL_MOVES,
             "4x4x4",
             "lookup-table-4x4x4-step31-all-centers.txt",
             False,  # store_as_hex
@@ -286,13 +286,13 @@ class Build444Reduce333Centers(BFS):
             ),
             use_c=True,
             use_ranked_cost=True,
-            ranked_cost_square_groups=PHASE34_CENTER_RANK_GROUPS_444,
+            ranked_cost_square_groups=PHASE2_CENTER_RANK_GROUPS_444,
         )
 
 
 class Build444PairAllEdges(BFS):
     """
-    Pair all 12 edges under the phase-3 move set.
+    Pair all 12 edges under the phase-2 move set.
 
     The coordinate is the even matching between 12 high-wing slots and 12
     low-wing slots. Named edge identities are quotiented out, giving 12! / 2
@@ -303,7 +303,7 @@ class Build444PairAllEdges(BFS):
         BFS.__init__(
             self,
             "444-pair-all-edges",
-            PHASE34_ILLEGAL_MOVES,
+            PHASE2_ILLEGAL_MOVES,
             "4x4x4",
             "lookup-table-4x4x4-step33-all-edges-paired.txt",
             False,  # store_as_hex

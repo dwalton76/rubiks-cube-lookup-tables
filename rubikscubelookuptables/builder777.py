@@ -9,7 +9,7 @@ log = logging.getLogger(__name__)
 
 # fmt: off
 PHASE2_ILLEGAL_MOVES = (
-    # preserve the staged L/R inner centers
+    # preserve the staged LR inner centers
     "3Uw", "3Uw'",
     "3Dw", "3Dw'",
     "3Fw", "3Fw'",
@@ -135,7 +135,7 @@ class Build777Phase2UDInnerCentersStage(BFS):
 # stage UD outer x-centers and pair UD obliques
 # ==================================================
 def _ranked_ud_pair_starting_state_777(first_group, second_group):
-    """Return a solved U/D-vs-other state for two 16-sticker coordinates."""
+    """Return a solved UD-vs-other state for two 16-sticker coordinates."""
     state = ["."] * (6 * 7 * 7)
 
     for square in first_group + second_group:

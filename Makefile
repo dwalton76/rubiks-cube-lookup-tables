@@ -56,7 +56,7 @@ wheel:
 	./utils/builderui.py Build333MicroPythonPhase4Edges
 	./utils/builderui.py Build333MicroPythonPhase4Corners
 
-444-phase12-ranked: clean
+444-phase1-ranked: clean
 	./utils/builderui.py Build444AllCentersStageSymmetryRanked --cores 22
 	./utils/builderui.py Build444LRCentersStageRanked --cores 22
 	./utils/builderui.py Build444HighLowEdgesEdgesAllMoves --cores 22
@@ -67,7 +67,7 @@ wheel:
 444-pair-all-edges: clean
 	./utils/builderui.py Build444PairAllEdges
 
-444: 444-phase12-ranked 444-centers 444-pair-all-edges
+444: 444-phase1-ranked 444-centers 444-pair-all-edges
 
 555-phase1: clean
 	./utils/builderui.py Build555LRCenterStageTCenter

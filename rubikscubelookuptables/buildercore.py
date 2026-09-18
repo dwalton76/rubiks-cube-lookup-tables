@@ -676,7 +676,7 @@ class BFS(object):
 
         # builder-crunch-workq.c only applies legal turns to a full cube state.
         # The Python cruncher also recolors edges-pattern keys, and it flips a
-        # handful of stickers after L/R (or F/B) for a few 3x3x3/5x5x5 tables.
+        # handful of stickers after LR (or FB) for a few 3x3x3/5x5x5 tables.
         if self.use_c:
             assert not self.use_edges_pattern, f"{name} cannot use the C cruncher with use_edges_pattern"
             python_only_markers = (
