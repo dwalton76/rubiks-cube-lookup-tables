@@ -61,15 +61,15 @@ wheel:
 	./utils/builderui.py Build444LRCentersStageRanked --cores 22
 	./utils/builderui.py Build444HighLowEdgesEdgesAllMoves --cores 22
 
-444-lfrb-centers: clean
-	./utils/builderui.py Build444Reduce333LFRBCenters
-	./utils/build-ida-graph.py Build444Reduce333LFRBCenters
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-centers.json
+444-centers: clean
+	./utils/builderui.py Build444Reduce333Centers
+	./utils/build-ida-graph.py Build444Reduce333Centers
+	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-all-centers.json
 
 444-pair-all-edges: clean
 	./utils/builderui.py Build444PairAllEdges
 
-444: 444-phase12-ranked 444-lfrb-centers 444-pair-all-edges
+444: 444-phase12-ranked 444-centers 444-pair-all-edges
 
 555-phase1: clean
 	./utils/builderui.py Build555LRCenterStageTCenter

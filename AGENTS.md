@@ -81,9 +81,9 @@ Typical **ranked** invocation (only when asked):
 Typical **classic graph** chain (only when asked):
 
 ```bash
-./utils/builderui.py Build444Reduce333LFRBCenters
-./utils/build-ida-graph.py Build444Reduce333LFRBCenters
-./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-centers.json
+./utils/builderui.py Build444Reduce333Centers
+./utils/build-ida-graph.py Build444Reduce333Centers
+./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-all-centers.json
 ```
 
 Copy or upload the solver-facing artifact (`.bin`, `.cost-only.bin`, perfect-hash) so `download_file_if_needed()` in the solver can see it. The solver wget path is the **basename** + `.gz` on S3.
@@ -93,7 +93,7 @@ Copy or upload the solver-facing artifact (`.bin`, `.cost-only.bin`, perfect-has
 | Make target | What it builds | Solver consumer |
 | --- | --- | --- |
 | `333` | MicroPython 3x3 phases | 3x3 / EV3 path |
-| `444-phase12-ranked`, `444-lfrb-centers`, `444-pair-all-edges` | 4x4 ranked phase 1+2, LFRB-center graph, all-edge pairing | `ida_search_444_phase1_and_2`, `ida_search_444_phase3_and_4` |
+| `444-phase12-ranked`, `444-centers`, `444-pair-all-edges` | 4x4 ranked phase 1+2, all-center graph, all-edge pairing | `ida_search_444_phase1_and_2`, `ida_search_444_phase3_and_4` |
 | `555-phase1` … `555-phase6` | 5x5 prune + perfect hashes | graph IDA; phase5/6 combo hashes |
 | `666-phase1` | Stage LR inner x-centers | `ida_search_666_centers_stage` |
 | `666-phase2` | Stage UD inner x-centers while pairing LR obliques | `ida_search_666_centers_stage` |

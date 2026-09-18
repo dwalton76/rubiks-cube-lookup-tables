@@ -157,22 +157,6 @@ PHASE34_ILLEGAL_MOVES = (
     "R", "R'",
 )
 
-PHASE34_STARTING_STATES_ILLEGAL_MOVES = (
-    "Uw", "Uw'", "Uw2",
-    "Dw", "Dw'", "Dw2",
-    "Fw", "Fw'",
-    "Bw", "Bw'",
-    "Lw", "Lw'",
-    "Rw", "Rw'",
-    "L", "L'",
-    "R", "R'",
-    "U", "U'",
-    "D", "D'",
-    "F", "F'",
-    "B", "B'",
-)
-
-
 # fmt: on
 
 
@@ -240,28 +224,43 @@ class Build444HighLowEdgesEdgesAllMoves(BFS):
 
 
 # phase 3+4
-# LFRB centers (840 states); all 12 edges paired
+# all centers (58,800 states); all 12 edges paired
 # ==================================================
 
 
-# We want the LFRB centers to be vertical bars, there should be 36 states
-class StartingStates444Reduce333LFRBCenters(BFS):
+class Build444Reduce333Centers(BFS):
+    """
+    lookup-table-4x4x4-step31-all-centers.txt
+    =========================================
+    0 steps has      1 entries ( 0 percent, 0.00x previous step)
+    1 steps has      6 entries ( 0 percent, 6.00x previous step)
+    2 steps has     83 entries ( 0 percent, 13.83x previous step)
+    3 steps has    724 entries ( 1 percent, 8.72x previous step)
+    4 steps has  3,851 entries ( 6 percent, 5.32x previous step)
+    5 steps has 10,426 entries (17 percent, 2.71x previous step)
+    6 steps has 16,693 entries (28 percent, 1.60x previous step)
+    7 steps has 16,616 entries (28 percent, 1.00x previous step)
+    8 steps has  8,928 entries (15 percent, 0.54x previous step)
+    9 steps has  1,472 entries ( 2 percent, 0.16x previous step)
+
+    Total: 58,800 entries
+    Average: 6.31 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
-            "444-lfrb-centers",
-            PHASE34_STARTING_STATES_ILLEGAL_MOVES,
-            # fmt: on
+            "444-all-centers",
+            PHASE34_ILLEGAL_MOVES,
             "4x4x4",
-            "starting-states-lookup-table-4x4x4-step31-centers.txt",
+            "lookup-table-4x4x4-step31-all-centers.txt",
             False,  # store_as_hex
-            # starting cubes
             (
                 (
                     """
           . . . .
-          . . . .
-          . . . .
+          . U U .
+          . U U .
           . . . .
 
  . . . .  . . . .  . . . .  . . . .
@@ -270,80 +269,12 @@ class StartingStates444Reduce333LFRBCenters(BFS):
  . . . .  . . . .  . . . .  . . . .
 
           . . . .
-          . . . .
-          . . . .
+          . D D .
+          . D D .
           . . . .""",
                     "ascii",
                 ),
             ),
-            use_c=True,
-        )
-
-
-class Build444Reduce333LFRBCenters(BFS):
-    """
-    lookup-table-4x4x4-step31-centers.txt
-    =====================================
-    0 steps has 36 entries (4 percent, 0.00x previous step)
-    1 steps has 80 entries (9 percent, 2.22x previous step)
-    2 steps has 212 entries (25 percent, 2.65x previous step)
-    3 steps has 288 entries (34 percent, 1.36x previous step)
-    4 steps has 192 entries (22 percent, 0.67x previous step)
-    5 steps has 32 entries (3 percent, 0.17x previous step)
-
-    Total: 840 entries
-    Average: 2.73 moves
-    """
-
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "444-lfrb-centers",
-            PHASE34_ILLEGAL_MOVES,
-            "4x4x4",
-            "lookup-table-4x4x4-step31-centers.txt",
-            False,  # store_as_hex
-            # starting cubes
-            # fmt: off
-            (
-                ('.....................LL..LL..........BB..BB..........RR..RR..........FF..FF.....................', 'ULFRBD'),
-                ('.....................LL..LL..........BF..BF..........RR..RR..........BF..BF.....................', 'ULFRBD'),
-                ('.....................LL..LL..........BF..BF..........RR..RR..........FB..FB.....................', 'ULFRBD'),
-                ('.....................LL..LL..........FB..FB..........RR..RR..........BF..BF.....................', 'ULFRBD'),
-                ('.....................LL..LL..........FB..FB..........RR..RR..........FB..FB.....................', 'ULFRBD'),
-                ('.....................LL..LL..........FF..FF..........RR..RR..........BB..BB.....................', 'ULFRBD'),
-                ('.....................LR..LR..........BB..BB..........LR..LR..........FF..FF.....................', 'ULFRBD'),
-                ('.....................LR..LR..........BB..BB..........RL..RL..........FF..FF.....................', 'ULFRBD'),
-                ('.....................LR..LR..........BF..BF..........LR..LR..........BF..BF.....................', 'ULFRBD'),
-                ('.....................LR..LR..........BF..BF..........LR..LR..........FB..FB.....................', 'ULFRBD'),
-                ('.....................LR..LR..........BF..BF..........RL..RL..........BF..BF.....................', 'ULFRBD'),
-                ('.....................LR..LR..........BF..BF..........RL..RL..........FB..FB.....................', 'ULFRBD'),
-                ('.....................LR..LR..........FB..FB..........LR..LR..........BF..BF.....................', 'ULFRBD'),
-                ('.....................LR..LR..........FB..FB..........LR..LR..........FB..FB.....................', 'ULFRBD'),
-                ('.....................LR..LR..........FB..FB..........RL..RL..........BF..BF.....................', 'ULFRBD'),
-                ('.....................LR..LR..........FB..FB..........RL..RL..........FB..FB.....................', 'ULFRBD'),
-                ('.....................LR..LR..........FF..FF..........LR..LR..........BB..BB.....................', 'ULFRBD'),
-                ('.....................LR..LR..........FF..FF..........RL..RL..........BB..BB.....................', 'ULFRBD'),
-                ('.....................RL..RL..........BB..BB..........LR..LR..........FF..FF.....................', 'ULFRBD'),
-                ('.....................RL..RL..........BB..BB..........RL..RL..........FF..FF.....................', 'ULFRBD'),
-                ('.....................RL..RL..........BF..BF..........LR..LR..........BF..BF.....................', 'ULFRBD'),
-                ('.....................RL..RL..........BF..BF..........LR..LR..........FB..FB.....................', 'ULFRBD'),
-                ('.....................RL..RL..........BF..BF..........RL..RL..........BF..BF.....................', 'ULFRBD'),
-                ('.....................RL..RL..........BF..BF..........RL..RL..........FB..FB.....................', 'ULFRBD'),
-                ('.....................RL..RL..........FB..FB..........LR..LR..........BF..BF.....................', 'ULFRBD'),
-                ('.....................RL..RL..........FB..FB..........LR..LR..........FB..FB.....................', 'ULFRBD'),
-                ('.....................RL..RL..........FB..FB..........RL..RL..........BF..BF.....................', 'ULFRBD'),
-                ('.....................RL..RL..........FB..FB..........RL..RL..........FB..FB.....................', 'ULFRBD'),
-                ('.....................RL..RL..........FF..FF..........LR..LR..........BB..BB.....................', 'ULFRBD'),
-                ('.....................RL..RL..........FF..FF..........RL..RL..........BB..BB.....................', 'ULFRBD'),
-                ('.....................RR..RR..........BB..BB..........LL..LL..........FF..FF.....................', 'ULFRBD'),
-                ('.....................RR..RR..........BF..BF..........LL..LL..........BF..BF.....................', 'ULFRBD'),
-                ('.....................RR..RR..........BF..BF..........LL..LL..........FB..FB.....................', 'ULFRBD'),
-                ('.....................RR..RR..........FB..FB..........LL..LL..........BF..BF.....................', 'ULFRBD'),
-                ('.....................RR..RR..........FB..FB..........LL..LL..........FB..FB.....................', 'ULFRBD'),
-                ('.....................RR..RR..........FF..FF..........LL..LL..........BB..BB.....................', 'ULFRBD'),
-            ),
-            # fmt: on,
             use_c=True,
         )
 
