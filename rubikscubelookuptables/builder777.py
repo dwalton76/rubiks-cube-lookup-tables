@@ -82,7 +82,33 @@ UFBD_RIGHT_OBLIQUE_EDGES_777 = (
 
 
 class Build777Phase2UDInnerCentersStage(BFS):
-    """Build the (16! / (8! * 8!))^2 = 165,636,900-state ranked table."""
+    """
+    Stage the UD inner t-centers and inner x-centers while the LR obliques pair.
+
+    Two orbits are ranked, the inner t-centers and the inner x-centers. Each
+    spans the 16 U, F, B and D squares of its kind with eight of them destined
+    for U or D, so each contributes 16! / (8! * 8!) = 12,870 and the coordinate
+    is (16! / (8! * 8!))^2 = 165,636,900 states. __init__ carries the ascii goal.
+
+    lookup-table-7x7x7-step20-UD-inner-centers-stage.cost-only.bin
+    ==============================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 33 entries (0 percent, 16.50x previous step)
+    3 steps has 374 entries (0 percent, 11.33x previous step)
+    4 steps has 3,838 entries (0 percent, 10.26x previous step)
+    5 steps has 39,254 entries (0 percent, 10.23x previous step)
+    6 steps has 387,357 entries (0 percent, 9.87x previous step)
+    7 steps has 3,374,380 entries (2 percent, 8.71x previous step)
+    8 steps has 20,851,334 entries (12 percent, 6.18x previous step)
+    9 steps has 65,556,972 entries (39 percent, 3.14x previous step)
+    10 steps has 66,986,957 entries (40 percent, 1.02x previous step)
+    11 steps has 8,423,610 entries (5 percent, 0.13x previous step)
+    12 steps has 12,788 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.33 moves
+    """
 
     def __init__(self):
         BFS.__init__(
@@ -171,7 +197,36 @@ class Build777Phase56UDLeftRightObliqueCentersStage(_Build777Phase56UDPairStage)
     """
     Rank the left and right oblique coordinates.
 
-    (16! / (8! * 8!))^2 = 165,636,900 states
+    Each orbit spans the 16 U, F, B and D squares of its kind with eight of them
+    destined for U or D, so each contributes 16! / (8! * 8!) = 12,870 and the pair
+    gives (16! / (8! * 8!))^2 = 165,636,900 states.
+
+    _ranked_ud_pair_starting_state_777 encodes the single goal rather than passing
+    an ascii cube, so it is drawn here:
+
+                   . . . . . . .
+                   . . U . U . .
+                   . U . . . U .
+                   . . . . . . .
+                   . U . . . U .
+                   . . U . U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+    . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+    . . . . . . .  . . x . x . .  . . . . . . .  . . x . x . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . U . U . .
+                   . U . . . U .
+                   . . . . . . .
+                   . U . . . U .
+                   . . U . U . .
+                   . . . . . . .
 
     lookup-table-7x7x7-phase5-6-UD-left-right-oblique-centers-stage.cost-only.bin
     =============================================================================
@@ -205,7 +260,36 @@ class Build777Phase56UDLeftMiddleObliqueCentersStage(_Build777Phase56UDPairStage
     """
     Rank the left and middle oblique coordinates.
 
-    (16! / (8! * 8!))^2 = 165,636,900 states
+    Each orbit spans the 16 U, F, B and D squares of its kind with eight of them
+    destined for U or D, so each contributes 16! / (8! * 8!) = 12,870 and the pair
+    gives (16! / (8! * 8!))^2 = 165,636,900 states.
+
+    _ranked_ud_pair_starting_state_777 encodes the single goal rather than passing
+    an ascii cube, so it is drawn here:
+
+                   . . . . . . .
+                   . . U U . . .
+                   . . . . . U .
+                   . U . . . U .
+                   . U . . . . .
+                   . . . U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . x x . . .  . . . . . . .  . . x x . . .
+    . . . . . . .  . . . . . x .  . . . . . . .  . . . . . x .
+    . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+    . . . . . . .  . x . . . . .  . . . . . . .  . x . . . . .
+    . . . . . . .  . . . x x . .  . . . . . . .  . . . x x . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . U U . . .
+                   . . . . . U .
+                   . U . . . U .
+                   . U . . . . .
+                   . . . U U . .
+                   . . . . . . .
 
     lookup-table-7x7x7-phase5-6-UD-left-middle-oblique-centers-stage.cost-only.bin
     ==============================================================================
@@ -239,7 +323,36 @@ class Build777Phase56UDLeftObliqueOuterXCentersStage(_Build777Phase56UDPairStage
     """
     Rank the left oblique and outer-x coordinates.
 
-    (16! / (8! * 8!))^2 = 165,636,900 states
+    Each orbit spans the 16 U, F, B and D squares of its kind with eight of them
+    destined for U or D, so each contributes 16! / (8! * 8!) = 12,870 and the pair
+    gives (16! / (8! * 8!))^2 = 165,636,900 states.
+
+    _ranked_ud_pair_starting_state_777 encodes the single goal rather than passing
+    an ascii cube, so it is drawn here:
+
+                   . . . . . . .
+                   . U U . . U .
+                   . . . . . U .
+                   . . . . . . .
+                   . U . . . . .
+                   . U . . U U .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . x x . . x .  . . . . . . .  . x x . . x .
+    . . . . . . .  . . . . . x .  . . . . . . .  . . . . . x .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . x . . . . .  . . . . . . .  . x . . . . .
+    . . . . . . .  . x . . x x .  . . . . . . .  . x . . x x .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . U U . . U .
+                   . . . . . U .
+                   . . . . . . .
+                   . U . . . . .
+                   . U . . U U .
+                   . . . . . . .
 
     lookup-table-7x7x7-phase5-6-UD-left-oblique-outer-x-centers-stage.cost-only.bin
     ===============================================================================
@@ -270,7 +383,37 @@ class Build777Phase56UDMiddleRightObliqueCentersStage(_Build777Phase56UDPairStag
     """
     Rank the middle and right oblique coordinates.
 
-    (16! / (8! * 8!))^2 = 165,636,900 states
+    Each orbit spans the 16 U, F, B and D squares of its kind with eight of them
+    destined for U or D, so each contributes 16! / (8! * 8!) = 12,870 and the pair
+    gives (16! / (8! * 8!))^2 = 165,636,900 states. It mirrors the left/middle
+    table, which is why the two share a histogram.
+
+    _ranked_ud_pair_starting_state_777 encodes the single goal rather than passing
+    an ascii cube, so it is drawn here:
+
+                   . . . . . . .
+                   . . . U U . .
+                   . U . . . . .
+                   . U . . . U .
+                   . . . . . U .
+                   . . U U . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . x x . .  . . . . . . .  . . . x x . .
+    . . . . . . .  . x . . . . .  . . . . . . .  . x . . . . .
+    . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+    . . . . . . .  . . . . . x .  . . . . . . .  . . . . . x .
+    . . . . . . .  . . x x . . .  . . . . . . .  . . x x . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . U U . .
+                   . U . . . . .
+                   . U . . . U .
+                   . . . . . U .
+                   . . U U . . .
+                   . . . . . . .
 
     lookup-table-7x7x7-phase5-6-UD-middle-right-oblique-centers-stage.cost-only.bin
     ===============================================================================
@@ -304,7 +447,37 @@ class Build777Phase56UDRightObliqueOuterXCentersStage(_Build777Phase56UDPairStag
     """
     Rank the right oblique and outer-x coordinates.
 
-    (16! / (8! * 8!))^2 = 165,636,900 states
+    Each orbit spans the 16 U, F, B and D squares of its kind with eight of them
+    destined for U or D, so each contributes 16! / (8! * 8!) = 12,870 and the pair
+    gives (16! / (8! * 8!))^2 = 165,636,900 states. It mirrors the left
+    oblique/outer-x table, which is why the two share a histogram.
+
+    _ranked_ud_pair_starting_state_777 encodes the single goal rather than passing
+    an ascii cube, so it is drawn here:
+
+                   . . . . . . .
+                   . U . . U U .
+                   . U . . . . .
+                   . . . . . . .
+                   . . . . . U .
+                   . U U . . U .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . x . . x x .  . . . . . . .  . x . . x x .
+    . . . . . . .  . x . . . . .  . . . . . . .  . x . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . x .  . . . . . . .  . . . . . x .
+    . . . . . . .  . x x . . x .  . . . . . . .  . x x . . x .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . U . . U U .
+                   . U . . . . .
+                   . . . . . . .
+                   . . . . . U .
+                   . U U . . U .
+                   . . . . . . .
 
     lookup-table-7x7x7-phase5-6-UD-right-oblique-outer-x-centers-stage.cost-only.bin
     ================================================================================
@@ -335,7 +508,38 @@ class Build777Phase56UDMiddleObliqueOuterXCentersStage(_Build777Phase56UDPairSta
     """
     Rank the middle oblique and outer-x coordinates.
 
-    (16! / (8! * 8!))^2 = 165,636,900 states
+    Each orbit spans the 16 U, F, B and D squares of its kind with eight of them
+    destined for U or D, so each contributes 16! / (8! * 8!) = 12,870 and the pair
+    gives (16! / (8! * 8!))^2 = 165,636,900 states. Both orbits are fixed by the
+    mirror that swaps the left and right obliques, so this table is its own
+    mirror image and matches the step20 histogram.
+
+    _ranked_ud_pair_starting_state_777 encodes the single goal rather than passing
+    an ascii cube, so it is drawn here:
+
+                   . . . . . . .
+                   . U . U . U .
+                   . . . . . . .
+                   . U . . . U .
+                   . . . . . . .
+                   . U . U . U .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . x . x . x .  . . . . . . .  . x . x . x .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . x . . . x .  . . . . . . .  . x . . . x .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . x . x . x .  . . . . . . .  . x . x . x .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . U . U . U .
+                   . . . . . . .
+                   . U . . . U .
+                   . . . . . . .
+                   . U . U . U .
+                   . . . . . . .
 
     lookup-table-7x7x7-phase5-6-UD-middle-oblique-outer-x-centers-stage.cost-only.bin
     =================================================================================
@@ -486,62 +690,912 @@ class _Build777DaisyCenters(BFS):
 
 
 class Build777DaisyUDWithoutLeftObliqueCenters(_Build777DaisyCenters):
+    """
+    UD daisy centers with the left obliques dropped from the coordinate.
+
+    Four of the five UD orbits are ranked and each puts four of its eight squares
+    on U and four on D, so the coordinate is 70^4 = 24,010,000 states.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges the two remaining
+    oblique orbits between U and D while inner-t and inner-x stay put, which is
+    why depth 0 holds two entries.
+
+                   . . . . . . .
+                   . . . U U . .
+                   . U U U U . .
+                   . U U . U U .
+                   . . U U U U .
+                   . . U U . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . D D . .
+                   . D D D D . .
+                   . D D . D D .
+                   . . D D D D .
+                   . . D D . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-UD-without-left-oblique-centers.cost-only.bin
+    ======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 746 entries (0 percent, 6.11x previous step)
+    4 steps has 4,512 entries (0 percent, 6.05x previous step)
+    5 steps has 26,744 entries (0 percent, 5.93x previous step)
+    6 steps has 145,826 entries (0 percent, 5.45x previous step)
+    7 steps has 706,554 entries (2 percent, 4.85x previous step)
+    8 steps has 2,823,472 entries (11 percent, 4.00x previous step)
+    9 steps has 7,760,250 entries (32 percent, 2.75x previous step)
+    10 steps has 9,776,782 entries (40 percent, 1.26x previous step)
+    11 steps has 2,712,814 entries (11 percent, 0.28x previous step)
+    12 steps has 52,156 entries (0 percent, 0.02x previous step)
+    13 steps has 4 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.44 moves
+    """
+
     axis, omitted_orbit, table_slug = "UD", "left-oblique", "UD-without-left-oblique"
 
 
 class Build777DaisyUDWithoutMiddleObliqueCenters(_Build777DaisyCenters):
+    """
+    UD daisy centers with the middle obliques dropped from the coordinate.
+
+    Four of the five UD orbits are ranked and each puts four of its eight squares
+    on U and four on D, so the coordinate is 70^4 = 24,010,000 states.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges the two remaining
+    oblique orbits between U and D while inner-t and inner-x stay put, which is
+    why depth 0 holds two entries.
+
+                   . . . . . . .
+                   . . U . U . .
+                   . U U U U U .
+                   . . U . U . .
+                   . U U U U U .
+                   . . U . U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D . D . .
+                   . D D D D D .
+                   . . D . D . .
+                   . D D D D D .
+                   . . D . D . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-UD-without-middle-oblique-centers.cost-only.bin
+    ========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 106 entries (0 percent, 6.62x previous step)
+    3 steps has 618 entries (0 percent, 5.83x previous step)
+    4 steps has 3,556 entries (0 percent, 5.75x previous step)
+    5 steps has 20,496 entries (0 percent, 5.76x previous step)
+    6 steps has 112,698 entries (0 percent, 5.50x previous step)
+    7 steps has 543,928 entries (2 percent, 4.83x previous step)
+    8 steps has 2,194,928 entries (9 percent, 4.04x previous step)
+    9 steps has 6,385,074 entries (26 percent, 2.91x previous step)
+    10 steps has 9,901,620 entries (41 percent, 1.55x previous step)
+    11 steps has 4,534,760 entries (18 percent, 0.46x previous step)
+    12 steps has 310,934 entries (1 percent, 0.07x previous step)
+    13 steps has 1,264 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.67 moves
+    """
+
     axis, omitted_orbit, table_slug = "UD", "middle-oblique", "UD-without-middle-oblique"
 
 
 class Build777DaisyUDWithoutRightObliqueCenters(_Build777DaisyCenters):
+    """
+    UD daisy centers with the right obliques dropped from the coordinate.
+
+    Four of the five UD orbits are ranked and each puts four of its eight squares
+    on U and four on D, so the coordinate is 70^4 = 24,010,000 states. Dropping
+    the right obliques mirrors dropping the left ones, so the two tables share a
+    histogram.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges the two remaining
+    oblique orbits between U and D while inner-t and inner-x stay put, which is
+    why depth 0 holds two entries.
+
+                   . . . . . . .
+                   . . U U . . .
+                   . . U U U U .
+                   . U U . U U .
+                   . U U U U . .
+                   . . . U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D D . . .
+                   . . D D D D .
+                   . D D . D D .
+                   . D D D D . .
+                   . . . D D . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-UD-without-right-oblique-centers.cost-only.bin
+    =======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 746 entries (0 percent, 6.11x previous step)
+    4 steps has 4,512 entries (0 percent, 6.05x previous step)
+    5 steps has 26,744 entries (0 percent, 5.93x previous step)
+    6 steps has 145,826 entries (0 percent, 5.45x previous step)
+    7 steps has 706,554 entries (2 percent, 4.85x previous step)
+    8 steps has 2,823,472 entries (11 percent, 4.00x previous step)
+    9 steps has 7,760,250 entries (32 percent, 2.75x previous step)
+    10 steps has 9,776,782 entries (40 percent, 1.26x previous step)
+    11 steps has 2,712,814 entries (11 percent, 0.28x previous step)
+    12 steps has 52,156 entries (0 percent, 0.02x previous step)
+    13 steps has 4 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.44 moves
+    """
+
     axis, omitted_orbit, table_slug = "UD", "right-oblique", "UD-without-right-oblique"
 
 
 class Build777DaisyUDWithoutInnerTCenters(_Build777DaisyCenters):
+    """
+    UD daisy centers with the inner t-centers dropped from the coordinate.
+
+    Four of the five UD orbits are ranked and each puts four of its eight squares
+    on U and four on D, so the coordinate is 70^4 = 24,010,000 states.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges all three oblique
+    orbits between U and D while the inner x-centers stay put, which is why depth
+    0 holds two entries.
+
+                   . . . . . . .
+                   . . U U U . .
+                   . U U . U U .
+                   . U . . . U .
+                   . U U . U U .
+                   . . U U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D D D . .
+                   . D D . D D .
+                   . D . . . D .
+                   . D D . D D .
+                   . . D D D . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-UD-without-inner-t-centers.cost-only.bin
+    =================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 106 entries (0 percent, 6.62x previous step)
+    3 steps has 594 entries (0 percent, 5.60x previous step)
+    4 steps has 3,618 entries (0 percent, 6.09x previous step)
+    5 steps has 22,250 entries (0 percent, 6.15x previous step)
+    6 steps has 125,604 entries (0 percent, 5.65x previous step)
+    7 steps has 635,070 entries (2 percent, 5.06x previous step)
+    8 steps has 2,641,982 entries (11 percent, 4.16x previous step)
+    9 steps has 7,545,582 entries (31 percent, 2.86x previous step)
+    10 steps has 10,110,652 entries (42 percent, 1.34x previous step)
+    11 steps has 2,862,740 entries (11 percent, 0.28x previous step)
+    12 steps has 61,704 entries (0 percent, 0.02x previous step)
+    13 steps has 80 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.48 moves
+    """
+
     axis, omitted_orbit, table_slug = "UD", "inner-t", "UD-without-inner-t"
 
 
 class Build777DaisyUDWithoutInnerXCenters(_Build777DaisyCenters):
+    """
+    UD daisy centers with the inner x-centers dropped from the coordinate.
+
+    Four of the five UD orbits are ranked and each puts four of its eight squares
+    on U and four on D, so the coordinate is 70^4 = 24,010,000 states. This is the
+    shallowest of the five leave-one-out tables.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges all three oblique
+    orbits between U and D while the inner t-centers stay put, which is why depth
+    0 holds two entries.
+
+                   . . . . . . .
+                   . . U U U . .
+                   . U . U . U .
+                   . U U . U U .
+                   . U . U . U .
+                   . . U U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D D D . .
+                   . D . D . D .
+                   . D D . D D .
+                   . D . D . D .
+                   . . D D D . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-UD-without-inner-x-centers.cost-only.bin
+    =================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 762 entries (0 percent, 6.25x previous step)
+    4 steps has 4,688 entries (0 percent, 6.15x previous step)
+    5 steps has 29,272 entries (0 percent, 6.24x previous step)
+    6 steps has 169,770 entries (0 percent, 5.80x previous step)
+    7 steps has 891,464 entries (3 percent, 5.25x previous step)
+    8 steps has 3,754,714 entries (15 percent, 4.21x previous step)
+    9 steps has 9,594,114 entries (39 percent, 2.56x previous step)
+    10 steps has 8,472,704 entries (35 percent, 0.88x previous step)
+    11 steps has 1,084,012 entries (4 percent, 0.13x previous step)
+    12 steps has 8,360 entries (0 percent, 0.01x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.19 moves
+    """
+
     axis, omitted_orbit, table_slug = "UD", "inner-x", "UD-without-inner-x"
 
 
 class Build777DaisyLRWithoutLeftObliqueCenters(_Build777DaisyCenters):
+    """
+    LR daisy centers with the left obliques dropped from the coordinate.
+
+    Four of the five LR orbits are ranked and each puts four of its eight squares
+    on L and four on R, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the LR axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges the two remaining
+    oblique orbits between L and R while inner-t and inner-x stay put, which is
+    why depth 0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . L L . .  . . . . . . .  . . . R R . .  . . . . . . .
+    . L L L L . .  . . . . . . .  . R R R R . .  . . . . . . .
+    . L L . L L .  . . . . . . .  . R R . R R .  . . . . . . .
+    . . L L L L .  . . . . . . .  . . R R R R .  . . . . . . .
+    . . L L . . .  . . . . . . .  . . R R . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-LR-without-left-oblique-centers.cost-only.bin
+    ======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 746 entries (0 percent, 6.11x previous step)
+    4 steps has 4,512 entries (0 percent, 6.05x previous step)
+    5 steps has 26,744 entries (0 percent, 5.93x previous step)
+    6 steps has 145,826 entries (0 percent, 5.45x previous step)
+    7 steps has 706,554 entries (2 percent, 4.85x previous step)
+    8 steps has 2,823,472 entries (11 percent, 4.00x previous step)
+    9 steps has 7,760,250 entries (32 percent, 2.75x previous step)
+    10 steps has 9,776,782 entries (40 percent, 1.26x previous step)
+    11 steps has 2,712,814 entries (11 percent, 0.28x previous step)
+    12 steps has 52,156 entries (0 percent, 0.02x previous step)
+    13 steps has 4 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.44 moves
+    """
+
     axis, omitted_orbit, table_slug = "LR", "left-oblique", "LR-without-left-oblique"
 
 
 class Build777DaisyLRWithoutMiddleObliqueCenters(_Build777DaisyCenters):
+    """
+    LR daisy centers with the middle obliques dropped from the coordinate.
+
+    Four of the five LR orbits are ranked and each puts four of its eight squares
+    on L and four on R, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the LR axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges the two remaining
+    oblique orbits between L and R while inner-t and inner-x stay put, which is
+    why depth 0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L . L . .  . . . . . . .  . . R . R . .  . . . . . . .
+    . L L L L L .  . . . . . . .  . R R R R R .  . . . . . . .
+    . . L . L . .  . . . . . . .  . . R . R . .  . . . . . . .
+    . L L L L L .  . . . . . . .  . R R R R R .  . . . . . . .
+    . . L . L . .  . . . . . . .  . . R . R . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-LR-without-middle-oblique-centers.cost-only.bin
+    ========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 106 entries (0 percent, 6.62x previous step)
+    3 steps has 618 entries (0 percent, 5.83x previous step)
+    4 steps has 3,556 entries (0 percent, 5.75x previous step)
+    5 steps has 20,496 entries (0 percent, 5.76x previous step)
+    6 steps has 112,698 entries (0 percent, 5.50x previous step)
+    7 steps has 543,928 entries (2 percent, 4.83x previous step)
+    8 steps has 2,194,928 entries (9 percent, 4.04x previous step)
+    9 steps has 6,385,074 entries (26 percent, 2.91x previous step)
+    10 steps has 9,901,620 entries (41 percent, 1.55x previous step)
+    11 steps has 4,534,760 entries (18 percent, 0.46x previous step)
+    12 steps has 310,934 entries (1 percent, 0.07x previous step)
+    13 steps has 1,264 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.67 moves
+    """
+
     axis, omitted_orbit, table_slug = "LR", "middle-oblique", "LR-without-middle-oblique"
 
 
 class Build777DaisyLRWithoutRightObliqueCenters(_Build777DaisyCenters):
+    """
+    LR daisy centers with the right obliques dropped from the coordinate.
+
+    Four of the five LR orbits are ranked and each puts four of its eight squares
+    on L and four on R, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the LR axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges the two remaining
+    oblique orbits between L and R while inner-t and inner-x stay put, which is
+    why depth 0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L L . . .  . . . . . . .  . . R R . . .  . . . . . . .
+    . . L L L L .  . . . . . . .  . . R R R R .  . . . . . . .
+    . L L . L L .  . . . . . . .  . R R . R R .  . . . . . . .
+    . L L L L . .  . . . . . . .  . R R R R . .  . . . . . . .
+    . . . L L . .  . . . . . . .  . . . R R . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-LR-without-right-oblique-centers.cost-only.bin
+    =======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 746 entries (0 percent, 6.11x previous step)
+    4 steps has 4,512 entries (0 percent, 6.05x previous step)
+    5 steps has 26,744 entries (0 percent, 5.93x previous step)
+    6 steps has 145,826 entries (0 percent, 5.45x previous step)
+    7 steps has 706,554 entries (2 percent, 4.85x previous step)
+    8 steps has 2,823,472 entries (11 percent, 4.00x previous step)
+    9 steps has 7,760,250 entries (32 percent, 2.75x previous step)
+    10 steps has 9,776,782 entries (40 percent, 1.26x previous step)
+    11 steps has 2,712,814 entries (11 percent, 0.28x previous step)
+    12 steps has 52,156 entries (0 percent, 0.02x previous step)
+    13 steps has 4 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.44 moves
+    """
+
     axis, omitted_orbit, table_slug = "LR", "right-oblique", "LR-without-right-oblique"
 
 
 class Build777DaisyLRWithoutInnerTCenters(_Build777DaisyCenters):
+    """
+    LR daisy centers with the inner t-centers dropped from the coordinate.
+
+    Four of the five LR orbits are ranked and each puts four of its eight squares
+    on L and four on R, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the LR axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges all three oblique
+    orbits between L and R while the inner x-centers stay put, which is why depth
+    0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L L L . .  . . . . . . .  . . R R R . .  . . . . . . .
+    . L L . L L .  . . . . . . .  . R R . R R .  . . . . . . .
+    . L . . . L .  . . . . . . .  . R . . . R .  . . . . . . .
+    . L L . L L .  . . . . . . .  . R R . R R .  . . . . . . .
+    . . L L L . .  . . . . . . .  . . R R R . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-LR-without-inner-t-centers.cost-only.bin
+    =================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 106 entries (0 percent, 6.62x previous step)
+    3 steps has 594 entries (0 percent, 5.60x previous step)
+    4 steps has 3,618 entries (0 percent, 6.09x previous step)
+    5 steps has 22,250 entries (0 percent, 6.15x previous step)
+    6 steps has 125,604 entries (0 percent, 5.65x previous step)
+    7 steps has 635,070 entries (2 percent, 5.06x previous step)
+    8 steps has 2,641,982 entries (11 percent, 4.16x previous step)
+    9 steps has 7,545,582 entries (31 percent, 2.86x previous step)
+    10 steps has 10,110,652 entries (42 percent, 1.34x previous step)
+    11 steps has 2,862,740 entries (11 percent, 0.28x previous step)
+    12 steps has 61,704 entries (0 percent, 0.02x previous step)
+    13 steps has 80 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.48 moves
+    """
+
     axis, omitted_orbit, table_slug = "LR", "inner-t", "LR-without-inner-t"
 
 
 class Build777DaisyLRWithoutInnerXCenters(_Build777DaisyCenters):
+    """
+    LR daisy centers with the inner x-centers dropped from the coordinate.
+
+    Four of the five LR orbits are ranked and each puts four of its eight squares
+    on L and four on R, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the LR axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges all three oblique
+    orbits between L and R while the inner t-centers stay put, which is why depth
+    0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L L L . .  . . . . . . .  . . R R R . .  . . . . . . .
+    . L . L . L .  . . . . . . .  . R . R . R .  . . . . . . .
+    . L L . L L .  . . . . . . .  . R R . R R .  . . . . . . .
+    . L . L . L .  . . . . . . .  . R . R . R .  . . . . . . .
+    . . L L L . .  . . . . . . .  . . R R R . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-LR-without-inner-x-centers.cost-only.bin
+    =================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 762 entries (0 percent, 6.25x previous step)
+    4 steps has 4,688 entries (0 percent, 6.15x previous step)
+    5 steps has 29,272 entries (0 percent, 6.24x previous step)
+    6 steps has 169,770 entries (0 percent, 5.80x previous step)
+    7 steps has 891,464 entries (3 percent, 5.25x previous step)
+    8 steps has 3,754,714 entries (15 percent, 4.21x previous step)
+    9 steps has 9,594,114 entries (39 percent, 2.56x previous step)
+    10 steps has 8,472,704 entries (35 percent, 0.88x previous step)
+    11 steps has 1,084,012 entries (4 percent, 0.13x previous step)
+    12 steps has 8,360 entries (0 percent, 0.01x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.19 moves
+    """
+
     axis, omitted_orbit, table_slug = "LR", "inner-x", "LR-without-inner-x"
 
 
 class Build777DaisyFBWithoutLeftObliqueCenters(_Build777DaisyCenters):
+    """
+    FB daisy centers with the left obliques dropped from the coordinate.
+
+    Four of the five FB orbits are ranked and each puts four of its eight squares
+    on F and four on B, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the FB axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges the two remaining
+    oblique orbits between F and B while inner-t and inner-x stay put, which is
+    why depth 0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . F F . .  . . . . . . .  . . . B B . .
+    . . . . . . .  . F F F F . .  . . . . . . .  . B B B B . .
+    . . . . . . .  . F F . F F .  . . . . . . .  . B B . B B .
+    . . . . . . .  . . F F F F .  . . . . . . .  . . B B B B .
+    . . . . . . .  . . F F . . .  . . . . . . .  . . B B . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-FB-without-left-oblique-centers.cost-only.bin
+    ======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 746 entries (0 percent, 6.11x previous step)
+    4 steps has 4,512 entries (0 percent, 6.05x previous step)
+    5 steps has 26,744 entries (0 percent, 5.93x previous step)
+    6 steps has 145,826 entries (0 percent, 5.45x previous step)
+    7 steps has 706,554 entries (2 percent, 4.85x previous step)
+    8 steps has 2,823,472 entries (11 percent, 4.00x previous step)
+    9 steps has 7,760,250 entries (32 percent, 2.75x previous step)
+    10 steps has 9,776,782 entries (40 percent, 1.26x previous step)
+    11 steps has 2,712,814 entries (11 percent, 0.28x previous step)
+    12 steps has 52,156 entries (0 percent, 0.02x previous step)
+    13 steps has 4 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.44 moves
+    """
+
     axis, omitted_orbit, table_slug = "FB", "left-oblique", "FB-without-left-oblique"
 
 
 class Build777DaisyFBWithoutMiddleObliqueCenters(_Build777DaisyCenters):
+    """
+    FB daisy centers with the middle obliques dropped from the coordinate.
+
+    Four of the five FB orbits are ranked and each puts four of its eight squares
+    on F and four on B, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the FB axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges the two remaining
+    oblique orbits between F and B while inner-t and inner-x stay put, which is
+    why depth 0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . F F F F F .  . . . . . . .  . B B B B B .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . F F F F F .  . . . . . . .  . B B B B B .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-FB-without-middle-oblique-centers.cost-only.bin
+    ========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 106 entries (0 percent, 6.62x previous step)
+    3 steps has 618 entries (0 percent, 5.83x previous step)
+    4 steps has 3,556 entries (0 percent, 5.75x previous step)
+    5 steps has 20,496 entries (0 percent, 5.76x previous step)
+    6 steps has 112,698 entries (0 percent, 5.50x previous step)
+    7 steps has 543,928 entries (2 percent, 4.83x previous step)
+    8 steps has 2,194,928 entries (9 percent, 4.04x previous step)
+    9 steps has 6,385,074 entries (26 percent, 2.91x previous step)
+    10 steps has 9,901,620 entries (41 percent, 1.55x previous step)
+    11 steps has 4,534,760 entries (18 percent, 0.46x previous step)
+    12 steps has 310,934 entries (1 percent, 0.07x previous step)
+    13 steps has 1,264 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.67 moves
+    """
+
     axis, omitted_orbit, table_slug = "FB", "middle-oblique", "FB-without-middle-oblique"
 
 
 class Build777DaisyFBWithoutRightObliqueCenters(_Build777DaisyCenters):
+    """
+    FB daisy centers with the right obliques dropped from the coordinate.
+
+    Four of the five FB orbits are ranked and each puts four of its eight squares
+    on F and four on B, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the FB axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges the two remaining
+    oblique orbits between F and B while inner-t and inner-x stay put, which is
+    why depth 0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F F . . .  . . . . . . .  . . B B . . .
+    . . . . . . .  . . F F F F .  . . . . . . .  . . B B B B .
+    . . . . . . .  . F F . F F .  . . . . . . .  . B B . B B .
+    . . . . . . .  . F F F F . .  . . . . . . .  . B B B B . .
+    . . . . . . .  . . . F F . .  . . . . . . .  . . . B B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-FB-without-right-oblique-centers.cost-only.bin
+    =======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 746 entries (0 percent, 6.11x previous step)
+    4 steps has 4,512 entries (0 percent, 6.05x previous step)
+    5 steps has 26,744 entries (0 percent, 5.93x previous step)
+    6 steps has 145,826 entries (0 percent, 5.45x previous step)
+    7 steps has 706,554 entries (2 percent, 4.85x previous step)
+    8 steps has 2,823,472 entries (11 percent, 4.00x previous step)
+    9 steps has 7,760,250 entries (32 percent, 2.75x previous step)
+    10 steps has 9,776,782 entries (40 percent, 1.26x previous step)
+    11 steps has 2,712,814 entries (11 percent, 0.28x previous step)
+    12 steps has 52,156 entries (0 percent, 0.02x previous step)
+    13 steps has 4 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.44 moves
+    """
+
     axis, omitted_orbit, table_slug = "FB", "right-oblique", "FB-without-right-oblique"
 
 
 class Build777DaisyFBWithoutInnerTCenters(_Build777DaisyCenters):
+    """
+    FB daisy centers with the inner t-centers dropped from the coordinate.
+
+    Four of the five FB orbits are ranked and each puts four of its eight squares
+    on F and four on B, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the FB axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges all three oblique
+    orbits between F and B while the inner x-centers stay put, which is why depth
+    0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . F F . F F .  . . . . . . .  . B B . B B .
+    . . . . . . .  . F . . . F .  . . . . . . .  . B . . . B .
+    . . . . . . .  . F F . F F .  . . . . . . .  . B B . B B .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-FB-without-inner-t-centers.cost-only.bin
+    =================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 106 entries (0 percent, 6.62x previous step)
+    3 steps has 594 entries (0 percent, 5.60x previous step)
+    4 steps has 3,618 entries (0 percent, 6.09x previous step)
+    5 steps has 22,250 entries (0 percent, 6.15x previous step)
+    6 steps has 125,604 entries (0 percent, 5.65x previous step)
+    7 steps has 635,070 entries (2 percent, 5.06x previous step)
+    8 steps has 2,641,982 entries (11 percent, 4.16x previous step)
+    9 steps has 7,545,582 entries (31 percent, 2.86x previous step)
+    10 steps has 10,110,652 entries (42 percent, 1.34x previous step)
+    11 steps has 2,862,740 entries (11 percent, 0.28x previous step)
+    12 steps has 61,704 entries (0 percent, 0.02x previous step)
+    13 steps has 80 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.48 moves
+    """
+
     axis, omitted_orbit, table_slug = "FB", "inner-t", "FB-without-inner-t"
 
 
 class Build777DaisyFBWithoutInnerXCenters(_Build777DaisyCenters):
+    """
+    FB daisy centers with the inner x-centers dropped from the coordinate.
+
+    Four of the five FB orbits are ranked and each puts four of its eight squares
+    on F and four on B, so the coordinate is 70^4 = 24,010,000 states. It is the
+    UD table of the same name rotated onto the FB axis, so the histogram matches.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges all three oblique
+    orbits between F and B while the inner t-centers stay put, which is why depth
+    0 holds two entries.
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . F . F . F .  . . . . . . .  . B . B . B .
+    . . . . . . .  . F F . F F .  . . . . . . .  . B B . B B .
+    . . . . . . .  . F . F . F .  . . . . . . .  . B . B . B .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-FB-without-inner-x-centers.cost-only.bin
+    =================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 762 entries (0 percent, 6.25x previous step)
+    4 steps has 4,688 entries (0 percent, 6.15x previous step)
+    5 steps has 29,272 entries (0 percent, 6.24x previous step)
+    6 steps has 169,770 entries (0 percent, 5.80x previous step)
+    7 steps has 891,464 entries (3 percent, 5.25x previous step)
+    8 steps has 3,754,714 entries (15 percent, 4.21x previous step)
+    9 steps has 9,594,114 entries (39 percent, 2.56x previous step)
+    10 steps has 8,472,704 entries (35 percent, 0.88x previous step)
+    11 steps has 1,084,012 entries (4 percent, 0.13x previous step)
+    12 steps has 8,360 entries (0 percent, 0.01x previous step)
+
+    Total: 24,010,000 entries
+    Average: 9.19 moves
+    """
+
     axis, omitted_orbit, table_slug = "FB", "inner-x", "FB-without-inner-x"
 
 
@@ -552,6 +1606,63 @@ class Build777DaisyPerfectCenters(_Build777DaisyCenters):
     The UD, LR and FB perfect tables were the same cost function written out
     three times under different square orderings, so only UD is built. The
     searcher rotates an LR or FB state onto the UD coordinate before probing.
+
+    All five UD orbits are ranked and each puts four of its eight squares on U
+    and four on D, so the coordinate is 70^5 = 1,680,700,000 states. The 16
+    axis-preserving cube symmetries leave the cost unchanged, so publishing keeps
+    one byte per orbit and the file on disk holds 105,356,972 of them; the
+    histogram below counts raw ranks, which is what the searcher indexes.
+
+    _daisy_starting_states_777 generates two goals rather than passing an ascii
+    cube. The native one is drawn below; the second exchanges all three oblique
+    orbits between U and D while inner-t and inner-x stay put, which is why depth
+    0 holds two entries.
+
+                   . . . . . . .
+                   . . U U U . .
+                   . U U U U U .
+                   . U U . U U .
+                   . U U U U U .
+                   . . U U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D D D . .
+                   . D D D D D .
+                   . D D . D D .
+                   . D D D D D .
+                   . . D D D . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-daisy-perfect-centers.cost-only.bin
+    ======================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 16 entries (0 percent, 8.00x previous step)
+    2 steps has 122 entries (0 percent, 7.62x previous step)
+    3 steps has 762 entries (0 percent, 6.25x previous step)
+    4 steps has 4,888 entries (0 percent, 6.41x previous step)
+    5 steps has 32,000 entries (0 percent, 6.55x previous step)
+    6 steps has 202,546 entries (0 percent, 6.33x previous step)
+    7 steps has 1,247,834 entries (0 percent, 6.16x previous step)
+    8 steps has 7,297,576 entries (0 percent, 5.85x previous step)
+    9 steps has 38,903,378 entries (2 percent, 5.33x previous step)
+    10 steps has 174,206,054 entries (10 percent, 4.48x previous step)
+    11 steps has 540,471,106 entries (32 percent, 3.10x previous step)
+    12 steps has 734,647,512 entries (43 percent, 1.36x previous step)
+    13 steps has 181,651,516 entries (10 percent, 0.25x previous step)
+    14 steps has 2,034,032 entries (0 percent, 0.01x previous step)
+    15 steps has 656 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.49 moves
     """
 
     axis, table_slug = "UD", "perfect"
@@ -577,7 +1688,63 @@ class _Build777SolveCenters(_Build777DaisyCenters):
 
 
 class Build777SolvePerfectCenters(_Build777SolveCenters):
-    """Shared across the three axes the same way Build777DaisyPerfectCenters is."""
+    """
+    Shared across the three axes the same way Build777DaisyPerfectCenters is.
+
+    Same 70^5 = 1,680,700,000 coordinate and the same 105,356,972-orbit compacted
+    file, but only the native goal counts as solved, so every depth shifts out by
+    roughly half a move and the table runs one step deeper.
+
+    _daisy_starting_states_777 is asked for the native orientation alone, so
+    there is a single goal and depth 0 holds one entry:
+
+                   . . . . . . .
+                   . . U U U . .
+                   . U U U U U .
+                   . U U . U U .
+                   . U U U U U .
+                   . . U U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D D D . .
+                   . D D D D D .
+                   . D D . D D .
+                   . D D D D D .
+                   . . D D D . .
+                   . . . . . . .
+
+    lookup-table-7x7x7-solve-perfect-centers.cost-only.bin
+    ======================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 8 entries (0 percent, 8.00x previous step)
+    2 steps has 64 entries (0 percent, 8.00x previous step)
+    3 steps has 412 entries (0 percent, 6.44x previous step)
+    4 steps has 2,643 entries (0 percent, 6.42x previous step)
+    5 steps has 17,408 entries (0 percent, 6.59x previous step)
+    6 steps has 110,881 entries (0 percent, 6.37x previous step)
+    7 steps has 688,216 entries (0 percent, 6.21x previous step)
+    8 steps has 4,078,714 entries (0 percent, 5.93x previous step)
+    9 steps has 22,258,476 entries (1 percent, 5.46x previous step)
+    10 steps has 104,656,519 entries (6 percent, 4.70x previous step)
+    11 steps has 367,990,314 entries (21 percent, 3.52x previous step)
+    12 steps has 715,270,228 entries (42 percent, 1.94x previous step)
+    13 steps has 433,032,274 entries (25 percent, 0.61x previous step)
+    14 steps has 32,512,022 entries (1 percent, 0.08x previous step)
+    15 steps has 81,804 entries (0 percent, 0.00x previous step)
+    16 steps has 16 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.90 moves
+    """
 
     axis, table_slug = "UD", "perfect"
     compact_center_symmetry = True

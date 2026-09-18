@@ -194,23 +194,7 @@ class Build555LRCenterStageTCenter(BFS):
     """
     24! / (8! * 16!) = 735,471 states
 
-               . . . . .
-               . . x . .
-               . x . x .
-               . . x . .
-               . . . . .
-
-    . . . . .  . . . . .  . . . . .  . . . . .
-    . . L . .  . . x . .  . . L . .  . . x . .
-    . L . L .  . x . x .  . L . L .  . x . x .
-    . . L . .  . . x . .  . . L . .  . . x . .
-    . . . . .  . . . . .  . . . . .  . . . . .
-
-               . . . . .
-               . . x . .
-               . x . x .
-               . . x . .
-               . . . . .
+    One starting state: the ascii cube in __init__, LR t-centers staged.
 
     lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.cost-only.bin
     =====================================================================
@@ -270,23 +254,7 @@ class Build555LRCenterStageXCenter(BFS):
     """
     24! / (8! * 16!) = 735,471 states
 
-               . . . . .
-               . x . x .
-               . . . . .
-               . x . x .
-               . . . . .
-
-    . . . . .  . . . . .  . . . . .  . . . . .
-    . L . L .  . x . x .  . L . L .  . x . x .
-    . . . . .  . . . . .  . . . . .  . . . . .
-    . L . L .  . x . x .  . L . L .  . x . x .
-    . . . . .  . . . . .  . . . . .  . . . . .
-
-               . . . . .
-               . x . x .
-               . . . . .
-               . x . x .
-               . . . . .
+    One starting state: the ascii cube in __init__, LR x-centers staged.
 
     lookup-table-5x5x5-step12-LR-centers-stage-x-center-only.cost-only.bin
     =====================================================================
@@ -350,23 +318,7 @@ class Build555FBTCenterStage(BFS):
     """
     16! / (8! * 8!) = 12,870 states
 
-               . . . . .
-               . . x . .
-               . x . x .
-               . . x . .
-               . . . . .
-
-    . . . . .  . . . . .  . . . . .  . . . . .
-    . . . . .  . . F . .  . . . . .  . . F . .
-    . . . . .  . F . F .  . . . . .  . F . F .
-    . . . . .  . . F . .  . . . . .  . . F . .
-    . . . . .  . . . . .  . . . . .  . . . . .
-
-               . . . . .
-               . . x . .
-               . x . x .
-               . . x . .
-               . . . . .
+    One starting state: the ascii cube in __init__, FB t-centers staged.
 
     lookup-table-5x5x5-step21-FB-t-centers-stage.cost-only.bin
     =========================================================
@@ -427,23 +379,7 @@ class Build555FBXCenterStage(BFS):
     """
     16! / (8! * 8!) = 12,870 states
 
-               . . . . .
-               . x . x .
-               . . . . .
-               . x . x .
-               . . . . .
-
-    . . . . .  . . . . .  . . . . .  . . . . .
-    . . . . .  . F . F .  . . . . .  . F . F .
-    . . . . .  . . . . .  . . . . .  . . . . .
-    . . . . .  . F . F .  . . . . .  . F . F .
-    . . . . .  . . . . .  . . . . .  . . . . .
-
-               . . . . .
-               . x . x .
-               . . . . .
-               . x . x .
-               . . . . .
+    One starting state: the ascii cube in __init__, FB x-centers staged.
 
     lookup-table-5x5x5-step22-FB-x-centers-stage.cost-only.bin
     =========================================================
@@ -505,13 +441,18 @@ class Build555FBXCenterStage(BFS):
 # ==================================================
 class Build555Phase3LRCenterStage(BFS):
     """
-       (8! / (4! * 4!))^2 = 4,900 states
+    (8! / (4! * 4!))^2 = 4,900 states
 
-                  . . . . .
-                  . . . . .
-                  . . . . .
-                  . . . . .
-                  . . . . .
+    First of the 432 starting states listed in __init__: the 432 LR center
+    patterns phase 3 accepts. Every member of the family is one LR t-center and
+    x-center distribution; the two fixed face centers (38 and 88) are blanked
+    because they never move.
+
+               . . . . .
+               . . . . .
+               . . . . .
+               . . . . .
+               . . . . .
 
     . . . . .  . . . . .  . . . . .  . . . . .
     . L L L .  . . . . .  . R R R .  . . . . .
@@ -519,23 +460,23 @@ class Build555Phase3LRCenterStage(BFS):
     . L L L .  . . . . .  . R R R .  . . . . .
     . . . . .  . . . . .  . . . . .  . . . . .
 
-                  . . . . .
-                  . . . . .
-                  . . . . .
-                  . . . . .
-                  . . . . .
+               . . . . .
+               . . . . .
+               . . . . .
+               . . . . .
+               . . . . .
 
-       lookup-table-5x5x5-step901-LR-center-stage.cost-only.bin
-       ========================================================
-       0 steps has 432 entries (8 percent, 0.00x previous step)
-       1 steps has 396 entries (8 percent, 0.92x previous step)
-       2 steps has 1,064 entries (21 percent, 2.69x previous step)
-       3 steps has 1,692 entries (34 percent, 1.59x previous step)
-       4 steps has 1,220 entries (24 percent, 0.72x previous step)
-       5 steps has 96 entries (1 percent, 0.08x previous step)
+    lookup-table-5x5x5-step901-LR-center-stage.cost-only.bin
+    ========================================================
+    0 steps has 432 entries (8 percent, 0.00x previous step)
+    1 steps has 396 entries (8 percent, 0.92x previous step)
+    2 steps has 1,064 entries (21 percent, 2.69x previous step)
+    3 steps has 1,692 entries (34 percent, 1.59x previous step)
+    4 steps has 1,220 entries (24 percent, 0.72x previous step)
+    5 steps has 96 entries (1 percent, 0.08x previous step)
 
-       Total: 4,900 entries
-       Average: 2.64 moves
+    Total: 4,900 entries
+    Average: 2.64 moves
     """
 
     def __init__(self):
@@ -994,42 +935,27 @@ class Build555Phase3LRCenterStage(BFS):
 
 class Build555EdgeOrientOuterOrbit(BFS):
     """
-       24! / (12! * 12!) = 2,704,156 states
+    24! / (12! * 12!) = 2,704,156 states
 
-                  . U . D .
-                  D . . . U
-                  . . . . .
-                  U . . . D
-                  . D . U .
+    One starting state: the ascii cube in __init__, every outer-orbit wing
+    oriented.
 
-    . D . U .  . D . U .  . D . U .  . D . U .
-    D . . . U  U . . . D  D . . . U  U . . . D
-    . . . . .  . . . . .  . . . . .  . . . . .
-    U . . . D  D . . . U  U . . . D  D . . . U
-    . U . D .  . U . D .  . U . D .  . U . D .
+    lookup-table-5x5x5-step902-EO-outer-orbit.cost-only.bin
+    ======================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 29 entries (0 percent, 14.50x previous step)
+    3 steps has 278 entries (0 percent, 9.59x previous step)
+    4 steps has 1,934 entries (0 percent, 6.96x previous step)
+    5 steps has 15,640 entries (0 percent, 8.09x previous step)
+    6 steps has 124,249 entries (4 percent, 7.94x previous step)
+    7 steps has 609,241 entries (22 percent, 4.90x previous step)
+    8 steps has 1,224,098 entries (45 percent, 2.01x previous step)
+    9 steps has 688,124 entries (25 percent, 0.56x previous step)
+    10 steps has 40,560 entries (1 percent, 0.06x previous step)
 
-                  . U . D .
-                  D . . . U
-                  . . . . .
-                  U . . . D
-                  . D . U .
-
-       lookup-table-5x5x5-step902-EO-outer-orbit.cost-only.bin
-       ======================================================
-       0 steps has 1 entries (0 percent, 0.00x previous step)
-       1 steps has 2 entries (0 percent, 2.00x previous step)
-       2 steps has 29 entries (0 percent, 14.50x previous step)
-       3 steps has 278 entries (0 percent, 9.59x previous step)
-       4 steps has 1,934 entries (0 percent, 6.96x previous step)
-       5 steps has 15,640 entries (0 percent, 8.09x previous step)
-       6 steps has 124,249 entries (4 percent, 7.94x previous step)
-       7 steps has 609,241 entries (22 percent, 4.90x previous step)
-       8 steps has 1,224,098 entries (45 percent, 2.01x previous step)
-       9 steps has 688,124 entries (25 percent, 0.56x previous step)
-       10 steps has 40,560 entries (1 percent, 0.06x previous step)
-
-       Total: 2,704,156 entries
-       Average: 7.95 moves
+    Total: 2,704,156 entries
+    Average: 7.95 moves
     """
 
     def __init__(self):
@@ -1076,39 +1002,23 @@ class Build555EdgeOrientOuterOrbit(BFS):
 
 class Build555EdgeOrientInnerOrbit(BFS):
     """
-       2^12 = 4,096 dense ranks; 2,048 even-parity states are reachable
+    2^12 = 4,096 dense ranks; 2,048 even-parity states are reachable
 
-                  . . U . .
-                  . . . . .
-                  U . . . U
-                  . . . . .
-                  . . U . .
+    One starting state: the ascii cube in __init__, every midge oriented.
 
-    . . U . .  . . U . .  . . U . .  . . U . .
-    . . . . .  . . . . .  . . . . .  . . . . .
-    U . . . U  U . . . U  U . . . U  U . . . U
-    . . . . .  . . . . .  . . . . .  . . . . .
-    . . U . .  . . U . .  . . U . .  . . U . .
+    lookup-table-5x5x5-step903-EO-inner-orbit.cost-only.bin
+    ======================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 25 entries (1 percent, 12.50x previous step)
+    3 steps has 202 entries (9 percent, 8.08x previous step)
+    4 steps has 620 entries (30 percent, 3.07x previous step)
+    5 steps has 900 entries (43 percent, 1.45x previous step)
+    6 steps has 285 entries (13 percent, 0.32x previous step)
+    7 steps has 13 entries (0 percent, 0.05x previous step)
 
-                  . . U . .
-                  . . . . .
-                  U . . . U
-                  . . . . .
-                  . . U . .
-
-       lookup-table-5x5x5-step903-EO-inner-orbit.cost-only.bin
-       ======================================================
-       0 steps has 1 entries (0 percent, 0.00x previous step)
-       1 steps has 2 entries (0 percent, 2.00x previous step)
-       2 steps has 25 entries (1 percent, 12.50x previous step)
-       3 steps has 202 entries (9 percent, 8.08x previous step)
-       4 steps has 620 entries (30 percent, 3.07x previous step)
-       5 steps has 900 entries (43 percent, 1.45x previous step)
-       6 steps has 285 entries (13 percent, 0.32x previous step)
-       7 steps has 13 entries (0 percent, 0.05x previous step)
-
-       Total: 2,048 entries
-       Average: 4.61 moves
+    Total: 2,048 entries
+    Average: 4.61 moves
     """
 
     def __init__(self):
@@ -1198,6 +1108,30 @@ class StartingStatesBuild555Phase4(BFS):
 class Build555Phase4(BFS):
     """
     Move one group of 4-edges out of the z-plane
+
+    C(12,4)^3 = 495^3 = 121,287,375 dense ranks: the high wing, midge and low
+    wing groups each pick 4 of 12 slots. First of the 343,000 = 70^3 starting
+    states in builder555ss.starting_states_phase4. Every member of that family
+    marks the group of four edges being parked with L and the other eight with
+    x, so the starts differ only in where those marks sit.
+
+               . L L L .
+               x . . . x
+               x . . . x
+               x . . . x
+               . L L L .
+
+    . x x x .  . L L L .  . x x x .  . L L L .
+    L . . . L  L . . . x  x . . . x  x . . . L
+    L . . . L  L . . . x  x . . . x  x . . . L
+    L . . . L  L . . . x  x . . . x  x . . . L
+    . x x x .  . x x x .  . x x x .  . x x x .
+
+               . x x x .
+               x . . . x
+               x . . . x
+               x . . . x
+               . x x x .
 
     lookup-table-5x5x5-step40-phase4.cost-only.bin
     ==============================================
@@ -1300,6 +1234,29 @@ class Build555Phase5Centers(BFS):
     Dense rank is C(8,4)^4 = 24,010,000 (LR t/x and FB t/x occupancy).
     Phase-5 moves reach 432 * 4900 = 2,116,800 of those.
 
+    First of the 36 starting states listed in __init__: solved LR bars plus one
+    of the six FB vertical-bar patterns. The family is those 6 FB patterns times
+    the 6 LR patterns phase 5 accepts; the four fixed face centers (38, 63, 88,
+    113) are blanked because they never move.
+
+               . . . . .
+               . . . . .
+               . . . . .
+               . . . . .
+               . . . . .
+
+    . . . . .  . . . . .  . . . . .  . . . . .
+    . L L L .  . B F B .  . R R R .  . F B F .
+    . L . L .  . B . B .  . R . R .  . F . F .
+    . L L L .  . B F B .  . R R R .  . F B F .
+    . . . . .  . . . . .  . . . . .  . . . . .
+
+               . . . . .
+               . . . . .
+               . . . . .
+               . . . . .
+               . . . . .
+
     lookup-table-5x5x5-step51-phase5-centers.cost-only.bin
     ======================================================
     0 steps has 36 entries (0 percent, 0.00x previous step)
@@ -1386,6 +1343,31 @@ class Build555Phase5FBCentersHighEdgeMidge(BFS):
     FB t/x occupancy, then the 4 labeled high wings among the 8 x-union-y
     high slots, then occupancy of the 4 midges among the matching 8 midge slots.
 
+    First of the 144 starting states that _phase5_combo_starting_cubes builds:
+    one of the six FB vertical-bar patterns crossed with the 24 orderings of the
+    ABCD high-wing labels. The four high wings are distinguishable (rank symbols
+    ABCDx) while the four midges are interchangeable L marks (symbols Lx), so
+    the family is 6 * 24 starts. The two fixed FB face centers (63 and 113) are
+    blanked because they never move.
+
+               . x x . .
+               . . . . .
+               . . . . .
+               . . . . .
+               . . x x .
+
+    . . . . .  . . . . .  . . . . .  . . . . .
+    . . . . B  . B F B .  . . . . D  . F B F .
+    L . . . L  . B . B .  L . . . L  . F . F .
+    A . . . .  . B F B .  C . . . .  . F B F .
+    . . . . .  . . . . .  . . . . .  . . . . .
+
+               . x x . .
+               . . . . .
+               . . . . .
+               . . . . .
+               . . x x .
+
     lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.cost-only.bin
     ===========================================================================
     0 steps has 144 entries (0 percent, 0.00x previous step)
@@ -1434,6 +1416,31 @@ class Build555Phase5FBCentersLowEdgeMidge(BFS):
     Dense rank is C(8,4)^2 * P(8,4) * C(8,4) = 576,240,000:
     FB t/x occupancy, then the 4 labeled low wings among the 8 x-union-y
     low slots, then occupancy of the 4 midges among the matching 8 midge slots.
+
+    First of the 144 starting states that _phase5_combo_starting_cubes builds:
+    one of the six FB vertical-bar patterns crossed with the 24 orderings of the
+    ABCD low-wing labels. The four low wings are distinguishable (rank symbols
+    ABCDx) while the four midges are interchangeable L marks (symbols Lx), so
+    the family is 6 * 24 starts. The two fixed FB face centers (63 and 113) are
+    blanked because they never move.
+
+               . . x x .
+               . . . . .
+               . . . . .
+               . . . . .
+               . x x . .
+
+    . . . . .  . . . . .  . . . . .  . . . . .
+    A . . . .  . B F B .  C . . . .  . F B F .
+    L . . . L  . B . B .  L . . . L  . F . F .
+    . . . . B  . B F B .  . . . . D  . F B F .
+    . . . . .  . . . . .  . . . . .  . . . . .
+
+               . . x x .
+               . . . . .
+               . . . . .
+               . . . . .
+               . x x . .
 
     lookup-table-5x5x5-step57-phase5-fb-centers-low-edge-and-midge.cost-only.bin
     ==========================================================================
@@ -1515,7 +1522,52 @@ def _solved_555_projected_to(squares):
 
 class Build555PairLastEightEdgesEdgesOnly(BFS):
     """
-    Should be (8!^2)/2 812,851,200
+    8! * (8! / 2) = 812,851,200 states, ranked as
+    rank(H) * (8! / 2) + even_rank(inverse(H) composed with L): the permutation
+    of the eight high wings times the even matching that takes them onto the
+    eight low wings.
+
+    One starting state: the eight U and D edges paired and solved.
+
+               . U U U .
+               U . . . U
+               U . . . U
+               U . . . U
+               . U U U .
+
+    . L L L .  . F F F .  . R R R .  . B B B .
+    . . . . .  . . . . .  . . . . .  . . . . .
+    . . . . .  . . . . .  . . . . .  . . . . .
+    . . . . .  . . . . .  . . . . .  . . . . .
+    . L L L .  . F F F .  . R R R .  . B B B .
+
+               . D D D .
+               D . . . D
+               D . . . D
+               D . . . D
+               . D D D .
+
+    lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.cost-only.bin
+    =========================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 26 entries (0 percent, 6.50x previous step)
+    3 steps has 156 entries (0 percent, 6.00x previous step)
+    4 steps has 999 entries (0 percent, 6.40x previous step)
+    5 steps has 5,892 entries (0 percent, 5.90x previous step)
+    6 steps has 36,376 entries (0 percent, 6.17x previous step)
+    7 steps has 222,480 entries (0 percent, 6.12x previous step)
+    8 steps has 1,301,886 entries (0 percent, 5.85x previous step)
+    9 steps has 7,238,228 entries (0 percent, 5.56x previous step)
+    10 steps has 36,410,756 entries (4 percent, 5.03x previous step)
+    11 steps has 144,974,952 entries (17 percent, 3.98x previous step)
+    12 steps has 343,690,470 entries (42 percent, 2.37x previous step)
+    13 steps has 262,142,742 entries (32 percent, 0.76x previous step)
+    14 steps has 16,825,016 entries (2 percent, 0.06x previous step)
+    15 steps has 1,216 entries (0 percent, 0.00x previous step)
+
+    Total: 812,851,200 entries
+    Average: 12.06 moves
     """
 
     def __init__(self):
@@ -1549,8 +1601,28 @@ class Build555Phase6Centers(BFS):
     """
     6 * 6 * 4,900 = 176,400 states
 
-    lookup-table-5x5x5-step61-phase6-centers.txt
-    ============================================
+    One starting state: solved LR, FB and UD centers.
+
+               . . . . .
+               . U U U .
+               . U . U .
+               . U U U .
+               . . . . .
+
+    . . . . .  . . . . .  . . . . .  . . . . .
+    . L . . .  . F . . .  . R . . .  . B . . .
+    . . . . .  . . . . .  . . . . .  . . . . .
+    . . . L .  . . . F .  . . . R .  . . . B .
+    . . . . .  . . . . .  . . . . .  . . . . .
+
+               . . . . .
+               . D D D .
+               . D . D .
+               . D D D .
+               . . . . .
+
+    lookup-table-5x5x5-step61-phase6-centers.cost-only.bin
+    ======================================================
     0 steps has 1 entries (0 percent, 0.00x previous step)
     1 steps has 4 entries (0 percent, 4.00x previous step)
     2 steps has 42 entries (0 percent, 10.50x previous step)
@@ -1586,122 +1658,4 @@ class Build555Phase6Centers(BFS):
             use_c=True,
             use_ranked_cost=True,
             ranked_cost_square_groups=PHASE6_CENTER_SQUARE_GROUPS_555,
-        )
-
-
-class Build555Phase6HighEdgeMidge(BFS):
-    """
-    8! = 40,320 states
-
-    lookup-table-5x5x5-step62-phase6-high-edge-midge.txt
-    ====================================================
-    0 steps has 1 entries (0 percent, 0.00x previous step)
-    1 steps has 4 entries (0 percent, 4.00x previous step)
-    2 steps has 26 entries (0 percent, 6.50x previous step)
-    3 steps has 128 entries (0 percent, 4.92x previous step)
-    4 steps has 511 entries (1 percent, 3.99x previous step)
-    5 steps has 1,772 entries (4 percent, 3.47x previous step)
-    6 steps has 5,404 entries (13 percent, 3.05x previous step)
-    7 steps has 11,596 entries (28 percent, 2.15x previous step)
-    8 steps has 14,656 entries (36 percent, 1.26x previous step)
-    9 steps has 6,146 entries (15 percent, 0.42x previous step)
-    10 steps has 76 entries (0 percent, 0.01x previous step)
-
-    Total: 40,320 entries
-    Average: 7.40 moves
-    """
-
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "5x5x5-phase6-high-edge-midge",
-            PHASE6_ILLEGAL_MOVES,
-            # fmt: on
-            "5x5x5",
-            "lookup-table-5x5x5-step62-phase6-high-edge-midge.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-            . U U - .
-            - . . . U
-            U . . . U
-            U . . . -
-            . - U U .
-
- . - L L .  . - F F .  . - R R .  . - B B .
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- . L L - .  . F F - .  . R R - .  . B B - .
-
-            . D D - .
-            - . . . D
-            D . . . D
-            D . . . -
-            . - D D .""",
-                    "ascii",
-                ),
-            ),
-            use_edges_pattern=True,
-        )
-
-
-class Build555Phase6LowEdgeMidge(BFS):
-    """
-    8! = 40,320 states
-
-    lookup-table-5x5x5-step63-phase6-low-edge-midge.txt
-    ===================================================
-    0 steps has 1 entries (0 percent, 0.00x previous step)
-    1 steps has 4 entries (0 percent, 4.00x previous step)
-    2 steps has 26 entries (0 percent, 6.50x previous step)
-    3 steps has 128 entries (0 percent, 4.92x previous step)
-    4 steps has 511 entries (1 percent, 3.99x previous step)
-    5 steps has 1,772 entries (4 percent, 3.47x previous step)
-    6 steps has 5,404 entries (13 percent, 3.05x previous step)
-    7 steps has 11,596 entries (28 percent, 2.15x previous step)
-    8 steps has 14,656 entries (36 percent, 1.26x previous step)
-    9 steps has 6,146 entries (15 percent, 0.42x previous step)
-    10 steps has 76 entries (0 percent, 0.01x previous step)
-
-    Total: 40,320 entries
-    Average: 7.40 moves
-    """
-
-    def __init__(self):
-        BFS.__init__(
-            self,
-            "5x5x5-phase6-low-edge-midge",
-            PHASE6_ILLEGAL_MOVES,
-            # fmt: on
-            "5x5x5",
-            "lookup-table-5x5x5-step63-phase6-low-edge-midge.txt",
-            False,  # store_as_hex
-            # starting cubes
-            (
-                (
-                    """
-            . - U U .
-            U . . . -
-            U . . . U
-            - . . . U
-            . U U - .
-
- . L L - .  . F F - .  . R R - .  . B B - .
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- . - L L .  . - F F .  . - R R .  . - B B .
-
-            . - D D .
-            D . . . -
-            D . . . D
-            - . . . D
-            . D D - .""",
-                    "ascii",
-                ),
-            ),
-            use_edges_pattern=True,
         )

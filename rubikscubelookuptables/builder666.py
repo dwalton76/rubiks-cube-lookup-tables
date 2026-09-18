@@ -56,6 +56,52 @@ def _ranked_inner_x_axis_starting_state(axis):
 # phase 1 stages LR inner x; phase 2 stages UD inner x while pairing LR obliques
 # ==================================================
 class Build666Phase2UDInnerXCentersStageBinary(BFS):
+    """
+    Which eight of the 24 inner x-centers belong on U or D.
+
+    The coordinate is a single 24-slot multiset holding eight "U" and sixteen "x",
+    so 24! / (8! * 16!) = 735,471 states, every one of them reachable.
+
+    _ranked_inner_x_axis_starting_state("UD") encodes the one goal rather than
+    passing an ascii cube, so it is drawn here:
+
+                 . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . . U U . .
+                 . . . . . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . x x . .  . . x x . .  . . x x . .  . . x x . .
+    . . x x . .  . . x x . .  . . x x . .  . . x x . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . . U U . .
+                 . . . . . .
+                 . . . . . .
+
+    lookup-table-6x6x6-step11-UD-inner-x-centers-stage-binary.cost-only.bin
+    =======================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 82 entries (0 percent, 20.50x previous step)
+    3 steps has 1,206 entries (0 percent, 14.71x previous step)
+    4 steps has 14,116 entries (1 percent, 11.70x previous step)
+    5 steps has 123,404 entries (16 percent, 8.74x previous step)
+    6 steps has 422,508 entries (57 percent, 3.42x previous step)
+    7 steps has 173,254 entries (23 percent, 0.41x previous step)
+    8 steps has 896 entries (0 percent, 0.01x previous step)
+
+    Total: 735,471 entries
+    Average: 6.03 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -71,6 +117,53 @@ class Build666Phase2UDInnerXCentersStageBinary(BFS):
 
 
 class Build666Phase1LRInnerXCentersStageBinary(BFS):
+    """
+    Which eight of the 24 inner x-centers belong on L or R.
+
+    Same 24-slot multiset as the UD table, so 24! / (8! * 16!) = 735,471 states.
+    The two tables share a histogram because a cube rotation carries one goal onto
+    the other and the move set is unrestricted at this point.
+
+    _ranked_inner_x_axis_starting_state("LR") encodes the one goal rather than
+    passing an ascii cube, so it is drawn here:
+
+                 . . . . . .
+                 . . . . . .
+                 . . x x . .
+                 . . x x . .
+                 . . . . . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . L L . .  . . x x . .  . . L L . .  . . x x . .
+    . . L L . .  . . x x . .  . . L L . .  . . x x . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . . . . .
+                 . . x x . .
+                 . . x x . .
+                 . . . . . .
+                 . . . . . .
+
+    lookup-table-6x6x6-step12-LR-inner-x-centers-stage-binary.cost-only.bin
+    =======================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 82 entries (0 percent, 20.50x previous step)
+    3 steps has 1,206 entries (0 percent, 14.71x previous step)
+    4 steps has 14,116 entries (1 percent, 11.70x previous step)
+    5 steps has 123,404 entries (16 percent, 8.74x previous step)
+    6 steps has 422,508 entries (57 percent, 3.42x previous step)
+    7 steps has 173,254 entries (23 percent, 0.41x previous step)
+    8 steps has 896 entries (0 percent, 0.01x previous step)
+
+    Total: 735,471 entries
+    Average: 6.03 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -113,7 +206,12 @@ UFBD_RIGHT_OBLIQUE_EDGES_666 = (
 
 class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
     """
-    (16! / (8! * 8!))^2 = 165,636,900 states
+    Stage the UD left and right obliques, one mixed-radix rank per orbit.
+
+    Each orbit spans the 16 U, F, B and D squares of its kind and eight of them
+    have to end up on U or D, so each contributes 16! / (8! * 8!) = 12,870 and the
+    pair gives (16! / (8! * 8!))^2 = 165,636,900 states. The move set keeps the
+    already staged LR inner x-centers fixed, and __init__ carries the ascii goal.
 
     lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage.cost-only.bin
     ===========================================================================
@@ -183,7 +281,12 @@ class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
 
 class Build666Phase3UDLeftObliqueOuterXCentersStage(BFS):
     """
-    (16! / (8! * 8!))^2 = 165,636,900 states
+    Stage the UD left obliques against the UD outer x-centers.
+
+    Same shape as step31: two 16-square orbits, eight squares each destined for U
+    or D, so (16! / (8! * 8!))^2 = 165,636,900 states. Pairing an oblique with the
+    outer x-centers is the cheaper of the two coordinates because the outer
+    x-centers move under plain outer turns. __init__ carries the ascii goal.
 
     lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage.cost-only.bin
     =============================================================================
@@ -250,7 +353,12 @@ class Build666Phase3UDLeftObliqueOuterXCentersStage(BFS):
 
 class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
     """
-    (16! / (8! * 8!))^2 = 165,636,900 states
+    Stage the UD right obliques against the UD outer x-centers.
+
+    The mirror image of step32, so it has the same (16! / (8! * 8!))^2 =
+    165,636,900 states and the same histogram: reflecting the cube swaps the left
+    and right obliques while fixing the outer x-centers and the move set.
+    __init__ carries the ascii goal.
 
     lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage.cost-only.bin
     ==============================================================================
@@ -401,7 +509,71 @@ def _daisy_starting_states_666(selected_orbits):
 
 
 class _Build666DaisyInnerXSpineCenters(BFS):
-    """Dense ranked-cost 70^5 builder: every inner-x orbit plus one axis's obliques."""
+    """
+    Dense ranked-cost 70^5 builder: every inner-x orbit plus one axis's obliques.
+
+    Five orbits of eight squares are tracked, the UD, LR and FB inner x-centers
+    plus the left and right obliques of `axis`.  Each orbit puts four squares on
+    its primary face and four on the opposite face, so each ranks 8! / (4! * 4!)
+    = 70 ways and the coordinate is 70^5 = 1,680,700,000 states.
+
+    _install_daisy_inner_x_spine_builders_666 stamps out three concrete tables
+    from this base, one per oblique axis.  They are the same cost function under
+    three indexings, because a cube rotation carrying one axis onto another
+    carries its tracked squares along, so all three share the histogram below.
+
+    _daisy_starting_states_666 generates the goals instead of passing an ascii
+    cube.  It walks the product of native and obliques-swapped orientations over
+    every axis that appears, but the inner-x orbits never swap, so only the one
+    oblique axis varies and the eight products collapse to two goals.  This is
+    the first of them for the UD table; the second exchanges the U and D
+    obliques while leaving all three inner-x orbits where they are, and the LR
+    and FB tables are the same pair of goals rotated onto their own axis.
+
+                 . . . . . .
+                 . . U U . .
+                 . U U U U .
+                 . U U U U .
+                 . . U U . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . L L . .  . . F F . .  . . R R . .  . . B B . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . D D . .
+                 . D D D D .
+                 . D D D D .
+                 . . D D . .
+                 . . . . . .
+
+    lookup-table-6x6x6-daisy-all-inner-x-plus-UD-obliques-centers.cost-only.bin
+    ===========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 20 entries (0 percent, 10.00x previous step)
+    2 steps has 292 entries (0 percent, 14.60x previous step)
+    3 steps has 3,614 entries (0 percent, 12.38x previous step)
+    4 steps has 35,016 entries (0 percent, 9.69x previous step)
+    5 steps has 262,910 entries (0 percent, 7.51x previous step)
+    6 steps has 1,678,254 entries (0 percent, 6.38x previous step)
+    7 steps has 9,314,920 entries (0 percent, 5.55x previous step)
+    8 steps has 42,467,206 entries (2 percent, 4.56x previous step)
+    9 steps has 142,043,698 entries (8 percent, 3.34x previous step)
+    10 steps has 310,836,418 entries (18 percent, 2.19x previous step)
+    11 steps has 436,034,242 entries (25 percent, 1.40x previous step)
+    12 steps has 404,658,064 entries (24 percent, 0.93x previous step)
+    13 steps has 242,558,432 entries (14 percent, 0.60x previous step)
+    14 steps has 83,622,720 entries (4 percent, 0.34x previous step)
+    15 steps has 7,153,472 entries (0 percent, 0.09x previous step)
+    16 steps has 30,720 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.24 moves
+    """
 
     axis = None
     table_slug = None

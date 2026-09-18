@@ -21,9 +21,6 @@ Python + C BFS/IDA builders for the prune tables consumed by `../rubiks-cube-NxN
 | `rubikscubelookuptables/builder-crunch-workq.c` | C work-queue expander used by Python builders |
 | `rubikscubelookuptables/builder-find-new-states.c` | Frontier helper |
 | `utils/builderui.py` | CLI: `./utils/builderui.py BuildXxx [--depth N] [--cores N]` |
-| `utils/build-ida-graph.py` | Convert a builder’s JSON graph for the solver |
-| `utils/json-to-binary.py`, `json-combine.py` | Classic `.json` → `.bin` (some steps need ~16G RAM) |
-| `utils/build-perfect-hash.py` | Combo tables → perfect-hash files for `ida_search_via_graph` |
 | `utils/lookup-table-convert-to-cost-only.py` | Sparse text → cost-only |
 | `lookup-tables/` | Production outputs (and copies the solver may use) |
 | `tmp/` | Scratch; `make test` and every `builderui` run start empty |
@@ -61,14 +58,12 @@ flowchart TD
   search --> crunch["builder-crunch-workq / ranked CAS mmap"]
   crunch --> save["builder.save"]
   save --> ranked["name.cost-only.bin + .json"]
-  save --> graph["name.json then build-ida-graph / json-to-binary"]
   save --> hist["histogram.txt unless RUBIKS_SKIP_HISTOGRAM"]
 ```
 
 1. `builderui.py` wipes `./tmp`, instantiates the class named on the command line from `builder{333…777}.py`.
 2. `search(depth, cores)` BFS/IDA-expands. Ranked builders mmap a dense cost array (prefer `/dev/shm`; disk-backed mmap will thrash).
 3. `save()` writes the table under `RUBIKS_LOOKUP_TABLE_DIR` or `lookup-tables/`, plus sidecar JSON for ranked files.
-4. Makefile recipes then post-process: `build-ida-graph.py`, `json-to-binary.py`, `json-combine.py`, or `build-perfect-hash.py`.
 
 `--code-gen` on `builderui.py` prints Python IDA helper classes; it does not search.
 
@@ -78,15 +73,7 @@ Typical **ranked** invocation (only when asked):
 ./utils/builderui.py Build777Phase56UDLeftMiddleObliqueCentersStage --cores 22
 ```
 
-Typical **classic graph** chain (only when asked):
-
-```bash
-./utils/builderui.py Build555LRCenterStageTCenter
-./utils/build-ida-graph.py Build555LRCenterStageTCenter
-./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.json
-```
-
-Copy or upload the solver-facing artifact (`.bin`, `.cost-only.bin`, perfect-hash) so `download_file_if_needed()` in the solver can see it. The solver wget path is the **basename** + `.gz` on S3.
+Copy or upload the solver-facing `.cost-only.bin` artifact so `download_file_if_needed()` in the solver can see it. The solver wget path is the **basename** + `.gz` on S3.
 
 ## Makefile map (production)
 
@@ -94,7 +81,7 @@ Copy or upload the solver-facing artifact (`.bin`, `.cost-only.bin`, perfect-has
 | --- | --- | --- |
 | `333` | MicroPython 3x3 phases | 3x3 / EV3 path |
 | `444-phase1-ranked`, `444-centers`, `444-pair-all-edges` | 4x4 ranked phase 1, all-center 70^3, all-edge pairing | `ida_search_444_phase1`, `ida_search_444_phase2` |
-| `555-phase1` … `555-phase6` | 5x5 prune + perfect hashes | graph IDA; phase5/6 combo hashes |
+| `555-phase1` … `555-phase6` | 5x5 ranked cost arrays | dedicated phase 1–6 C searchers |
 | `666-phase1` | Stage LR inner x-centers | `ida_search_666_centers_stage` |
 | `666-phase2` | Stage UD inner x-centers while pairing LR obliques | `ida_search_666_centers_stage` |
 | `666-phase3-preserve-inner-x` | UD oblique / outer-x pairs | same, phase 3 |

@@ -46,10 +46,7 @@ class ScriptInventoryTests(unittest.TestCase):
             {
                 "binary-search-lookup.py",
                 "build-333-phase3-starting-states.py",
-                "build-ida-graph.py",
-                "build-perfect-hash.py",
                 "builderui.py",
-                "convert-pt-state-to-perfect-hash.py",
                 "extrapolate.py",
                 "gods-number-bound.py",
                 "json-combine.py",
@@ -67,7 +64,6 @@ class ScriptInventoryTests(unittest.TestCase):
                 "print-histogram.py",
                 "print-lookup-table-states.py",
                 "print-starting-states.py",
-                "read-perfect-hash-index.py",
             },
         )
 
@@ -193,19 +189,6 @@ class Build333Phase3StartingStatesTests(ScratchTestCase):
         width = int(lines[0])
         state = lines[1].strip()[2 : 2 + width]
         self.assertEqual(len(state), width)
-
-
-class BuildIdaGraphTests(unittest.TestCase):
-    """utils/build-ida-graph.py only knows the builders it has branches for."""
-
-    def test_an_unknown_builder_is_rejected(self):
-        completed = run_utils_script("build-ida-graph.py", "BuildNothing", expect_success=False)
-        self.assertNotEqual(completed.returncode, 0)
-
-    def test_it_needs_a_builder_name(self):
-        completed = run_utils_script("build-ida-graph.py", expect_success=False)
-        self.assertNotEqual(completed.returncode, 0)
-        self.assertIn("IndexError", completed.stderr)
 
 
 class PrintStartingStatesTests(unittest.TestCase):
