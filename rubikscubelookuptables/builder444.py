@@ -224,14 +224,23 @@ class Build444HighLowEdgesEdgesAllMoves(BFS):
 
 
 # phase 3+4
-# all centers (58,800 states); all 12 edges paired
+# all centers (70^3 = 343,000 ranked; 58,800 reachable); all 12 edges paired
 # ==================================================
+
+PHASE34_CENTER_RANK_GROUPS_444 = (
+    centers_444[0:4] + centers_444[20:24],  # UD
+    centers_444[4:8] + centers_444[12:16],  # LR
+    centers_444[8:12] + centers_444[16:20],  # FB
+)
 
 
 class Build444Reduce333Centers(BFS):
     """
-    lookup-table-4x4x4-step31-all-centers.txt
-    =========================================
+    lookup-table-4x4x4-step31-all-centers.cost-only.bin
+    ==================================================
+    Dense mixed-radix rank of three C(8,4)=70 axis groups (UD, LR, FB).
+    343,000 ranks; 58,800 reachable under the phase-3 move set.
+
     0 steps has      1 entries ( 0 percent, 0.00x previous step)
     1 steps has      6 entries ( 0 percent, 6.00x previous step)
     2 steps has     83 entries ( 0 percent, 13.83x previous step)
@@ -276,6 +285,8 @@ class Build444Reduce333Centers(BFS):
                 ),
             ),
             use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=PHASE34_CENTER_RANK_GROUPS_444,
         )
 
 

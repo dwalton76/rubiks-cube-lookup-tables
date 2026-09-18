@@ -125,19 +125,6 @@
     "states_md5": "1b97162f1a7486f3e406f90b4a7e5eac",
     "depth": 4
   },
-  "Build444Reduce333Centers": {
-    "filename": "lookup-tables/lookup-table-4x4x4-step31-all-centers.txt",
-    "lines": 4665,
-    "states_per_depth": {
-      "0": 1,
-      "1": 6,
-      "2": 83,
-      "3": 724,
-      "4": 3851
-    },
-    "states_md5": "5cd9232090acae434186f6a8bee9f320",
-    "depth": 4
-  },
   "Build555EdgeOrientInnerOrbit": {
     "filename": "lookup-tables/lookup-table-5x5x5-step903-EO-inner-orbit.txt",
     "lines": 850,

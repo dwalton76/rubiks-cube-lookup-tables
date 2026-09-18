@@ -69,7 +69,7 @@ def main(json_filename: str, binary_filename: str, to_display: str) -> None:
 
     \b
     Example:
-        python utils/json-to-binary-display.py lookup-tables/lookup-table-4x4x4-step31-all-centers.json lookup-tables/lookup-table-4x4x4-step31-all-centers.bin 0,1,2
+        python utils/json-to-binary-display.py lookup-tables/lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.json lookup-tables/lookup-table-5x5x5-step11-LR-centers-stage-t-center-only.bin 0,1,2
     """
     assert json_filename.endswith(".json")
     assert binary_filename.endswith(".bin")

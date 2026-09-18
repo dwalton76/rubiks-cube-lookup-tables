@@ -47,6 +47,7 @@ BUILD_TIMEOUT = 300
 # builderui call in the Makefile.
 SKIPPED_BUILDERS = {
     "Build444PairAllEdges": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build444Reduce333Centers": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build444AllCentersStageSymmetryRanked": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build444LRCentersStageRanked": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build444HighLowEdgesEdgesAllMoves": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",

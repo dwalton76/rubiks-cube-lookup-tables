@@ -62,9 +62,7 @@ wheel:
 	./utils/builderui.py Build444HighLowEdgesEdgesAllMoves --cores 22
 
 444-centers: clean
-	./utils/builderui.py Build444Reduce333Centers
-	./utils/build-ida-graph.py Build444Reduce333Centers
-	./utils/json-to-binary.py lookup-tables/lookup-table-4x4x4-step31-all-centers.json
+	./utils/builderui.py Build444Reduce333Centers --cores 22
 
 444-pair-all-edges: clean
 	./utils/builderui.py Build444PairAllEdges
