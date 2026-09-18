@@ -94,21 +94,9 @@ wheel:
 	./utils/builderui.py Build555Phase5FBCentersLowEdgeMidge --cores 10
 
 555-phase6: clean
-	# Combo table used only to build a perfect-hash file for IDA (~813 million states).
-	./utils/builderui.py Build555PairLastEightEdgesEdgesOnly
-	./utils/build-perfect-hash.py lookup-tables/lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt
-
-	./utils/builderui.py Build555Phase6Centers
-	./utils/build-ida-graph.py Build555Phase6Centers
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step61-phase6-centers.json
-
-	./utils/builderui.py Build555Phase6HighEdgeMidge
-	./utils/build-ida-graph.py Build555Phase6HighEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step62-phase6-high-edge-midge.json
-
-	./utils/builderui.py Build555Phase6LowEdgeMidge
-	./utils/build-ida-graph.py Build555Phase6LowEdgeMidge
-	./utils/json-to-binary.py lookup-tables/lookup-table-5x5x5-step63-phase6-low-edge-midge.json
+	# Dense ranked artifacts: 812,851,200 edge entries and 176,400 center entries.
+	./utils/builderui.py Build555PairLastEightEdgesEdgesOnly --cores 10
+	./utils/builderui.py Build555Phase6Centers --cores 10
 
 555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6
 

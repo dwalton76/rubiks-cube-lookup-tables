@@ -2,6 +2,7 @@
 
 # standard libraries
 import datetime as dt
+import fcntl
 import glob
 import itertools
 import json
@@ -46,6 +47,7 @@ from rubikscubennnsolver.RubiksCube555 import (
     RubiksCube555,
     centers_555,
     edges_555,
+    edges_partner_555,
     edges_recolor_pattern_555,
     moves_555,
     rotate_555,
@@ -106,6 +108,37 @@ def even_permutation_size(length: int) -> int:
     if length < 2:
         raise ValueError("even permutation ranks require at least two symbols")
     return math.factorial(length) // 2
+
+
+def permutation_rank(permutation: Tuple[int, ...]) -> int:
+    """Return the zero-based lexicographic (Lehmer) rank of a permutation."""
+    length = len(permutation)
+    if not length or set(permutation) != set(range(length)):
+        raise ValueError("expected a permutation of range(n), n >= 1")
+
+    remaining = list(range(length))
+    rank = 0
+    for index, value in enumerate(permutation):
+        digit = remaining.index(value)
+        rank = (rank * (length - index)) + digit
+        remaining.pop(digit)
+    return rank
+
+
+def permutation_unrank(rank: int, length: int) -> Tuple[int, ...]:
+    """Inverse of :func:`permutation_rank`."""
+    universe = math.factorial(length)
+    if length < 1 or rank < 0 or rank >= universe:
+        raise ValueError(f"rank must be in [0, {universe}) for a positive permutation length")
+
+    digits = [0] * length
+    for index in range(length - 1, -1, -1):
+        radix = length - index
+        digits[index] = rank % radix
+        rank //= radix
+
+    remaining = list(range(length))
+    return tuple(remaining.pop(digit) for digit in digits)
 
 
 def even_permutation_rank(permutation: Tuple[int, ...]) -> int:
@@ -176,6 +209,60 @@ def edge_pairing_rank(state: str) -> int:
     low_position = {symbol: index for index, symbol in enumerate(low)}
     permutation = tuple(low_position[symbol] for symbol in high)
     return even_permutation_rank(permutation)
+
+
+def three_edge_pairing_rank(state: str) -> int:
+    """
+    Rank high-to-midge and low-to-midge permutations with their shared parity.
+
+    The state is high slots, then midge slots, then low slots.  Labels are
+    normalized by their midge positions.  If H and L are the resulting
+    permutations, D[i] = inverse(H)[L[i]] is even, and the dense rank is
+    rank(H) * (n! / 2) + even_rank(D).
+    """
+    if len(state) < 6 or len(state) % 3:
+        raise ValueError("three-edge-pairing state must contain three equal groups of at least two slots")
+
+    pair_count = len(state) // 3
+    high = state[:pair_count]
+    midge = state[pair_count : 2 * pair_count]
+    low = state[2 * pair_count :]
+    expected = set(midge)
+    if (
+        len(expected) != pair_count
+        or len(set(high)) != pair_count
+        or len(set(low)) != pair_count
+        or set(high) != expected
+        or set(low) != expected
+    ):
+        raise ValueError("three-edge-pairing groups must contain the same unique symbols")
+
+    midge_position = {symbol: index for index, symbol in enumerate(midge)}
+    high_permutation = tuple(midge_position[symbol] for symbol in high)
+    low_permutation = tuple(midge_position[symbol] for symbol in low)
+    inverse_high = [0] * pair_count
+    for position, value in enumerate(high_permutation):
+        inverse_high[value] = position
+    delta = tuple(inverse_high[value] for value in low_permutation)
+
+    return (permutation_rank(high_permutation) * even_permutation_size(pair_count)) + even_permutation_rank(delta)
+
+
+def three_edge_pairing_unrank(rank: int, pair_count: int) -> str:
+    """Return the canonical high/midge/low state for a three-edge rank."""
+    if pair_count < 2 or pair_count > 32:
+        raise ValueError("three-edge-pairing ranks support between 2 and 32 pairs")
+    even_universe = even_permutation_size(pair_count)
+    universe = math.factorial(pair_count) * even_universe
+    if rank < 0 or rank >= universe:
+        raise ValueError(f"rank must be in [0, {universe})")
+
+    symbols = "0123456789abcdefghijklmnopqrstuv"[:pair_count]
+    high_rank, delta_rank = divmod(rank, even_universe)
+    high = permutation_unrank(high_rank, pair_count)
+    delta = even_permutation_unrank(delta_rank, pair_count)
+    low = tuple(high[index] for index in delta)
+    return "".join(symbols[index] for index in high) + symbols + "".join(symbols[index] for index in low)
 
 
 def orientation_bits_rank(state: str) -> int:
@@ -670,6 +757,7 @@ class BFS(object):
         edge_pairing_partners=None,
         ranked_cost_move_flip_masks=None,
         ranked_cost_partner_flip_mask=0,
+        ranked_dense_frontier=False,
     ):
         self.name = name
         self.illegal_moves = illegal_moves
@@ -692,6 +780,7 @@ class BFS(object):
         self.edge_pairing_partners = tuple(edge_pairing_partners or ())
         self.ranked_cost_move_flip_masks = tuple(ranked_cost_move_flip_masks or ())
         self.ranked_cost_partner_flip_mask = ranked_cost_partner_flip_mask
+        self.ranked_dense_frontier = ranked_dense_frontier
         # Cube-state indexes (matching cube.state / rotate_xxx) that this table actually
         # cares about. Empty means we carry the full cube, including the "." placeholders.
         self.compact_squares = ()
@@ -722,10 +811,14 @@ class BFS(object):
         assert isinstance(self.use_cost_only, bool)
         assert isinstance(self.use_hash_cost_only, bool)
         assert isinstance(self.use_ranked_cost, bool)
+        assert isinstance(self.ranked_dense_frontier, bool)
+        if self.ranked_dense_frontier and not self.use_ranked_cost:
+            raise ValueError(f"{self}: dense frontier scans require use_ranked_cost=True")
         if self.ranked_cost_type not in (
             "multiset",
             "paired-multiset",
             "edge-pairing-even",
+            "three-edge-pairing-parity",
             "wing-binary",
             "orientation-bits",
             "center-symmetry-444",
@@ -928,13 +1021,17 @@ class BFS(object):
         if self.use_edges_pattern or self.use_centers_then_edges or self.store_as_hex:
             return ()
 
-        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
-            if len(self.ranked_cost_square_groups) != 2:
-                raise ValueError(f"{self}: edge pairing requires high- and low-slot square groups")
-            high, low = self.ranked_cost_square_groups
-            if len(high) < 2 or len(high) != len(low):
+        if getattr(self, "ranked_cost_type", "multiset") in (
+            "edge-pairing-even",
+            "three-edge-pairing-parity",
+        ):
+            expected_group_count = 2 if self.ranked_cost_type == "edge-pairing-even" else 3
+            if len(self.ranked_cost_square_groups) != expected_group_count:
+                raise ValueError(f"{self}: edge pairing requires {expected_group_count} equal square groups")
+            group_size = len(self.ranked_cost_square_groups[0])
+            if group_size < 2 or any(len(group) != group_size for group in self.ranked_cost_square_groups):
                 raise ValueError(f"{self}: edge-pairing groups must have the same length of at least two")
-            flat_squares = high + low
+            flat_squares = tuple(square for group in self.ranked_cost_square_groups for square in group)
             if len(set(flat_squares)) != len(flat_squares):
                 raise ValueError(f"{self}: edge-pairing square groups overlap")
             if len(self.edge_pairing_partners) != len(flat_squares):
@@ -943,6 +1040,13 @@ class BFS(object):
                 raise ValueError(f"{self}: edge-pairing squares and partner squares overlap")
             if len(set(self.edge_pairing_partners)) != len(self.edge_pairing_partners):
                 raise ValueError(f"{self}: edge-pairing partner squares contain duplicates")
+            for group in self.ranked_cost_square_groups:
+                if not self._squares_are_closed_orbit(list(group)):
+                    raise ValueError(f"{self}: edge-pairing square group is not a closed orbit: {group}")
+            for offset in range(0, len(self.edge_pairing_partners), group_size):
+                partner_group = self.edge_pairing_partners[offset : offset + group_size]
+                if not self._squares_are_closed_orbit(list(partner_group)):
+                    raise ValueError(f"{self}: edge-pairing partner group is not a closed orbit: {partner_group}")
             return flat_squares
 
         if getattr(self, "ranked_cost_type", "multiset") in (
@@ -993,21 +1097,30 @@ class BFS(object):
         return tuple(squares)
 
     def _state_for_workq(self, cube) -> str:
-        if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
-            if self.size != "4x4x4":
-                raise ValueError("edge-pairing recoloring is currently implemented only for 4x4x4")
-            partner_by_square = {square: partner for _, square, partner in wings_for_edges_recolor_pattern_444}
+        if getattr(self, "ranked_cost_type", "multiset") in (
+            "edge-pairing-even",
+            "three-edge-pairing-parity",
+        ):
+            if self.ranked_cost_type == "edge-pairing-even":
+                if self.size != "4x4x4":
+                    raise ValueError("edge-pairing-even recoloring is implemented only for 4x4x4")
+                partner_by_square = {square: partner for _, square, partner in wings_for_edges_recolor_pattern_444}
+            else:
+                if self.size != "5x5x5":
+                    raise ValueError("three-edge-pairing-parity recoloring is implemented only for 5x5x5")
+                partner_by_square = edges_partner_555
             edge_names = [
                 wing_str_map[cube.state[square] + cube.state[partner_by_square[square]]]
                 for square in self.compact_squares
             ]
-            pair_count = len(edge_names) // 2
-            if len(set(edge_names[:pair_count])) != pair_count or set(edge_names[:pair_count]) != set(
-                edge_names[pair_count:]
-            ):
-                raise ValueError(f"{self}: high and low slots do not contain the same 12 edges")
+            group_count = 2 if self.ranked_cost_type == "edge-pairing-even" else 3
+            pair_count = len(edge_names) // group_count
+            groups = [edge_names[index : index + pair_count] for index in range(0, len(edge_names), pair_count)]
+            if any(len(set(group)) != pair_count or set(group) != set(groups[0]) for group in groups):
+                raise ValueError(f"{self}: edge slot groups do not contain the same unique edges")
             symbols = "0123456789abcdefghijklmnopqrstuv"
-            symbol_by_edge = {edge: symbols[index] for index, edge in enumerate(edge_names[:pair_count])}
+            normalization_group = groups[0] if group_count == 2 else groups[1]
+            symbol_by_edge = {edge: symbols[index] for index, edge in enumerate(normalization_group)}
             return "".join(symbol_by_edge[edge] for edge in edge_names)
 
         if self.compact_squares:
@@ -1036,6 +1149,17 @@ class BFS(object):
             self.rank_groups = ()
             self.rank_universes = ()
             self.rank_universe = even_permutation_size(pair_count)
+            self._configure_ranked_output()
+            return
+
+        if getattr(self, "ranked_cost_type", "multiset") == "three-edge-pairing-parity":
+            pair_count = len(self.compact_squares) // 3
+            for state in states:
+                three_edge_pairing_rank(state)
+            self.edge_pairing_pair_count = pair_count
+            self.rank_groups = ()
+            self.rank_universes = ()
+            self.rank_universe = math.factorial(pair_count) * even_permutation_size(pair_count)
             self._configure_ranked_output()
             return
 
@@ -1175,6 +1299,22 @@ class BFS(object):
                 "completed_depth": max(self.stats),
                 "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
             }
+        elif getattr(self, "ranked_cost_type", "multiset") == "three-edge-pairing-parity":
+            metadata = {
+                "format": "dense-three-edge-pairing-parity-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": "rank(H) * (n! / 2) + even_rank(inverse(H) composed with L)",
+                "pair_count": self.edge_pairing_pair_count,
+                "high_squares": list(self.ranked_cost_square_groups[0]),
+                "midge_squares": list(self.ranked_cost_square_groups[1]),
+                "low_squares": list(self.ranked_cost_square_groups[2]),
+                "partner_squares": list(self.edge_pairing_partners),
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
         else:
             metadata = {
                 "format": (
@@ -1215,6 +1355,9 @@ class BFS(object):
                         move: mask for move, mask in zip(self.legal_moves, self.ranked_cost_move_flip_masks)
                     }
                     metadata["partner_flip_mask"] = self.ranked_cost_partner_flip_mask
+        metadata["frontier_mode"] = (
+            "dense-cost-scan" if getattr(self, "ranked_dense_frontier", False) else "ranked-record-workq"
+        )
         temporary = f"{self.ranked_metadata_filename}.tmp"
         with open(temporary, "w") as fh:
             json.dump(metadata, fh, indent=2, sort_keys=True)
@@ -1232,15 +1375,10 @@ class BFS(object):
         live_name = f"{self.name}.cost-only.bin.live"
         candidates = [directory for directory in (RANKED_COST_TMPFS, TMPDIR) if directory.is_dir()]
 
-        # A run that died before save() left its array behind. Reclaim that space before
-        # measuring, otherwise a stale tmpfs copy pushes us onto disk.
         for directory in candidates:
             leftover = directory / live_name
-            if leftover.exists():
-                leftover.unlink()
-
-        for directory in candidates:
-            if shutil.disk_usage(directory).free >= need:
+            reclaimable = leftover.stat().st_size if leftover.exists() else 0
+            if shutil.disk_usage(directory).free + reclaimable >= need:
                 return directory
 
         return TMPDIR
@@ -1775,6 +1913,8 @@ class BFS(object):
         """Rank a compact state in the configured dense coordinate."""
         if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
             return edge_pairing_rank(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "three-edge-pairing-parity":
+            return three_edge_pairing_rank(state)
         if getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
             return orientation_bits_rank(state)
         if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
@@ -1794,6 +1934,8 @@ class BFS(object):
         """Reconstruct the canonical compact state represented by a dense rank."""
         if getattr(self, "ranked_cost_type", "multiset") == "edge-pairing-even":
             return edge_pairing_unrank(rank, self.edge_pairing_pair_count)
+        if getattr(self, "ranked_cost_type", "multiset") == "three-edge-pairing-parity":
+            return three_edge_pairing_unrank(rank, self.edge_pairing_pair_count)
         if getattr(self, "ranked_cost_type", "multiset") == "orientation-bits":
             return orientation_bits_unrank(rank, len(self.compact_squares))
 
@@ -1808,12 +1950,40 @@ class BFS(object):
     def _ranked_core_filename(self, core: int) -> str:
         return f"{self.ranked_workq_filename}.next.core-{core}"
 
+    def _ranked_lock_filename(self) -> str:
+        return str(RANKED_WORKQ_DIR / f"{self.name}.lock")
+
+    def _acquire_ranked_search_lock(self) -> None:
+        """Prevent builders with the same artifact names from corrupting each other."""
+        lock_filename = self._ranked_lock_filename()
+        self._ranked_lock_file = open(lock_filename, "a+")
+        try:
+            fcntl.flock(self._ranked_lock_file.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            self._ranked_lock_file.seek(0)
+            owner = self._ranked_lock_file.read().strip() or "unknown process"
+            self._ranked_lock_file.close()
+            del self._ranked_lock_file
+            raise RuntimeError(f"{self}: another ranked build owns {lock_filename} ({owner})")
+        self._ranked_lock_file.seek(0)
+        self._ranked_lock_file.truncate()
+        self._ranked_lock_file.write(f"pid {os.getpid()}\n")
+        self._ranked_lock_file.flush()
+
+    def _release_ranked_search_lock(self) -> None:
+        lock_file = getattr(self, "_ranked_lock_file", None)
+        if lock_file is not None:
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
+            lock_file.close()
+            del self._ranked_lock_file
+
     def _ranked_launch_crunchers(self, build_workq: bool) -> int:
         """Expand one ranked frontier and return the number of successful cost claims."""
         start_time = dt.datetime.now()
         threads = []
 
-        for core, (start, end) in enumerate(get_line_number_splits(self.workq_size, self.cores)):
+        split_size = self.rank_universe if self.ranked_dense_frontier else self.workq_size
+        for core, (start, end) in enumerate(get_line_number_splits(split_size, self.cores)):
             if start is None:
                 continue
 
@@ -1845,6 +2015,7 @@ class BFS(object):
             if getattr(self, "ranked_cost_type", "multiset") in (
                 "paired-multiset",
                 "edge-pairing-even",
+                "three-edge-pairing-parity",
                 "wing-binary",
                 "orientation-bits",
             ):
@@ -1926,7 +2097,9 @@ class BFS(object):
                         ),
                     ]
                 )
-            if not build_workq:
+            if self.ranked_dense_frontier:
+                cmd.extend(["--ranked-scan-costs", "--ranked-no-workq"])
+            elif not build_workq:
                 cmd.append("--ranked-no-workq")
 
             log.info(" ".join(cmd))
@@ -1948,8 +2121,27 @@ class BFS(object):
     def _ranked_finish_depth(self, new_states_count: int, build_workq: bool) -> None:
         """Replace the current frontier with the successful per-core claim records."""
         start_time = dt.datetime.now()
+        if self.ranked_dense_frontier:
+            for filename in glob.glob(f"{self.ranked_workq_filename}.next.core-*"):
+                os.remove(filename)
+            with open(self.ranked_workq_filename, "wb"):
+                pass
+            self.workq_size = new_states_count
+            self.stats[self.depth] = new_states_count
+            self.time_in_building_workq += (dt.datetime.now() - start_time).total_seconds()
+            self._write_ranked_metadata()
+            log.warning(f"{self.index}: finished ranked depth {self.depth}, dense frontier size {self.workq_size:,}")
+            return
+
         next_workq = f"{self.ranked_workq_filename}.next"
         core_files = sorted(glob.glob(f"{self.ranked_workq_filename}.next.core-*"))
+        expected_bytes = new_states_count * RANKED_WORKQ_RECORD.size if build_workq else 0
+        core_bytes = sum(os.path.getsize(filename) for filename in core_files)
+        if core_bytes != expected_bytes:
+            raise RuntimeError(
+                f"ranked core workqs total {core_bytes} bytes after depth {self.depth}, "
+                f"expected {expected_bytes} ({new_states_count} records); retained {len(core_files)} core files"
+            )
 
         with open(next_workq, "wb") as destination:
             if build_workq:
@@ -1968,7 +2160,6 @@ class BFS(object):
         self.workq_size = new_states_count if build_workq else 0
         if build_workq:
             actual_bytes = os.path.getsize(self.ranked_workq_filename)
-            expected_bytes = self.workq_size * RANKED_WORKQ_RECORD.size
             if actual_bytes != expected_bytes:
                 raise RuntimeError(
                     f"ranked workq is {actual_bytes} bytes after depth {self.depth}, "
@@ -1982,17 +2173,21 @@ class BFS(object):
     def _ranked_search(self, max_depth: int) -> None:
         if max_depth is not None and max_depth > 254:
             raise ValueError("ranked cost tables support a maximum depth of 254")
-        self._ranked_search_setup()
+        self._acquire_ranked_search_lock()
+        try:
+            self._ranked_search_setup()
 
-        while self.workq_size:
-            build_workq = max_depth is None or self.depth < max_depth
-            new_states_count = self._ranked_launch_crunchers(build_workq)
-            self._ranked_finish_depth(new_states_count, build_workq)
-            self.depth += 1
-            self.log_table_stats()
+            while self.workq_size:
+                build_workq = max_depth is None or self.depth < max_depth
+                new_states_count = self._ranked_launch_crunchers(build_workq)
+                self._ranked_finish_depth(new_states_count, build_workq)
+                self.depth += 1
+                self.log_table_stats()
 
-            if not build_workq:
-                break
+                if not build_workq:
+                    break
+        finally:
+            self._release_ranked_search_lock()
 
     def search(self, max_depth, cores):
         """

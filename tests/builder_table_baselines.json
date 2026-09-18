@@ -124,44 +124,5 @@
     },
     "states_md5": "1b97162f1a7486f3e406f90b4a7e5eac",
     "depth": 4
-  },
-  "Build555Phase6Centers": {
-    "filename": "lookup-tables/lookup-table-5x5x5-step61-phase6-centers.txt",
-    "lines": 2018,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 42,
-      "3": 280,
-      "4": 1691
-    },
-    "states_md5": "c920f22a0bb6baf741a45665cae3ad7f",
-    "depth": 4
-  },
-  "Build555Phase6HighEdgeMidge": {
-    "filename": "lookup-tables/lookup-table-5x5x5-step62-phase6-high-edge-midge.txt",
-    "lines": 670,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 26,
-      "3": 128,
-      "4": 511
-    },
-    "states_md5": "950f1669b8e456a7c3de55be592b7fdb",
-    "depth": 4
-  },
-  "Build555Phase6LowEdgeMidge": {
-    "filename": "lookup-tables/lookup-table-5x5x5-step63-phase6-low-edge-midge.txt",
-    "lines": 670,
-    "states_per_depth": {
-      "0": 1,
-      "1": 4,
-      "2": 26,
-      "3": 128,
-      "4": 511
-    },
-    "states_md5": "fcc1dbf6659a3a23220e6e04214fcba4",
-    "depth": 4
   }
 }

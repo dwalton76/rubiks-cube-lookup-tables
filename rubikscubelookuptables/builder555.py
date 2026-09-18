@@ -26,6 +26,7 @@ from rubikscubennnsolver.RubiksCube555 import (
     RubiksCube555,
     UFBD_t_centers_555,
     UFBD_x_centers_555,
+    edges_partner_555,
     moves_555,
     solved_555,
     t_centers_without_middles_555,
@@ -1481,6 +1482,37 @@ class Build555Phase5FBCentersLowEdgeMidge(BFS):
 # phase 6
 # pair the last eight edges and solve the centers
 # ==================================================
+PHASE6_HIGH_EDGE_SQUARES_555 = (2, 24, 16, 10, 127, 149, 141, 135)
+PHASE6_MIDGE_SQUARES_555 = (3, 23, 11, 15, 128, 148, 136, 140)
+PHASE6_LOW_EDGE_SQUARES_555 = (4, 22, 6, 20, 129, 147, 131, 145)
+PHASE6_EDGE_SQUARE_GROUPS_555 = (
+    PHASE6_HIGH_EDGE_SQUARES_555,
+    PHASE6_MIDGE_SQUARES_555,
+    PHASE6_LOW_EDGE_SQUARES_555,
+)
+PHASE6_EDGE_PARTNERS_555 = tuple(
+    edges_partner_555[square] for group in PHASE6_EDGE_SQUARE_GROUPS_555 for square in group
+)
+
+PHASE6_LR_CENTER_SQUARES_555 = (32, 44, 82, 94)
+PHASE6_FB_CENTER_SQUARES_555 = (57, 69, 107, 119)
+PHASE6_UD_X_CENTER_SQUARES_555 = (7, 9, 17, 19, 132, 134, 142, 144)
+PHASE6_UD_T_CENTER_SQUARES_555 = (8, 12, 14, 18, 133, 137, 139, 143)
+PHASE6_CENTER_SQUARE_GROUPS_555 = (
+    PHASE6_LR_CENTER_SQUARES_555,
+    PHASE6_FB_CENTER_SQUARES_555,
+    PHASE6_UD_X_CENTER_SQUARES_555,
+    PHASE6_UD_T_CENTER_SQUARES_555,
+)
+
+
+def _solved_555_projected_to(squares):
+    """Return one exact solved ULFRBD state with all other stickers blanked."""
+    square_set = set(squares)
+    face_colors = "ULFRBD"
+    return "".join(face_colors[(index - 1) // 25] if index in square_set else "." for index in range(1, 151))
+
+
 class Build555PairLastEightEdgesEdgesOnly(BFS):
     """
     Should be (8!^2)/2 812,851,200
@@ -1495,31 +1527,21 @@ class Build555PairLastEightEdgesEdgesOnly(BFS):
             "5x5x5",
             "lookup-table-5x5x5-step501-pair-last-eight-edges-edges-only.txt",
             False,  # store_as_hex
-            # starting cubes
             (
                 (
-                    """
-            . U U U .
-            U . . . U
-            U . . . U
-            U . . . U
-            . U U U .
-
- . L L L .  . F F F .  . R R R .  . B B B .
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- - . . . -  - . . . -  - . . . -  - . . . -
- . L L L .  . F F F .  . R R R .  . B B B .
-
-            . D D D .
-            D . . . D
-            D . . . D
-            D . . . D
-            . D D D .""",
-                    "ascii",
+                    _solved_555_projected_to(
+                        tuple(square for group in PHASE6_EDGE_SQUARE_GROUPS_555 for square in group)
+                        + PHASE6_EDGE_PARTNERS_555
+                    ),
+                    "ULFRBD",
                 ),
             ),
-            use_edges_pattern=True,
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_type="three-edge-pairing-parity",
+            ranked_cost_square_groups=PHASE6_EDGE_SQUARE_GROUPS_555,
+            edge_pairing_partners=PHASE6_EDGE_PARTNERS_555,
+            ranked_dense_frontier=True,
         )
 
 
@@ -1553,31 +1575,17 @@ class Build555Phase6Centers(BFS):
             "5x5x5",
             "lookup-table-5x5x5-step61-phase6-centers.txt",
             False,  # store_as_hex
-            # starting cubes
             (
                 (
-                    """
-            . . . . .
-            . U U U .
-            . U U U .
-            . U U U .
-            . . . . .
-
- . . . . .  . . . . .  . . . . .  . . . . .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . L L L .  . F F F .  . R R R .  . B B B .
- . . . . .  . . . . .  . . . . .  . . . . .
-
-            . . . . .
-            . D D D .
-            . D D D .
-            . D D D .
-            . . . . .""",
-                    "ascii",
+                    _solved_555_projected_to(
+                        tuple(square for group in PHASE6_CENTER_SQUARE_GROUPS_555 for square in group)
+                    ),
+                    "ULFRBD",
                 ),
             ),
             use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=PHASE6_CENTER_SQUARE_GROUPS_555,
         )
 
 
