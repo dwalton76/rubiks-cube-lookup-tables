@@ -56,27 +56,23 @@ wheel:
 	./utils/builderui.py Build333MicroPythonPhase4Edges
 	./utils/builderui.py Build333MicroPythonPhase4Corners
 
-444-phase1-ranked: clean
-	./utils/builderui.py Build444AllCentersStageSymmetryRanked --cores 22
-	./utils/builderui.py Build444LRCentersStageRanked --cores 22
-	./utils/builderui.py Build444HighLowEdgesEdgesAllMoves --cores 22
+444-phase1: clean
+	./utils/builderui.py Build444AllCentersStageSymmetryRanked
+	./utils/builderui.py Build444LRCentersStageRanked
+	./utils/builderui.py Build444HighLowEdgesEdgesAllMoves
 
-444-centers: clean
-	./utils/builderui.py Build444Reduce333Centers --cores 22
-
-444-pair-all-edges: clean
+444-phase2: clean
+	./utils/builderui.py Build444Reduce333Centers
 	./utils/builderui.py Build444PairAllEdges
 
-444: 444-phase1-ranked 444-centers 444-pair-all-edges
+444: 444-phase1 444-phase2
 
 555-phase1: clean
 	./utils/builderui.py Build555LRCenterStageTCenter
-
 	./utils/builderui.py Build555LRCenterStageXCenter
 
 555-phase2: clean
 	./utils/builderui.py Build555FBTCenterStage
-
 	./utils/builderui.py Build555FBXCenterStage
 
 555-phase3: clean
@@ -85,18 +81,16 @@ wheel:
 	./utils/builderui.py Build555EdgeOrientInnerOrbit
 
 555-phase4: clean
-	./utils/builderui.py Build555Phase4 --depth 7 --cores 10
+	./utils/builderui.py Build555Phase4
 
 555-phase5: clean
-	# Combo tables are 576,240,000-byte ranked cost arrays; centers is 24,010,000.
-	./utils/builderui.py Build555Phase5Centers --cores 10
-	./utils/builderui.py Build555Phase5FBCentersHighEdgeMidge --cores 10
-	./utils/builderui.py Build555Phase5FBCentersLowEdgeMidge --cores 10
+	./utils/builderui.py Build555Phase5Centers
+	./utils/builderui.py Build555Phase5FBCentersHighEdgeMidge
+	./utils/builderui.py Build555Phase5FBCentersLowEdgeMidge
 
 555-phase6: clean
-	# Dense ranked artifacts: 812,851,200 edge entries and 176,400 center entries.
-	./utils/builderui.py Build555PairLastEightEdgesEdgesOnly --cores 10
-	./utils/builderui.py Build555Phase6Centers --cores 10
+	./utils/builderui.py Build555PairLastEightEdgesEdgesOnly
+	./utils/builderui.py Build555Phase6Centers
 
 555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6
 
@@ -106,54 +100,36 @@ wheel:
 666-phase2:
 	./utils/builderui.py Build666Phase2UDInnerXCentersStageBinary --cores 10
 
-666-phase3-preserve-inner-x: clean
+666-phase3: clean
 	./utils/builderui.py Build666Phase3UDLeftRightObliqueCentersStage
 	./utils/builderui.py Build666Phase3UDLeftObliqueOuterXCentersStage
 	./utils/builderui.py Build666Phase3UDRightObliqueOuterXCentersStage
 
 666-phase5:
-	./utils/builderui.py Build666DaisyAllInnerXPlusUDObliquesCenters --cores 22
-	./utils/builderui.py Build666DaisyAllInnerXPlusLRObliquesCenters --cores 22
-	./utils/builderui.py Build666DaisyAllInnerXPlusFBObliquesCenters --cores 22
+	./utils/builderui.py Build666DaisyAllInnerXPlusUDObliquesCenters
+	./utils/builderui.py Build666DaisyAllInnerXPlusLRObliquesCenters
+	./utils/builderui.py Build666DaisyAllInnerXPlusFBObliquesCenters
 
-666: 666-phase1 666-phase2 666-phase3-preserve-inner-x 666-phase5
+666: 666-phase1 666-phase2 666-phase3 666-phase5
 
 777-phase2: clean
 	./utils/builderui.py Build777Phase2UDInnerCentersStage
 
 777-phase5-6-ranked: clean
-	./utils/builderui.py Build777Phase56UDLeftRightObliqueCentersStage --cores 22
-	./utils/builderui.py Build777Phase56UDLeftMiddleObliqueCentersStage --cores 22
-	./utils/builderui.py Build777Phase56UDLeftObliqueOuterXCentersStage --cores 22
-	./utils/builderui.py Build777Phase56UDMiddleRightObliqueCentersStage --cores 22
-	./utils/builderui.py Build777Phase56UDRightObliqueOuterXCentersStage --cores 22
-	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXCentersStage --cores 22
+	./utils/builderui.py Build777Phase56UDLeftRightObliqueCentersStage
+	./utils/builderui.py Build777Phase56UDLeftMiddleObliqueCentersStage
+	./utils/builderui.py Build777Phase56UDLeftObliqueOuterXCentersStage
+	./utils/builderui.py Build777Phase56UDMiddleRightObliqueCentersStage
+	./utils/builderui.py Build777Phase56UDRightObliqueOuterXCentersStage
+	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXCentersStage
 
-777-daisy-ranked: clean
-	./utils/builderui.py Build777DaisyUDWithoutLeftObliqueCenters --cores 22
-	./utils/builderui.py Build777DaisyUDWithoutMiddleObliqueCenters --cores 22
-	./utils/builderui.py Build777DaisyUDWithoutRightObliqueCenters --cores 22
-	./utils/builderui.py Build777DaisyUDWithoutInnerTCenters --cores 22
-	./utils/builderui.py Build777DaisyUDWithoutInnerXCenters --cores 22
-	./utils/builderui.py Build777DaisyLRWithoutLeftObliqueCenters --cores 22
-	./utils/builderui.py Build777DaisyLRWithoutMiddleObliqueCenters --cores 22
-	./utils/builderui.py Build777DaisyLRWithoutRightObliqueCenters --cores 22
-	./utils/builderui.py Build777DaisyLRWithoutInnerTCenters --cores 22
-	./utils/builderui.py Build777DaisyLRWithoutInnerXCenters --cores 22
-	./utils/builderui.py Build777DaisyFBWithoutLeftObliqueCenters --cores 22
-	./utils/builderui.py Build777DaisyFBWithoutMiddleObliqueCenters --cores 22
-	./utils/builderui.py Build777DaisyFBWithoutRightObliqueCenters --cores 22
-	./utils/builderui.py Build777DaisyFBWithoutInnerTCenters --cores 22
-	./utils/builderui.py Build777DaisyFBWithoutInnerXCenters --cores 22
-
-# Optional fallback, built only if the 70^4 search is too slow. The BFS needs 70^5
-# bytes of scratch but publishes a 314 MiB cost table plus symmetry index, shared
-# by all three axes.
+# The BFS needs 70^5 bytes of scratch but publishes a 314 MiB cost table plus
+# symmetry index, shared by all three axes.
 777-daisy-perfect: rubikscubelookuptables/compact-center-symmetry-777
-	./utils/builderui.py Build777DaisyPerfectCenters --cores 22
+	./utils/builderui.py Build777DaisyPerfectCenters
 
 # Native-goal twin of 777-daisy-perfect, used by 9x9x9 and larger.
 777-solve-perfect: rubikscubelookuptables/compact-center-symmetry-777
-	./utils/builderui.py Build777SolvePerfectCenters --cores 22
+	./utils/builderui.py Build777SolvePerfectCenters
 
-777: 777-phase2 777-phase5-6-ranked
+777: 777-phase2 777-phase5-6-ranked 777-daisy-perfect 777-solve-perfect

@@ -88,8 +88,7 @@ Copy or upload the solver-facing `.cost-only.bin` artifact so `download_file_if_
 | `666-phase5` | Three 70^5 tables: all inner-x plus one axis's obliques | `ida_search_666_daisy_centers` |
 | `777-phase2` | UD inner centers ranked | `ida_search_777_centers_stage` |
 | `777-phase5-6-ranked` | Six UD pairwise \(C(16,8)^2\) tables | `ida_search_777_UD_centers_stage` |
-| `777-daisy-ranked` | 15 leave-one-out daisy tables | `ida_search_777_daisy_centers` |
-| `777-daisy-perfect` | One symmetry-reduced 70^5 daisy table (optional) | daisy with `use_perfect_tables` |
+| `777-daisy-perfect` | One symmetry-reduced 70^5 daisy table | `ida_search_777_daisy_centers` |
 | `777-solve-perfect` | Native-orientation twin of daisy-perfect | `--native-only` for 9x9+ |
 
 `777-daisy-perfect` / `777-solve-perfect` each run a BFS over 70^5 ranks, so the

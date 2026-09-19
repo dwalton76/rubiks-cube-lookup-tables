@@ -1,5 +1,4 @@
 # standard libraries
-import itertools
 import logging
 
 # rubiks cube libraries
@@ -1188,7 +1187,7 @@ PHASE5_FB_BAR_STATES = (
     "FFBFFBFFBFBBFBBFBB",
     "FFFFFFFFFBBBBBBBBB",
 )
-PHASE5_XY_MIDGE_START_SYMBOLS = "xxLLLLxx"
+PHASE5_XY_MIDGE_START_SYMBOLS = "xxABCDxx"
 
 
 def _blank_phase5_lfrb_middles(starts):
@@ -1203,29 +1202,29 @@ def _blank_phase5_lfrb_middles(starts):
 
 def _phase5_combo_starting_cubes(wing_squares, high_or_low):
     starts = []
-    for fb_state in PHASE5_FB_BAR_STATES:
-        for midge_labels in itertools.permutations("ABCD"):
-            if high_or_low == "high":
-                wing_labels = (
-                    midge_labels[1],
-                    midge_labels[0],
-                    midge_labels[3],
-                    midge_labels[2],
-                )
-            elif high_or_low == "low":
-                wing_labels = midge_labels
-            else:
-                raise ValueError(f"expected high or low, got {high_or_low}")
+    midge_labels = "ABCD"
+    if high_or_low == "high":
+        wing_labels = (
+            midge_labels[1],
+            midge_labels[0],
+            midge_labels[3],
+            midge_labels[2],
+        )
+    elif high_or_low == "low":
+        wing_labels = midge_labels
+    else:
+        raise ValueError(f"expected high or low, got {high_or_low}")
 
-            chars = ["."] * 150
-            for square, color in zip(FB_centers_555, fb_state):
-                chars[square - 1] = color
-            chars[62] = "."
-            chars[112] = "."
-            symbols = "xx" + "".join(wing_labels) + "xx" + PHASE5_XY_MIDGE_START_SYMBOLS
-            for square, symbol in zip(wing_squares, symbols):
-                chars[square - 1] = symbol
-            starts.append(("".join(chars), "ULFRBD"))
+    for fb_state in PHASE5_FB_BAR_STATES:
+        chars = ["."] * 150
+        for square, color in zip(FB_centers_555, fb_state):
+            chars[square - 1] = color
+        chars[62] = "."
+        chars[112] = "."
+        symbols = "xx" + "".join(wing_labels) + "xx" + PHASE5_XY_MIDGE_START_SYMBOLS
+        for square, symbol in zip(wing_squares, symbols):
+            chars[square - 1] = symbol
+        starts.append(("".join(chars), "ULFRBD"))
     return tuple(starts)
 
 
@@ -1340,15 +1339,14 @@ class Build555Phase5Centers(BFS):
 class Build555Phase5FBCentersHighEdgeMidge(BFS):
     """
     Dense rank is C(8,4)^2 * P(8,4) * C(8,4) = 576,240,000:
-    FB t/x occupancy, then the 4 labeled high wings among the 8 x-union-y
-    high slots, then occupancy of the 4 midges among the matching 8 midge slots.
+    FB t/x occupancy, then the 4 high wings labeled relative to the occupied
+    midges in slot order, then occupancy of those four midges.
 
-    First of the 144 starting states that _phase5_combo_starting_cubes builds:
-    one of the six FB vertical-bar patterns crossed with the 24 orderings of the
-    ABCD high-wing labels. The four high wings are distinguishable (rank symbols
-    ABCDx) while the four midges are interchangeable L marks (symbols Lx), so
-    the family is 6 * 24 starts. The two fixed FB face centers (63 and 113) are
-    blanked because they never move.
+    First of the 6 starting states that _phase5_combo_starting_cubes builds:
+    one FB vertical-bar pattern with midges parked as ABCD and high wings
+    paired as BADC. Global relabelings of ABCD collapse to the same rank, so
+    the family is 6 starts rather than 6 * 24. The two fixed FB face centers
+    (63 and 113) are blanked because they never move.
 
                . x x . .
                . . . . .
@@ -1358,7 +1356,7 @@ class Build555Phase5FBCentersHighEdgeMidge(BFS):
 
     . . . . .  . . . . .  . . . . .  . . . . .
     . . . . B  . B F B .  . . . . D  . F B F .
-    L . . . L  . B . B .  L . . . L  . F . F .
+    A . . . B  . B . B .  C . . . D  . F . F .
     A . . . .  . B F B .  C . . . .  . F B F .
     . . . . .  . . . . .  . . . . .  . . . . .
 
@@ -1370,22 +1368,23 @@ class Build555Phase5FBCentersHighEdgeMidge(BFS):
 
     lookup-table-5x5x5-step55-phase5-fb-centers-high-edge-and-midge.cost-only.bin
     ===========================================================================
-    0 steps has 144 entries (0 percent, 0.00x previous step)
-    1 steps has 576 entries (0 percent, 4.00x previous step)
-    2 steps has 4,512 entries (0 percent, 7.83x previous step)
-    3 steps has 31,872 entries (0 percent, 7.06x previous step)
-    4 steps has 201,840 entries (0 percent, 6.33x previous step)
-    5 steps has 1,256,688 entries (0 percent, 6.23x previous step)
-    6 steps has 7,432,800 entries (1 percent, 5.91x previous step)
-    7 steps has 38,436,336 entries (6 percent, 5.17x previous step)
-    8 steps has 147,128,304 entries (25 percent, 3.83x previous step)
-    9 steps has 274,275,792 entries (47 percent, 1.86x previous step)
-    10 steps has 105,181,632 entries (18 percent, 0.38x previous step)
-    11 steps has 2,285,088 entries (0 percent, 0.02x previous step)
-    12 steps has 4,416 entries (0 percent, 0.00x previous step)
+    0 steps has 6 entries (0 percent, 0.00x previous step)
+    1 steps has 24 entries (0 percent, 4.00x previous step)
+    2 steps has 216 entries (0 percent, 9.00x previous step)
+    3 steps has 1,622 entries (0 percent, 7.51x previous step)
+    4 steps has 11,198 entries (0 percent, 6.90x previous step)
+    5 steps has 75,990 entries (0 percent, 6.79x previous step)
+    6 steps has 498,774 entries (0 percent, 6.56x previous step)
+    7 steps has 3,105,912 entries (0 percent, 6.23x previous step)
+    8 steps has 17,585,391 entries (3 percent, 5.66x previous step)
+    9 steps has 81,079,954 entries (14 percent, 4.61x previous step)
+    10 steps has 230,361,431 entries (39 percent, 2.84x previous step)
+    11 steps has 220,472,982 entries (38 percent, 0.96x previous step)
+    12 steps has 23,022,104 entries (3 percent, 0.10x previous step)
+    13 steps has 24,396 entries (0 percent, 0.00x previous step)
 
     Total: 576,240,000 entries
-    Average: 8.75 moves
+    Average: 10.24 moves
     """
 
     def __init__(self):
@@ -1402,6 +1401,7 @@ class Build555Phase5FBCentersHighEdgeMidge(BFS):
             ),
             use_c=True,
             use_ranked_cost=True,
+            ranked_cost_type="phase5-combo-relative",
             ranked_cost_square_groups=(
                 FB_t_centers_555,
                 FB_x_centers_555,
@@ -1414,15 +1414,14 @@ class Build555Phase5FBCentersHighEdgeMidge(BFS):
 class Build555Phase5FBCentersLowEdgeMidge(BFS):
     """
     Dense rank is C(8,4)^2 * P(8,4) * C(8,4) = 576,240,000:
-    FB t/x occupancy, then the 4 labeled low wings among the 8 x-union-y
-    low slots, then occupancy of the 4 midges among the matching 8 midge slots.
+    FB t/x occupancy, then the 4 low wings labeled relative to the occupied
+    midges in slot order, then occupancy of those four midges.
 
-    First of the 144 starting states that _phase5_combo_starting_cubes builds:
-    one of the six FB vertical-bar patterns crossed with the 24 orderings of the
-    ABCD low-wing labels. The four low wings are distinguishable (rank symbols
-    ABCDx) while the four midges are interchangeable L marks (symbols Lx), so
-    the family is 6 * 24 starts. The two fixed FB face centers (63 and 113) are
-    blanked because they never move.
+    First of the 6 starting states that _phase5_combo_starting_cubes builds:
+    one FB vertical-bar pattern with midges parked as ABCD and low wings
+    paired as ABCD. Global relabelings of ABCD collapse to the same rank, so
+    the family is 6 starts rather than 6 * 24. The two fixed FB face centers
+    (63 and 113) are blanked because they never move.
 
                . . x x .
                . . . . .
@@ -1432,7 +1431,7 @@ class Build555Phase5FBCentersLowEdgeMidge(BFS):
 
     . . . . .  . . . . .  . . . . .  . . . . .
     A . . . .  . B F B .  C . . . .  . F B F .
-    L . . . L  . B . B .  L . . . L  . F . F .
+    A . . . B  . B . B .  C . . . D  . F . F .
     . . . . B  . B F B .  . . . . D  . F B F .
     . . . . .  . . . . .  . . . . .  . . . . .
 
@@ -1444,22 +1443,23 @@ class Build555Phase5FBCentersLowEdgeMidge(BFS):
 
     lookup-table-5x5x5-step57-phase5-fb-centers-low-edge-and-midge.cost-only.bin
     ==========================================================================
-    0 steps has 144 entries (0 percent, 0.00x previous step)
-    1 steps has 576 entries (0 percent, 4.00x previous step)
-    2 steps has 4,512 entries (0 percent, 7.83x previous step)
-    3 steps has 31,872 entries (0 percent, 7.06x previous step)
-    4 steps has 201,840 entries (0 percent, 6.33x previous step)
-    5 steps has 1,256,688 entries (0 percent, 6.23x previous step)
-    6 steps has 7,432,800 entries (1 percent, 5.91x previous step)
-    7 steps has 38,436,336 entries (6 percent, 5.17x previous step)
-    8 steps has 147,128,304 entries (25 percent, 3.83x previous step)
-    9 steps has 274,275,792 entries (47 percent, 1.86x previous step)
-    10 steps has 105,181,632 entries (18 percent, 0.38x previous step)
-    11 steps has 2,285,088 entries (0 percent, 0.02x previous step)
-    12 steps has 4,416 entries (0 percent, 0.00x previous step)
+    0 steps has 6 entries (0 percent, 0.00x previous step)
+    1 steps has 24 entries (0 percent, 4.00x previous step)
+    2 steps has 216 entries (0 percent, 9.00x previous step)
+    3 steps has 1,622 entries (0 percent, 7.51x previous step)
+    4 steps has 11,198 entries (0 percent, 6.90x previous step)
+    5 steps has 75,990 entries (0 percent, 6.79x previous step)
+    6 steps has 498,774 entries (0 percent, 6.56x previous step)
+    7 steps has 3,105,912 entries (0 percent, 6.23x previous step)
+    8 steps has 17,585,391 entries (3 percent, 5.66x previous step)
+    9 steps has 81,079,954 entries (14 percent, 4.61x previous step)
+    10 steps has 230,361,431 entries (39 percent, 2.84x previous step)
+    11 steps has 220,472,982 entries (38 percent, 0.96x previous step)
+    12 steps has 23,022,104 entries (3 percent, 0.10x previous step)
+    13 steps has 24,396 entries (0 percent, 0.00x previous step)
 
     Total: 576,240,000 entries
-    Average: 8.75 moves
+    Average: 10.24 moves
     """
 
     def __init__(self):
@@ -1476,6 +1476,7 @@ class Build555Phase5FBCentersLowEdgeMidge(BFS):
             ),
             use_c=True,
             use_ranked_cost=True,
+            ranked_cost_type="phase5-combo-relative",
             ranked_cost_square_groups=(
                 FB_t_centers_555,
                 FB_x_centers_555,

@@ -476,7 +476,6 @@ def test_builder_classification_separates_helpers_abstract_bases_and_wrappers():
     assert kinds["builder777"]["_Build777DaisyCenters"] is None
     assert kinds["builder777"]["_Build777Phase56UDPairStage"] is None
     assert kinds["builder777"]["_Build777SolveCenters"] is None
-    assert kinds["builder777"]["Build777DaisyUDWithoutLeftObliqueCenters"] == "wrapper"
     assert kinds["builder777"]["Build777Phase56UDLeftRightObliqueCentersStage"] == "wrapper"
     assert kinds["builder777"]["Build777DaisyPerfectCenters"] == "wrapper"
     assert kinds["builder777"]["Build777SolvePerfectCenters"] == "wrapper"

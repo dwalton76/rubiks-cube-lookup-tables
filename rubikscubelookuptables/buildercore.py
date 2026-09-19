@@ -248,6 +248,63 @@ def three_edge_pairing_rank(state: str) -> int:
     return (permutation_rank(high_permutation) * even_permutation_size(pair_count)) + even_permutation_rank(delta)
 
 
+def phase5_combo_relative_canonicalize(state: str) -> str:
+    """
+    Quotient phase-5 combo labels so occupied midges in slot order are ABCD.
+
+    ``state`` is 32 characters: FB t, FB x, wings, midges. Wings and midges
+    carry matching piece names; after this they are ABCDx and Lx occupancy.
+    """
+    if len(state) != 32:
+        raise ValueError("phase5-combo-relative state must be 32 characters")
+
+    label_map = {}
+    occupancy = []
+    for char in state[24:32]:
+        if char == "x":
+            occupancy.append("x")
+            continue
+        if char not in label_map:
+            if len(label_map) >= 4:
+                raise ValueError("phase5-combo-relative state has more than four midge labels")
+            label_map[char] = "ABCD"[len(label_map)]
+        occupancy.append("L")
+    if len(label_map) != 4:
+        raise ValueError("phase5-combo-relative state must occupy four midge slots")
+
+    wings = []
+    for char in state[16:24]:
+        if char == "x":
+            wings.append("x")
+            continue
+        if char not in label_map:
+            raise ValueError(f"phase5-combo-relative wing label {char!r} is not among the midges")
+        wings.append(label_map[char])
+    return state[:16] + "".join(wings) + "".join(occupancy)
+
+
+def phase5_combo_relative_expand(state: str) -> str:
+    """Replace Lx midge occupancy with ABCD in slot order."""
+    if len(state) != 32:
+        raise ValueError("phase5-combo-relative state must be 32 characters")
+
+    midges = []
+    next_label = 0
+    for char in state[24:32]:
+        if char == "x":
+            midges.append("x")
+        elif char == "L":
+            if next_label >= 4:
+                raise ValueError("phase5-combo-relative occupancy has more than four L marks")
+            midges.append("ABCD"[next_label])
+            next_label += 1
+        else:
+            raise ValueError(f"phase5-combo-relative occupancy contains {char!r}, expected L or x")
+    if next_label != 4:
+        raise ValueError("phase5-combo-relative occupancy must contain four L marks")
+    return state[:24] + "".join(midges)
+
+
 def three_edge_pairing_unrank(rank: int, pair_count: int) -> str:
     """Return the canonical high/midge/low state for a three-edge rank."""
     if pair_count < 2 or pair_count > 32:
@@ -822,6 +879,7 @@ class BFS(object):
             "wing-binary",
             "orientation-bits",
             "center-symmetry-444",
+            "phase5-combo-relative",
         ):
             raise ValueError(f"{self}: unsupported ranked cost type {self.ranked_cost_type!r}")
         if self.ranked_cost_type != "multiset" and not self.use_ranked_cost:
@@ -1209,6 +1267,20 @@ class BFS(object):
             )
             offset += group_size
 
+        if getattr(self, "ranked_cost_type", "multiset") == "phase5-combo-relative":
+            if len(rank_groups) != 4 or rank_groups[2]["length"] != 8 or rank_groups[3]["length"] != 8:
+                raise ValueError(f"{self}: phase5-combo-relative needs FB t/x, 8 wings, and 8 midges")
+            if rank_groups[2]["symbols"] != "ABCDx" or rank_groups[2]["counts"] != (1, 1, 1, 1, 4):
+                raise ValueError(f"{self}: phase5-combo-relative wings must be ABCDx")
+            rank_groups[3] = {
+                "squares": rank_groups[3]["squares"],
+                "offset": rank_groups[3]["offset"],
+                "length": 8,
+                "symbols": "Lx",
+                "counts": (4, 4),
+                "universe_size": 70,
+            }
+
         self.rank_groups = tuple(rank_groups)
         self.rank_universes = tuple(group["universe_size"] for group in self.rank_groups)
         self.rank_universe = math.prod(self.rank_universes)
@@ -1294,6 +1366,31 @@ class BFS(object):
                 "high_squares": list(self.ranked_cost_square_groups[0]),
                 "low_squares": list(self.ranked_cost_square_groups[1]),
                 "partner_squares": list(self.edge_pairing_partners),
+                "universe_size": self.rank_universe,
+                "stored_entry_count": self._table_linecount(),
+                "completed_depth": max(self.stats),
+                "states_per_depth": {str(depth): count for depth, count in sorted(self.stats.items())},
+            }
+        elif getattr(self, "ranked_cost_type", "multiset") == "phase5-combo-relative":
+            metadata = {
+                "format": "dense-phase5-combo-relative-cost-v1",
+                "cost_encoding": {"0": "unseen", "nonzero": "depth + 1"},
+                "record_format": "<QB",
+                "rank_order": (
+                    "FB t/x occupancy, then wings remapped so occupied midges in slot "
+                    "order are ABCD, then midge occupancy"
+                ),
+                "rank_groups": [
+                    {
+                        "squares": group["squares"],
+                        "offset": group["offset"],
+                        "length": group["length"],
+                        "symbols": group["symbols"],
+                        "counts": list(group["counts"]),
+                        "universe_size": group["universe_size"],
+                    }
+                    for group in self.rank_groups
+                ],
                 "universe_size": self.rank_universe,
                 "stored_entry_count": self._table_linecount(),
                 "completed_depth": max(self.stats),
@@ -1907,6 +2004,8 @@ class BFS(object):
             return orientation_bits_rank(state)
         if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
             return center_symmetry_rank_444(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "phase5-combo-relative":
+            state = phase5_combo_relative_canonicalize(state)
 
         ranks = tuple(
             multiset_rank(
@@ -1933,7 +2032,10 @@ class BFS(object):
             group_state = multiset_unrank(component_rank, group["symbols"], group["counts"])
             start = group["offset"]
             state[start : start + group["length"]] = group_state
-        return "".join(state)
+        compact = "".join(state)
+        if getattr(self, "ranked_cost_type", "multiset") == "phase5-combo-relative":
+            return phase5_combo_relative_expand(compact)
+        return compact
 
     def _ranked_core_filename(self, core: int) -> str:
         return f"{self.ranked_workq_filename}.next.core-{core}"
@@ -2059,6 +2161,23 @@ class BFS(object):
                         self.rank_symbols,
                         "--rank-counts",
                         ",".join(str(count) for count in self.rank_counts),
+                    ]
+                )
+            elif self.ranked_cost_type == "phase5-combo-relative":
+                cmd.extend(
+                    [
+                        "--rank-type",
+                        self.ranked_cost_type,
+                        "--rank-groups",
+                        ";".join(
+                            "{}:{}:{}:{}".format(
+                                group["length"],
+                                group["symbols"],
+                                ",".join(str(count) for count in group["counts"]),
+                                group["universe_size"],
+                            )
+                            for group in self.rank_groups
+                        ),
                     ]
                 )
             elif len(self.rank_groups) == 1:

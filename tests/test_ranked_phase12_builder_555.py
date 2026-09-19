@@ -146,10 +146,9 @@ def test_phase5_builders_use_ranked_costs():
         assert tuple(builder.rank_groups[1]["squares"]) == FB_x_centers_555
         assert tuple(builder.rank_groups[2]["squares"]) == wings
         assert tuple(builder.rank_groups[3]["squares"]) == PHASE5_XY_MIDGE_SQUARES_555
-        assert len(builder.starting_cubes) == 144
-        assert (
-            len({builder._ranked_state_rank(builder._state_for_workq(cube)) for cube in builder.starting_cubes}) == 144
-        )
+        assert builder.ranked_cost_type == "phase5-combo-relative"
+        assert len(builder.starting_cubes) == 6
+        assert len({builder._ranked_state_rank(builder._state_for_workq(cube)) for cube in builder.starting_cubes}) == 6
         assert builder.rank_groups[2]["symbols"] == "ABCDx"
         assert builder.rank_groups[2]["counts"] == (1, 1, 1, 1, 4)
         assert builder.rank_groups[3]["symbols"] == "Lx"

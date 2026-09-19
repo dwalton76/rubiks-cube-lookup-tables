@@ -78,6 +78,7 @@ typedef enum {
     RANK_WING_BINARY,
     RANK_ORIENTATION_BITS,
     RANK_CENTER_SYMMETRY_444,
+    RANK_PHASE5_COMBO_RELATIVE,
 } rank_type;
 
 
@@ -736,6 +737,103 @@ center_symmetry_rank_444(
     return grouped_multiset_rank(canonical, symbol_of, groups, 1);
 }
 
+static void
+phase5_combo_relative_canonicalize(unsigned char *state, const rank_group_type *groups)
+{
+    unsigned int wing_off = groups[2].offset;
+    unsigned int midge_off = groups[3].offset;
+    unsigned char map[256];
+    unsigned int next = 0;
+
+    memset(map, 0xff, sizeof(map));
+    map[(unsigned char) 'x'] = 'x';
+    for (unsigned int i = 0; i < 8; i++) {
+        unsigned char ch = state[midge_off + i];
+
+        if (ch == 'x') {
+            continue;
+        }
+        if (map[ch] == 0xff) {
+            if (next >= 4) {
+                fprintf(stderr, "ERROR: phase5 combo relative has more than four midge labels\n");
+                exit(1);
+            }
+            map[ch] = (unsigned char) ('A' + next);
+            next++;
+        }
+        state[midge_off + i] = 'L';
+    }
+    if (next != 4) {
+        fprintf(stderr, "ERROR: phase5 combo relative must occupy four midge slots\n");
+        exit(1);
+    }
+    for (unsigned int i = 0; i < 8; i++) {
+        unsigned char ch = state[wing_off + i];
+
+        if (map[ch] == 0xff) {
+            fprintf(stderr, "ERROR: phase5 combo relative wing label is not among the midges\n");
+            exit(1);
+        }
+        state[wing_off + i] = map[ch];
+    }
+}
+
+static void
+phase5_combo_relative_expand(unsigned char *state, const rank_group_type *groups)
+{
+    unsigned int midge_off = groups[3].offset;
+    unsigned int next = 0;
+
+    for (unsigned int i = 0; i < 8; i++) {
+        unsigned char ch = state[midge_off + i];
+
+        if (ch == 'x') {
+            continue;
+        }
+        if (ch != 'L' || next >= 4) {
+            fprintf(stderr, "ERROR: phase5 combo relative occupancy must be four L marks\n");
+            exit(1);
+        }
+        state[midge_off + i] = (unsigned char) ('A' + next);
+        next++;
+    }
+    if (next != 4) {
+        fprintf(stderr, "ERROR: phase5 combo relative occupancy must be four L marks\n");
+        exit(1);
+    }
+}
+
+static uint64_t
+phase5_combo_relative_rank(
+    const unsigned char *state,
+    unsigned int state_length,
+    const int symbol_of[MAX_RANK_GROUPS][256],
+    const rank_group_type *groups,
+    unsigned int group_count)
+{
+    unsigned char canonical[256];
+
+    if (state_length > sizeof(canonical) || group_count != 4) {
+        fprintf(stderr, "ERROR: phase5 combo relative state is the wrong size\n");
+        exit(1);
+    }
+    memcpy(canonical, state, state_length);
+    phase5_combo_relative_canonicalize(canonical, groups);
+    return grouped_multiset_rank(canonical, symbol_of, groups, group_count);
+}
+
+static void
+phase5_combo_relative_unrank(
+    uint64_t rank,
+    unsigned char *state,
+    const rank_group_type *groups,
+    unsigned int group_count,
+    uint64_t universe)
+{
+    grouped_multiset_unrank(rank, state, groups, group_count, universe);
+    phase5_combo_relative_expand(state, groups);
+}
+
 
 static uint64_t
 even_permutation_universe(unsigned int length)
@@ -1284,6 +1382,14 @@ process_ranked_workq(
             }
             state_length = full_size;
         }
+        if (configured_rank_type == RANK_PHASE5_COMBO_RELATIVE) {
+            if (group_count != 4 || groups[2].length != 8 || groups[3].length != 8 ||
+                    groups[2].universe != 1680 || groups[3].universe != 70 ||
+                    strcmp((const char *) groups[3].symbols, "Lx")) {
+                fprintf(stderr, "ERROR: phase5-combo-relative needs FB t/x, ABCDx wings, and Lx midges\n");
+                exit(1);
+            }
+        }
     }
     if (configured_universe != universe) {
         fprintf(stderr, "ERROR: rank group universes multiply to %" PRIu64 ", expected %" PRIu64 "\n",
@@ -1352,7 +1458,8 @@ process_ranked_workq(
     }
 
     unsigned int *perm = (configured_rank_type == RANK_MULTISET ||
-            configured_rank_type == RANK_CENTER_SYMMETRY_444)
+            configured_rank_type == RANK_CENTER_SYMMETRY_444 ||
+            configured_rank_type == RANK_PHASE5_COMBO_RELATIVE)
         ? build_compact_permutations(cube_size, squares, square_count, moves, moves_count)
         : NULL;
     unsigned char *state = malloc(state_length);
@@ -1399,6 +1506,8 @@ process_ranked_workq(
             orientation_bits_unrank_cube(
                 parent_rank, state, full_size, squares, pairing_partners,
                 square_count, wing_partner_flip_mask);
+        } else if (configured_rank_type == RANK_PHASE5_COMBO_RELATIVE) {
+            phase5_combo_relative_unrank(parent_rank, state, groups, group_count, universe);
         } else {
             grouped_multiset_unrank(parent_rank, state, groups, group_count, universe);
         }
@@ -1432,6 +1541,12 @@ process_ranked_workq(
                 child_rank = configured_rank_type == RANK_WING_BINARY
                     ? wing_binary_rank_cube(child, squares, symbol_of, groups, group_count)
                     : orientation_bits_rank_cube(child, squares, square_count);
+            } else if (configured_rank_type == RANK_PHASE5_COMBO_RELATIVE) {
+                for (unsigned int i = 0; i < square_count; i++) {
+                    child[perm[(move_index * square_count) + i]] = state[i];
+                }
+                child_rank = phase5_combo_relative_rank(
+                    child, state_length, symbol_of, groups, group_count);
             } else {
                 for (unsigned int i = 0; i < square_count; i++) {
                     child[perm[(move_index * square_count) + i]] = state[i];
@@ -1927,6 +2042,8 @@ main (int argc, char *argv[])
             configured_rank_type = RANK_ORIENTATION_BITS;
         } else if (strmatch(rank_type_buffer, "center-symmetry-444")) {
             configured_rank_type = RANK_CENTER_SYMMETRY_444;
+        } else if (strmatch(rank_type_buffer, "phase5-combo-relative")) {
+            configured_rank_type = RANK_PHASE5_COMBO_RELATIVE;
         } else {
             fprintf(stderr, "ERROR: unsupported --rank-type %s\n", rank_type_buffer);
             exit(1);

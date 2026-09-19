@@ -34,6 +34,8 @@ from rubikscubelookuptables.buildercore import (
     multiset_rank,
     multiset_size,
     multiset_unrank,
+    phase5_combo_relative_canonicalize,
+    phase5_combo_relative_expand,
     reverse_steps,
 )
 
@@ -248,6 +250,27 @@ class MultisetRankTests(unittest.TestCase):
 
         self.assertEqual(metadata["symbols"], "AB")
         self.assertEqual(metadata["counts"], [2, 2])
+
+
+class Phase5ComboRelativeRankTests(unittest.TestCase):
+    """Wings labeled relative to occupied midges collapse global ABCD names."""
+
+    def test_global_relabeling_does_not_change_the_canonical_state(self):
+        # standard libraries
+        from itertools import permutations
+
+        fb = "BBBBFFFFBBBBFFFF"
+        canonical = set()
+        for perm in permutations("ABCD"):
+            mapping = dict(zip("ABCD", perm))
+            wings = "".join(mapping.get(char, char) for char in "xxBADCxx")
+            midges = "".join(mapping.get(char, char) for char in "xxABCDxx")
+            canonical.add(phase5_combo_relative_canonicalize(fb + wings + midges))
+        self.assertEqual(canonical, {fb + "xxBADCxx" + "xxLLLLxx"})
+
+    def test_expand_round_trips_occupancy_to_abcd(self):
+        state = "BBBBFFFFBBBBFFFFxxBADCxxxxLLLLxx"
+        self.assertEqual(phase5_combo_relative_expand(state), "BBBBFFFFBBBBFFFFxxBADCxxxxABCDxx")
 
 
 class EdgePairingRankTests(unittest.TestCase):
