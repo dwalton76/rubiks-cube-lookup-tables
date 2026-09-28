@@ -152,4 +152,8 @@ wheel:
 777-daisy-oblique-weave:
 	./utils/builderui.py Build777DaisyObliqueWeaveCenters --cores 10
 
-777: 777-phase2 777-phase5-6-ranked 777-daisy-perfect 777-solve-perfect 777-daisy-inner-x-spine 777-daisy-inner-x-plus-two-inner-t 777-daisy-inner-t-plus-two-inner-x 777-daisy-middle-plus-two-inner-t 777-daisy-oblique-weave
+# LR inner-t times LR inner-x. 70^2 = 4,900 bytes, one native goal.
+777-daisy-lr-inner:
+	./utils/builderui.py Build777DaisyLRInnerCenters --cores 1
+
+777: 777-phase2 777-phase5-6-ranked 777-daisy-perfect 777-solve-perfect 777-daisy-inner-x-spine 777-daisy-inner-x-plus-two-inner-t 777-daisy-inner-t-plus-two-inner-x 777-daisy-middle-plus-two-inner-t 777-daisy-oblique-weave 777-daisy-lr-inner

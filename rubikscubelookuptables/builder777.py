@@ -1397,3 +1397,71 @@ class Build777DaisyObliqueWeaveCenters(_Build777DaisyMixedCenters):
     """
 
     table_slug = "oblique-weave"
+
+
+class Build777DaisyLRInnerCenters(BFS):
+    """
+    Rank the LR inner-t orbit and the LR inner-x orbit.
+
+    Each orbit puts four of its eight squares on L and four on R, so each
+    contributes C(8, 4) = 70 and the pair is 70^2 = 4,900 states. Inner centers
+    do not swap, so there is one goal. Both orbits are closed under the daisy
+    moves, which makes this distance exact for those two orbits.
+
+    lookup-table-7x7x7-daisy-lr-inner-centers.cost-only.bin
+    =======================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 4 entries (0 percent, 4.00x previous step)
+    2 steps has 22 entries (0 percent, 5.50x previous step)
+    3 steps has 82 entries (1 percent, 3.73x previous step)
+    4 steps has 292 entries (5 percent, 3.56x previous step)
+    5 steps has 986 entries (20 percent, 3.38x previous step)
+    6 steps has 2,001 entries (40 percent, 2.03x previous step)
+    7 steps has 1,312 entries (26 percent, 0.66x previous step)
+    8 steps has 200 entries (4 percent, 0.15x previous step)
+
+    Total: 4,900 entries
+    Average: 5.96 moves
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L L L . .  . . . . . . .  . . R R R . .  . . . . . . .
+    . . L . L . .  . . . . . . .  . . R . R . .  . . . . . . .
+    . . L L L . .  . . . . . . .  . . R R R . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+    """
+
+    def __init__(self):
+        orbits = (
+            ("inner-t", LR_INNER_T_CENTERS_777),
+            ("inner-x", LR_INNER_X_CENTERS_777),
+        )
+        BFS.__init__(
+            self,
+            "7x7x7-daisy-lr-inner-centers",
+            DAISY_CENTERS_ILLEGAL_MOVES_777,
+            "7x7x7",
+            "lookup-table-7x7x7-daisy-lr-inner-centers.txt",
+            False,
+            _daisy_starting_states_777("LR", orbits, ("native",)),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=tuple(squares for _, squares in orbits),
+        )
