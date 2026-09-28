@@ -6,10 +6,9 @@ clean:
 
 init: clean
 	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
-	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/compact-center-symmetry-777 rubikscubelookuptables/builder-find-new-states utils/pad-lines
+	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/builder-find-new-states utils/pad-lines
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	gcc -O3 -o rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/compact-center-symmetry-cost.c
-	gcc -O3 -pthread -o rubikscubelookuptables/compact-center-symmetry-777 rubikscubelookuptables/compact-center-symmetry-777.c
 	gcc -O3 -o rubikscubelookuptables/builder-find-new-states rubikscubelookuptables/builder-find-new-states.c
 	gcc -O3 -o utils/pad-lines utils/pad-lines.c
 	python3 -m venv venv
@@ -123,37 +122,8 @@ wheel:
 	./utils/builderui.py Build777Phase56UDRightObliqueOuterXCentersStage
 	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXCentersStage
 
-# The BFS needs 70^5 bytes of scratch but publishes a 314 MiB cost table plus
-# symmetry index, shared by all three axes.
-777-daisy-perfect: rubikscubelookuptables/compact-center-symmetry-777
-	./utils/builderui.py Build777DaisyPerfectCenters
-
-# Native-goal twin of 777-daisy-perfect, used by 9x9x9 and larger.
-777-solve-perfect: rubikscubelookuptables/compact-center-symmetry-777
-	./utils/builderui.py Build777SolvePerfectCenters
-
-# Three inner-x orbits plus the UD left and right obliques. Raw 70^5, no
-# symmetry compaction: the cost file is 1,680,700,000 bytes.
-777-daisy-inner-x-spine:
-	./utils/builderui.py Build777DaisyInnerXSpineCenters --cores 22
-
-# Mixed-axis raw 70^5 files. Each is one byte per rank. x y and z' y' rotate
-# the built square order onto the other two probes. 10 cores leaves the machine
-# usable while a search is running.
-777-daisy-inner-x-plus-two-inner-t:
-	./utils/builderui.py Build777DaisyInnerXPlusTwoInnerTCenters --cores 10
-
-777-daisy-inner-t-plus-two-inner-x:
-	./utils/builderui.py Build777DaisyInnerTPlusTwoInnerXCenters --cores 10
-
-777-daisy-middle-plus-two-inner-t:
-	./utils/builderui.py Build777DaisyMiddlePlusTwoInnerTCenters --cores 10
-
-777-daisy-oblique-weave:
-	./utils/builderui.py Build777DaisyObliqueWeaveCenters --cores 10
-
 # LR inner-t times LR inner-x. 70^2 = 4,900 bytes, one native goal.
 777-daisy-lr-inner:
 	./utils/builderui.py Build777DaisyLRInnerCenters --cores 1
 
-777: 777-phase2 777-phase5-6-ranked 777-daisy-perfect 777-solve-perfect 777-daisy-inner-x-spine 777-daisy-inner-x-plus-two-inner-t 777-daisy-inner-t-plus-two-inner-x 777-daisy-middle-plus-two-inner-t 777-daisy-oblique-weave 777-daisy-lr-inner
+777: 777-phase2 777-phase5-6-ranked 777-daisy-lr-inner

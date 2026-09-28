@@ -473,19 +473,9 @@ def test_builder_classification_separates_helpers_abstract_bases_and_wrappers():
     assert kinds["builder555"]["Build555Phase4"] == "direct"
     assert kinds["builder555"]["StartingStatesBuild555Phase4"] is None
     assert kinds["builder666"]["_Build666DaisyInnerXSpineCenters"] is None
-    assert kinds["builder777"]["_Build777DaisyCenters"] is None
     assert kinds["builder777"]["_Build777Phase56UDPairStage"] is None
-    assert kinds["builder777"]["_Build777SolveCenters"] is None
     assert kinds["builder777"]["Build777Phase56UDLeftRightObliqueCentersStage"] == "wrapper"
-    assert kinds["builder777"]["Build777DaisyPerfectCenters"] == "wrapper"
-    assert kinds["builder777"]["Build777SolvePerfectCenters"] == "wrapper"
-    assert kinds["builder777"]["_Build777DaisyInnerXSpineCenters"] is None
-    assert kinds["builder777"]["Build777DaisyInnerXSpineCenters"] == "wrapper"
-    assert kinds["builder777"]["_Build777DaisyMixedCenters"] is None
-    assert kinds["builder777"]["Build777DaisyInnerXPlusTwoInnerTCenters"] == "wrapper"
-    assert kinds["builder777"]["Build777DaisyInnerTPlusTwoInnerXCenters"] == "wrapper"
-    assert kinds["builder777"]["Build777DaisyMiddlePlusTwoInnerTCenters"] == "wrapper"
-    assert kinds["builder777"]["Build777DaisyObliqueWeaveCenters"] == "wrapper"
+    assert kinds["builder777"]["Build777DaisyLRInnerCenters"] == "direct"
     assert kinds["builder666"]["Build666DaisyAllInnerXPlusUDObliquesCenters"] == "wrapper"
     assert kinds["builder666"]["Build666DaisyAllInnerXPlusLRObliquesCenters"] == "wrapper"
     assert kinds["builder666"]["Build666DaisyAllInnerXPlusFBObliquesCenters"] == "wrapper"
