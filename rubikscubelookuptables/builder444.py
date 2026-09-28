@@ -165,7 +165,44 @@ PHASE2_ILLEGAL_MOVES = (
 # stage LR centers
 # ==================================================
 class Build444AllCentersStageSymmetryRanked(BFS):
-    """Exact 8/8/8 axis-center staging, quotiented by all 48 cube symmetries."""
+    """
+    Exact 8/8/8 axis-center staging, quotiented by all 48 cube symmetries.
+    UD centers are marked U, LR centers L, and FB centers F. Edges and corners
+    are blank. This is the only seeded goal.
+
+                 . . . .
+                 . U U .
+                 . U U .
+                 . . . .
+
+    . . . .  . . . .  . . . .  . . . .
+    . L L .  . F F .  . L L .  . F F .
+    . L L .  . F F .  . L L .  . F F .
+    . . . .  . . . .  . . . .  . . . .
+
+                 . . . .
+                 . U U .
+                 . U U .
+                 . . . .
+
+    lookup-table-4x4x4-step12-all-centers-stage-symmetry.cost-only.bin
+    ==================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 1 entries (0 percent, 1.00x previous step)
+    2 steps has 5 entries (0 percent, 5.00x previous step)
+    3 steps has 59 entries (0 percent, 11.80x previous step)
+    4 steps has 770 entries (0 percent, 13.05x previous step)
+    5 steps has 11,440 entries (0 percent, 14.86x previous step)
+    6 steps has 163,011 entries (0 percent, 14.25x previous step)
+    7 steps has 2,156,218 entries (1 percent, 13.23x previous step)
+    8 steps has 23,577,661 entries (11 percent, 10.93x previous step)
+    9 steps has 117,482,210 entries (59 percent, 4.98x previous step)
+    10 steps has 53,762,437 entries (27 percent, 0.46x previous step)
+    11 steps has 67,849 entries (0 percent, 0.00x previous step)
+
+    Total: 197,221,662 entries
+    Average: 9.13 moves
+    """
 
     def __init__(self):
         BFS.__init__(
@@ -183,6 +220,42 @@ class Build444AllCentersStageSymmetryRanked(BFS):
 
 
 class Build444LRCentersStageRanked(BFS):
+    """
+    Stage the eight LR centers. UD and FB centers are x. This is the first of
+    the 12 seeded goals, with L on the left and R on the right. The other 11
+    are the remaining LR pairings this phase treats as staged.
+
+                 . . . .
+                 . x x .
+                 . x x .
+                 . . . .
+
+    . . . .  . . . .  . . . .  . . . .
+    . L L .  . x x .  . R R .  . x x .
+    . L L .  . x x .  . R R .  . x x .
+    . . . .  . . . .  . . . .  . . . .
+
+                 . . . .
+                 . x x .
+                 . x x .
+                 . . . .
+
+    lookup-table-4x4x4-step14-LR-centers-stage.cost-only.bin
+    ========================================================
+    0 steps has 12 entries (0 percent, 0.00x previous step)
+    1 steps has 58 entries (0 percent, 4.83x previous step)
+    2 steps has 1,072 entries (0 percent, 18.48x previous step)
+    3 steps has 16,252 entries (0 percent, 15.16x previous step)
+    4 steps has 212,004 entries (0 percent, 13.04x previous step)
+    5 steps has 2,341,084 entries (4 percent, 11.04x previous step)
+    6 steps has 16,952,540 entries (32 percent, 7.24x previous step)
+    7 steps has 29,790,892 entries (57 percent, 1.76x previous step)
+    8 steps has 2,169,056 entries (4 percent, 0.07x previous step)
+
+    Total: 51,482,970 entries
+    Average: 6.61 moves
+    """
+
     def __init__(self):
         BFS.__init__(
             self,
@@ -202,7 +275,42 @@ class Build444LRCentersStageRanked(BFS):
 # stage the remaining centers and EO the wings
 # ==================================================
 class Build444HighLowEdgesEdgesAllMoves(BFS):
-    """High/low edges with the full 4x4x4 move set for phase 1."""
+    """
+    High/low edges with the full 4x4x4 move set. U and D mark the two wing
+    orbits; centers are blank. This is the one seeded goal. The other 2,047
+    even edge mappings are also solved for the solver, but this coordinate
+    ranks slots rather than pieces, so those mappings are applied at the
+    search root instead of being seeded here.
+
+                 . U D .
+                 D . . U
+                 U . . D
+                 . D U .
+
+    . D U .  . D U .  . D U .  . D U .
+    D . . U  U . . D  D . . U  U . . D
+    U . . D  D . . U  U . . D  D . . U
+    . U D .  . U D .  . U D .  . U D .
+
+                 . U D .
+                 D . . U
+                 U . . D
+                 . D U .
+
+    lookup-table-4x4x4-step23-highlow-edges-edges.cost-only.bin
+    ===========================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 8 entries (0 percent, 8.00x previous step)
+    2 steps has 168 entries (0 percent, 21.00x previous step)
+    3 steps has 3,218 entries (0 percent, 19.15x previous step)
+    4 steps has 58,587 entries (2 percent, 18.21x previous step)
+    5 steps has 776,568 entries (28 percent, 13.25x previous step)
+    6 steps has 1,843,774 entries (68 percent, 2.37x previous step)
+    7 steps has 21,832 entries (0 percent, 0.01x previous step)
+
+    Total: 2,704,156 entries
+    Average: 5.67 moves
+    """
 
     def __init__(self):
         BFS.__init__(
@@ -296,7 +404,27 @@ class Build444PairAllEdges(BFS):
 
     The coordinate is the even matching between 12 high-wing slots and 12
     low-wing slots. Named edge identities are quotiented out, giving 12! / 2
-    = 239,500,800 dense states.
+    = 239,500,800 dense states. The seeded goal is drawn inline below.
+
+    lookup-table-4x4x4-step33-all-edges-paired.cost-only.bin
+    ========================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 3 entries (0 percent, 3.00x previous step)
+    2 steps has 20 entries (0 percent, 6.67x previous step)
+    3 steps has 140 entries (0 percent, 7.00x previous step)
+    4 steps has 1,141 entries (0 percent, 8.15x previous step)
+    5 steps has 8,059 entries (0 percent, 7.06x previous step)
+    6 steps has 62,188 entries (0 percent, 7.72x previous step)
+    7 steps has 442,293 entries (0 percent, 7.11x previous step)
+    8 steps has 2,958,583 entries (1 percent, 6.69x previous step)
+    9 steps has 17,286,512 entries (7 percent, 5.84x previous step)
+    10 steps has 69,004,356 entries (28 percent, 3.99x previous step)
+    11 steps has 122,416,936 entries (51 percent, 1.77x previous step)
+    12 steps has 27,298,296 entries (11 percent, 0.22x previous step)
+    13 steps has 22,272 entries (0 percent, 0.00x previous step)
+
+    Total: 239,500,800 entries
+    Average: 10.64 moves
     """
 
     def __init__(self):

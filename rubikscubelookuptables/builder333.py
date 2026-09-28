@@ -252,25 +252,41 @@ class Build333MicroPythonPhase2Corners(BFS):
 
 class Build333MicroPythonPhase3(BFS):
     """
-    lookup-table-3x3x3-step130.txt
-    ==============================
-    0 steps has 96 entries (0 percent, 0.00x previous step)
-    1 steps has 192 entries (0 percent, 2.00x previous step)
-    2 steps has 864 entries (0 percent, 4.50x previous step)
-    3 steps has 3,456 entries (0 percent, 4.00x previous step)
-    4 steps has 11,904 entries (0 percent, 3.44x previous step)
-    5 steps has 50,880 entries (1 percent, 4.27x previous step)
-    6 steps has 173,376 entries (6 percent, 3.41x previous step)
-    7 steps has 358,272 entries (12 percent, 2.07x previous step)
-    8 steps has 495,168 entries (17 percent, 1.38x previous step)
-    9 steps has 678,720 entries (24 percent, 1.37x previous step)
-    10 steps has 692,928 entries (24 percent, 1.02x previous step)
-    11 steps has 307,392 entries (10 percent, 0.44x previous step)
-    12 steps has 46,848 entries (1 percent, 0.15x previous step)
-    13 steps has 2,304 entries (0 percent, 0.05x previous step)
+       First of the 96 seeded goal states. x marks an edge this coordinate does
+       not track. The other 95 are the remaining corner and edge arrangements
+       this phase treats as solved.
 
-    Total: 2,822,400 entries
-    Average: 8.80 moves
+           D F D
+           x U x
+           D F D
+
+    L x L  B F B  R x R  F F F
+    x L x  x F x  x R x  x B x
+    L x L  B F B  R x R  F F F
+
+           U F U
+           x D x
+           U F U
+
+       lookup-table-3x3x3-step130.txt
+       ==============================
+       0 steps has 96 entries (0 percent, 0.00x previous step)
+       1 steps has 192 entries (0 percent, 2.00x previous step)
+       2 steps has 864 entries (0 percent, 4.50x previous step)
+       3 steps has 3,456 entries (0 percent, 4.00x previous step)
+       4 steps has 11,904 entries (0 percent, 3.44x previous step)
+       5 steps has 50,880 entries (1 percent, 4.27x previous step)
+       6 steps has 173,376 entries (6 percent, 3.41x previous step)
+       7 steps has 358,272 entries (12 percent, 2.07x previous step)
+       8 steps has 495,168 entries (17 percent, 1.38x previous step)
+       9 steps has 678,720 entries (24 percent, 1.37x previous step)
+       10 steps has 692,928 entries (24 percent, 1.02x previous step)
+       11 steps has 307,392 entries (10 percent, 0.44x previous step)
+       12 steps has 46,848 entries (1 percent, 0.15x previous step)
+       13 steps has 2,304 entries (0 percent, 0.05x previous step)
+
+       Total: 2,822,400 entries
+       Average: 8.80 moves
     """
 
     def __init__(self):
@@ -431,23 +447,40 @@ class Build333MicroPythonPhase3Edges(BFS):
 
 class Build333MicroPythonPhase3Corners(BFS):
     """
-    lookup-table-3x3x3-step132-corners.txt
-    ======================================
-    0 steps has 96 entries (0 percent, 0.00x previous step)
-    1 steps has 192 entries (0 percent, 2.00x previous step)
-    2 steps has 480 entries (1 percent, 2.50x previous step)
-    3 steps has 1,152 entries (2 percent, 2.40x previous step)
-    4 steps has 1,728 entries (4 percent, 1.50x previous step)
-    5 steps has 4,800 entries (11 percent, 2.78x previous step)
-    6 steps has 4,224 entries (10 percent, 0.88x previous step)
-    7 steps has 4,992 entries (12 percent, 1.18x previous step)
-    8 steps has 6,528 entries (16 percent, 1.31x previous step)
-    9 steps has 9,216 entries (22 percent, 1.41x previous step)
-    10 steps has 4,992 entries (12 percent, 0.54x previous step)
-    11 steps has 1,920 entries (4 percent, 0.38x previous step)
+       First of the 96 seeded corner goals. Dots are edges, which this table
+       ignores. The other 95 are the remaining corner arrangements this phase
+       treats as solved. This first state has the U/D corners swapped with each
+       other and the F/B corners swapped with each other.
 
-    Total: 40,320 entries
-    Average: 7.49 moves
+           D . D
+           . . .
+           D . D
+
+    L . L  B . B  R . R  F . F
+    . . .  . . .  . . .  . . .
+    L . L  B . B  R . R  F . F
+
+           U . U
+           . . .
+           U . U
+
+       lookup-table-3x3x3-step132-corners.txt
+       ======================================
+       0 steps has 96 entries (0 percent, 0.00x previous step)
+       1 steps has 192 entries (0 percent, 2.00x previous step)
+       2 steps has 480 entries (1 percent, 2.50x previous step)
+       3 steps has 1,152 entries (2 percent, 2.40x previous step)
+       4 steps has 1,728 entries (4 percent, 1.50x previous step)
+       5 steps has 4,800 entries (11 percent, 2.78x previous step)
+       6 steps has 4,224 entries (10 percent, 0.88x previous step)
+       7 steps has 4,992 entries (12 percent, 1.18x previous step)
+       8 steps has 6,528 entries (16 percent, 1.31x previous step)
+       9 steps has 9,216 entries (22 percent, 1.41x previous step)
+       10 steps has 4,992 entries (12 percent, 0.54x previous step)
+       11 steps has 1,920 entries (4 percent, 0.38x previous step)
+
+       Total: 40,320 entries
+       Average: 7.49 moves
     """
 
     def __init__(self):

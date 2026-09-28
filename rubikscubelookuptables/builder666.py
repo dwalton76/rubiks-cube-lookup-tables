@@ -517,10 +517,11 @@ class _Build666DaisyInnerXSpineCenters(BFS):
     its primary face and four on the opposite face, so each ranks 8! / (4! * 4!)
     = 70 ways and the coordinate is 70^5 = 1,680,700,000 states.
 
-    _install_daisy_inner_x_spine_builders_666 stamps out three concrete tables
-    from this base, one per oblique axis.  They are the same cost function under
-    three indexings, because a cube rotation carrying one axis onto another
-    carries its tracked squares along, so all three share the histogram below.
+    Build666DaisyAllInnerXPlusUDObliquesCenters and the LR and FB classes
+    subclass this base, one per oblique axis.  They are the same cost function
+    under three indexings, because a cube rotation carrying one axis onto
+    another carries its tracked squares along, so all three share the histogram
+    below.
 
     _daisy_starting_states_666 generates the goals instead of passing an ascii
     cube.  It walks the product of native and obliques-swapped orientations over
@@ -599,16 +600,103 @@ class _Build666DaisyInnerXSpineCenters(BFS):
         )
 
 
-def _install_daisy_inner_x_spine_builders_666():
-    for axis, slug, class_name in daisy_inner_x_spine_table_specs_666():
-        globals()[class_name] = type(
-            class_name,
-            (_Build666DaisyInnerXSpineCenters,),
-            {
-                "axis": axis,
-                "table_slug": slug,
-            },
-        )
+class Build666DaisyAllInnerXPlusUDObliquesCenters(_Build666DaisyInnerXSpineCenters):
+    """
+    All three inner-x orbits plus the UD obliques. A rotation onto LR or FB
+    carries this coordinate along, so the depth counts match those two tables.
+    The shared goal diagram is on _Build666DaisyInnerXSpineCenters.
+
+    lookup-table-6x6x6-daisy-all-inner-x-plus-UD-obliques-centers.cost-only.bin
+    ===========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 20 entries (0 percent, 10.00x previous step)
+    2 steps has 292 entries (0 percent, 14.60x previous step)
+    3 steps has 3,614 entries (0 percent, 12.38x previous step)
+    4 steps has 35,016 entries (0 percent, 9.69x previous step)
+    5 steps has 262,910 entries (0 percent, 7.51x previous step)
+    6 steps has 1,678,254 entries (0 percent, 6.38x previous step)
+    7 steps has 9,314,920 entries (0 percent, 5.55x previous step)
+    8 steps has 42,467,206 entries (2 percent, 4.56x previous step)
+    9 steps has 142,043,698 entries (8 percent, 3.34x previous step)
+    10 steps has 310,836,418 entries (18 percent, 2.19x previous step)
+    11 steps has 436,034,242 entries (25 percent, 1.40x previous step)
+    12 steps has 404,658,064 entries (24 percent, 0.93x previous step)
+    13 steps has 242,558,432 entries (14 percent, 0.60x previous step)
+    14 steps has 83,622,720 entries (4 percent, 0.34x previous step)
+    15 steps has 7,153,472 entries (0 percent, 0.09x previous step)
+    16 steps has 30,720 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.24 moves
+    """
+
+    axis = "UD"
+    table_slug = "all-inner-x-plus-UD-obliques"
 
 
-_install_daisy_inner_x_spine_builders_666()
+class Build666DaisyAllInnerXPlusLRObliquesCenters(_Build666DaisyInnerXSpineCenters):
+    """
+    All three inner-x orbits plus the LR obliques. A rotation onto UD or FB
+    carries this coordinate along, so the depth counts match those two tables.
+    The shared goal diagram is on _Build666DaisyInnerXSpineCenters.
+
+    lookup-table-6x6x6-daisy-all-inner-x-plus-LR-obliques-centers.cost-only.bin
+    ===========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 20 entries (0 percent, 10.00x previous step)
+    2 steps has 292 entries (0 percent, 14.60x previous step)
+    3 steps has 3,614 entries (0 percent, 12.38x previous step)
+    4 steps has 35,016 entries (0 percent, 9.69x previous step)
+    5 steps has 262,910 entries (0 percent, 7.51x previous step)
+    6 steps has 1,678,254 entries (0 percent, 6.38x previous step)
+    7 steps has 9,314,920 entries (0 percent, 5.55x previous step)
+    8 steps has 42,467,206 entries (2 percent, 4.56x previous step)
+    9 steps has 142,043,698 entries (8 percent, 3.34x previous step)
+    10 steps has 310,836,418 entries (18 percent, 2.19x previous step)
+    11 steps has 436,034,242 entries (25 percent, 1.40x previous step)
+    12 steps has 404,658,064 entries (24 percent, 0.93x previous step)
+    13 steps has 242,558,432 entries (14 percent, 0.60x previous step)
+    14 steps has 83,622,720 entries (4 percent, 0.34x previous step)
+    15 steps has 7,153,472 entries (0 percent, 0.09x previous step)
+    16 steps has 30,720 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.24 moves
+    """
+
+    axis = "LR"
+    table_slug = "all-inner-x-plus-LR-obliques"
+
+
+class Build666DaisyAllInnerXPlusFBObliquesCenters(_Build666DaisyInnerXSpineCenters):
+    """
+    All three inner-x orbits plus the FB obliques. A rotation onto UD or LR
+    carries this coordinate along, so the depth counts match those two tables.
+    The shared goal diagram is on _Build666DaisyInnerXSpineCenters.
+
+    lookup-table-6x6x6-daisy-all-inner-x-plus-FB-obliques-centers.cost-only.bin
+    ===========================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 20 entries (0 percent, 10.00x previous step)
+    2 steps has 292 entries (0 percent, 14.60x previous step)
+    3 steps has 3,614 entries (0 percent, 12.38x previous step)
+    4 steps has 35,016 entries (0 percent, 9.69x previous step)
+    5 steps has 262,910 entries (0 percent, 7.51x previous step)
+    6 steps has 1,678,254 entries (0 percent, 6.38x previous step)
+    7 steps has 9,314,920 entries (0 percent, 5.55x previous step)
+    8 steps has 42,467,206 entries (2 percent, 4.56x previous step)
+    9 steps has 142,043,698 entries (8 percent, 3.34x previous step)
+    10 steps has 310,836,418 entries (18 percent, 2.19x previous step)
+    11 steps has 436,034,242 entries (25 percent, 1.40x previous step)
+    12 steps has 404,658,064 entries (24 percent, 0.93x previous step)
+    13 steps has 242,558,432 entries (14 percent, 0.60x previous step)
+    14 steps has 83,622,720 entries (4 percent, 0.34x previous step)
+    15 steps has 7,153,472 entries (0 percent, 0.09x previous step)
+    16 steps has 30,720 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.24 moves
+    """
+
+    axis = "FB"
+    table_slug = "all-inner-x-plus-FB-obliques"
