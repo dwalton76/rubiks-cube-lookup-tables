@@ -6,13 +6,23 @@ import pytest
 
 # rubiks cube libraries
 from rubikscubelookuptables.builder777 import (
+    DAISY_AXES_777,
     DAISY_AXIS_COLORS_777,
     DAISY_CENTER_ORBITS_777,
     DAISY_CENTERS_ILLEGAL_MOVES_777,
     DAISY_OBLIQUE_ORBITS_777,
+    DAISY_SPINE_OBLIQUE_NAMES_777,
+    Build777DaisyInnerTPlusTwoInnerXCenters,
+    Build777DaisyInnerXPlusTwoInnerTCenters,
+    Build777DaisyInnerXSpineCenters,
+    Build777DaisyMiddlePlusTwoInnerTCenters,
+    Build777DaisyObliqueWeaveCenters,
     Build777DaisyPerfectCenters,
     Build777SolvePerfectCenters,
     _Build777DaisyCenters,
+    daisy_inner_x_spine_orbits_777,
+    daisy_mixed_orbits_777,
+    daisy_mixed_probe_orbits_777,
 )
 
 ORBIT_NAMES = ("left-oblique", "middle-oblique", "right-oblique", "inner-t", "inner-x")
@@ -145,3 +155,126 @@ def test_daisy_ranked_metadata(tmp_path):
     assert all(group["counts"] == [4, 4] and group["universe_size"] == 70 for group in metadata["rank_groups"])
     assert metadata["completed_depth"] == 0
     assert metadata["states_per_depth"] == {"0": 2}
+
+
+def _orbit_sets(orbits):
+    return frozenset(frozenset(squares) for _, squares in orbits)
+
+
+def _image_of_orbits(builder, steps, orbits):
+    array_size = (6 * 7 * 7) + 1
+    state = [str(index) for index in range(array_size)]
+    for step in steps:
+        state = builder.rotate_xxx(state, step)
+    image = {int(value): dest for dest, value in enumerate(state)}
+    return frozenset(frozenset(image[square] for square in squares) for _, squares in orbits)
+
+
+def _cube_orientations():
+    """The 24 rotations, as six choices of which face is up and four twists."""
+    tops = ((), ("x",), ("x", "x"), ("x", "x", "x"), ("z",), ("z", "z", "z"))
+    return tuple(top + ("y",) * twist for top in tops for twist in range(4))
+
+
+def test_inner_x_spine_is_a_raw_70_to_the_five():
+    builder = Build777DaisyInnerXSpineCenters()
+    expected = daisy_inner_x_spine_orbits_777("UD")
+
+    assert builder.use_ranked_cost
+    assert not builder.compact_center_symmetry_777
+    assert builder.rank_universes == (70, 70, 70, 70, 70)
+    assert builder.rank_universe == 70**5 == 1_680_700_000
+    assert builder.selected_orbits == expected
+    assert tuple(name for name, _ in expected) == (
+        "inner-x",
+        "inner-x",
+        "inner-x",
+        "left-oblique",
+        "right-oblique",
+    )
+    assert builder.table_slug == "inner-x-spine"
+    assert builder.filename.endswith("lookup-table-7x7x7-daisy-inner-x-spine-centers.txt")
+    assert builder.illegal_moves == DAISY_CENTERS_ILLEGAL_MOVES_777
+    assert len(set().union(*(set(squares) for _, squares in expected))) == 40
+
+
+def test_inner_x_spine_goals_swap_only_the_obliques():
+    builder = Build777DaisyInnerXSpineCenters()
+    native, swapped = builder.starting_cubes
+
+    assert len(builder.starting_cubes) == 2
+    for orbit_name, squares in builder.selected_orbits:
+        native_colors = [native.state[square] for square in squares]
+        swapped_colors = [swapped.state[square] for square in squares]
+        if orbit_name == "inner-x":
+            assert native_colors == swapped_colors
+        else:
+            assert orbit_name in DAISY_SPINE_OBLIQUE_NAMES_777
+            assert swapped_colors == native_colors[4:] + native_colors[:4]
+
+    ranks = [builder._ranked_state_rank(builder._state_for_workq(cube)) for cube in builder.starting_cubes]
+    assert len(set(ranks)) == 2
+
+
+def test_one_rotation_carries_the_ud_spine_onto_lr_and_fb():
+    builder = Build777DaisyInnerXSpineCenters()
+    images = {_image_of_orbits(builder, steps, builder.selected_orbits): steps for steps in _cube_orientations()}
+
+    for axis in DAISY_AXES_777:
+        assert _orbit_sets(daisy_inner_x_spine_orbits_777(axis)) in images
+
+
+MIXED_BUILDERS_777 = {
+    "inner-x-plus-two-inner-t": Build777DaisyInnerXPlusTwoInnerTCenters,
+    "inner-t-plus-two-inner-x": Build777DaisyInnerTPlusTwoInnerXCenters,
+    "middle-plus-two-inner-t": Build777DaisyMiddlePlusTwoInnerTCenters,
+    "oblique-weave": Build777DaisyObliqueWeaveCenters,
+}
+
+
+@pytest.mark.parametrize("slug", tuple(MIXED_BUILDERS_777))
+def test_mixed_coordinate_is_a_raw_70_to_the_five(slug):
+    builder = MIXED_BUILDERS_777[slug]()
+    expected = daisy_mixed_orbits_777(slug)
+
+    assert builder.use_ranked_cost
+    assert not builder.compact_center_symmetry_777
+    assert builder.rank_universes == (70, 70, 70, 70, 70)
+    assert builder.rank_universe == 70**5 == 1_680_700_000
+    assert builder.selected_orbits == expected
+    assert builder.table_slug == slug
+    assert builder.filename.endswith(f"lookup-table-7x7x7-daisy-{slug}-centers.txt")
+    assert builder.illegal_moves == DAISY_CENTERS_ILLEGAL_MOVES_777
+    assert len(set().union(*(set(squares) for _, squares in expected))) == 40
+    assert len(daisy_mixed_probe_orbits_777(slug)) == 3
+
+
+@pytest.mark.parametrize("slug", tuple(MIXED_BUILDERS_777))
+def test_mixed_goals_swap_only_obliques(slug):
+    builder = MIXED_BUILDERS_777[slug]()
+    tracks_oblique = any(name in DAISY_OBLIQUE_ORBITS_777 for name, _ in builder.selected_orbits)
+
+    assert len(builder.starting_cubes) == (2 if tracks_oblique else 1)
+    if not tracks_oblique:
+        return
+
+    native, swapped = builder.starting_cubes
+    for orbit_name, squares in builder.selected_orbits:
+        native_colors = [native.state[square] for square in squares]
+        swapped_colors = [swapped.state[square] for square in squares]
+        if orbit_name in DAISY_OBLIQUE_ORBITS_777:
+            assert swapped_colors == native_colors[4:] + native_colors[:4]
+        else:
+            assert native_colors == swapped_colors
+
+    ranks = [builder._ranked_state_rank(builder._state_for_workq(cube)) for cube in builder.starting_cubes]
+    assert len(set(ranks)) == 2
+
+
+@pytest.mark.parametrize("slug", tuple(MIXED_BUILDERS_777))
+def test_x_and_y_carry_each_mixed_coordinate_onto_its_other_probes(slug):
+    builder = MIXED_BUILDERS_777[slug]()
+    images = {_image_of_orbits(builder, steps, builder.selected_orbits) for steps in _cube_orientations()}
+
+    for orbits in daisy_mixed_probe_orbits_777(slug):
+        assert _orbit_sets(orbits) in images

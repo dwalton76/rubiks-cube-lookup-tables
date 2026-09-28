@@ -838,3 +838,562 @@ class Build777SolvePerfectCenters(_Build777SolveCenters):
 
     axis, table_slug = "UD", "perfect"
     compact_center_symmetry = True
+
+
+# ==================================================
+# inner-x spine
+# all three inner-x orbits plus the left and right obliques of one axis
+# ==================================================
+DAISY_AXES_777 = ("UD", "LR", "FB")
+DAISY_SPINE_OBLIQUE_NAMES_777 = ("left-oblique", "right-oblique")
+
+
+def daisy_inner_x_spine_orbits_777(oblique_axis="UD"):
+    """UD, LR, and FB inner-x, then the left and right obliques of one axis."""
+    if oblique_axis not in DAISY_AXES_777:
+        raise ValueError(oblique_axis)
+    inner_x = tuple(
+        orbit for axis in DAISY_AXES_777 for orbit in DAISY_CENTER_ORBITS_777[axis] if orbit[0] == "inner-x"
+    )
+    obliques = tuple(
+        orbit for orbit in DAISY_CENTER_ORBITS_777[oblique_axis] if orbit[0] in DAISY_SPINE_OBLIQUE_NAMES_777
+    )
+    return inner_x + obliques
+
+
+def _axis_owning_squares_777(squares):
+    wanted = tuple(squares)
+    for axis, orbits in DAISY_CENTER_ORBITS_777.items():
+        for _, orbit_squares in orbits:
+            if orbit_squares == wanted:
+                return axis
+    raise KeyError(wanted)
+
+
+def _daisy_spine_starting_states_777(selected_orbits):
+    """
+    Native and obliques-swapped goals for a mixed-axis spine.
+
+    Inner-x never swaps. Only the left and right obliques in the selection
+    exchange their two faces, so those two orientations are the only goals.
+    """
+    result = []
+    for swapped in (False, True):
+        state = ["."] * (6 * 7 * 7)
+        for orbit_name, squares in selected_orbits:
+            primary, opposite = DAISY_AXIS_COLORS_777[_axis_owning_squares_777(squares)]
+            exchange = swapped and orbit_name in DAISY_SPINE_OBLIQUE_NAMES_777
+            first_color, second_color = (opposite, primary) if exchange else (primary, opposite)
+            for square in squares[:4]:
+                state[square - 1] = first_color
+            for square in squares[4:]:
+                state[square - 1] = second_color
+        result.append(("".join(state), "ULFRBD"))
+    return tuple(result)
+
+
+class _Build777DaisyInnerXSpineCenters(BFS):
+    """
+    Dense ranked-cost 70^5 builder: every inner-x orbit plus one axis's left and right obliques.
+
+    Five orbits of eight squares are tracked, the UD, LR, and FB inner x-centers
+    plus the left and right obliques of `axis`. Middle obliques and inner-t stay
+    out of this coordinate. Each orbit puts four squares on its primary face and
+    four on the opposite face, so each ranks 8! / (4! * 4!) = 70 ways and the
+    coordinate is 70^5 = 1,680,700,000 states. The published file is one byte
+    per rank. The 16 axis-preserving symmetries used by the perfect table do not
+    apply here, because these five orbits are not the five orbits of one axis.
+
+    A cube rotation carrying UD onto LR or FB carries these five orbits onto
+    that axis's spine, so this UD indexing is the only file. The other two
+    probes rotate onto this square order: UD inner-x, LR inner-x, FB inner-x,
+    UD left oblique, UD right oblique.
+
+    _daisy_spine_starting_states_777 builds the goals instead of passing an
+    ascii cube. Inner-x stays native in both, and the second goal exchanges the
+    left and right obliques between the two faces of `axis`. This is the native
+    goal for the UD table:
+
+                   . . . . . . .
+                   . . U . U . .
+                   . U U . U U .
+                   . . . . . . .
+                   . U U . U U .
+                   . . U . U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L . L . .  . . F . F . .  . . R . R . .  . . B . B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L . L . .  . . F . F . .  . . R . R . .  . . B . B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D . D . .
+                   . D D . D D .
+                   . . . . . . .
+                   . D D . D D .
+                   . . D . D . .
+                   . . . . . . .
+    """
+
+    axis = None
+    table_slug = None
+
+    def __init__(self):
+        selected_orbits = daisy_inner_x_spine_orbits_777(self.axis)
+        self.selected_orbits = selected_orbits
+
+        BFS.__init__(
+            self,
+            f"7x7x7-daisy-{self.table_slug}-centers",
+            DAISY_CENTERS_ILLEGAL_MOVES_777,
+            "7x7x7",
+            f"lookup-table-7x7x7-daisy-{self.table_slug}-centers.txt",
+            False,
+            _daisy_spine_starting_states_777(selected_orbits),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=tuple(squares for _, squares in selected_orbits),
+        )
+
+
+class Build777DaisyInnerXSpineCenters(_Build777DaisyInnerXSpineCenters):
+    """
+    All three inner-x orbits plus the UD left and right obliques.
+
+    The shared goal diagram is on _Build777DaisyInnerXSpineCenters. LR and FB
+    are the same cost function after a rotation onto these squares.
+
+    lookup-table-7x7x7-daisy-inner-x-spine-centers.cost-only.bin
+    ============================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 20 entries (0 percent, 10.00x previous step)
+    2 steps has 292 entries (0 percent, 14.60x previous step)
+    3 steps has 3,614 entries (0 percent, 12.38x previous step)
+    4 steps has 35,016 entries (0 percent, 9.69x previous step)
+    5 steps has 262,910 entries (0 percent, 7.51x previous step)
+    6 steps has 1,678,254 entries (0 percent, 6.38x previous step)
+    7 steps has 9,314,920 entries (0 percent, 5.55x previous step)
+    8 steps has 42,467,206 entries (2 percent, 4.56x previous step)
+    9 steps has 142,043,698 entries (8 percent, 3.34x previous step)
+    10 steps has 310,836,418 entries (18 percent, 2.19x previous step)
+    11 steps has 436,034,242 entries (25 percent, 1.40x previous step)
+    12 steps has 404,658,064 entries (24 percent, 0.93x previous step)
+    13 steps has 242,558,432 entries (14 percent, 0.60x previous step)
+    14 steps has 83,622,720 entries (4 percent, 0.34x previous step)
+    15 steps has 7,153,472 entries (0 percent, 0.09x previous step)
+    16 steps has 30,720 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.24 moves
+    """
+
+    axis = "UD"
+    table_slug = "inner-x-spine"
+
+
+# ==================================================
+# mixed-axis 70^5 coordinates
+# one file per coordinate; x y and z' y' rotate it onto the other two probes
+# ==================================================
+# Probe 0 is the file's own square order. Probe 1 is the x y rotation and
+# probe 2 is z' y'. Those are the rotations that carry a solved coloring onto
+# the file's solved byte. Inner-x and inner-t have a single native goal. Any
+# oblique orbit swaps between the two faces in the alternate daisy orientation,
+# so those coordinates have two goals.
+DAISY_MIXED_PROBES_777 = {
+    "inner-x-plus-two-inner-t": (
+        (
+            ("UD", "inner-x"),
+            ("LR", "inner-x"),
+            ("FB", "inner-x"),
+            ("UD", "inner-t"),
+            ("LR", "inner-t"),
+        ),
+        (
+            ("FB", "inner-x"),
+            ("UD", "inner-x"),
+            ("LR", "inner-x"),
+            ("FB", "inner-t"),
+            ("UD", "inner-t"),
+        ),
+        (
+            ("LR", "inner-x"),
+            ("FB", "inner-x"),
+            ("UD", "inner-x"),
+            ("LR", "inner-t"),
+            ("FB", "inner-t"),
+        ),
+    ),
+    "inner-t-plus-two-inner-x": (
+        (
+            ("UD", "inner-t"),
+            ("LR", "inner-t"),
+            ("FB", "inner-t"),
+            ("UD", "inner-x"),
+            ("LR", "inner-x"),
+        ),
+        (
+            ("FB", "inner-t"),
+            ("UD", "inner-t"),
+            ("LR", "inner-t"),
+            ("FB", "inner-x"),
+            ("UD", "inner-x"),
+        ),
+        (
+            ("LR", "inner-t"),
+            ("FB", "inner-t"),
+            ("UD", "inner-t"),
+            ("LR", "inner-x"),
+            ("FB", "inner-x"),
+        ),
+    ),
+    "middle-plus-two-inner-t": (
+        (
+            ("UD", "middle-oblique"),
+            ("LR", "middle-oblique"),
+            ("FB", "middle-oblique"),
+            ("UD", "inner-t"),
+            ("LR", "inner-t"),
+        ),
+        (
+            ("FB", "middle-oblique"),
+            ("UD", "middle-oblique"),
+            ("LR", "middle-oblique"),
+            ("FB", "inner-t"),
+            ("UD", "inner-t"),
+        ),
+        (
+            ("LR", "middle-oblique"),
+            ("FB", "middle-oblique"),
+            ("UD", "middle-oblique"),
+            ("LR", "inner-t"),
+            ("FB", "inner-t"),
+        ),
+    ),
+    "oblique-weave": (
+        (
+            ("UD", "left-oblique"),
+            ("UD", "right-oblique"),
+            ("LR", "left-oblique"),
+            ("LR", "right-oblique"),
+            ("FB", "middle-oblique"),
+        ),
+        (
+            ("FB", "left-oblique"),
+            ("FB", "right-oblique"),
+            ("UD", "left-oblique"),
+            ("UD", "right-oblique"),
+            ("LR", "middle-oblique"),
+        ),
+        (
+            ("LR", "left-oblique"),
+            ("LR", "right-oblique"),
+            ("FB", "left-oblique"),
+            ("FB", "right-oblique"),
+            ("UD", "middle-oblique"),
+        ),
+    ),
+}
+
+
+def _orbit_squares_777(axis, name):
+    matches = [squares for orbit_name, squares in DAISY_CENTER_ORBITS_777[axis] if orbit_name == name]
+    if len(matches) != 1:
+        raise KeyError((axis, name))
+    return matches[0]
+
+
+def daisy_mixed_probe_orbits_777(table_slug):
+    """Three orbit lists: the built square order, then the x y and z' y' probes."""
+    if table_slug not in DAISY_MIXED_PROBES_777:
+        raise ValueError(table_slug)
+    return tuple(
+        tuple((name, _orbit_squares_777(axis, name)) for axis, name in probe)
+        for probe in DAISY_MIXED_PROBES_777[table_slug]
+    )
+
+
+def daisy_mixed_orbits_777(table_slug):
+    """The five orbits written into the cost file, in rank order."""
+    return daisy_mixed_probe_orbits_777(table_slug)[0]
+
+
+def _daisy_mixed_starting_states_777(selected_orbits):
+    """
+    Native goal, plus the obliques-swapped goal when the coordinate tracks one.
+
+    Inner-x and inner-t stay on their own faces. Left, middle, and right
+    obliques exchange faces together, which is the daisy's second orientation.
+    """
+    swaps = (False, True) if any(name in DAISY_OBLIQUE_ORBITS_777 for name, _ in selected_orbits) else (False,)
+    result = []
+    for swapped in swaps:
+        state = ["."] * (6 * 7 * 7)
+        for orbit_name, squares in selected_orbits:
+            primary, opposite = DAISY_AXIS_COLORS_777[_axis_owning_squares_777(squares)]
+            exchange = swapped and orbit_name in DAISY_OBLIQUE_ORBITS_777
+            first_color, second_color = (opposite, primary) if exchange else (primary, opposite)
+            for square in squares[:4]:
+                state[square - 1] = first_color
+            for square in squares[4:]:
+                state[square - 1] = second_color
+        result.append(("".join(state), "ULFRBD"))
+    return tuple(result)
+
+
+class _Build777DaisyMixedCenters(BFS):
+    """
+    Dense ranked-cost 70^5 builder for five orbits drawn from more than one axis.
+
+    The published file is one byte per rank, 1,680,700,000 bytes, with no
+    symmetry compaction. The 16 axis-preserving symmetries fix one axis, and
+    these coordinates mix axes. `table_slug` selects the square order from
+    DAISY_MIXED_PROBES_777. An x y rotation and a z' y' rotation carry that
+    order onto the other two probes, so each slug is one file.
+    """
+
+    table_slug = None
+
+    def __init__(self):
+        selected_orbits = daisy_mixed_orbits_777(self.table_slug)
+        self.selected_orbits = selected_orbits
+
+        BFS.__init__(
+            self,
+            f"7x7x7-daisy-{self.table_slug}-centers",
+            DAISY_CENTERS_ILLEGAL_MOVES_777,
+            "7x7x7",
+            f"lookup-table-7x7x7-daisy-{self.table_slug}-centers.txt",
+            False,
+            _daisy_mixed_starting_states_777(selected_orbits),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=tuple(squares for _, squares in selected_orbits),
+        )
+
+
+class Build777DaisyInnerXPlusTwoInnerTCenters(_Build777DaisyMixedCenters):
+    """
+    All three inner-x orbits plus the UD and LR inner t-centers.
+
+    FB inner-t is omitted here; x y omits LR inner-t and z' y' omits UD inner-t.
+    Inner-x and inner-t do not swap, so there is one goal. F and B show inner-x only.
+
+    lookup-table-7x7x7-daisy-inner-x-plus-two-inner-t-centers.cost-only.bin
+    =======================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 99 entries (0 percent, 16.50x previous step)
+    3 steps has 1,098 entries (0 percent, 11.09x previous step)
+    4 steps has 10,874 entries (0 percent, 9.90x previous step)
+    5 steps has 100,654 entries (0 percent, 9.26x previous step)
+    6 steps has 832,025 entries (0 percent, 8.27x previous step)
+    7 steps has 5,930,898 entries (0 percent, 7.13x previous step)
+    8 steps has 34,609,474 entries (2 percent, 5.84x previous step)
+    9 steps has 149,171,994 entries (8 percent, 4.31x previous step)
+    10 steps has 403,406,387 entries (24 percent, 2.70x previous step)
+    11 steps has 579,775,732 entries (34 percent, 1.44x previous step)
+    12 steps has 399,712,478 entries (23 percent, 0.69x previous step)
+    13 steps has 102,649,488 entries (6 percent, 0.26x previous step)
+    14 steps has 4,490,104 entries (0 percent, 0.04x previous step)
+    15 steps has 8,688 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 10.87 moves
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . U U U . .
+                   . . U . U . .
+                   . . U U U . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L L L . .  . . F . F . .  . . R R R . .  . . B . B . .
+    . . L . L . .  . . . . . . .  . . R . R . .  . . . . . . .
+    . . L L L . .  . . F . F . .  . . R R R . .  . . B . B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . D D D . .
+                   . . D . D . .
+                   . . D D D . .
+                   . . . . . . .
+                   . . . . . . .
+    """
+
+    table_slug = "inner-x-plus-two-inner-t"
+
+
+class Build777DaisyInnerTPlusTwoInnerXCenters(_Build777DaisyMixedCenters):
+    """
+    All three inner-t orbits plus the UD and LR inner x-centers.
+
+    FB inner-x is omitted here; x y omits LR inner-x and z' y' omits UD inner-x.
+    One goal. F and B show inner-t only.
+
+    lookup-table-7x7x7-daisy-inner-t-plus-two-inner-x-centers.cost-only.bin
+    =======================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 6 entries (0 percent, 6.00x previous step)
+    2 steps has 99 entries (0 percent, 16.50x previous step)
+    3 steps has 1,102 entries (0 percent, 11.13x previous step)
+    4 steps has 10,991 entries (0 percent, 9.97x previous step)
+    5 steps has 103,416 entries (0 percent, 9.41x previous step)
+    6 steps has 888,663 entries (0 percent, 8.59x previous step)
+    7 steps has 6,731,540 entries (0 percent, 7.57x previous step)
+    8 steps has 42,323,665 entries (2 percent, 6.29x previous step)
+    9 steps has 196,540,960 entries (11 percent, 4.64x previous step)
+    10 steps has 546,068,833 entries (32 percent, 2.78x previous step)
+    11 steps has 655,219,330 entries (38 percent, 1.20x previous step)
+    12 steps has 220,635,638 entries (13 percent, 0.34x previous step)
+    13 steps has 12,146,412 entries (0 percent, 0.06x previous step)
+    14 steps has 29,344 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 10.49 moves
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . U U U . .
+                   . . U . U . .
+                   . . U U U . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L L L . .  . . . F . . .  . . R R R . .  . . . B . . .
+    . . L . L . .  . . F . F . .  . . R . R . .  . . B . B . .
+    . . L L L . .  . . . F . . .  . . R R R . .  . . . B . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . D D D . .
+                   . . D . D . .
+                   . . D D D . .
+                   . . . . . . .
+                   . . . . . . .
+    """
+
+    table_slug = "inner-t-plus-two-inner-x"
+
+
+class Build777DaisyMiddlePlusTwoInnerTCenters(_Build777DaisyMixedCenters):
+    """
+    All three middle-oblique orbits plus the UD and LR inner t-centers.
+
+    FB inner-t is omitted here; x y omits LR inner-t and z' y' omits UD inner-t.
+    Middle obliques swap in the second daisy orientation and inner-t does not,
+    so depth 0 holds two entries.
+
+    lookup-table-7x7x7-daisy-middle-plus-two-inner-t-centers.cost-only.bin
+    ======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 24 entries (0 percent, 12.00x previous step)
+    2 steps has 516 entries (0 percent, 21.50x previous step)
+    3 steps has 8,352 entries (0 percent, 16.19x previous step)
+    4 steps has 117,048 entries (0 percent, 14.01x previous step)
+    5 steps has 1,375,944 entries (0 percent, 11.76x previous step)
+    6 steps has 13,291,732 entries (0 percent, 9.66x previous step)
+    7 steps has 95,275,648 entries (5 percent, 7.17x previous step)
+    8 steps has 412,978,074 entries (24 percent, 4.33x previous step)
+    9 steps has 767,322,380 entries (45 percent, 1.86x previous step)
+    10 steps has 369,339,248 entries (21 percent, 0.48x previous step)
+    11 steps has 20,914,696 entries (1 percent, 0.06x previous step)
+    12 steps has 76,336 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 8.86 moves
+
+                   . . . . . . .
+                   . . . U . . .
+                   . . . U . . .
+                   . U U . U U .
+                   . . . U . . .
+                   . . . U . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . L . . .  . . . F . . .  . . . R . . .  . . . B . . .
+    . . . L . . .  . . . . . . .  . . . R . . .  . . . . . . .
+    . L L . L L .  . F . . . F .  . R R . R R .  . B . . . B .
+    . . . L . . .  . . . . . . .  . . . R . . .  . . . . . . .
+    . . . L . . .  . . . F . . .  . . . R . . .  . . . B . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . D . . .
+                   . . . D . . .
+                   . D D . D D .
+                   . . . D . . .
+                   . . . D . . .
+                   . . . . . . .
+    """
+
+    table_slug = "middle-plus-two-inner-t"
+
+
+class Build777DaisyObliqueWeaveCenters(_Build777DaisyMixedCenters):
+    """
+    Left and right obliques of UD and LR, plus the FB middle oblique.
+
+    x y puts the middle on LR and z' y' puts it on UD. Every tracked orbit is
+    an oblique, so both daisy orientations are goals.
+
+    lookup-table-7x7x7-daisy-oblique-weave-centers.cost-only.bin
+    ============================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 24 entries (0 percent, 12.00x previous step)
+    2 steps has 482 entries (0 percent, 20.08x previous step)
+    3 steps has 7,284 entries (0 percent, 15.11x previous step)
+    4 steps has 93,242 entries (0 percent, 12.80x previous step)
+    5 steps has 952,880 entries (0 percent, 10.22x previous step)
+    6 steps has 7,612,186 entries (0 percent, 7.99x previous step)
+    7 steps has 45,726,268 entries (2 percent, 6.01x previous step)
+    8 steps has 191,800,488 entries (11 percent, 4.19x previous step)
+    9 steps has 491,712,480 entries (29 percent, 2.56x previous step)
+    10 steps has 603,694,056 entries (35 percent, 1.23x previous step)
+    11 steps has 291,312,896 entries (17 percent, 0.48x previous step)
+    12 steps has 45,944,976 entries (2 percent, 0.16x previous step)
+    13 steps has 1,842,736 entries (0 percent, 0.04x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 9.61 moves
+
+                   . . . . . . .
+                   . . U . U . .
+                   . U . . . U .
+                   . . . . . . .
+                   . U . . . U .
+                   . . U . U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L . L . .  . . . F . . .  . . R . R . .  . . . B . . .
+    . L . . . L .  . . . . . . .  . R . . . R .  . . . . . . .
+    . . . . . . .  . F . . . F .  . . . . . . .  . B . . . B .
+    . L . . . L .  . . . . . . .  . R . . . R .  . . . . . . .
+    . . L . L . .  . . . F . . .  . . R . R . .  . . . B . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D . D . .
+                   . D . . . D .
+                   . . . . . . .
+                   . D . . . D .
+                   . . D . D . .
+                   . . . . . . .
+    """
+
+    table_slug = "oblique-weave"

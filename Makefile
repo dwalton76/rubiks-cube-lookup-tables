@@ -132,4 +132,24 @@ wheel:
 777-solve-perfect: rubikscubelookuptables/compact-center-symmetry-777
 	./utils/builderui.py Build777SolvePerfectCenters
 
-777: 777-phase2 777-phase5-6-ranked 777-daisy-perfect 777-solve-perfect
+# Three inner-x orbits plus the UD left and right obliques. Raw 70^5, no
+# symmetry compaction: the cost file is 1,680,700,000 bytes.
+777-daisy-inner-x-spine:
+	./utils/builderui.py Build777DaisyInnerXSpineCenters --cores 22
+
+# Mixed-axis raw 70^5 files. Each is one byte per rank. x y and z' y' rotate
+# the built square order onto the other two probes. 10 cores leaves the machine
+# usable while a search is running.
+777-daisy-inner-x-plus-two-inner-t:
+	./utils/builderui.py Build777DaisyInnerXPlusTwoInnerTCenters --cores 10
+
+777-daisy-inner-t-plus-two-inner-x:
+	./utils/builderui.py Build777DaisyInnerTPlusTwoInnerXCenters --cores 10
+
+777-daisy-middle-plus-two-inner-t:
+	./utils/builderui.py Build777DaisyMiddlePlusTwoInnerTCenters --cores 10
+
+777-daisy-oblique-weave:
+	./utils/builderui.py Build777DaisyObliqueWeaveCenters --cores 10
+
+777: 777-phase2 777-phase5-6-ranked 777-daisy-perfect 777-solve-perfect 777-daisy-inner-x-spine 777-daisy-inner-x-plus-two-inner-t 777-daisy-inner-t-plus-two-inner-x 777-daisy-middle-plus-two-inner-t 777-daisy-oblique-weave

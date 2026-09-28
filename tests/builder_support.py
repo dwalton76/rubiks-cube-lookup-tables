@@ -81,6 +81,11 @@ SKIPPED_BUILDERS = {
     "Build666DaisyAllInnerXPlusFBObliquesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build777DaisyPerfectCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build777SolvePerfectCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777DaisyInnerXSpineCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777DaisyInnerXPlusTwoInnerTCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777DaisyInnerTPlusTwoInnerXCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777DaisyMiddlePlusTwoInnerTCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777DaisyObliqueWeaveCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
 }
 
 
