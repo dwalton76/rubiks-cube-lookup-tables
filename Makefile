@@ -126,4 +126,32 @@ wheel:
 777-daisy-lr-inner:
 	./utils/builderui.py Build777DaisyLRInnerCenters --cores 1
 
-777: 777-phase2 777-phase5-6-ranked 777-daisy-lr-inner
+# Phase 8. Five raw 70^5 tables, one 70-state LR bar table, and two 70^4
+# UD/FB interaction tables. Each 70^5 build needs about 2 GiB of scratch.
+777-phase8-ud-axis:
+	./utils/builderui.py Build777Phase8UDAxisCenters --cores 16
+
+777-phase8-fb-axis:
+	./utils/builderui.py Build777Phase8FBAxisCenters --cores 16
+
+777-phase8-lr-oblique:
+	./utils/builderui.py Build777Phase8LRObliqueCenters --cores 1
+
+777-phase8-inner-interaction:
+	./utils/builderui.py Build777Phase8InnerInteractionCenters --cores 8
+
+777-phase8-middle-interaction:
+	./utils/builderui.py Build777Phase8MiddleInteractionCenters --cores 8
+
+777-phase8-ud-obliques-fb-edges:
+	./utils/builderui.py Build777Phase8UDObliquesFBEdgesCenters --cores 16
+
+777-phase8-fb-obliques-ud-edges:
+	./utils/builderui.py Build777Phase8FBObliquesUDEdgesCenters --cores 16
+
+777-phase8-ud-obliques-fb-inner-t:
+	./utils/builderui.py Build777Phase8UDObliquesFBInnerTCenters --cores 16
+
+777-phase8: 777-phase8-lr-oblique 777-phase8-inner-interaction 777-phase8-middle-interaction 777-phase8-ud-axis 777-phase8-fb-axis 777-phase8-ud-obliques-fb-edges 777-phase8-fb-obliques-ud-edges 777-phase8-ud-obliques-fb-inner-t
+
+777: 777-phase2 777-phase5-6-ranked 777-daisy-lr-inner 777-phase8

@@ -720,3 +720,570 @@ class Build777DaisyLRInnerCenters(BFS):
             use_ranked_cost=True,
             ranked_cost_square_groups=tuple(squares for _, squares in orbits),
         )
+
+
+# Phase 8 keeps the phase 7 state: outer turns, the six 2-wide half turns, and
+# 3Lw2 / 3Rw2. The U/D/F/B 3-wide half turns are out.
+PHASE8_CENTER_ILLEGAL_MOVES_777 = DAISY_CENTERS_ILLEGAL_MOVES_777 + (
+    "3Uw2",
+    "3Fw2",
+    "3Bw2",
+    "3Dw2",
+)
+
+
+# A daisy lets each axis be native or oblique-swapped on its own. Inners never swap.
+_PHASE8_SWAPPED_AXES_777 = {
+    "native": frozenset(),
+    "obliques-swapped": frozenset(("UD", "LR", "FB")),
+    "ud-swapped": frozenset(("UD",)),
+    "fb-swapped": frozenset(("FB",)),
+}
+
+
+def _phase8_starting_states_777(orbits, orientations):
+    """Paint each (axis, orbit, squares) triple in one goal per orientation."""
+    result = []
+    for orientation in orientations:
+        swap_axes = _PHASE8_SWAPPED_AXES_777[orientation]
+        state = ["."] * (6 * 7 * 7)
+        for axis, orbit_name, squares in orbits:
+            primary, opposite = DAISY_AXIS_COLORS_777[axis]
+            swap = axis in swap_axes and orbit_name in DAISY_OBLIQUE_ORBITS_777
+            first_color, second_color = (opposite, primary) if swap else (primary, opposite)
+            for square in squares[:4]:
+                state[square - 1] = first_color
+            for square in squares[4:]:
+                state[square - 1] = second_color
+        result.append(("".join(state), "ULFRBD"))
+    return tuple(result)
+
+
+def _phase8_axis_orbits(axis):
+    return tuple((axis, name, squares) for name, squares in DAISY_CENTER_ORBITS_777[axis])
+
+
+class _Build777Phase8Centers(BFS):
+    """Shared ranked-cost builder for one phase 8 coordinate."""
+
+    orbits = ()
+    orientations = ("native",)
+    table_name = None
+    filename = None
+
+    def __init__(self):
+        BFS.__init__(
+            self,
+            self.table_name,
+            PHASE8_CENTER_ILLEGAL_MOVES_777,
+            "7x7x7",
+            self.filename,
+            False,
+            _phase8_starting_states_777(self.orbits, self.orientations),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=tuple(squares for _, _, squares in self.orbits),
+        )
+
+
+class Build777Phase8UDAxisCenters(_Build777Phase8Centers):
+    """
+    UD left, middle, right, inner-t, and inner-x under the phase 8 moves.
+
+    70^5 = 1,680,700,000. Obliques swap together, so there are two goals.
+
+    lookup-table-7x7x7-phase8-ud-axis-centers.cost-only.bin
+    =======================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 12 entries (0 percent, 6.00x previous step)
+    2 steps has 76 entries (0 percent, 6.33x previous step)
+    3 steps has 374 entries (0 percent, 4.92x previous step)
+    4 steps has 2,074 entries (0 percent, 5.55x previous step)
+    5 steps has 12,078 entries (0 percent, 5.82x previous step)
+    6 steps has 66,408 entries (0 percent, 5.50x previous step)
+    7 steps has 356,430 entries (0 percent, 5.37x previous step)
+    8 steps has 1,828,724 entries (0 percent, 5.13x previous step)
+    9 steps has 8,834,016 entries (0 percent, 4.83x previous step)
+    10 steps has 38,888,198 entries (2 percent, 4.40x previous step)
+    11 steps has 145,365,196 entries (8 percent, 3.74x previous step)
+    12 steps has 410,286,912 entries (24 percent, 2.82x previous step)
+    13 steps has 672,024,380 entries (39 percent, 1.64x previous step)
+    14 steps has 373,977,944 entries (22 percent, 0.56x previous step)
+    15 steps has 28,924,548 entries (1 percent, 0.08x previous step)
+    16 steps has 132,588 entries (0 percent, 0.00x previous step)
+    17 steps has 40 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 12.74 moves
+
+                   . . . . . . .
+                   . . U U U . .
+                   . U U U U U .
+                   . U U . U U .
+                   . U U U U U .
+                   . . U U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D D D . .
+                   . D D D D D .
+                   . D D . D D .
+                   . D D D D D .
+                   . . D D D . .
+                   . . . . . . .
+    """
+
+    table_name = "7x7x7-phase8-ud-axis-centers"
+    filename = "lookup-table-7x7x7-phase8-ud-axis-centers.txt"
+    orbits = _phase8_axis_orbits("UD")
+    orientations = ("native", "obliques-swapped")
+
+
+class Build777Phase8FBAxisCenters(_Build777Phase8Centers):
+    """
+    FB left, middle, right, inner-t, and inner-x under the phase 8 moves.
+
+    70^5 = 1,680,700,000. Obliques swap together, so there are two goals.
+    FB is a different cost from UD because 3Lw2 and 3Rw2 are legal and the
+    U/D/F/B 3-wide half turns are not.
+
+    lookup-table-7x7x7-phase8-fb-axis-centers.cost-only.bin
+    =======================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 12 entries (0 percent, 6.00x previous step)
+    2 steps has 76 entries (0 percent, 6.33x previous step)
+    3 steps has 374 entries (0 percent, 4.92x previous step)
+    4 steps has 2,074 entries (0 percent, 5.55x previous step)
+    5 steps has 12,078 entries (0 percent, 5.82x previous step)
+    6 steps has 66,408 entries (0 percent, 5.50x previous step)
+    7 steps has 356,430 entries (0 percent, 5.37x previous step)
+    8 steps has 1,828,724 entries (0 percent, 5.13x previous step)
+    9 steps has 8,834,016 entries (0 percent, 4.83x previous step)
+    10 steps has 38,888,198 entries (2 percent, 4.40x previous step)
+    11 steps has 145,365,196 entries (8 percent, 3.74x previous step)
+    12 steps has 410,286,912 entries (24 percent, 2.82x previous step)
+    13 steps has 672,024,380 entries (39 percent, 1.64x previous step)
+    14 steps has 373,977,944 entries (22 percent, 0.56x previous step)
+    15 steps has 28,924,548 entries (1 percent, 0.08x previous step)
+    16 steps has 132,588 entries (0 percent, 0.00x previous step)
+    17 steps has 40 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 12.74 moves
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . F F F F F .  . . . . . . .  . B B B B B .
+    . . . . . . .  . F F . F F .  . . . . . . .  . B B . B B .
+    . . . . . . .  . F F F F F .  . . . . . . .  . B B B B B .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+    """
+
+    table_name = "7x7x7-phase8-fb-axis-centers"
+    filename = "lookup-table-7x7x7-phase8-fb-axis-centers.txt"
+    orbits = _phase8_axis_orbits("FB")
+    orientations = ("native", "obliques-swapped")
+
+
+class Build777Phase8LRObliqueCenters(_Build777Phase8Centers):
+    """
+    Where the eight paired LR bars sit.
+
+    Phase 8 keeps every L/R bar one color, so the middle and right stickers
+    match the left sticker. The coordinate is that left orbit, C(8, 4) = 70.
+    Both daisy orientations are goals.
+
+    lookup-table-7x7x7-phase8-lr-oblique-centers.cost-only.bin
+    ==========================================================
+    0 steps has 2 entries (2 percent, 0.00x previous step)
+    1 steps has 8 entries (11 percent, 4.00x previous step)
+    2 steps has 30 entries (42 percent, 3.75x previous step)
+    3 steps has 30 entries (42 percent, 1.00x previous step)
+
+    Total: 70 entries
+    Average: 2.26 moves
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . L . L . .  . . . . . . .  . . R . R . .  . . . . . . .
+    . . L . L . .  . . . . . . .  . . R . R . .  . . . . . . .
+    . . L . L . .  . . . . . . .  . . R . R . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+                   . . . . . . .
+    """
+
+    table_name = "7x7x7-phase8-lr-oblique-centers"
+    filename = "lookup-table-7x7x7-phase8-lr-oblique-centers.txt"
+    orbits = (("LR", "left-oblique", LR_LEFT_OBLIQUE_CENTERS_777),)
+    orientations = ("native", "obliques-swapped")
+
+
+class Build777Phase8InnerInteractionCenters(_Build777Phase8Centers):
+    """
+    UD inner-t, UD inner-x, FB inner-t, and FB inner-x.
+
+    70^4 = 24,010,000. Inners do not swap, so there is one goal. 3Lw2 and
+    3Rw2 move the UD and FB inners in the same turn.
+
+    lookup-table-7x7x7-phase8-inner-interaction-centers.cost-only.bin
+    ==================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    1 steps has 2 entries (0 percent, 2.00x previous step)
+    2 steps has 25 entries (0 percent, 12.50x previous step)
+    3 steps has 146 entries (0 percent, 5.84x previous step)
+    4 steps has 544 entries (0 percent, 3.73x previous step)
+    5 steps has 2,772 entries (0 percent, 5.10x previous step)
+    6 steps has 13,681 entries (0 percent, 4.94x previous step)
+    7 steps has 57,790 entries (0 percent, 4.22x previous step)
+    8 steps has 227,221 entries (0 percent, 3.93x previous step)
+    9 steps has 797,842 entries (3 percent, 3.51x previous step)
+    10 steps has 2,318,392 entries (9 percent, 2.91x previous step)
+    11 steps has 5,327,072 entries (22 percent, 2.30x previous step)
+    12 steps has 7,922,750 entries (32 percent, 1.49x previous step)
+    13 steps has 5,900,762 entries (24 percent, 0.74x previous step)
+    14 steps has 1,378,088 entries (5 percent, 0.23x previous step)
+    15 steps has 62,000 entries (0 percent, 0.04x previous step)
+    16 steps has 912 entries (0 percent, 0.01x previous step)
+
+    Total: 24,010,000 entries
+    Average: 11.80 moves
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . U U U . .
+                   . . U . U . .
+                   . . U U U . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . D D D . .
+                   . . D . D . .
+                   . . D D D . .
+                   . . . . . . .
+                   . . . . . . .
+    """
+
+    table_name = "7x7x7-phase8-inner-interaction-centers"
+    filename = "lookup-table-7x7x7-phase8-inner-interaction-centers.txt"
+    orbits = (
+        ("UD", "inner-t", UD_INNER_T_CENTERS_777),
+        ("UD", "inner-x", UD_INNER_X_CENTERS_777),
+        ("FB", "inner-t", FB_INNER_T_CENTERS_777),
+        ("FB", "inner-x", FB_INNER_X_CENTERS_777),
+    )
+    orientations = ("native",)
+
+
+class Build777Phase8MiddleInteractionCenters(_Build777Phase8Centers):
+    """
+    UD inner-x, FB inner-x, UD middle, and FB middle.
+
+    70^4 = 24,010,000. Each middle swaps on its own, so there are four goals.
+    3Lw2 and 3Rw2 change this coordinate on both axes at once.
+
+    lookup-table-7x7x7-phase8-middle-interaction-centers.cost-only.bin
+    ===================================================================
+    0 steps has 4 entries (0 percent, 0.00x previous step)
+    1 steps has 32 entries (0 percent, 8.00x previous step)
+    2 steps has 448 entries (0 percent, 14.00x previous step)
+    3 steps has 4,104 entries (0 percent, 9.16x previous step)
+    4 steps has 30,220 entries (0 percent, 7.36x previous step)
+    5 steps has 209,320 entries (0 percent, 6.93x previous step)
+    6 steps has 1,032,256 entries (4 percent, 4.93x previous step)
+    7 steps has 3,492,320 entries (14 percent, 3.38x previous step)
+    8 steps has 7,802,240 entries (32 percent, 2.23x previous step)
+    9 steps has 7,284,944 entries (30 percent, 0.93x previous step)
+    10 steps has 3,699,648 entries (15 percent, 0.51x previous step)
+    11 steps has 454,048 entries (1 percent, 0.12x previous step)
+    12 steps has 416 entries (0 percent, 0.00x previous step)
+
+    Total: 24,010,000 entries
+    Average: 8.40 moves
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . U . U . .
+                   . . . U . . .
+                   . . U . U . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . . . F . . .  . . . . . . .  . . . B . . .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . D . D . .
+                   . . . D . . .
+                   . . D . D . .
+                   . . . . . . .
+                   . . . . . . .
+    """
+
+    table_name = "7x7x7-phase8-middle-interaction-centers"
+    filename = "lookup-table-7x7x7-phase8-middle-interaction-centers.txt"
+    orbits = (
+        ("UD", "inner-x", UD_INNER_X_CENTERS_777),
+        ("FB", "inner-x", FB_INNER_X_CENTERS_777),
+        ("UD", "middle-oblique", UD_MIDDLE_OBLIQUE_CENTERS_777),
+        ("FB", "middle-oblique", FB_MIDDLE_OBLIQUE_CENTERS_777),
+    )
+    orientations = ("native", "obliques-swapped", "ud-swapped", "fb-swapped")
+
+
+class Build777Phase8UDObliquesFBEdgesCenters(_Build777Phase8Centers):
+    """
+    UD left, middle, and right, plus FB left and FB right.
+
+    70^5 = 1,680,700,000. These are the oblique orbits in the UD axis table
+    with the two UD inners replaced by FB's edge obliques. UD and FB swap
+    independently, so there are four goals.
+
+    lookup-table-7x7x7-phase8-ud-obliques-fb-edges-centers.cost-only.bin
+    =====================================================================
+    0 steps has 4 entries (0 percent, 0.00x previous step)
+    1 steps has 32 entries (0 percent, 8.00x previous step)
+    2 steps has 400 entries (0 percent, 12.50x previous step)
+    3 steps has 3,248 entries (0 percent, 8.12x previous step)
+    4 steps has 23,448 entries (0 percent, 7.22x previous step)
+    5 steps has 185,280 entries (0 percent, 7.90x previous step)
+    6 steps has 1,359,416 entries (0 percent, 7.34x previous step)
+    7 steps has 8,329,088 entries (0 percent, 6.13x previous step)
+    8 steps has 40,484,952 entries (2 percent, 4.86x previous step)
+    9 steps has 143,396,852 entries (8 percent, 3.54x previous step)
+    10 steps has 368,888,976 entries (21 percent, 2.57x previous step)
+    11 steps has 567,013,800 entries (33 percent, 1.54x previous step)
+    12 steps has 424,265,120 entries (25 percent, 0.75x previous step)
+    13 steps has 116,979,176 entries (6 percent, 0.28x previous step)
+    14 steps has 9,612,896 entries (0 percent, 0.08x previous step)
+    15 steps has 157,312 entries (0 percent, 0.02x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 10.92 moves
+
+                   . . . . . . .
+                   . . U U U . .
+                   . U . . . U .
+                   . U . . . U .
+                   . U . . . U .
+                   . . U U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . F . . . F .  . . . . . . .  . B . . . B .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . F . . . F .  . . . . . . .  . B . . . B .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D D D . .
+                   . D . . . D .
+                   . D . . . D .
+                   . D . . . D .
+                   . . D D D . .
+                   . . . . . . .
+    """
+
+    table_name = "7x7x7-phase8-ud-obliques-fb-edges-centers"
+    filename = "lookup-table-7x7x7-phase8-ud-obliques-fb-edges-centers.txt"
+    orbits = (
+        ("UD", "left-oblique", UD_LEFT_OBLIQUE_CENTERS_777),
+        ("UD", "middle-oblique", UD_MIDDLE_OBLIQUE_CENTERS_777),
+        ("UD", "right-oblique", UD_RIGHT_OBLIQUE_CENTERS_777),
+        ("FB", "left-oblique", FB_LEFT_OBLIQUE_CENTERS_777),
+        ("FB", "right-oblique", FB_RIGHT_OBLIQUE_CENTERS_777),
+    )
+    orientations = ("native", "obliques-swapped", "ud-swapped", "fb-swapped")
+
+
+class Build777Phase8FBObliquesUDEdgesCenters(_Build777Phase8Centers):
+    """
+    UD left and UD right, plus FB left, middle, and right.
+
+    70^5 = 1,680,700,000. The FB-sided twin of the UD oblique table: FB's
+    three obliques, with UD's two edge obliques in place of the FB inners.
+    UD and FB swap independently, so there are four goals.
+
+    lookup-table-7x7x7-phase8-fb-obliques-ud-edges-centers.cost-only.bin
+    =====================================================================
+    0 steps has 4 entries (0 percent, 0.00x previous step)
+    1 steps has 32 entries (0 percent, 8.00x previous step)
+    2 steps has 400 entries (0 percent, 12.50x previous step)
+    3 steps has 3,248 entries (0 percent, 8.12x previous step)
+    4 steps has 23,448 entries (0 percent, 7.22x previous step)
+    5 steps has 185,280 entries (0 percent, 7.90x previous step)
+    6 steps has 1,359,416 entries (0 percent, 7.34x previous step)
+    7 steps has 8,329,088 entries (0 percent, 6.13x previous step)
+    8 steps has 40,484,952 entries (2 percent, 4.86x previous step)
+    9 steps has 143,396,852 entries (8 percent, 3.54x previous step)
+    10 steps has 368,888,976 entries (21 percent, 2.57x previous step)
+    11 steps has 567,013,800 entries (33 percent, 1.54x previous step)
+    12 steps has 424,265,120 entries (25 percent, 0.75x previous step)
+    13 steps has 116,979,176 entries (6 percent, 0.28x previous step)
+    14 steps has 9,612,896 entries (0 percent, 0.08x previous step)
+    15 steps has 157,312 entries (0 percent, 0.02x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 10.92 moves
+
+                   . . . . . . .
+                   . . U . U . .
+                   . U . . . U .
+                   . . . . . . .
+                   . U . . . U .
+                   . . U . U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . F . . . F .  . . . . . . .  . B . . . B .
+    . . . . . . .  . F . . . F .  . . . . . . .  . B . . . B .
+    . . . . . . .  . F . . . F .  . . . . . . .  . B . . . B .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D . D . .
+                   . D . . . D .
+                   . . . . . . .
+                   . D . . . D .
+                   . . D . D . .
+                   . . . . . . .
+    """
+
+    table_name = "7x7x7-phase8-fb-obliques-ud-edges-centers"
+    filename = "lookup-table-7x7x7-phase8-fb-obliques-ud-edges-centers.txt"
+    orbits = (
+        ("UD", "left-oblique", UD_LEFT_OBLIQUE_CENTERS_777),
+        ("UD", "right-oblique", UD_RIGHT_OBLIQUE_CENTERS_777),
+        ("FB", "left-oblique", FB_LEFT_OBLIQUE_CENTERS_777),
+        ("FB", "middle-oblique", FB_MIDDLE_OBLIQUE_CENTERS_777),
+        ("FB", "right-oblique", FB_RIGHT_OBLIQUE_CENTERS_777),
+    )
+    orientations = ("native", "obliques-swapped", "ud-swapped", "fb-swapped")
+
+
+class Build777Phase8UDObliquesFBInnerTCenters(_Build777Phase8Centers):
+    """
+    UD left, middle, right, and inner-t, plus FB inner-t.
+
+    70^5 = 1,680,700,000. This keeps the UD orbits that carry the axis cost
+    and replaces UD inner-x with FB inner-t. Inners do not swap, so the FB
+    sticker is the same in both daisy orientations and there are two goals.
+
+    lookup-table-7x7x7-phase8-ud-obliques-fb-inner-t-centers.cost-only.bin
+    ======================================================================
+    0 steps has 2 entries (0 percent, 0.00x previous step)
+    1 steps has 12 entries (0 percent, 6.00x previous step)
+    2 steps has 104 entries (0 percent, 8.67x previous step)
+    3 steps has 806 entries (0 percent, 7.75x previous step)
+    4 steps has 5,914 entries (0 percent, 7.34x previous step)
+    5 steps has 39,110 entries (0 percent, 6.61x previous step)
+    6 steps has 242,700 entries (0 percent, 6.21x previous step)
+    7 steps has 1,422,964 entries (0 percent, 5.86x previous step)
+    8 steps has 7,695,544 entries (0 percent, 5.41x previous step)
+    9 steps has 36,187,386 entries (2 percent, 4.70x previous step)
+    10 steps has 135,939,084 entries (8 percent, 3.76x previous step)
+    11 steps has 351,830,036 entries (20 percent, 2.59x previous step)
+    12 steps has 563,981,174 entries (33 percent, 1.60x previous step)
+    13 steps has 472,871,752 entries (28 percent, 0.84x previous step)
+    14 steps has 107,356,752 entries (6 percent, 0.23x previous step)
+    15 steps has 3,124,748 entries (0 percent, 0.03x previous step)
+    16 steps has 1,912 entries (0 percent, 0.00x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.96 moves
+
+                   . . . . . . .
+                   . . U U U . .
+                   . U . U . U .
+                   . U U . U U .
+                   . U . U . U .
+                   . . U U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . F . . .  . . . . . . .  . . . B . . .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . . . F . . .  . . . . . . .  . . . B . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D D D . .
+                   . D . D . D .
+                   . D D . D D .
+                   . D . D . D .
+                   . . D D D . .
+                   . . . . . . .
+    """
+
+    table_name = "7x7x7-phase8-ud-obliques-fb-inner-t-centers"
+    filename = "lookup-table-7x7x7-phase8-ud-obliques-fb-inner-t-centers.txt"
+    orbits = (
+        ("UD", "left-oblique", UD_LEFT_OBLIQUE_CENTERS_777),
+        ("UD", "middle-oblique", UD_MIDDLE_OBLIQUE_CENTERS_777),
+        ("UD", "right-oblique", UD_RIGHT_OBLIQUE_CENTERS_777),
+        ("UD", "inner-t", UD_INNER_T_CENTERS_777),
+        ("FB", "inner-t", FB_INNER_T_CENTERS_777),
+    )
+    orientations = ("native", "obliques-swapped")
