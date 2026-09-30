@@ -1,4 +1,5 @@
 # standard libraries
+import os
 from itertools import combinations
 
 # rubiks cube libraries
@@ -12,6 +13,7 @@ PHASE2_ILLEGAL_MOVES = (
     "3Fw", "3Fw'",
     "3Bw", "3Bw'",
 )
+PHASE2_ORBIT1_FLIP_MOVES = ("3Lw", "3Lw'", "3Rw", "3Rw'")
 
 PHASE5_ILLEGAL_MOVES = (
     # keep LR inside centers staged
@@ -30,6 +32,7 @@ PHASE5_ILLEGAL_MOVES = (
     "L", "L'", "L2",
     "R", "R'", "R2",
 )
+PHASE56_ORBIT0_FLIP_MOVES = ("Lw", "Lw'", "Rw", "Rw'")
 
 # fmt: on
 
@@ -108,12 +111,13 @@ class Build777Phase2UDInnerCentersStage(BFS):
     """
 
     def __init__(self):
+        flip_moves = tuple(getattr(self, "orbit_flip_moves", ()) or ())
         BFS.__init__(
             self,
-            "7x7x7-phase2-UD-inner-centers-stage",
+            getattr(self, "builder_name", "7x7x7-phase2-UD-inner-centers-stage"),
             PHASE2_ILLEGAL_MOVES,
             "7x7x7",
-            "lookup-table-7x7x7-step20-UD-inner-centers-stage.txt",
+            getattr(self, "table_filename", "lookup-table-7x7x7-step20-UD-inner-centers-stage.txt"),
             False,
             (
                 (
@@ -150,7 +154,22 @@ class Build777Phase2UDInnerCentersStage(BFS):
                 UFBD_INNER_T_CENTERS_777,
                 UFBD_INNER_X_CENTERS_777,
             ),
+            orbit_parity_flip_moves=flip_moves or None,
         )
+        if flip_moves:
+            directory = os.path.dirname(self.filename)
+            self.orbit_parity_even_filename = os.path.join(directory, self.even_cost_name)
+            self.orbit_parity_odd_filename = os.path.join(directory, self.odd_cost_name)
+
+
+class Build777Phase2UDInnerCentersOrbit1Parity(Build777Phase2UDInnerCentersStage):
+    """Even and odd orbit-1 distances for the UD inner t/x centers. 3Lw and 3Rw quarters flip the bit."""
+
+    builder_name = "7x7x7-phase2-UD-inner-centers-orbit1-parity"
+    table_filename = "lookup-table-7x7x7-step20-UD-inner-centers-stage-orbit1-parity.txt"
+    orbit_flip_moves = PHASE2_ORBIT1_FLIP_MOVES
+    even_cost_name = "lookup-table-7x7x7-step20-UD-inner-centers-stage-orbit1-even.cost-only.bin"
+    odd_cost_name = "lookup-table-7x7x7-step20-UD-inner-centers-stage-orbit1-odd.cost-only.bin"
 
 
 # ==================================================
@@ -174,20 +193,43 @@ class _Build777Phase56UDPairStage(BFS):
     table_slug = None
     first_group = ()
     second_group = ()
+    name_suffix = "centers-stage"
+    orbit_flip_moves = ()
 
     def __init__(self):
+        flip_moves = tuple(self.orbit_flip_moves or ())
         BFS.__init__(
             self,
-            f"7x7x7-phase5-6-UD-{self.table_slug}-centers-stage",
+            f"7x7x7-phase5-6-UD-{self.table_slug}-{self.name_suffix}",
             PHASE5_ILLEGAL_MOVES,
             "7x7x7",
-            f"lookup-table-7x7x7-phase5-6-UD-{self.table_slug}-centers-stage.txt",
+            f"lookup-table-7x7x7-phase5-6-UD-{self.table_slug}-{self.name_suffix}.txt",
             False,
             _ranked_ud_pair_starting_state_777(self.first_group, self.second_group),
             use_c=True,
             use_ranked_cost=True,
             ranked_cost_square_groups=(self.first_group, self.second_group),
+            orbit_parity_flip_moves=flip_moves or None,
         )
+        if flip_moves:
+            directory = os.path.dirname(self.filename)
+            stem = f"lookup-table-7x7x7-phase5-6-UD-{self.table_slug}-centers-stage-orbit0"
+            self.orbit_parity_even_filename = os.path.join(directory, stem + "-even.cost-only.bin")
+            self.orbit_parity_odd_filename = os.path.join(directory, stem + "-odd.cost-only.bin")
+
+
+class _Build777Phase56UDPairOrbit0Parity(_Build777Phase56UDPairStage):
+    """
+    Even and odd orbit-0 distances for one UD pair. Lw and Rw quarters flip
+    the parity bit. Each file uses the same product rank as the blind table.
+
+                 . . U . U . .
+                 . U . . . U .
+                 . . U . U . .
+    """
+
+    orbit_flip_moves = PHASE56_ORBIT0_FLIP_MOVES
+    name_suffix = "centers-stage-orbit0-parity"
 
 
 class Build777Phase56UDLeftRightObliqueCentersStage(_Build777Phase56UDPairStage):
@@ -556,6 +598,96 @@ class Build777Phase56UDMiddleObliqueOuterXCentersStage(_Build777Phase56UDPairSta
 
     Total: 165,636,900 entries
     Average: 9.33 moves
+    """
+
+    table_slug = "middle-oblique-outer-x"
+    first_group = UFBD_MIDDLE_OBLIQUE_EDGES_777
+    second_group = UFBD_OUTER_X_CENTERS_777
+
+
+class Build777Phase56UDLeftRightObliqueOrbit0Parity(_Build777Phase56UDPairOrbit0Parity):
+    """
+    lookup-table-7x7x7-phase5-6-UD-left-right-oblique-centers-stage-orbit0-even.cost-only.bin
+    =========================================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 10.58 moves
+    """
+
+    table_slug = "left-right-oblique"
+    first_group = UFBD_LEFT_OBLIQUE_EDGES_777
+    second_group = UFBD_RIGHT_OBLIQUE_EDGES_777
+
+
+class Build777Phase56UDLeftMiddleObliqueOrbit0Parity(_Build777Phase56UDPairOrbit0Parity):
+    """
+    lookup-table-7x7x7-phase5-6-UD-left-middle-oblique-centers-stage-orbit0-even.cost-only.bin
+    ==========================================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 10.58 moves
+    """
+
+    table_slug = "left-middle-oblique"
+    first_group = UFBD_LEFT_OBLIQUE_EDGES_777
+    second_group = UFBD_MIDDLE_OBLIQUE_EDGES_777
+
+
+class Build777Phase56UDLeftObliqueOuterXOrbit0Parity(_Build777Phase56UDPairOrbit0Parity):
+    """
+    lookup-table-7x7x7-phase5-6-UD-left-oblique-outer-x-centers-stage-orbit0-even.cost-only.bin
+    ===========================================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.19 moves
+    """
+
+    table_slug = "left-oblique-outer-x"
+    first_group = UFBD_LEFT_OBLIQUE_EDGES_777
+    second_group = UFBD_OUTER_X_CENTERS_777
+
+
+class Build777Phase56UDMiddleRightObliqueOrbit0Parity(_Build777Phase56UDPairOrbit0Parity):
+    """
+    lookup-table-7x7x7-phase5-6-UD-middle-right-oblique-centers-stage-orbit0-even.cost-only.bin
+    ===========================================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 10.58 moves
+    """
+
+    table_slug = "middle-right-oblique"
+    first_group = UFBD_MIDDLE_OBLIQUE_EDGES_777
+    second_group = UFBD_RIGHT_OBLIQUE_EDGES_777
+
+
+class Build777Phase56UDRightObliqueOuterXOrbit0Parity(_Build777Phase56UDPairOrbit0Parity):
+    """
+    lookup-table-7x7x7-phase5-6-UD-right-oblique-outer-x-centers-stage-orbit0-even.cost-only.bin
+    ============================================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.19 moves
+    """
+
+    table_slug = "right-oblique-outer-x"
+    first_group = UFBD_RIGHT_OBLIQUE_EDGES_777
+    second_group = UFBD_OUTER_X_CENTERS_777
+
+
+class Build777Phase56UDMiddleObliqueOuterXOrbit0Parity(_Build777Phase56UDPairOrbit0Parity):
+    """
+    lookup-table-7x7x7-phase5-6-UD-middle-oblique-outer-x-centers-stage-orbit0-even.cost-only.bin
+    =============================================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+
+    Total: 165,636,900 entries
+    Average: 9.19 moves
     """
 
     table_slug = "middle-oblique-outer-x"

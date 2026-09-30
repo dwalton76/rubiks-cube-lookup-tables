@@ -1288,8 +1288,8 @@ class BFS(object):
         self.rank_universes = tuple(group["universe_size"] for group in self.rank_groups)
         self.rank_universe = math.prod(self.rank_universes)
         if self.orbit_parity_flip_moves:
-            if self.ranked_cost_type != "multiset" or len(self.rank_groups) != 1:
-                raise ValueError(f"{self}: orbit parity requires one multiset rank group")
+            if self.ranked_cost_type != "multiset" or not self.rank_groups:
+                raise ValueError(f"{self}: orbit parity requires multiset rank groups")
             missing = [move for move in self.orbit_parity_flip_moves if move not in self.legal_moves]
             if missing:
                 raise ValueError(f"{self}: parity flip moves are not legal: {' '.join(missing)}")

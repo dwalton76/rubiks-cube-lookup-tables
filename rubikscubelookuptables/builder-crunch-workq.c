@@ -2153,8 +2153,8 @@ main (int argc, char *argv[])
             char *flip_move;
             unsigned int flip_count = 0;
 
-            if (configured_rank_type != RANK_MULTISET || rank_group_count != 1 || (rank_universe % 2)) {
-                fprintf(stderr, "ERROR: --orbit-parity requires one multiset group and an even universe\n");
+            if (configured_rank_type != RANK_MULTISET || !rank_group_count || (rank_universe % 2)) {
+                fprintf(stderr, "ERROR: --orbit-parity requires multiset groups and an even universe\n");
                 exit(1);
             }
             if (!parity_flip_moves_buffer[0]) {
@@ -2163,7 +2163,11 @@ main (int argc, char *argv[])
             }
             char flip_storage[512];
 
-            rank_groups[0].universe = rank_universe / 2;
+            /* --rank-counts stores the doubled universe on the only group.
+             * --rank-groups already carries the real component universes. */
+            if (!rank_groups_buffer[0]) {
+                rank_groups[0].universe = rank_universe / 2;
+            }
             strncpy(flip_storage, parity_flip_moves_buffer, sizeof(flip_storage) - 1);
             flip_storage[sizeof(flip_storage) - 1] = '\0';
             flip_moves = flip_storage;

@@ -102,6 +102,11 @@ wheel:
 666-phase2-orbit1:
 	./utils/builderui.py Build666Phase2UDInnerXOrbit1Parity --cores 10
 
+666-phase4-orbit0:
+	./utils/builderui.py Build666Phase4LeftRightOrbit0Parity --cores 10
+	./utils/builderui.py Build666Phase4LeftOuterXOrbit0Parity --cores 10
+	./utils/builderui.py Build666Phase4RightOuterXOrbit0Parity --cores 10
+
 666-phase3: clean
 	./utils/builderui.py Build666Phase3UDLeftRightObliqueCentersStage
 	./utils/builderui.py Build666Phase3UDLeftObliqueOuterXCentersStage
@@ -117,6 +122,9 @@ wheel:
 777-phase2: clean
 	./utils/builderui.py Build777Phase2UDInnerCentersStage
 
+777-phase2-orbit1:
+	./utils/builderui.py Build777Phase2UDInnerCentersOrbit1Parity --cores 10
+
 777-phase5-6-ranked: clean
 	./utils/builderui.py Build777Phase56UDLeftRightObliqueCentersStage
 	./utils/builderui.py Build777Phase56UDLeftMiddleObliqueCentersStage
@@ -124,6 +132,14 @@ wheel:
 	./utils/builderui.py Build777Phase56UDMiddleRightObliqueCentersStage
 	./utils/builderui.py Build777Phase56UDRightObliqueOuterXCentersStage
 	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXCentersStage
+
+777-phase5-6-orbit0:
+	./utils/builderui.py Build777Phase56UDLeftRightObliqueOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDLeftMiddleObliqueOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDLeftObliqueOuterXOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDMiddleRightObliqueOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDRightObliqueOuterXOrbit0Parity --cores 10
+	./utils/builderui.py Build777Phase56UDMiddleObliqueOuterXOrbit0Parity --cores 10
 
 # LR inner-t times LR inner-x. 70^2 = 4,900 bytes, one native goal.
 777-daisy-lr-inner:

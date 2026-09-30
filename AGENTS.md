@@ -85,6 +85,9 @@ Copy or upload the solver-facing `.cost-only.bin` artifact so `download_file_if_
 | `666-phase1` | Stage LR inner x-centers | `ida_search_666_centers_stage` |
 | `666-phase2` | Stage UD inner x-centers while pairing LR obliques | `ida_search_666_centers_stage` |
 | `666-phase2-orbit1` | Even and odd orbit-1 distances for the same UD inner x-centers | `ida_search_666_centers_stage` |
+| `666-phase4-orbit0` | Even and odd orbit-0 distances for the three 6x6 UD pair tables | `ida_search_666_centers_stage` |
+| `777-phase2-orbit1` | Even and odd orbit-1 distances for 7x7 UD inner t/x centers | `ida_search_777_centers_stage` |
+| `777-phase5-6-orbit0` | Even and odd orbit-0 distances for the six 7x7 UD pair tables | `ida_search_777_UD_centers_stage` |
 | `666-phase3-preserve-inner-x` | UD oblique / outer-x pairs | same, phase 3 |
 | `666-phase5` | Three 70^5 tables: all inner-x plus one axis's obliques | `ida_search_666_daisy_centers` |
 | `777-phase2` | UD inner centers ranked | `ida_search_777_centers_stage` |

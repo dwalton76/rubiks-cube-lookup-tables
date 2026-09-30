@@ -26,6 +26,9 @@ PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES = (
     "R", "R'", "R2",
 )
 
+# Lw and Rw stay legal in phase 4 and are the orbit-0 flips that phase can play.
+PHASE4_ORBIT0_FLIP_MOVES = ("Lw", "Lw'", "Rw", "Rw'")
+
 PHASE5_ILLEGAL_MOVES = (
     "3Rw", "3Rw'",
     "3Lw", "3Lw'",
@@ -339,12 +342,13 @@ class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
     """
 
     def __init__(self):
+        flip_moves = tuple(getattr(self, "orbit_flip_moves", ()) or ())
         BFS.__init__(
             self,
-            "6x6x6-phase3-UD-left-right-oblique-centers-stage",
+            getattr(self, "builder_name", "6x6x6-phase3-UD-left-right-oblique-centers-stage"),
             PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
             "6x6x6",
-            "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage.txt",
+            getattr(self, "table_filename", "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage.txt"),
             False,
             (
                 (
@@ -378,7 +382,12 @@ class Build666Phase3UDLeftRightObliqueCentersStage(BFS):
                 UFBD_LEFT_OBLIQUE_EDGES_666,
                 UFBD_RIGHT_OBLIQUE_EDGES_666,
             ),
+            orbit_parity_flip_moves=flip_moves or None,
         )
+        if flip_moves:
+            directory = Path(self.filename).parent
+            self.orbit_parity_even_filename = str(directory / self.even_cost_name)
+            self.orbit_parity_odd_filename = str(directory / self.odd_cost_name)
 
 
 class Build666Phase3UDLeftObliqueOuterXCentersStage(BFS):
@@ -411,12 +420,13 @@ class Build666Phase3UDLeftObliqueOuterXCentersStage(BFS):
     """
 
     def __init__(self):
+        flip_moves = tuple(getattr(self, "orbit_flip_moves", ()) or ())
         BFS.__init__(
             self,
-            "6x6x6-phase3-UD-left-oblique-outer-x-centers-stage",
+            getattr(self, "builder_name", "6x6x6-phase3-UD-left-oblique-outer-x-centers-stage"),
             PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
             "6x6x6",
-            "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage.txt",
+            getattr(self, "table_filename", "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage.txt"),
             False,
             (
                 (
@@ -450,7 +460,12 @@ class Build666Phase3UDLeftObliqueOuterXCentersStage(BFS):
                 UFBD_LEFT_OBLIQUE_EDGES_666,
                 UFBD_OUTER_X_CENTERS_666,
             ),
+            orbit_parity_flip_moves=flip_moves or None,
         )
+        if flip_moves:
+            directory = Path(self.filename).parent
+            self.orbit_parity_even_filename = str(directory / self.even_cost_name)
+            self.orbit_parity_odd_filename = str(directory / self.odd_cost_name)
 
 
 class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
@@ -483,12 +498,13 @@ class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
     """
 
     def __init__(self):
+        flip_moves = tuple(getattr(self, "orbit_flip_moves", ()) or ())
         BFS.__init__(
             self,
-            "6x6x6-phase3-UD-right-oblique-outer-x-centers-stage",
+            getattr(self, "builder_name", "6x6x6-phase3-UD-right-oblique-outer-x-centers-stage"),
             PHASE3_PRESERVE_LR_AND_INNER_X_ILLEGAL_MOVES,
             "6x6x6",
-            "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage.txt",
+            getattr(self, "table_filename", "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage.txt"),
             False,
             (
                 (
@@ -522,7 +538,42 @@ class Build666Phase3UDRightObliqueOuterXCentersStage(BFS):
                 UFBD_RIGHT_OBLIQUE_EDGES_666,
                 UFBD_OUTER_X_CENTERS_666,
             ),
+            orbit_parity_flip_moves=flip_moves or None,
         )
+        if flip_moves:
+            directory = Path(self.filename).parent
+            self.orbit_parity_even_filename = str(directory / self.even_cost_name)
+            self.orbit_parity_odd_filename = str(directory / self.odd_cost_name)
+
+
+class Build666Phase4LeftRightOrbit0Parity(Build666Phase3UDLeftRightObliqueCentersStage):
+    """Even and odd orbit-0 distances for the UD left/right oblique pair."""
+
+    builder_name = "6x6x6-phase4-UD-left-right-oblique-orbit0-parity"
+    table_filename = "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage-orbit0-parity.txt"
+    orbit_flip_moves = PHASE4_ORBIT0_FLIP_MOVES
+    even_cost_name = "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage-orbit0-even.cost-only.bin"
+    odd_cost_name = "lookup-table-6x6x6-step31-UD-left-right-oblique-centers-stage-orbit0-odd.cost-only.bin"
+
+
+class Build666Phase4LeftOuterXOrbit0Parity(Build666Phase3UDLeftObliqueOuterXCentersStage):
+    """Even and odd orbit-0 distances for the UD left-oblique/outer-x pair."""
+
+    builder_name = "6x6x6-phase4-UD-left-oblique-outer-x-orbit0-parity"
+    table_filename = "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage-orbit0-parity.txt"
+    orbit_flip_moves = PHASE4_ORBIT0_FLIP_MOVES
+    even_cost_name = "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage-orbit0-even.cost-only.bin"
+    odd_cost_name = "lookup-table-6x6x6-step32-UD-left-oblique-outer-x-centers-stage-orbit0-odd.cost-only.bin"
+
+
+class Build666Phase4RightOuterXOrbit0Parity(Build666Phase3UDRightObliqueOuterXCentersStage):
+    """Even and odd orbit-0 distances for the UD right-oblique/outer-x pair."""
+
+    builder_name = "6x6x6-phase4-UD-right-oblique-outer-x-orbit0-parity"
+    table_filename = "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage-orbit0-parity.txt"
+    orbit_flip_moves = PHASE4_ORBIT0_FLIP_MOVES
+    even_cost_name = "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage-orbit0-even.cost-only.bin"
+    odd_cost_name = "lookup-table-6x6x6-step33-UD-right-oblique-outer-x-centers-stage-orbit0-odd.cost-only.bin"
 
 
 # ==================================================
