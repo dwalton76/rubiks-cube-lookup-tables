@@ -1,3 +1,6 @@
+# standard libraries
+from itertools import combinations
+
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
 
@@ -622,6 +625,31 @@ DAISY_CENTER_ORBITS_777 = {
 DAISY_AXIS_COLORS_777 = {"UD": ("U", "D"), "LR": ("L", "R"), "FB": ("F", "B")}
 DAISY_OBLIQUE_ORBITS_777 = frozenset(("left-oblique", "middle-oblique", "right-oblique"))
 
+# Left, middle, and right sticker of each oblique bar. Choosing which four of
+# the eight bars take the primary color is the C(8, 4) = 70 paired placements.
+OBLIQUE_BARS_777 = {
+    "UD": (
+        (10, 11, 12),
+        (30, 23, 16),
+        (20, 27, 34),
+        (40, 39, 38),
+        (255, 256, 257),
+        (275, 268, 261),
+        (265, 272, 279),
+        (285, 284, 283),
+    ),
+    "FB": (
+        (108, 109, 110),
+        (128, 121, 114),
+        (118, 125, 132),
+        (138, 137, 136),
+        (206, 207, 208),
+        (226, 219, 212),
+        (216, 223, 230),
+        (236, 235, 234),
+    ),
+}
+
 
 def _daisy_starting_states_777(axis, selected_orbits, orientations=("native", "obliques-swapped")):
     """
@@ -731,6 +759,17 @@ PHASE8_CENTER_ILLEGAL_MOVES_777 = DAISY_CENTERS_ILLEGAL_MOVES_777 + (
     "3Dw2",
 )
 
+# The paired-bar tables match the phase 8 search, which also leaves L and R
+# face turns out. Those turns move the LR centers the search has to keep.
+PHASE8_PAIRED_ILLEGAL_MOVES_777 = PHASE8_CENTER_ILLEGAL_MOVES_777 + (
+    "L",
+    "L'",
+    "L2",
+    "R",
+    "R'",
+    "R2",
+)
+
 
 # A daisy lets each axis be native or oblique-swapped on its own. Inners never swap.
 _PHASE8_SWAPPED_AXES_777 = {
@@ -761,6 +800,37 @@ def _phase8_starting_states_777(orbits, orientations):
 
 def _phase8_axis_orbits(axis):
     return tuple((axis, name, squares) for name, squares in DAISY_CENTER_ORBITS_777[axis])
+
+
+def _phase8_paired_bar_goals_777(axis):
+    """Every paired-bar placement of one axis, with its inners native.
+
+    Each bar is one color. Exactly four bars take the primary color, so there
+    are C(8, 4) = 70 goals. The slot does not matter.
+    """
+    primary, opposite = DAISY_AXIS_COLORS_777[axis]
+    bars = OBLIQUE_BARS_777[axis]
+    inner_orbits = tuple(
+        squares for name, squares in DAISY_CENTER_ORBITS_777[axis] if name not in DAISY_OBLIQUE_ORBITS_777
+    )
+    result = []
+
+    for chosen in combinations(range(len(bars)), 4):
+        primary_bars = set(chosen)
+        state = ["."] * (6 * 7 * 7)
+
+        for index, bar in enumerate(bars):
+            color = primary if index in primary_bars else opposite
+            for square in bar:
+                state[square - 1] = color
+        for squares in inner_orbits:
+            for square in squares[:4]:
+                state[square - 1] = primary
+            for square in squares[4:]:
+                state[square - 1] = opposite
+        result.append(("".join(state), "ULFRBD"))
+
+    return tuple(result)
 
 
 class _Build777Phase8Centers(BFS):
@@ -845,6 +915,61 @@ class Build777Phase8UDAxisCenters(_Build777Phase8Centers):
     filename = "lookup-table-7x7x7-phase8-ud-axis-centers.txt"
     orbits = _phase8_axis_orbits("UD")
     orientations = ("native", "obliques-swapped")
+
+
+class _Build777Phase8PairedBars(BFS):
+    """70^5 axis table whose goals are the 70 paired-bar placements."""
+
+    axis = None
+    table_name = None
+    filename = None
+
+    def __init__(self):
+        orbits = _phase8_axis_orbits(self.axis)
+        BFS.__init__(
+            self,
+            self.table_name,
+            PHASE8_PAIRED_ILLEGAL_MOVES_777,
+            "7x7x7",
+            self.filename,
+            False,
+            _phase8_paired_bar_goals_777(self.axis),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=tuple(squares for _, _, squares in orbits),
+        )
+
+
+class Build777Phase8UDPairedCenters(_Build777Phase8PairedBars):
+    """
+    UD left, middle, right, inner-t, and inner-x.
+
+    70^5 = 1,680,700,000. The 70 goals are the ways to choose four primary-color
+    bars. Both inner orbits stay native. L and R face turns are out, matching
+    the phase 8 search.
+
+    lookup-table-7x7x7-phase8-ud-paired-centers.cost-only.bin
+    """
+
+    axis = "UD"
+    table_name = "7x7x7-phase8-ud-paired-centers"
+    filename = "lookup-table-7x7x7-phase8-ud-paired-centers.txt"
+
+
+class Build777Phase8FBPairedCenters(_Build777Phase8PairedBars):
+    """
+    FB left, middle, right, inner-t, and inner-x.
+
+    70^5 = 1,680,700,000. The 70 goals are the ways to choose four primary-color
+    bars. Both inner orbits stay native. L and R face turns are out, matching
+    the phase 8 search.
+
+    lookup-table-7x7x7-phase8-fb-paired-centers.cost-only.bin
+    """
+
+    axis = "FB"
+    table_name = "7x7x7-phase8-fb-paired-centers"
+    filename = "lookup-table-7x7x7-phase8-fb-paired-centers.txt"
 
 
 class Build777Phase8FBAxisCenters(_Build777Phase8Centers):

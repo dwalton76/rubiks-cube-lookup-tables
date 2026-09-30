@@ -6,15 +6,18 @@ from rubikscubelookuptables.builder777 import (
     DAISY_CENTER_ORBITS_777,
     DAISY_CENTERS_ILLEGAL_MOVES_777,
     PHASE8_CENTER_ILLEGAL_MOVES_777,
+    PHASE8_PAIRED_ILLEGAL_MOVES_777,
     Build777DaisyLRInnerCenters,
     Build777Phase8FBAxisCenters,
     Build777Phase8FBObliquesUDEdgesCenters,
+    Build777Phase8FBPairedCenters,
     Build777Phase8InnerInteractionCenters,
     Build777Phase8LRObliqueCenters,
     Build777Phase8MiddleInteractionCenters,
     Build777Phase8UDAxisCenters,
     Build777Phase8UDObliquesFBEdgesCenters,
     Build777Phase8UDObliquesFBInnerTCenters,
+    Build777Phase8UDPairedCenters,
 )
 
 ORBIT_NAMES = ("left-oblique", "middle-oblique", "right-oblique", "inner-t", "inner-x")
@@ -60,6 +63,8 @@ def test_lr_inner_builder_is_a_native_70_squared_table():
 PHASE8_BUILDERS = (
     (Build777Phase8UDAxisCenters, (70, 70, 70, 70, 70), 2),
     (Build777Phase8FBAxisCenters, (70, 70, 70, 70, 70), 2),
+    (Build777Phase8UDPairedCenters, (70, 70, 70, 70, 70), 70),
+    (Build777Phase8FBPairedCenters, (70, 70, 70, 70, 70), 70),
     (Build777Phase8LRObliqueCenters, (70,), 2),
     (Build777Phase8InnerInteractionCenters, (70, 70, 70, 70), 1),
     (Build777Phase8MiddleInteractionCenters, (70, 70, 70, 70), 4),
@@ -76,7 +81,12 @@ def test_phase8_builder_coordinate(builder_class, universes, goals):
     assert builder.use_ranked_cost
     assert builder.rank_universes == universes
     assert len(builder.starting_cubes) == goals
-    assert set(builder.illegal_moves) == set(PHASE8_CENTER_ILLEGAL_MOVES_777)
+    expected_illegal = (
+        PHASE8_PAIRED_ILLEGAL_MOVES_777
+        if builder_class in (Build777Phase8UDPairedCenters, Build777Phase8FBPairedCenters)
+        else PHASE8_CENTER_ILLEGAL_MOVES_777
+    )
+    assert set(builder.illegal_moves) == set(expected_illegal)
     assert "3Lw2" in builder.legal_moves
     assert "3Rw2" in builder.legal_moves
     assert "3Uw2" not in builder.legal_moves

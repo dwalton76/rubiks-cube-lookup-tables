@@ -134,6 +134,12 @@ wheel:
 777-phase8-fb-axis:
 	./utils/builderui.py Build777Phase8FBAxisCenters --cores 16
 
+# 70 paired-bar goals instead of the two daisy placements. builderui.py wipes
+# ./tmp, so the two 70^5 builds have to stay in one recipe.
+777-phase8-paired:
+	./utils/builderui.py Build777Phase8UDPairedCenters --cores 10
+	./utils/builderui.py Build777Phase8FBPairedCenters --cores 10
+
 777-phase8-lr-oblique:
 	./utils/builderui.py Build777Phase8LRObliqueCenters --cores 1
 
