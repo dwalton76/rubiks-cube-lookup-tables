@@ -6,7 +6,7 @@ clean:
 
 init: clean
 	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
-	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/builder-find-new-states utils/pad-lines
+	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/build-555-lr-xt-centers rubikscubelookuptables/builder-find-new-states utils/pad-lines
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	gcc -O3 -o rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/compact-center-symmetry-cost.c
 	gcc -O3 -o rubikscubelookuptables/builder-find-new-states rubikscubelookuptables/builder-find-new-states.c
@@ -93,6 +93,19 @@ wheel:
 
 555: 555-phase1 555-phase2 555-phase3 555-phase4 555-phase5 555-phase6
 
+# Joint L/R x-center and t-center staging, quotiented by the 16 L/R-axis
+# symmetries while searching. The BFS needs about 102 GiB resident and a
+# sequential frontier on disk. It is not part of `make 555`.
+555-lr-xt-centers: rubikscubelookuptables/build-555-lr-xt-centers
+	mkdir -p lookup-tables tmp/555-lr-xt-frontier
+	./rubikscubelookuptables/build-555-lr-xt-centers --threads 8 --lock \
+	  --work-dir tmp/555-lr-xt-frontier \
+	  --cost lookup-tables/lookup-table-5x5x5-LR-x-t-centers-stage.cost-only.bin \
+	  --index lookup-tables/lookup-table-5x5x5-LR-x-t-centers-stage.symmetry-index.bin
+
+rubikscubelookuptables/build-555-lr-xt-centers: rubikscubelookuptables/build-555-lr-xt-centers.c rubikscubelookuptables/rotate_xxx.c
+	gcc -O3 -pthread -Irubikscubelookuptables -o $@ rubikscubelookuptables/build-555-lr-xt-centers.c rubikscubelookuptables/rotate_xxx.c
+
 666-phase1:
 	./utils/builderui.py Build666Phase1LRInnerXCentersStageBinary --cores 10
 
@@ -145,8 +158,7 @@ wheel:
 777-daisy-lr-inner:
 	./utils/builderui.py Build777DaisyLRInnerCenters --cores 1
 
-# Phase 8. Five raw 70^5 tables, one 70-state LR bar table, and two 70^4
-# UD/FB interaction tables. Each 70^5 build needs about 2 GiB of scratch.
+# Phase 8 ranked center tables. Each 70^5 build needs about 2 GiB of scratch.
 777-phase8-ud-axis:
 	./utils/builderui.py Build777Phase8UDAxisCenters --cores 16
 
@@ -177,6 +189,14 @@ wheel:
 777-phase8-ud-obliques-fb-inner-t:
 	./utils/builderui.py Build777Phase8UDObliquesFBInnerTCenters --cores 16
 
-777-phase8: 777-phase8-lr-oblique 777-phase8-inner-interaction 777-phase8-middle-interaction 777-phase8-ud-axis 777-phase8-fb-axis 777-phase8-ud-obliques-fb-edges 777-phase8-fb-obliques-ud-edges 777-phase8-ud-obliques-fb-inner-t
+# UD inners native, 70 FB paired-bar goals. Same phase 8 moves as the paired tables.
+777-phase8-ud-inner-fb-obliques:
+	./utils/builderui.py Build777Phase8UDInnerFBObliquesCenters --cores 10
+
+# FB inners native, 70 UD paired-bar goals.
+777-phase8-fb-inner-ud-obliques:
+	./utils/builderui.py Build777Phase8FBInnerUDObliquesCenters --cores 10
+
+777-phase8: 777-phase8-lr-oblique 777-phase8-inner-interaction 777-phase8-middle-interaction 777-phase8-ud-axis 777-phase8-fb-axis 777-phase8-ud-obliques-fb-edges 777-phase8-fb-obliques-ud-edges 777-phase8-ud-obliques-fb-inner-t 777-phase8-ud-inner-fb-obliques 777-phase8-fb-inner-ud-obliques
 
 777: 777-phase2 777-phase5-6-ranked 777-daisy-lr-inner 777-phase8

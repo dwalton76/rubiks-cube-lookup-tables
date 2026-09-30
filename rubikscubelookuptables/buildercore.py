@@ -1537,9 +1537,7 @@ class BFS(object):
             delta = float(count / prev) if prev else 0.0
             percent = int(float(count / linecount) * 100) if linecount else 0
             report.append(
-                "    {} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(
-                    depth, count, percent, delta
-                )
+                "    {} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(depth, count, percent, delta)
             )
             total_steps += depth * count
             prev = count

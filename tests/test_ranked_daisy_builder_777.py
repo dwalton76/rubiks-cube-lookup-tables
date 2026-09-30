@@ -9,12 +9,14 @@ from rubikscubelookuptables.builder777 import (
     PHASE8_PAIRED_ILLEGAL_MOVES_777,
     Build777DaisyLRInnerCenters,
     Build777Phase8FBAxisCenters,
+    Build777Phase8FBInnerUDObliquesCenters,
     Build777Phase8FBObliquesUDEdgesCenters,
     Build777Phase8FBPairedCenters,
     Build777Phase8InnerInteractionCenters,
     Build777Phase8LRObliqueCenters,
     Build777Phase8MiddleInteractionCenters,
     Build777Phase8UDAxisCenters,
+    Build777Phase8UDInnerFBObliquesCenters,
     Build777Phase8UDObliquesFBEdgesCenters,
     Build777Phase8UDObliquesFBInnerTCenters,
     Build777Phase8UDPairedCenters,
@@ -71,6 +73,8 @@ PHASE8_BUILDERS = (
     (Build777Phase8UDObliquesFBEdgesCenters, (70, 70, 70, 70, 70), 4),
     (Build777Phase8FBObliquesUDEdgesCenters, (70, 70, 70, 70, 70), 4),
     (Build777Phase8UDObliquesFBInnerTCenters, (70, 70, 70, 70, 70), 2),
+    (Build777Phase8UDInnerFBObliquesCenters, (70, 70, 70, 70, 70), 70),
+    (Build777Phase8FBInnerUDObliquesCenters, (70, 70, 70, 70, 70), 70),
 )
 
 
@@ -83,7 +87,13 @@ def test_phase8_builder_coordinate(builder_class, universes, goals):
     assert len(builder.starting_cubes) == goals
     expected_illegal = (
         PHASE8_PAIRED_ILLEGAL_MOVES_777
-        if builder_class in (Build777Phase8UDPairedCenters, Build777Phase8FBPairedCenters)
+        if builder_class
+        in (
+            Build777Phase8UDPairedCenters,
+            Build777Phase8FBPairedCenters,
+            Build777Phase8UDInnerFBObliquesCenters,
+            Build777Phase8FBInnerUDObliquesCenters,
+        )
         else PHASE8_CENTER_ILLEGAL_MOVES_777
     )
     assert set(builder.illegal_moves) == set(expected_illegal)

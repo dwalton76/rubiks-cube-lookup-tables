@@ -101,6 +101,8 @@ SKIPPED_BUILDERS = {
     "Build777Phase8UDObliquesFBEdgesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build777Phase8FBObliquesUDEdgesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build777Phase8UDObliquesFBInnerTCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase8UDInnerFBObliquesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build777Phase8FBInnerUDObliquesCenters": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
 }
 
 

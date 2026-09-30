@@ -965,6 +965,54 @@ def _phase8_paired_bar_goals_777(axis):
     return tuple(result)
 
 
+def _phase8_inner_plus_oblique_orbits(inner_axis, oblique_axis):
+    """Inner-t and inner-x of one axis, then the three oblique orbits of the other."""
+    orbits = [
+        (inner_axis, name, squares)
+        for name, squares in DAISY_CENTER_ORBITS_777[inner_axis]
+        if name not in DAISY_OBLIQUE_ORBITS_777
+    ]
+    orbits.extend(
+        (oblique_axis, name, squares)
+        for name, squares in DAISY_CENTER_ORBITS_777[oblique_axis]
+        if name in DAISY_OBLIQUE_ORBITS_777
+    )
+    return tuple(orbits)
+
+
+def _phase8_inner_plus_paired_oblique_goals_777(inner_axis, oblique_axis):
+    """Native inners on one axis, every paired-bar placement of the other.
+
+    The three oblique orbits move as bars. Exactly four of the eight bars take
+    the primary color, so there are C(8, 4) = 70 goals. Which slot those bars
+    occupy does not matter. Both inner orbits stay on their native faces.
+    """
+    inner_primary, inner_opposite = DAISY_AXIS_COLORS_777[inner_axis]
+    oblique_primary, oblique_opposite = DAISY_AXIS_COLORS_777[oblique_axis]
+    bars = OBLIQUE_BARS_777[oblique_axis]
+    inner_orbits = tuple(
+        squares for name, squares in DAISY_CENTER_ORBITS_777[inner_axis] if name not in DAISY_OBLIQUE_ORBITS_777
+    )
+    result = []
+
+    for chosen in combinations(range(len(bars)), 4):
+        primary_bars = set(chosen)
+        state = ["."] * (6 * 7 * 7)
+
+        for index, bar in enumerate(bars):
+            color = oblique_primary if index in primary_bars else oblique_opposite
+            for square in bar:
+                state[square - 1] = color
+        for squares in inner_orbits:
+            for square in squares[:4]:
+                state[square - 1] = inner_primary
+            for square in squares[4:]:
+                state[square - 1] = inner_opposite
+        result.append(("".join(state), "ULFRBD"))
+
+    return tuple(result)
+
+
 class _Build777Phase8Centers(BFS):
     """Shared ranked-cost builder for one phase 8 coordinate."""
 
@@ -1544,3 +1592,111 @@ class Build777Phase8UDObliquesFBInnerTCenters(_Build777Phase8Centers):
         ("FB", "inner-t", FB_INNER_T_CENTERS_777),
     )
     orientations = ("native", "obliques-swapped")
+
+
+class _Build777Phase8InnerPlusPairedObliques(BFS):
+    """70^5 table: native inners on one axis, 70 paired oblique placements on the other."""
+
+    inner_axis = None
+    oblique_axis = None
+    table_name = None
+    filename = None
+
+    def __init__(self):
+        orbits = _phase8_inner_plus_oblique_orbits(self.inner_axis, self.oblique_axis)
+        BFS.__init__(
+            self,
+            self.table_name,
+            PHASE8_PAIRED_ILLEGAL_MOVES_777,
+            "7x7x7",
+            self.filename,
+            False,
+            _phase8_inner_plus_paired_oblique_goals_777(self.inner_axis, self.oblique_axis),
+            use_c=True,
+            use_ranked_cost=True,
+            ranked_cost_square_groups=tuple(squares for _, _, squares in orbits),
+        )
+
+
+class Build777Phase8UDInnerFBObliquesCenters(_Build777Phase8InnerPlusPairedObliques):
+    """
+    UD inner-t, UD inner-x, and the three FB oblique orbits.
+
+    70^5 = 1,680,700,000. The 70 goals choose which four FB bars take the
+    primary color; the slot those bars occupy does not matter. Both UD inner
+    orbits stay native. L and R face turns are out, matching the phase 8
+    search. Rank order is UD inner-t, UD inner-x, FB left, FB middle, FB right.
+
+    lookup-table-7x7x7-phase8-ud-inner-fb-obliques-centers.cost-only.bin
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . U U U . .
+                   . . U . U . .
+                   . . U U U . .
+                   . . . . . . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . F . . . F .  . . . . . . .  . B . . . B .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . F . . . F .  . . . . . . .  . B . . . B .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . . . . . .
+                   . . D D D . .
+                   . . D . D . .
+                   . . D D D . .
+                   . . . . . . .
+                   . . . . . . .
+    """
+
+    inner_axis = "UD"
+    oblique_axis = "FB"
+    table_name = "7x7x7-phase8-ud-inner-fb-obliques-centers"
+    filename = "lookup-table-7x7x7-phase8-ud-inner-fb-obliques-centers.txt"
+
+
+class Build777Phase8FBInnerUDObliquesCenters(_Build777Phase8InnerPlusPairedObliques):
+    """
+    FB inner-t, FB inner-x, and the three UD oblique orbits.
+
+    70^5 = 1,680,700,000. The 70 goals choose which four UD bars take the
+    primary color; the slot those bars occupy does not matter. Both FB inner
+    orbits stay native. L and R face turns are out, matching the phase 8
+    search. Rank order is FB inner-t, FB inner-x, UD left, UD middle, UD right.
+
+    lookup-table-7x7x7-phase8-fb-inner-ud-obliques-centers.cost-only.bin
+
+                   . . . . . . .
+                   . . U U U . .
+                   . U . . . U .
+                   . . U . U . .
+                   . U . . . U .
+                   . . U U U . .
+                   . . . . . . .
+
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . . F . F . .  . . . . . . .  . . B . B . .
+    . . . . . . .  . . F F F . .  . . . . . . .  . . B B B . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+    . . . . . . .  . . . . . . .  . . . . . . .  . . . . . . .
+
+                   . . . . . . .
+                   . . D D D . .
+                   . D . . . D .
+                   . . D . D . .
+                   . D . . . D .
+                   . . D D D . .
+                   . . . . . . .
+    """
+
+    inner_axis = "FB"
+    oblique_axis = "UD"
+    table_name = "7x7x7-phase8-fb-inner-ud-obliques-centers"
+    filename = "lookup-table-7x7x7-phase8-fb-inner-ud-obliques-centers.txt"

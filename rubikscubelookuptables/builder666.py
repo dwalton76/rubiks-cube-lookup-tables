@@ -72,6 +72,8 @@ PHASE2_PRESERVE_LR_INNER_X_ILLEGAL_MOVES = (
     "3Bw'",
 )
 PHASE2_ORBIT1_FLIP_MOVES = ("3Lw", "3Lw'", "3Rw", "3Rw'")
+
+
 class Build666Phase2UDInnerXCentersStageBinary(BFS):
     """
     Which eight of the 24 inner x-centers belong on U or D.
