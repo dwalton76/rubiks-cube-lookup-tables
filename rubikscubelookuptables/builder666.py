@@ -1,5 +1,6 @@
 # standard libraries
 import logging
+from pathlib import Path
 
 # rubiks cube libraries
 from rubikscubelookuptables.buildercore import BFS
@@ -53,8 +54,21 @@ def _ranked_inner_x_axis_starting_state(axis):
 
 # ==================================================
 # phases 1 and 2
-# phase 1 stages LR inner x; phase 2 stages UD inner x while pairing LR obliques
+# phase 1 stages LR inner x; phase 2 stages UD inner x while pairing LR obliques.
+# Phase 2 cannot use 3Uw/3Dw/3Fw/3Bw quarters, so those are out of the parity
+# tables too. Orbit 1 flips only on 3Lw and 3Rw quarters.
 # ==================================================
+PHASE2_PRESERVE_LR_INNER_X_ILLEGAL_MOVES = (
+    "3Uw",
+    "3Uw'",
+    "3Dw",
+    "3Dw'",
+    "3Fw",
+    "3Fw'",
+    "3Bw",
+    "3Bw'",
+)
+PHASE2_ORBIT1_FLIP_MOVES = ("3Lw", "3Lw'", "3Rw", "3Rw'")
 class Build666Phase2UDInnerXCentersStageBinary(BFS):
     """
     Which eight of the 24 inner x-centers belong on U or D.
@@ -175,6 +189,94 @@ class Build666Phase1LRInnerXCentersStageBinary(BFS):
             _ranked_inner_x_axis_starting_state("LR"),
             use_c=True,
             use_ranked_cost=True,
+        )
+
+
+class Build666Phase2UDInnerXOrbit1Parity(BFS):
+    """
+    Distance to staged UD inner x-centers with a chosen orbit-1 parity.
+
+    The center coordinate is the same C(24, 8) = 735,471 multiset as step11.
+    The BFS state is that rank plus the parity of 3Lw and 3Rw quarter turns, so
+    the joint space is 1,470,942. Publishing splits it into an even file and an
+    odd file, each indexed by the center rank alone. The even file is 0 at the
+    staged centers. The odd file is the shortest return to those centers with
+    odd orbit-1 parity. 3Uw, 3Dw, 3Fw, and 3Bw quarters are illegal, matching
+    the phase-2 search.
+
+    Phase 2 leaves the eight LR inner x-centers in place, so the eight UD
+    centers are chosen from the other 16 slots. Each file therefore holds
+    C(16, 8) = 12,870 reachable states. The other bytes stay 0.
+
+    lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-even.cost-only.bin
+    ============================================================================
+    0 steps has 1 entries (0 percent, 0.00x previous step)
+    2 steps has 1 entries (0 percent, 1.00x previous step)
+    3 steps has 56 entries (0 percent, 56.00x previous step)
+    4 steps has 594 entries (4 percent, 10.61x previous step)
+    5 steps has 3,878 entries (30 percent, 6.53x previous step)
+    6 steps has 7,032 entries (54 percent, 1.81x previous step)
+    7 steps has 1,212 entries (9 percent, 0.17x previous step)
+    8 steps has 96 entries (0 percent, 0.08x previous step)
+
+    Total: 12,870 entries
+    Average: 5.70 moves
+
+    lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-odd.cost-only.bin
+    ===========================================================================
+    1 steps has 2 entries (0 percent, 0.00x previous step)
+    2 steps has 28 entries (0 percent, 14.00x previous step)
+    3 steps has 178 entries (1 percent, 6.36x previous step)
+    4 steps has 710 entries (5 percent, 3.99x previous step)
+    5 steps has 1,690 entries (13 percent, 2.38x previous step)
+    6 steps has 5,284 entries (41 percent, 3.13x previous step)
+    7 steps has 4,890 entries (37 percent, 0.93x previous step)
+    8 steps has 88 entries (0 percent, 0.02x previous step)
+
+    Total: 12,870 entries
+    Average: 6.10 moves
+
+                 . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . . U U . .
+                 . . . . . .
+                 . . . . . .
+
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . x x . .  . . x x . .  . . x x . .  . . x x . .
+    . . x x . .  . . x x . .  . . x x . .  . . x x . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+    . . . . . .  . . . . . .  . . . . . .  . . . . . .
+
+                 . . . . . .
+                 . . . . . .
+                 . . U U . .
+                 . . U U . .
+                 . . . . . .
+                 . . . . . .
+    """
+
+    def __init__(self):
+        BFS.__init__(
+            self,
+            "6x6x6-phase2-UD-inner-x-centers-stage-orbit1-parity",
+            PHASE2_PRESERVE_LR_INNER_X_ILLEGAL_MOVES,
+            "6x6x6",
+            "lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-parity.txt",
+            False,
+            _ranked_inner_x_axis_starting_state("UD"),
+            use_c=True,
+            use_ranked_cost=True,
+            orbit_parity_flip_moves=PHASE2_ORBIT1_FLIP_MOVES,
+        )
+        table_dir = Path(self.filename).parent
+        self.orbit_parity_even_filename = str(
+            table_dir / "lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-even.cost-only.bin"
+        )
+        self.orbit_parity_odd_filename = str(
+            table_dir / "lookup-table-6x6x6-step11-UD-inner-x-centers-stage-orbit1-odd.cost-only.bin"
         )
 
 

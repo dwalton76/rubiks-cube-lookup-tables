@@ -84,6 +84,7 @@ Copy or upload the solver-facing `.cost-only.bin` artifact so `download_file_if_
 | `555-phase1` … `555-phase6` | 5x5 ranked cost arrays | dedicated phase 1–6 C searchers |
 | `666-phase1` | Stage LR inner x-centers | `ida_search_666_centers_stage` |
 | `666-phase2` | Stage UD inner x-centers while pairing LR obliques | `ida_search_666_centers_stage` |
+| `666-phase2-orbit1` | Even and odd orbit-1 distances for the same UD inner x-centers | `ida_search_666_centers_stage` |
 | `666-phase3-preserve-inner-x` | UD oblique / outer-x pairs | same, phase 3 |
 | `666-phase5` | Three 70^5 tables: all inner-x plus one axis's obliques | `ida_search_666_daisy_centers` |
 | `777-phase2` | UD inner centers ranked | `ida_search_777_centers_stage` |

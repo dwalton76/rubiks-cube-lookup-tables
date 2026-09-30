@@ -99,6 +99,9 @@ wheel:
 666-phase2:
 	./utils/builderui.py Build666Phase2UDInnerXCentersStageBinary --cores 10
 
+666-phase2-orbit1:
+	./utils/builderui.py Build666Phase2UDInnerXOrbit1Parity --cores 10
+
 666-phase3: clean
 	./utils/builderui.py Build666Phase3UDLeftRightObliqueCentersStage
 	./utils/builderui.py Build666Phase3UDLeftObliqueOuterXCentersStage

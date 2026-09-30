@@ -65,6 +65,7 @@ SKIPPED_BUILDERS = {
     "Build555PairLastEightEdgesEdgesOnly": "ranked table has an 812,851,200-byte dense cost array",
     "Build555Phase6Centers": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666Phase2UDInnerXCentersStageBinary": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
+    "Build666Phase2UDInnerXOrbit1Parity": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666Phase1LRInnerXCentersStageBinary": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666Phase3UDLeftRightObliqueCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",
     "Build666Phase3UDLeftObliqueOuterXCentersStage": "ranked-cost tables write a dense cost file, not the .txt the Makefile baselines check",

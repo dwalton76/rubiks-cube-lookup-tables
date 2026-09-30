@@ -1286,7 +1286,9 @@ process_ranked_workq(
     unsigned int group_count,
     uint64_t universe,
     int write_workq,
-    int scan_costs)
+    int scan_costs,
+    int orbit_parity,
+    const unsigned char *parity_flip)
 {
     unsigned int state_length = 0;
     uint64_t configured_universe = 1;
@@ -1391,7 +1393,15 @@ process_ranked_workq(
             }
         }
     }
-    if (configured_universe != universe) {
+    if (orbit_parity) {
+        if (configured_rank_type != RANK_MULTISET ||
+                configured_universe > UINT64_MAX / 2 ||
+                configured_universe * 2 != universe) {
+            fprintf(stderr, "ERROR: orbit-parity universe is %" PRIu64 ", expected twice %" PRIu64 "\n",
+                universe, configured_universe);
+            exit(1);
+        }
+    } else if (configured_universe != universe) {
         fprintf(stderr, "ERROR: rank group universes multiply to %" PRIu64 ", expected %" PRIu64 "\n",
             configured_universe, universe);
         exit(1);
@@ -1487,6 +1497,13 @@ process_ranked_workq(
                 exit(1);
             }
         }
+        unsigned int parity_bit = 0;
+        uint64_t center_rank = parent_rank;
+
+        if (orbit_parity) {
+            parity_bit = (unsigned int)(parent_rank & 1);
+            center_rank = parent_rank >> 1;
+        }
         if (configured_rank_type == RANK_EDGE_PAIRING_EVEN) {
             edge_pairing_unrank_cube(
                 parent_rank, state, full_size, squares, pairing_partners, pair_count);
@@ -1509,7 +1526,9 @@ process_ranked_workq(
         } else if (configured_rank_type == RANK_PHASE5_COMBO_RELATIVE) {
             phase5_combo_relative_unrank(parent_rank, state, groups, group_count, universe);
         } else {
-            grouped_multiset_unrank(parent_rank, state, groups, group_count, universe);
+            grouped_multiset_unrank(
+                center_rank, state, groups, group_count,
+                orbit_parity ? universe / 2 : universe);
         }
 
         for (unsigned int move_index = 0; move_index < moves_count; move_index++) {
@@ -1554,6 +1573,9 @@ process_ranked_workq(
                 child_rank = configured_rank_type == RANK_CENTER_SYMMETRY_444
                     ? center_symmetry_rank_444(child, symbol_of, groups)
                     : grouped_multiset_rank(child, symbol_of, groups, group_count);
+                if (orbit_parity) {
+                    child_rank = (child_rank << 1) | (parity_bit ^ parity_flip[move_index]);
+                }
             }
             if (child_rank == parent_rank) {
                 continue;
@@ -1859,6 +1881,7 @@ main (int argc, char *argv[])
     char rank_type_buffer[64];
     char pairing_partners_buffer[MAX_SQUARES_ARG];
     char wing_flip_masks_buffer[MAX_SQUARES_ARG];
+    char parity_flip_moves_buffer[512];
     unsigned int squares[MAX_COMPACT_SQUARES];
     unsigned int pairing_partners[MAX_COMPACT_SQUARES];
     unsigned int wing_flip_masks[MOVE_MAX];
@@ -1872,6 +1895,7 @@ main (int argc, char *argv[])
     unsigned int rank_group_count = 0;
     int ranked_no_workq = 0;
     int ranked_scan_costs = 0;
+    int orbit_parity = 0;
     rank_type configured_rank_type = RANK_MULTISET;
     memset(inputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
     memset(outputfile, '\0', sizeof(char) * MAX_FILENAME_SIZE);
@@ -1885,6 +1909,7 @@ main (int argc, char *argv[])
     memset(rank_type_buffer, '\0', sizeof(rank_type_buffer));
     memset(pairing_partners_buffer, '\0', sizeof(pairing_partners_buffer));
     memset(wing_flip_masks_buffer, '\0', sizeof(wing_flip_masks_buffer));
+    memset(parity_flip_moves_buffer, '\0', sizeof(parity_flip_moves_buffer));
     memset(rank_groups, 0, sizeof(rank_groups));
 
     for (int i = 1; i < argc; i++) {
@@ -1970,6 +1995,13 @@ main (int argc, char *argv[])
 
         } else if (strmatch(argv[i], "--ranked-no-workq")) {
             ranked_no_workq = 1;
+
+        } else if (strmatch(argv[i], "--orbit-parity")) {
+            orbit_parity = 1;
+
+        } else if (strmatch(argv[i], "--parity-flip-moves")) {
+            i++;
+            strncpy(parity_flip_moves_buffer, argv[i], sizeof(parity_flip_moves_buffer) - 1);
 
         } else if (strmatch(argv[i], "--ranked-scan-costs")) {
             ranked_scan_costs = 1;
@@ -2114,6 +2146,50 @@ main (int argc, char *argv[])
             fprintf(stderr, "ERROR: ranked depth must be <= 254\n");
             exit(1);
         }
+        unsigned char parity_flip[MOVE_MAX];
+        memset(parity_flip, 0, sizeof(parity_flip));
+        if (orbit_parity) {
+            char *flip_moves;
+            char *flip_move;
+            unsigned int flip_count = 0;
+
+            if (configured_rank_type != RANK_MULTISET || rank_group_count != 1 || (rank_universe % 2)) {
+                fprintf(stderr, "ERROR: --orbit-parity requires one multiset group and an even universe\n");
+                exit(1);
+            }
+            if (!parity_flip_moves_buffer[0]) {
+                fprintf(stderr, "ERROR: --orbit-parity requires --parity-flip-moves\n");
+                exit(1);
+            }
+            char flip_storage[512];
+
+            rank_groups[0].universe = rank_universe / 2;
+            strncpy(flip_storage, parity_flip_moves_buffer, sizeof(flip_storage) - 1);
+            flip_storage[sizeof(flip_storage) - 1] = '\0';
+            flip_moves = flip_storage;
+            flip_move = strtok(flip_moves, " ");
+            while (flip_move != NULL) {
+                move_type flip = str2move(flip_move);
+                unsigned int matched = 0;
+
+                for (unsigned int move_index = 0; move_index < moves_index; move_index++) {
+                    if (moves[move_index] == flip) {
+                        parity_flip[move_index] = 1;
+                        matched = 1;
+                        flip_count++;
+                    }
+                }
+                if (!matched) {
+                    fprintf(stderr, "ERROR: parity flip move %s is not legal for this table\n", flip_move);
+                    exit(1);
+                }
+                flip_move = strtok(NULL, " ");
+            }
+            if (!flip_count) {
+                fprintf(stderr, "ERROR: --parity-flip-moves did not match any legal move\n");
+                exit(1);
+            }
+        }
         process_ranked_workq(
             ranked_input, ranked_output, ranked_cost, start, end, (unsigned char) ranked_depth,
             cube_size, moves, moves_index, squares, square_count,
@@ -2121,7 +2197,8 @@ main (int argc, char *argv[])
             wing_partner_flip_mask,
             configured_rank_type,
             rank_groups, rank_group_count,
-            rank_universe, !ranked_no_workq, ranked_scan_costs);
+            rank_universe, !ranked_no_workq, ranked_scan_costs,
+            orbit_parity, parity_flip);
     } else {
         if (start > UINT_MAX || end > UINT_MAX) {
             fprintf(stderr, "ERROR: text workq line range exceeds UINT_MAX\n");

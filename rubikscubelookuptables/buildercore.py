@@ -814,6 +814,7 @@ class BFS(object):
         ranked_cost_move_flip_masks=None,
         ranked_cost_partner_flip_mask=0,
         ranked_dense_frontier=False,
+        orbit_parity_flip_moves=None,
     ):
         self.name = name
         self.illegal_moves = illegal_moves
@@ -836,6 +837,10 @@ class BFS(object):
         self.ranked_cost_move_flip_masks = tuple(ranked_cost_move_flip_masks or ())
         self.ranked_cost_partner_flip_mask = ranked_cost_partner_flip_mask
         self.ranked_dense_frontier = ranked_dense_frontier
+        self.orbit_parity_flip_moves = tuple(orbit_parity_flip_moves or ())
+        self.center_universe = 0
+        self.orbit_parity_even_filename = None
+        self.orbit_parity_odd_filename = None
         # Cube-state indexes (matching cube.state / rotate_xxx) that this table actually
         # cares about. Empty means we carry the full cube, including the "." placeholders.
         self.compact_squares = ()
@@ -1282,6 +1287,14 @@ class BFS(object):
         self.rank_groups = tuple(rank_groups)
         self.rank_universes = tuple(group["universe_size"] for group in self.rank_groups)
         self.rank_universe = math.prod(self.rank_universes)
+        if self.orbit_parity_flip_moves:
+            if self.ranked_cost_type != "multiset" or len(self.rank_groups) != 1:
+                raise ValueError(f"{self}: orbit parity requires one multiset rank group")
+            missing = [move for move in self.orbit_parity_flip_moves if move not in self.legal_moves]
+            if missing:
+                raise ValueError(f"{self}: parity flip moves are not legal: {' '.join(missing)}")
+            self.center_universe = self.rank_universe
+            self.rank_universe *= 2
         if self.rank_universe >= (1 << 64) or self.rank_universe > sys.maxsize:
             raise ValueError(f"{self}: ranked state space does not fit in uint64")
 
@@ -1450,6 +1463,11 @@ class BFS(object):
                         move: mask for move, mask in zip(self.legal_moves, self.ranked_cost_move_flip_masks)
                     }
                     metadata["partner_flip_mask"] = self.ranked_cost_partner_flip_mask
+            if self.orbit_parity_flip_moves:
+                metadata["center_universe_size"] = self.center_universe
+                metadata["orbit_parity_flip_moves"] = list(self.orbit_parity_flip_moves)
+                metadata["even_cost_file"] = os.path.basename(self.orbit_parity_even_filename or "")
+                metadata["odd_cost_file"] = os.path.basename(self.orbit_parity_odd_filename or "")
         metadata["frontier_mode"] = (
             "dense-cost-scan" if getattr(self, "ranked_dense_frontier", False) else "ranked-record-workq"
         )
@@ -1478,7 +1496,67 @@ class BFS(object):
 
         return TMPDIR
 
+    def _split_orbit_parity_cost_file(self) -> None:
+        """Write the even and odd halves of a rank*2+parity cost array."""
+        live = self.ranked_cost_live_filename
+        with open(live, "rb") as source:
+            combined = source.read()
+        if len(combined) != self.rank_universe or len(combined) % 2:
+            raise RuntimeError(
+                f"{self}: orbit-parity cost file is {len(combined)} bytes, expected {self.rank_universe}"
+            )
+        half = len(combined) // 2
+        even = combined[0::2]
+        odd = combined[1::2]
+        if len(even) != half or len(odd) != half:
+            raise RuntimeError(f"{self}: orbit-parity split produced uneven files")
+        for filename, payload in (
+            (self.orbit_parity_even_filename, even),
+            (self.orbit_parity_odd_filename, odd),
+        ):
+            Path(filename).parent.mkdir(parents=True, exist_ok=True)
+            with open(filename, "wb") as destination:
+                destination.write(payload)
+            log.info(f"{self}: wrote {filename} ({half:,} bytes)")
+        os.remove(live)
+        self._orbit_parity_payloads = {"even": even, "odd": odd}
+
+    def _write_split_cost_histogram(self, filename: str, payload: bytes) -> None:
+        counts = {}
+        for encoded in payload:
+            if not encoded:
+                continue
+            depth = encoded - 1
+            counts[depth] = counts.get(depth, 0) + 1
+        linecount = sum(counts.values())
+        report = ["", f"    {filename}", "    " + "=" * len(filename)]
+        prev = None
+        total_steps = 0
+        for depth in sorted(counts):
+            count = counts[depth]
+            delta = float(count / prev) if prev else 0.0
+            percent = int(float(count / linecount) * 100) if linecount else 0
+            report.append(
+                "    {} steps has {:,} entries ({} percent, {:.2f}x previous step)".format(
+                    depth, count, percent, delta
+                )
+            )
+            total_steps += depth * count
+            prev = count
+        report.append(f"\n    Total: {linecount:,} entries")
+        if linecount:
+            report.append(f"    Average: {float(total_steps / linecount):.2f} moves\n\n")
+        text = "\n".join(report) + "\n"
+        log.info(text)
+        if os.environ.get("RUBIKS_SKIP_HISTOGRAM"):
+            return
+        with open("histogram.txt", "a") as fh:
+            fh.write(text)
+
     def _publish_ranked_cost_file(self) -> None:
+        if self.orbit_parity_even_filename:
+            self._split_orbit_parity_cost_file()
+            return
         live = self.ranked_cost_live_filename
         dest = self.ranked_cost_filename
         if getattr(self, "ranked_cost_type", "multiset") == "center-symmetry-444":
@@ -1997,7 +2075,10 @@ class BFS(object):
             )
             for group in self.rank_groups
         )
-        return mixed_radix_rank(ranks, self.rank_universes)
+        rank = mixed_radix_rank(ranks, self.rank_universes)
+        if self.orbit_parity_flip_moves:
+            return rank * 2
+        return rank
 
     def _ranked_state_unrank(self, rank: int) -> str:
         """Reconstruct the canonical compact state represented by a dense rank."""
@@ -2190,6 +2271,14 @@ class BFS(object):
                 cmd.extend(["--ranked-scan-costs", "--ranked-no-workq"])
             elif not build_workq:
                 cmd.append("--ranked-no-workq")
+            if self.orbit_parity_flip_moves:
+                cmd.extend(
+                    [
+                        "--orbit-parity",
+                        "--parity-flip-moves",
+                        " ".join(self.orbit_parity_flip_moves),
+                    ]
+                )
 
             log.info(" ".join(cmd))
             thread = BackgroundProcess(cmd, f"ranked builder-crunch-workq core {core}")
@@ -2518,7 +2607,11 @@ class BFS(object):
         if self.use_ranked_cost:
             self._publish_ranked_cost_file()
             self._write_ranked_metadata()
-            self.write_histogram(self.ranked_cost_filename)
+            if self.orbit_parity_even_filename:
+                self._write_split_cost_histogram(self.orbit_parity_even_filename, self._orbit_parity_payloads["even"])
+                self._write_split_cost_histogram(self.orbit_parity_odd_filename, self._orbit_parity_payloads["odd"])
+            else:
+                self.write_histogram(self.ranked_cost_filename)
             self.time_in_save += (dt.datetime.now() - start_time).total_seconds()
             log.info(f"{self}: ranked cost table is {self.ranked_cost_filename}")
             return
