@@ -1628,6 +1628,27 @@ class Build777Phase8UDInnerFBObliquesCenters(_Build777Phase8InnerPlusPairedObliq
     search. Rank order is UD inner-t, UD inner-x, FB left, FB middle, FB right.
 
     lookup-table-7x7x7-phase8-ud-inner-fb-obliques-centers.cost-only.bin
+    ====================================================================
+    0 steps has 70 entries (0 percent, 0.00x previous step)
+    1 steps has 140 entries (0 percent, 2.00x previous step)
+    2 steps has 1,750 entries (0 percent, 12.50x previous step)
+    3 steps has 11,924 entries (0 percent, 6.81x previous step)
+    4 steps has 62,026 entries (0 percent, 5.20x previous step)
+    5 steps has 332,032 entries (0 percent, 5.35x previous step)
+    6 steps has 1,698,062 entries (0 percent, 5.11x previous step)
+    7 steps has 7,610,382 entries (0 percent, 4.48x previous step)
+    8 steps has 30,469,370 entries (1 percent, 4.00x previous step)
+    9 steps has 102,635,458 entries (6 percent, 3.37x previous step)
+    10 steps has 267,760,038 entries (15 percent, 2.61x previous step)
+    11 steps has 488,926,696 entries (29 percent, 1.83x previous step)
+    12 steps has 514,508,644 entries (30 percent, 1.05x previous step)
+    13 steps has 237,369,236 entries (14 percent, 0.46x previous step)
+    14 steps has 28,731,564 entries (1 percent, 0.12x previous step)
+    15 steps has 578,864 entries (0 percent, 0.02x previous step)
+    16 steps has 3,744 entries (0 percent, 0.01x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.28 moves
 
                    . . . . . . .
                    . . . . . . .
@@ -1670,6 +1691,27 @@ class Build777Phase8FBInnerUDObliquesCenters(_Build777Phase8InnerPlusPairedObliq
     search. Rank order is FB inner-t, FB inner-x, UD left, UD middle, UD right.
 
     lookup-table-7x7x7-phase8-fb-inner-ud-obliques-centers.cost-only.bin
+    ====================================================================
+    0 steps has 70 entries (0 percent, 0.00x previous step)
+    1 steps has 140 entries (0 percent, 2.00x previous step)
+    2 steps has 1,750 entries (0 percent, 12.50x previous step)
+    3 steps has 11,924 entries (0 percent, 6.81x previous step)
+    4 steps has 62,026 entries (0 percent, 5.20x previous step)
+    5 steps has 332,032 entries (0 percent, 5.35x previous step)
+    6 steps has 1,698,062 entries (0 percent, 5.11x previous step)
+    7 steps has 7,610,382 entries (0 percent, 4.48x previous step)
+    8 steps has 30,469,370 entries (1 percent, 4.00x previous step)
+    9 steps has 102,635,458 entries (6 percent, 3.37x previous step)
+    10 steps has 267,760,038 entries (15 percent, 2.61x previous step)
+    11 steps has 488,926,696 entries (29 percent, 1.83x previous step)
+    12 steps has 514,508,644 entries (30 percent, 1.05x previous step)
+    13 steps has 237,369,236 entries (14 percent, 0.46x previous step)
+    14 steps has 28,731,564 entries (1 percent, 0.12x previous step)
+    15 steps has 578,864 entries (0 percent, 0.02x previous step)
+    16 steps has 3,744 entries (0 percent, 0.01x previous step)
+
+    Total: 1,680,700,000 entries
+    Average: 11.28 moves
 
                    . . . . . . .
                    . . U U U . .
