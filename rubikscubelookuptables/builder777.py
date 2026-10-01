@@ -891,6 +891,14 @@ PHASE8_CENTER_ILLEGAL_MOVES_777 = DAISY_CENTERS_ILLEGAL_MOVES_777 + (
     "3Dw2",
 )
 
+# Phase 9 drops the last two 3-wide half turns as well. Its ranked coordinates
+# and goals are identical to the phase 8 daisy tables, while the smaller move
+# set gives a stronger admissible cost for the actual phase 9 search.
+PHASE9_CENTER_ILLEGAL_MOVES_777 = PHASE8_CENTER_ILLEGAL_MOVES_777 + (
+    "3Lw2",
+    "3Rw2",
+)
+
 # The paired-bar tables match the phase 8 search, which also leaves L and R
 # face turns out. Those turns move the LR centers the search has to keep.
 PHASE8_PAIRED_ILLEGAL_MOVES_777 = PHASE8_CENTER_ILLEGAL_MOVES_777 + (
@@ -1742,3 +1750,99 @@ class Build777Phase8FBInnerUDObliquesCenters(_Build777Phase8InnerPlusPairedObliq
     oblique_axis = "UD"
     table_name = "7x7x7-phase8-fb-inner-ud-obliques-centers"
     filename = "lookup-table-7x7x7-phase8-fb-inner-ud-obliques-centers.txt"
+
+
+def _init_phase9_builder(builder):
+    """Initialize a phase-8 coordinate with the phase-9 move set."""
+    BFS.__init__(
+        builder,
+        builder.table_name,
+        PHASE9_CENTER_ILLEGAL_MOVES_777,
+        "7x7x7",
+        builder.filename,
+        False,
+        _phase8_starting_states_777(builder.orbits, builder.orientations),
+        use_c=True,
+        use_ranked_cost=True,
+        ranked_cost_square_groups=tuple(squares for _, _, squares in builder.orbits),
+    )
+
+
+class Build777Phase9UDAxisCenters(Build777Phase8UDAxisCenters):
+    """Phase-9 UD five-orbit daisy coordinate."""
+
+    table_name = "7x7x7-phase9-ud-axis-centers"
+    filename = "lookup-table-7x7x7-phase9-ud-axis-centers.txt"
+
+    def __init__(self):
+        _init_phase9_builder(self)
+
+
+class Build777Phase9FBAxisCenters(Build777Phase8FBAxisCenters):
+    """Phase-9 FB five-orbit daisy coordinate."""
+
+    table_name = "7x7x7-phase9-fb-axis-centers"
+    filename = "lookup-table-7x7x7-phase9-fb-axis-centers.txt"
+
+    def __init__(self):
+        _init_phase9_builder(self)
+
+
+class Build777Phase9LRObliqueCenters(Build777Phase8LRObliqueCenters):
+    """Phase-9 LR paired-bar placement coordinate."""
+
+    table_name = "7x7x7-phase9-lr-oblique-centers"
+    filename = "lookup-table-7x7x7-phase9-lr-oblique-centers.txt"
+
+    def __init__(self):
+        _init_phase9_builder(self)
+
+
+class Build777Phase9InnerInteractionCenters(Build777Phase8InnerInteractionCenters):
+    """Phase-9 UD/FB inner interaction coordinate."""
+
+    table_name = "7x7x7-phase9-inner-interaction-centers"
+    filename = "lookup-table-7x7x7-phase9-inner-interaction-centers.txt"
+
+    def __init__(self):
+        _init_phase9_builder(self)
+
+
+class Build777Phase9MiddleInteractionCenters(Build777Phase8MiddleInteractionCenters):
+    """Phase-9 UD/FB middle interaction coordinate."""
+
+    table_name = "7x7x7-phase9-middle-interaction-centers"
+    filename = "lookup-table-7x7x7-phase9-middle-interaction-centers.txt"
+
+    def __init__(self):
+        _init_phase9_builder(self)
+
+
+class Build777Phase9UDObliquesFBEdgesCenters(Build777Phase8UDObliquesFBEdgesCenters):
+    """Phase-9 UD obliques and FB edge-oblique coordinate."""
+
+    table_name = "7x7x7-phase9-ud-obliques-fb-edges-centers"
+    filename = "lookup-table-7x7x7-phase9-ud-obliques-fb-edges-centers.txt"
+
+    def __init__(self):
+        _init_phase9_builder(self)
+
+
+class Build777Phase9FBObliquesUDEdgesCenters(Build777Phase8FBObliquesUDEdgesCenters):
+    """Phase-9 FB obliques and UD edge-oblique coordinate."""
+
+    table_name = "7x7x7-phase9-fb-obliques-ud-edges-centers"
+    filename = "lookup-table-7x7x7-phase9-fb-obliques-ud-edges-centers.txt"
+
+    def __init__(self):
+        _init_phase9_builder(self)
+
+
+class Build777Phase9UDObliquesFBInnerTCenters(Build777Phase8UDObliquesFBInnerTCenters):
+    """Phase-9 UD obliques and FB inner-t coordinate."""
+
+    table_name = "7x7x7-phase9-ud-obliques-fb-inner-t-centers"
+    filename = "lookup-table-7x7x7-phase9-ud-obliques-fb-inner-t-centers.txt"
+
+    def __init__(self):
+        _init_phase9_builder(self)

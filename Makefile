@@ -199,4 +199,16 @@ rubikscubelookuptables/build-555-lr-xt-centers: rubikscubelookuptables/build-555
 
 777-phase8: 777-phase8-lr-oblique 777-phase8-inner-interaction 777-phase8-middle-interaction 777-phase8-ud-axis 777-phase8-fb-axis 777-phase8-ud-obliques-fb-edges 777-phase8-fb-obliques-ud-edges 777-phase8-ud-obliques-fb-inner-t 777-phase8-ud-inner-fb-obliques 777-phase8-fb-inner-ud-obliques
 
+# Phase 9 uses the same eight coordinates and goals with every 3-wide move
+# removed. Keep these sequential because builderui.py wipes ./tmp.
+777-phase9:
+	./utils/builderui.py Build777Phase9LRObliqueCenters --cores 10
+	./utils/builderui.py Build777Phase9InnerInteractionCenters --cores 10
+	./utils/builderui.py Build777Phase9MiddleInteractionCenters --cores 10
+	./utils/builderui.py Build777Phase9UDAxisCenters --cores 10
+	./utils/builderui.py Build777Phase9FBAxisCenters --cores 10
+	./utils/builderui.py Build777Phase9UDObliquesFBEdgesCenters --cores 10
+	./utils/builderui.py Build777Phase9FBObliquesUDEdgesCenters --cores 10
+	./utils/builderui.py Build777Phase9UDObliquesFBInnerTCenters --cores 10
+
 777: 777-phase2 777-phase5-6-ranked 777-daisy-lr-inner 777-phase8

@@ -7,6 +7,7 @@ from rubikscubelookuptables.builder777 import (
     DAISY_CENTERS_ILLEGAL_MOVES_777,
     PHASE8_CENTER_ILLEGAL_MOVES_777,
     PHASE8_PAIRED_ILLEGAL_MOVES_777,
+    PHASE9_CENTER_ILLEGAL_MOVES_777,
     Build777DaisyLRInnerCenters,
     Build777Phase8FBAxisCenters,
     Build777Phase8FBInnerUDObliquesCenters,
@@ -20,6 +21,14 @@ from rubikscubelookuptables.builder777 import (
     Build777Phase8UDObliquesFBEdgesCenters,
     Build777Phase8UDObliquesFBInnerTCenters,
     Build777Phase8UDPairedCenters,
+    Build777Phase9FBAxisCenters,
+    Build777Phase9FBObliquesUDEdgesCenters,
+    Build777Phase9InnerInteractionCenters,
+    Build777Phase9LRObliqueCenters,
+    Build777Phase9MiddleInteractionCenters,
+    Build777Phase9UDAxisCenters,
+    Build777Phase9UDObliquesFBEdgesCenters,
+    Build777Phase9UDObliquesFBInnerTCenters,
 )
 
 ORBIT_NAMES = ("left-oblique", "middle-oblique", "right-oblique", "inner-t", "inner-x")
@@ -111,3 +120,32 @@ def test_phase8_builder_coordinate(builder_class, universes, goals):
             builder._ranked_state_rank(builder._state_for_workq(cube))
     finally:
         cube.state = original
+
+
+PHASE9_BUILDERS = (
+    (Build777Phase9UDAxisCenters, (70, 70, 70, 70, 70), 2),
+    (Build777Phase9FBAxisCenters, (70, 70, 70, 70, 70), 2),
+    (Build777Phase9LRObliqueCenters, (70,), 2),
+    (Build777Phase9InnerInteractionCenters, (70, 70, 70, 70), 1),
+    (Build777Phase9MiddleInteractionCenters, (70, 70, 70, 70), 4),
+    (Build777Phase9UDObliquesFBEdgesCenters, (70, 70, 70, 70, 70), 4),
+    (Build777Phase9FBObliquesUDEdgesCenters, (70, 70, 70, 70, 70), 4),
+    (Build777Phase9UDObliquesFBInnerTCenters, (70, 70, 70, 70, 70), 2),
+)
+
+
+@pytest.mark.parametrize("builder_class,universes,goals", PHASE9_BUILDERS)
+def test_phase9_builder_coordinate(builder_class, universes, goals):
+    builder = builder_class()
+
+    assert builder.use_ranked_cost
+    assert builder.rank_universes == universes
+    assert len(builder.starting_cubes) == goals
+    assert set(builder.illegal_moves) == set(PHASE9_CENTER_ILLEGAL_MOVES_777)
+    assert "3Lw2" not in builder.legal_moves
+    assert "3Rw2" not in builder.legal_moves
+    assert "Lw2" in builder.legal_moves
+    assert "Rw2" in builder.legal_moves
+    assert "phase9" in builder.filename
+    ranks = [builder._ranked_state_rank(builder._state_for_workq(cube)) for cube in builder.starting_cubes]
+    assert len(set(ranks)) == goals
