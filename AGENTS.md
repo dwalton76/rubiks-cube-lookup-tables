@@ -85,6 +85,7 @@ Copy or upload the solver-facing `.cost-only.bin` artifact so `download_file_if_
 | `555-lr-xt-centers` | Joint L/R x-center and t-center table, 33,807,856,581 symmetry orbits | not wired into a searcher yet |
 | `666-phase1` | Stage LR inner x-centers | `ida_search_666_centers_stage` |
 | `666-phase2` | Stage UD inner x-centers while pairing LR obliques | `ida_search_666_centers_stage` |
+| `666-phase2-lr-bars` | Symmetry-reduced depth-3 LR oblique bar hash | `ida_search_666_centers_stage --lr-bar-cost` |
 | `666-phase2-orbit1` | Even and odd orbit-1 distances for the same UD inner x-centers | `ida_search_666_centers_stage` |
 | `666-phase4-orbit0` | Even and odd orbit-0 distances for the three 6x6 UD pair tables | `ida_search_666_centers_stage` |
 | `777-phase2-orbit1` | Even and odd orbit-1 distances for 7x7 UD inner t/x centers | `ida_search_777_centers_stage` |
@@ -104,6 +105,8 @@ Copy or upload the solver-facing `.cost-only.bin` artifact so `download_file_if_
 | `777-phase8-ud-obliques-fb-inner-t` | 70^5 UD obliques plus inner-t and FB inner-t, phase 8 moves | `ida_search_777_daisy_centers` |
 | `777-phase8-ud-inner-fb-obliques` | 70^5 UD inners plus FB obliques, 70 paired-bar goals, phase 8 moves | `ida_search_777_daisy_centers` |
 | `777-phase8-fb-inner-ud-obliques` | 70^5 FB inners plus UD obliques, 70 paired-bar goals, phase 8 moves | `ida_search_777_daisy_centers` |
+
+`666-phase2-lr-bars` is a separate job, not part of `make 666`. It writes `lookup-tables/lookup-table-6x6x6-phase2-LR-oblique-bars.sym-depth3.hash.bin`. The 6x6 searcher loads that file and does not build it. Copy the finished file into the solver's `lookup-tables/` directory. There is no S3 download for it.
 
 `555-lr-xt-centers` is a separate job, not part of `make 555`. It classifies all 540,917,591,841 raw `C(24,8)^2` ranks, keeps the 33,807,856,581 orbits under the 16 L/R-axis symmetries, and searches those orbits directly. The BFS holds about 102 GiB (63 GiB bitmap, 8 GiB uint64 counters, 31.5 GiB costs). The frontier stays on disk. `--lock` asks the kernel to pin the tables so frontier page cache cannot evict them.
 

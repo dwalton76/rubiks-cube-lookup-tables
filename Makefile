@@ -6,7 +6,7 @@ clean:
 
 init: clean
 	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
-	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/build-555-lr-xt-centers rubikscubelookuptables/builder-find-new-states utils/pad-lines
+	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/build-555-lr-xt-centers rubikscubelookuptables/build-666-lr-oblique-bars rubikscubelookuptables/builder-find-new-states utils/pad-lines
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	gcc -O3 -o rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/compact-center-symmetry-cost.c
 	gcc -O3 -o rubikscubelookuptables/builder-find-new-states rubikscubelookuptables/builder-find-new-states.c
@@ -105,6 +105,21 @@ wheel:
 
 rubikscubelookuptables/build-555-lr-xt-centers: rubikscubelookuptables/build-555-lr-xt-centers.c rubikscubelookuptables/rotate_xxx.c
 	gcc -O3 -pthread -Irubikscubelookuptables -o $@ rubikscubelookuptables/build-555-lr-xt-centers.c rubikscubelookuptables/rotate_xxx.c
+
+# Symmetry-reduced depth-3 LR oblique bar hash for 6x6 phase 2. The searcher
+# only loads the file. This target is not part of `make 666`.
+SOLVER_NNN := ../rubiks-cube-NxNxN-solver/rubikscubennnsolver
+
+666-phase2-lr-bars: rubikscubelookuptables/build-666-lr-oblique-bars
+	mkdir -p lookup-tables
+	./rubikscubelookuptables/build-666-lr-oblique-bars --threads 10 --depth 3 \
+	  --output lookup-tables/lookup-table-6x6x6-phase2-LR-oblique-bars.sym-depth3.hash.bin
+
+rubikscubelookuptables/build-666-lr-oblique-bars: rubikscubelookuptables/build-666-lr-oblique-bars.c $(SOLVER_NNN)/rotate_xxx.c $(SOLVER_NNN)/ida_search_core.c $(SOLVER_NNN)/ida_search_core.h
+	gcc -O3 -Wall -Wextra -pthread -o $@ \
+	  rubikscubelookuptables/build-666-lr-oblique-bars.c \
+	  $(SOLVER_NNN)/rotate_xxx.c \
+	  $(SOLVER_NNN)/ida_search_core.c -lm -latomic
 
 666-phase1:
 	./utils/builderui.py Build666Phase1LRInnerXCentersStageBinary --cores 10
