@@ -33,4 +33,4 @@ force-exclude = '''
 
 # packages that are required for setup.py to run must be listed here
 [build-system]
-requires=["setuptools==84.0.0", "wheel==0.48.0"]
+requires=["setuptools==84.1.0", "wheel==0.48.0"]
