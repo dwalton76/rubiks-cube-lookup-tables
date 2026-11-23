@@ -6,7 +6,7 @@ clean:
 
 init: clean
 	export PYTHONPATH=/home/dwalton/rubiks-cube/rubiks-cube-NxNxN-solver/:/home/dwalton/rubiks-cube/rubiks-cube-lookup-tables/
-	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/build-666-lr-oblique-bars rubikscubelookuptables/builder-find-new-states utils/pad-lines
+	rm -rf venv rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/build-666-lr-oblique-bars rubikscubelookuptables/build-555-lr-joint rubikscubelookuptables/builder-find-new-states utils/pad-lines
 	gcc -O3 -o rubikscubelookuptables/builder-crunch-workq rubikscubelookuptables/builder-crunch-workq.c rubikscubelookuptables/ida_search_core.c rubikscubelookuptables/rotate_xxx.c -lm
 	gcc -O3 -o rubikscubelookuptables/compact-center-symmetry-cost rubikscubelookuptables/compact-center-symmetry-cost.c
 	gcc -O3 -o rubikscubelookuptables/builder-find-new-states rubikscubelookuptables/builder-find-new-states.c
@@ -105,6 +105,21 @@ SOLVER_NNN := ../rubiks-cube-NxNxN-solver/rubikscubennnsolver
 rubikscubelookuptables/build-666-lr-oblique-bars: rubikscubelookuptables/build-666-lr-oblique-bars.c $(SOLVER_NNN)/rotate_xxx.c $(SOLVER_NNN)/ida_search_core.c $(SOLVER_NNN)/ida_search_core.h
 	gcc -O3 -Wall -Wextra -pthread -o $@ \
 	  rubikscubelookuptables/build-666-lr-oblique-bars.c \
+	  $(SOLVER_NNN)/rotate_xxx.c \
+	  $(SOLVER_NNN)/ida_search_core.c -lm -latomic
+
+# Joint LR t-center + x-center table for the native 5x5 phase 1: 34,519,331,385
+# cells, packed to 17,259,665,693 bytes. The build holds one byte per cell, so it
+# needs about 36 GB of free RAM. This target is not part of `make 555`, and the
+# solver's `make 555-tables` does not build it.
+555-lr-joint: rubikscubelookuptables/build-555-lr-joint
+	mkdir -p lookup-tables
+	./rubikscubelookuptables/build-555-lr-joint \
+	  --output lookup-tables/lookup-table-5x5x5-step13-LR-t-x-centers-joint.sym-nibble.bin
+
+rubikscubelookuptables/build-555-lr-joint: rubikscubelookuptables/build-555-lr-joint.c $(SOLVER_NNN)/lr_joint_555.h $(SOLVER_NNN)/rotate_xxx.c $(SOLVER_NNN)/ida_search_core.c $(SOLVER_NNN)/ida_search_core.h
+	gcc -O3 -Wall -Wextra -pthread -o $@ \
+	  rubikscubelookuptables/build-555-lr-joint.c \
 	  $(SOLVER_NNN)/rotate_xxx.c \
 	  $(SOLVER_NNN)/ida_search_core.c -lm -latomic
 

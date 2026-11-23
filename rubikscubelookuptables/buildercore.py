@@ -1740,8 +1740,12 @@ class BFS(object):
             if os.path.exists(filename):
                 os.remove(filename)
 
+        log.warning(
+            f"{self}: allocating cost array of {self.rank_universe:,} bytes at {self.ranked_cost_live_filename}"
+        )
         with open(self.ranked_cost_live_filename, "wb") as costs:
             costs.truncate(self.rank_universe)
+        log.warning(f"{self}: cost array ready")
 
         starting_records = {}
         for cube in self.starting_cubes:
@@ -1845,6 +1849,11 @@ class BFS(object):
         threads = []
 
         split_size = self.rank_universe if self.ranked_dense_frontier else self.workq_size
+        log.warning(
+            f"{self.index}: depth {self.depth} begin, "
+            f"{'scanning' if self.ranked_dense_frontier else 'expanding'} {split_size:,} "
+            f"on {self.cores} cores"
+        )
         for core, (start, end) in enumerate(get_line_number_splits(split_size, self.cores)):
             if start is None:
                 continue

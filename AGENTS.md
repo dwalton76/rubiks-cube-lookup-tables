@@ -81,6 +81,7 @@ Copy or upload the solver-facing `.cost-only.bin` artifact so `download_file_if_
 | `333` | MicroPython 3x3 phases | 3x3 / EV3 path |
 | `444-phase1-ranked`, `444-centers`, `444-pair-all-edges` | 4x4 ranked phase 1, all-center 70^3, all-edge pairing | `ida_search_444_phase1`, `ida_search_444_phase2` |
 | `555-phase1` … `555-phase6` | 5x5 ranked cost arrays | dedicated phase 1–6 C searchers |
+| `555-lr-joint` | Joint LR t-center and x-center table, 46,935 t classes × 735,471 x ranks, one nibble per cell, 17,259,665,693 bytes. The C builder (`build-555-lr-joint.c`) holds 34.5 GB while it runs. Not part of `make 555` or the solver's `make 555-tables` | `ida_search_555_centers_stage --lr-joint-cost` (solver) |
 | `666-phase1` | Stage LR inner x-centers | `ida_search_666_centers_stage` |
 | `666-phase2` | Stage UD inner x-centers while pairing LR obliques | `ida_search_666_centers_stage` |
 | `666-phase2-lr-bars` | Symmetry-reduced depth-3 LR oblique bar hash | `ida_search_666_centers_stage --lr-bar-cost` |

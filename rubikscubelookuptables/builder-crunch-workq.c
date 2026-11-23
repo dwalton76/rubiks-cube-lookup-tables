@@ -12,6 +12,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <unistd.h>
 #include "center_symmetry_444.h"
 #include "ida_search_core.h"
@@ -1263,6 +1264,33 @@ write_rank(FILE *fh, uint64_t rank, unsigned char move)
 }
 
 
+/* A slice smaller than this finishes before a progress line would help. */
+#define RANKED_PROGRESS_MIN_SPAN 1000000ull
+#define RANKED_PROGRESS_INTERVAL_SEC 15.0
+
+static void
+report_ranked_progress(
+    unsigned char depth,
+    uint64_t start,
+    uint64_t end,
+    uint64_t done,
+    uint64_t span,
+    uint64_t winners,
+    const struct timespec *started)
+{
+    struct timespec now;
+    double elapsed;
+    unsigned int percent;
+
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    elapsed = (double)(now.tv_sec - started->tv_sec) + (double)(now.tv_nsec - started->tv_nsec) / 1e9;
+    percent = span ? (unsigned int)((done * 100) / span) : 100;
+    fprintf(stderr,
+        "depth %u  %u%%  scanned %" PRIu64 "/%" PRIu64 "  new %" PRIu64 "  %.0fs  ranks %" PRIu64 "-%" PRIu64 "\n",
+        depth, percent, done, span, winners, elapsed, start, end);
+    fflush(stderr);
+}
+
 static void
 process_ranked_workq(
     const char *inputfile,
@@ -1481,7 +1509,30 @@ process_ranked_workq(
 
     uint64_t winners = 0;
     unsigned char encoded_cost = depth + 1;
+    uint64_t span = end >= start ? end - start + 1 : 0;
+    int report_progress = span >= RANKED_PROGRESS_MIN_SPAN;
+    struct timespec progress_started = {0, 0};
+    struct timespec progress_last = {0, 0};
+    if (report_progress) {
+        clock_gettime(CLOCK_MONOTONIC, &progress_started);
+        progress_last = progress_started;
+        report_ranked_progress(depth, start, end, 0, span, 0, &progress_started);
+    }
     for (uint64_t record_index = start; record_index <= end; record_index++) {
+        if (report_progress) {
+            uint64_t examined = record_index - start + 1;
+            if ((examined & 0xfffff) == 0 || examined == span) {
+                struct timespec now;
+                double since_last;
+                clock_gettime(CLOCK_MONOTONIC, &now);
+                since_last = (double)(now.tv_sec - progress_last.tv_sec)
+                    + (double)(now.tv_nsec - progress_last.tv_nsec) / 1e9;
+                if (examined == span || since_last >= RANKED_PROGRESS_INTERVAL_SEC) {
+                    report_ranked_progress(depth, start, end, examined, span, winners, &progress_started);
+                    progress_last = now;
+                }
+            }
+        }
         uint64_t parent_rank;
         int previous = MOVE_NONE;
         if (scan_costs) {

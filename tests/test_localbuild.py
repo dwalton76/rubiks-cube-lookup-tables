@@ -16,6 +16,8 @@ from rubikscubelookuptables.localbuild import (
 SOLVER = Path(__file__).resolve().parents[2] / "rubiks-cube-NxNxN-solver" / "rubikscubennnsolver"
 # Built by the C bar searcher, not a BFS class. make 666-tables builds it too.
 C_ONLY = {LR_BAR_FILENAME}
+# Built by `make 555-lr-joint` (about 36 GB of RAM), which `make 555` leaves out.
+SEPARATE_TARGET = {"lookup-table-5x5x5-step13-LR-t-x-centers-joint.sym-nibble.bin"}
 
 
 def _solver_table_names():
@@ -48,7 +50,7 @@ def test_solver_tables_map_to_one_builder():
 
     missing = []
     for name in sorted(_solver_table_names()):
-        if name in C_ONLY:
+        if name in C_ONLY or name in SEPARATE_TARGET:
             continue
         try:
             cls_name = builder_for(name).__name__
